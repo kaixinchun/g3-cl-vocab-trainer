@@ -495,7 +495,7 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
     <div class="overview-card">
       <h3>总体进度</h3>
       <div class="stat-row">
-        <div class="stat-item"><div class="stat-num" id="stat-total">992</div><div class="stat-label">词语</div></div>
+        <div class="stat-item"><div class="stat-num" id="stat-total">—</div><div class="stat-label">词语</div></div>
         <div class="stat-item"><div class="stat-num" id="stat-mastered">0</div><div class="stat-label">已掌握</div></div>
         <div class="stat-item"><div class="stat-num" id="stat-learning">0</div><div class="stat-label">学习中</div></div>
       </div>
@@ -540,10 +540,10 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
     <div class="weak-btn-count" id="weak-count-badge">0</div>
   </button>
   <div class="levels-grid">
-    <button class="level-card" onclick="showLevel('中一')"><div class="level-card-accent acc-1"></div><div class="level-name">中一</div><div class="level-count" id="count-中一">280 词语</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中一" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中一">0% 掌握</div></button>
-    <button class="level-card" onclick="showLevel('中二')"><div class="level-card-accent acc-2"></div><div class="level-name">中二</div><div class="level-count" id="count-中二">261 词语</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中二" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中二">0% 掌握</div></button>
-    <button class="level-card" onclick="showLevel('中三')"><div class="level-card-accent acc-3"></div><div class="level-name">中三</div><div class="level-count" id="count-中三">269 词语</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中三" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中三">0% 掌握</div></button>
-    <button class="level-card" onclick="showLevel('中四')"><div class="level-card-accent acc-4"></div><div class="level-name">中四</div><div class="level-count" id="count-中四">182 词语</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中四" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中四">0% 掌握</div></button>
+    <button class="level-card" onclick="showLevel('中一')"><div class="level-card-accent acc-1"></div><div class="level-name">中一</div><div class="level-count" id="count-中一">— 词语</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中一" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中一">0% 掌握</div></button>
+    <button class="level-card" onclick="showLevel('中二')"><div class="level-card-accent acc-2"></div><div class="level-name">中二</div><div class="level-count" id="count-中二">— 词语</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中二" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中二">0% 掌握</div></button>
+    <button class="level-card" onclick="showLevel('中三')"><div class="level-card-accent acc-3"></div><div class="level-name">中三</div><div class="level-count" id="count-中三">— 词语</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中三" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中三">0% 掌握</div></button>
+    <button class="level-card" onclick="showLevel('中四')"><div class="level-card-accent acc-4"></div><div class="level-name">中四</div><div class="level-count" id="count-中四">— 词语</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中四" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中四">0% 掌握</div></button>
   </div>
 </div>
 
@@ -4027,6 +4027,15 @@ function updateHomeStats() {
   document.getElementById('stat-total').textContent    = all.length;
   document.getElementById('stat-mastered').textContent = mastered;
   document.getElementById('stat-learning').textContent = learning;
+
+  // Dynamic per-level word counts (auto-calculated from VOCAB data)
+  Object.keys(VOCAB).forEach(level => {
+    const el = document.getElementById('count-' + level);
+    if (el) {
+      const count = Object.values(VOCAB[level]).flat().length;
+      el.textContent = count + ' 词语';
+    }
+  });
 
   const pct = Math.round(mastered / all.length * 100);
   document.getElementById('global-bar-fill').style.width = pct + '%';
