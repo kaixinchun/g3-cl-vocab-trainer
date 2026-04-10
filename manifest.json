@@ -1,0 +1,28 @@
+{
+  "name": "华文词语温习",
+  "short_name": "词语温习",
+  "description": "S1–4 Express Chinese Vocabulary Revision",
+  "start_url": "/cl-vocab/",
+  "scope": "/cl-vocab/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#1a1a2e",
+  "theme_color": "#1a1a2e",
+  "lang": "zh-Hans",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education"],
+  "screenshots": []
+}
