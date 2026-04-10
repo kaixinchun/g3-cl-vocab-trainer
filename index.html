@@ -32,29 +32,29 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
 .screen.active{display:flex;flex-direction:column;}
 
 /* HOME */
-#home-screen{background:linear-gradient(160deg,#1a1a2e 0%,#2d2d5a 50%,#1a3a5c 100%);color:white;overflow-y:auto;}
+#home-screen{background:linear-gradient(160deg,#1a4a1a 0%,#1a3a2a 35%,#0d2d4a 100%);color:white;overflow-y:auto;position:relative;}#home-screen::before{content:'';position:fixed;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#2E7D32 0%,#2E7D32 33%,#F5C800 33%,#F5C800 66%,#1A5276 66%,#1A5276 100%);z-index:20;}
 .home-header{padding:1.8rem 1.2rem 1rem;text-align:center;}
-.home-title{font-size:clamp(1.5rem,5vw,2rem);color:#f0e6c8;letter-spacing:.08em;text-shadow:0 2px 12px rgba(0,0,0,.4);}
-.home-subtitle{font-size:.78rem;color:rgba(255,255,255,.5);letter-spacing:.12em;font-family:sans-serif;text-transform:uppercase;margin-top:.2rem;}
+.home-title{font-size:clamp(1.5rem,5vw,2rem);color:#F5C800;letter-spacing:.08em;text-shadow:0 2px 12px rgba(0,0,0,.4);}
+.home-subtitle{font-size:.76rem;color:rgba(255,255,255,.6);letter-spacing:.04em;font-family:sans-serif;margin-top:.3rem;line-height:1.7;}
 .progress-wrap{padding:0 1.2rem .8rem;max-width:480px;margin:0 auto;width:100%;}
-.overview-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:var(--r);padding:.9rem 1.1rem;backdrop-filter:blur(8px);}
+.overview-card{background:rgba(255,255,255,.07);border:1px solid rgba(245,200,0,.2);border-radius:var(--r);padding:.9rem 1.1rem;backdrop-filter:blur(8px);}
 .overview-card h3{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);font-family:sans-serif;margin-bottom:.5rem;}
 .stat-row{display:flex;gap:.8rem;justify-content:space-between;}
 .stat-item{text-align:center;flex:1;}
-.stat-num{font-size:1.6rem;font-weight:bold;color:#f0e6c8;line-height:1;}
+.stat-num{font-size:1.6rem;font-weight:bold;color:#F5C800;line-height:1;}
 .stat-label{font-size:.65rem;color:rgba(255,255,255,.45);font-family:sans-serif;margin-top:.2rem;}
 .global-bar{background:rgba(255,255,255,.12);border-radius:4px;height:5px;margin:.7rem 0 .2rem;overflow:hidden;}
-.global-bar-fill{height:100%;background:linear-gradient(90deg,#f0e6c8,#b8860b);border-radius:4px;transition:width .6s ease;}
+.global-bar-fill{height:100%;background:linear-gradient(90deg,#2E7D32,#F5C800);border-radius:4px;transition:width .6s ease;}
 .global-bar-label{font-size:.65rem;color:rgba(255,255,255,.4);font-family:sans-serif;text-align:right;}
 .levels-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;padding:0 1.2rem 1rem;max-width:480px;margin:0 auto;width:100%;}
-.level-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:var(--r);padding:.9rem;cursor:pointer;transition:all var(--t);text-align:left;position:relative;overflow:hidden;}
-.level-card:hover,.level-card:focus{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.3);transform:translateY(-2px);box-shadow:var(--shadow-md);outline:none;}
+.level-card{background:rgba(255,255,255,.07);border:1px solid rgba(245,200,0,.15);border-radius:var(--r);padding:.9rem;cursor:pointer;transition:all var(--t);text-align:left;position:relative;overflow:hidden;}
+.level-card:hover,.level-card:focus{background:rgba(255,255,255,.12);border-color:rgba(245,200,0,.45);transform:translateY(-2px);box-shadow:var(--shadow-md);outline:none;}
 .level-card-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r) var(--r) 0 0;}
 .acc-1{background:linear-gradient(90deg,#e74c3c,#c0392b);}
 .acc-2{background:linear-gradient(90deg,#2980b9,#1a5276);}
 .acc-3{background:linear-gradient(90deg,#27ae60,#1a7a4a);}
 .acc-4{background:linear-gradient(90deg,#d35400,#a04000);}
-.level-name{font-size:1rem;color:#f0e6c8;margin-bottom:.15rem;}
+.level-name{font-size:1rem;color:#F5C800;margin-bottom:.15rem;}
 .level-count{font-size:.68rem;color:rgba(255,255,255,.4);font-family:sans-serif;}
 .level-mini-bar{background:rgba(255,255,255,.12);border-radius:3px;height:4px;margin-top:.5rem;overflow:hidden;}
 .level-mini-fill{height:100%;background:rgba(255,255,255,.5);border-radius:3px;transition:width .5s ease;}
@@ -236,8 +236,8 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
   .install-close{color:rgba(255,255,255,.4);font-size:1.1rem;padding:.2rem;cursor:pointer;flex-shrink:0;}
   /* ── SAVE PROGRESS BUTTON (home screen) ─────────── */
   .save-restore-row{display:flex;gap:.5rem;padding:0 1.2rem .6rem;max-width:480px;margin:0 auto;width:100%;}
-  .save-btn,.restore-btn{flex:1;padding:.65rem;border:1px solid rgba(255,255,255,.18);border-radius:var(--r-sm);background:rgba(255,255,255,.07);color:rgba(255,255,255,.8);font-size:.78rem;cursor:pointer;font-family:inherit;transition:all var(--t);display:flex;align-items:center;justify-content:center;gap:.35rem;}
-  .save-btn:hover,.restore-btn:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.3);}
+  .save-btn,.restore-btn{flex:1;padding:.65rem;border:1px solid rgba(245,200,0,.2);border-radius:var(--r-sm);background:rgba(255,255,255,.07);color:rgba(255,255,255,.75);font-size:.78rem;cursor:pointer;font-family:inherit;transition:all var(--t);display:flex;align-items:center;justify-content:center;gap:.35rem;}
+  .save-btn:hover,.restore-btn:hover{background:rgba(255,255,255,.12);border-color:rgba(245,200,0,.4);}
   /* ── SYNC INDICATOR ──────────────────────────────── */
   .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--amber);display:inline-block;margin-left:.3rem;vertical-align:middle;}
   .sync-dot.synced{background:var(--green);}
@@ -474,8 +474,11 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
 <!-- HOME -->
 <div id="home-screen" class="screen">
   <div class="home-header">
-    <div class="home-title">华文词语温习</div>
-    <div class="home-subtitle">S1–4 Express Chinese · Vocabulary Revision</div>
+    <div class="home-title">词王训练营</div>
+    <div class="home-subtitle">
+      新加坡中学G3华文<br>
+      中一至中四课文词语总复习
+    </div>
   </div>
 
   <!-- User identity pill -->
