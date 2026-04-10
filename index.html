@@ -248,20 +248,31 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
 
   /* ── WELCOME SCREEN ──────────────────────────────────── */
   #welcome-screen {
-    background: linear-gradient(160deg, #1a1a2e 0%, #2d2d5a 50%, #1a3a5c 100%);
+    background: linear-gradient(160deg, #1a4a1a 0%, #1a3a2a 35%, #0d2d4a 100%);
     align-items: center;
     justify-content: center;
     padding: 1.5rem;
     min-height: 100vh;
+    position: relative;
+  }
+  #welcome-screen::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: linear-gradient(90deg,
+      #2E7D32 0%, #2E7D32 33%,
+      #F5C800 33%, #F5C800 66%,
+      #1A5276 66%, #1A5276 100%);
   }
   .welcome-card {
-    background: rgba(255,255,255,.08);
-    border: 1px solid rgba(255,255,255,.15);
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(245,200,0,.25);
     border-radius: var(--r);
-    padding: 2rem 1.5rem;
+    padding: 2rem 1.5rem 1.5rem;
     width: 100%;
     max-width: 380px;
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(10px);
     text-align: center;
   }
   .welcome-logo {
@@ -269,18 +280,19 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
     margin-bottom: .8rem;
   }
   .welcome-title {
-    font-size: 1.4rem;
-    color: #f0e6c8;
-    letter-spacing: .06em;
+    font-size: 1.6rem;
+    color: #F5C800;
+    letter-spacing: .08em;
     margin-bottom: .3rem;
+    text-shadow: 0 2px 12px rgba(0,0,0,.4);
   }
   .welcome-sub {
     font-size: .78rem;
-    color: rgba(255,255,255,.5);
+    color: rgba(255,255,255,.6);
     font-family: sans-serif;
-    letter-spacing: .08em;
-    text-transform: uppercase;
+    letter-spacing: .04em;
     margin-bottom: 1.8rem;
+    line-height: 1.7;
   }
   .welcome-label {
     font-size: .78rem;
@@ -319,8 +331,8 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
   .welcome-btn {
     width: 100%;
     padding: .9rem;
-    background: #f0e6c8;
-    color: #1a1a2e;
+    background: #2E7D32;
+    color: white;
     border: none;
     border-radius: var(--r-sm);
     font-size: .95rem;
@@ -329,13 +341,45 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
     cursor: pointer;
     transition: all var(--t);
     margin-bottom: 1rem;
+    letter-spacing: .04em;
   }
-  .welcome-btn:hover { background: white; transform: translateY(-1px); }
+  .welcome-btn:hover {
+    background: #3a9e40;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(46,125,50,.4);
+  }
   .welcome-note {
     font-size: .68rem;
-    color: rgba(255,255,255,.35);
+    color: rgba(255,255,255,.4);
     font-family: sans-serif;
     line-height: 1.5;
+    margin-bottom: .9rem;
+  }
+  /* School name credit — visible but understated */
+  .welcome-credit-school {
+    font-size: .75rem;
+    color: rgba(255,255,255,.45);
+    font-family: sans-serif;
+    letter-spacing: .04em;
+    padding-top: .85rem;
+    border-top: 1px solid rgba(255,255,255,.1);
+  }
+  /* Personal credit — significantly smaller, very discreet */
+  .welcome-credit-name {
+    font-size: .6rem;
+    color: rgba(255,255,255,.2);
+    font-family: sans-serif;
+    letter-spacing: .03em;
+    margin-top: .25rem;
+  }
+  /* Year tag */
+  .welcome-credit-year {
+    display: inline-block;
+    font-size: .58rem;
+    color: rgba(255,255,255,.18);
+    font-family: sans-serif;
+    margin-left: .4rem;
+    letter-spacing: .06em;
   }
   /* ── TEACHER MODE BANNER ─────────────────────────────── */
   .teacher-banner {
@@ -396,8 +440,11 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
 <div id="welcome-screen" class="screen active">
   <div class="welcome-card">
     <div class="welcome-logo">📖</div>
-    <div class="welcome-title">华文词语温习</div>
-    <div class="welcome-sub">S1–4 Express Chinese · Vocabulary Revision</div>
+    <div class="welcome-title">词王训练营</div>
+    <div class="welcome-sub">
+      新加坡中学G3华文<br>
+      中一至中四课文词语总复习
+    </div>
     <label class="welcome-label">请输入你的学校电邮地址</label>
     <input
       class="welcome-input"
@@ -413,6 +460,13 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
     <div class="welcome-note">
       你的电邮地址只用于记录学习进度。<br>
       首次输入后，无需再次登录。
+    </div>
+    <div class="welcome-credit-school">
+      百德中学 · Bukit View Secondary School
+    </div>
+    <div class="welcome-credit-name">
+      郑凯欣老师 · Mdm Chun Kai Xin
+      <span class="welcome-credit-year">© 2026</span>
     </div>
   </div>
 </div>
