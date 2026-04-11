@@ -522,13 +522,8 @@ html{overflow-x:hidden;}
     justify-content: space-between;
     padding: .5rem 1.2rem .3rem;
     max-width: 520px;
-    margin: 0 auto;
+    margin: .5rem auto 0;
     width: 100%;
-    background: rgba(255,255,255,.75);
-    backdrop-filter: blur(6px);
-    border-radius: var(--r);
-    margin-top: .5rem;
-    box-shadow: var(--shadow-sm);
   }
   .user-email {
     font-size: .7rem;
@@ -538,30 +533,28 @@ html{overflow-x:hidden;}
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 180px;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(255,255,255,.8);
   }
   .user-signout {
     font-size: .68rem;
     color: #1a2a5e;
     font-family: sans-serif;
-    background: none;
-    border: none;
+    background: rgba(255,255,255,.6);
+    border: 1px solid rgba(26,42,94,.2);
     cursor: pointer;
-    padding: .2rem .4rem;
-    border-radius: 4px;
-    transition: color var(--t);
-    opacity: .7;
+    padding: .2rem .5rem;
+    border-radius: 8px;
+    transition: background var(--t);
   }
-  .user-signout:hover { opacity: 1; }
-  .user-type-badge {
-    font-size: .72rem;
-    background: #1a2a5e;
-    border: 1px solid #1a2a5e;
-    border-radius: 10px;
-    padding: .15rem .65rem;
-    color: white;
-    font-family: sans-serif;
-    font-weight: 600;
-  }
+  .user-signout:hover { background: rgba(255,255,255,.9); }
+  /* per-identity badge colours */
+  .user-type-badge { font-size: .72rem; border-radius: 10px; padding: .15rem .65rem; font-family: sans-serif; font-weight: 600; border: 1px solid; }
+  .user-type-badge.badge-教师    { background:#1a2a5e; color:white; border-color:#1a2a5e; }
+  .user-type-badge.badge-百德中学学生 { background:#2D6A4F; color:white; border-color:#2D6A4F; }
+  .user-type-badge.badge-其他学校学生 { background:#6CBFA0; color:#0a3d2e; border-color:#6CBFA0; }
+  .user-type-badge.badge-家长    { background:#7B4F00; color:white; border-color:#7B4F00; }
+  .user-type-badge.badge-公众人士 { background:#555; color:white; border-color:#555; }
 
 
   /* ── PINYIN ──────────────────────────────────────────────── */
@@ -624,15 +617,14 @@ html{overflow-x:hidden;}
     font-size: .68rem;
     color: #1a2a5e;
     font-family: sans-serif;
-    background: none;
-    border: none;
+    background: rgba(255,255,255,.6);
+    border: 1px solid rgba(26,42,94,.2);
     cursor: pointer;
-    padding: .2rem .4rem;
-    border-radius: 4px;
-    transition: opacity var(--t);
-    opacity: .7;
+    padding: .2rem .5rem;
+    border-radius: 8px;
+    transition: background var(--t);
   }
-  .profile-btn:hover { opacity: 1; }
+  .profile-btn:hover { background: rgba(255,255,255,.9); }
   .user-type-badge {
     font-size: .72rem;
     background: rgba(245,200,0,.22);
@@ -1354,7 +1346,7 @@ const VOCAB = {
     "单元三 核心": ["横梁","覆盖","玻璃","瀑布","循环","谷","株","设施","蹦跳","甚至","主题","别具一格"],
     "单元三 巩固": ["投降","自治","栏","棕色","氧化","陌生","宁静","属于","面积","天花板"],
     "单元四 生活空间": ["坚持不懈","开卷有益","以礼待人","新颖","戏剧","工作坊","尴尬","维护","友谊","一帆风顺","有效","策略","嘉宾","辅导员","一诺千金","言出必行","起码"],
-    "单元四 核心": ["赖床","滋味","催促","哀求","硬着头皮","藤鞭","抡","挨打","女佣","雨蓬","泪痕","猛","嗓子眼","允许","早晨","毛病","不得了","居然","情愿","缘故"],
+    "单元四 核心": ["赖床","滋味","催促","哀求","硬着头皮","藤鞭","抡","挨打","女佣","雨蓬","泪痕","猛","嗓子眼","允许","早晨","毛病","不得了","情愿","缘故"],
     "单元四 巩固": ["相貌","讲究","何必","记账","亏","撇","慢条斯理","起航","焦急","记性","精明"],
     "单元五 生活空间": ["剩","牙膏","橡皮擦","薯条","番茄酱","偶尔","评委","晋级","奖励","获得","企业","创新"],
     "单元五 核心": ["牧场","潜水","艘","屁股","翘","潜水艇","仿佛","确切","浑身","基因","一哄而散","手势","颁布","泛","泡沫","腾空而起","降落","打量"],
@@ -5417,14 +5409,22 @@ function showWelcomeError(msg) {
   }, 3000);
 }
 
+function setBadge(userType) {
+  const badge = document.getElementById('user-type-badge');
+  if (!badge) return;
+  badge.textContent = userType || '';
+  // Remove all badge colour classes
+  badge.className = 'user-type-badge';
+  const safe = (userType||'').replace(/\s/g,'');
+  badge.classList.add('badge-' + safe);
+}
+
 // ── LAUNCH APP AFTER LOGIN ────────────────────────────────────
 function launchApp(email, userType) {
   const emailDisplay = document.getElementById('user-email-display');
   if (emailDisplay) emailDisplay.textContent = email;
 
-  // Update type badge
-  const badge = document.getElementById('user-type-badge');
-  if (badge) badge.textContent = userType || '';
+  setBadge(userType);
 
   // Show feedback FAB on study screens
   updateFeedbackFab();
