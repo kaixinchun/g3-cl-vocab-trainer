@@ -38,51 +38,53 @@
   --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-height:100vh;font-size:17px;line-height:1.7;}
+body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-height:100vh;font-size:17px;line-height:1.7;overflow-x:hidden;}
+html{overflow-x:hidden;}
 .screen{display:none;width:100%;min-height:100vh;}
 .screen.active{display:flex;flex-direction:column;}
 
 /* HOME */
 #home-screen{
-  background:var(--blue-soft);
+  background-image: url('hero_home_mobile.jpg');
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
   color:var(--ink);
   overflow-y:auto;
   position:relative;
 }
+@media(min-width:768px){
+  #home-screen{ background-image: url('hero_home_desktop.jpg'); }
+}
 #home-screen::before{
   content:'';position:fixed;top:0;left:0;right:0;height:5px;
-  background:linear-gradient(90deg,#5FAD2A 0%,#5FAD2A 33%,#F5C800 33%,#F5C800 66%,#2878C8 66%,#2878C8 100%);
+  background:linear-gradient(90deg,#E8B800 0%,#E8B800 25%,#1a2a5e 25%,#1a2a5e 50%,#6CBFA0 50%,#6CBFA0 75%,#2D6A4F 75%,#2D6A4F 100%);
   z-index:20;
 }
 .home-header{
-  background-image: url('hero_home_mobile.jpg');
-  background-size:cover; background-position:center;
+  background:none;
   padding:2rem 1.2rem 1.4rem;
   text-align:center;
   position:relative;
 }
-.home-header::after{
-  content:'';position:absolute;inset:0;
-  background:rgba(0,0,0,0.28);
-  pointer-events:none;
-}
+.home-header::after{ display:none; }
 .home-title{
   font-family:var(--font-display);
   font-size:clamp(1.7rem,5vw,2.3rem);
-  color:#FFFFFF;
+  color:#1a2a5e;
   letter-spacing:.08em;
-  text-shadow:0 2px 12px rgba(0,0,0,.55);
+  text-shadow:0 1px 3px rgba(255,255,255,.6);
   position:relative;z-index:1;
 }
 .home-subtitle{
   font-size:.82rem;
-  color:rgba(255,255,255,0.95);
+  color:#1a2a5e;
   letter-spacing:.04em;
   font-family:var(--font-ui);
   margin-top:.35rem;
   line-height:1.7;
   position:relative;z-index:1;
-  text-shadow:0 1px 4px rgba(0,0,0,.5);
+  text-shadow:none;
 }
 .progress-wrap{padding:0 1.2rem .8rem;max-width:520px;margin:0 auto;width:100%;}
 .overview-card{
@@ -120,10 +122,11 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
 .level-card:hover,.level-card:focus{border-color:var(--gold);transform:translateY(-2px);box-shadow:var(--shadow-md);outline:none;}
 .level-card.lc-active{border-color:var(--green-mid);background:var(--green-soft);}
 .level-card-accent{position:absolute;top:0;left:0;right:0;height:4px;border-radius:var(--r) var(--r) 0 0;}
-.acc-1{background:linear-gradient(90deg,#e74c3c,#c0392b);}
-.acc-2{background:linear-gradient(90deg,var(--blue),#1a5276);}
-.acc-3{background:linear-gradient(90deg,var(--green-mid),var(--green));}
-.acc-4{background:linear-gradient(90deg,#d35400,#a04000);}
+/* Issue 6: level colours — 中一 gold, 中二 navy, 中三 mint green, 中四 forest green */
+.acc-1{background:#E8B800;}
+.acc-2{background:#1a2a5e;}
+.acc-3{background:#6CBFA0;}
+.acc-4{background:#2D6A4F;}
 .level-name{font-size:1.1rem;color:var(--ink);margin-bottom:.2rem;font-family:var(--font-body);}
 .level-count{font-size:.72rem;color:var(--ink-mute);font-family:var(--font-ui);}
 .level-badge-corner{position:absolute;top:.5rem;right:.7rem;font-size:1.1rem;line-height:1;}
@@ -517,23 +520,28 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: .4rem 1.2rem .2rem;
-    max-width: 480px;
+    padding: .5rem 1.2rem .3rem;
+    max-width: 520px;
     margin: 0 auto;
     width: 100%;
+    background: rgba(255,255,255,.75);
+    backdrop-filter: blur(6px);
+    border-radius: var(--r);
+    margin-top: .5rem;
+    box-shadow: var(--shadow-sm);
   }
   .user-email {
     font-size: .7rem;
-    color: rgba(255,255,255,.45);
+    color: #1a2a5e;
     font-family: sans-serif;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 220px;
+    max-width: 180px;
   }
   .user-signout {
     font-size: .68rem;
-    color: rgba(255,255,255,.3);
+    color: #1a2a5e;
     font-family: sans-serif;
     background: none;
     border: none;
@@ -541,8 +549,19 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
     padding: .2rem .4rem;
     border-radius: 4px;
     transition: color var(--t);
+    opacity: .7;
   }
-  .user-signout:hover { color: rgba(255,255,255,.7); }
+  .user-signout:hover { opacity: 1; }
+  .user-type-badge {
+    font-size: .72rem;
+    background: #1a2a5e;
+    border: 1px solid #1a2a5e;
+    border-radius: 10px;
+    padding: .15rem .65rem;
+    color: white;
+    font-family: sans-serif;
+    font-weight: 600;
+  }
 
 
   /* ── PINYIN ──────────────────────────────────────────────── */
@@ -603,16 +622,17 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
   /* ── PROFILE EDIT MODAL ─────────────────────────────────── */
   .profile-btn {
     font-size: .68rem;
-    color: rgba(255,255,255,.3);
+    color: #1a2a5e;
     font-family: sans-serif;
     background: none;
     border: none;
     cursor: pointer;
     padding: .2rem .4rem;
     border-radius: 4px;
-    transition: color var(--t);
+    transition: opacity var(--t);
+    opacity: .7;
   }
-  .profile-btn:hover { color: rgba(255,255,255,.7); }
+  .profile-btn:hover { opacity: 1; }
   .user-type-badge {
     font-size: .72rem;
     background: rgba(245,200,0,.22);
@@ -626,37 +646,31 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
 
   /* ── STUDENT COUNTER ────────────────────────────────────── */
   .stats-counter-card {
-    background: rgba(255,255,255,.05);
-    border: 1px solid rgba(245,200,0,.15);
-    border-radius: var(--r-sm);
-    padding: .55rem .9rem;
-    margin: 0 1.2rem .6rem;
-    max-width: calc(480px - 2.4rem);
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    gap: .5rem;
+    background: white;
+    border: 1px solid var(--paper-3);
+    border-radius: var(--r);
+    padding: .8rem 1rem;
+    box-shadow: var(--shadow-sm);
   }
   .counter-item { text-align: center; }
   .counter-num {
     font-size: 1.3rem;
     font-weight: bold;
-    color: #F5C800;
+    color: #1a2a5e;
     line-height: 1;
+    font-family: var(--font-ui);
   }
   .counter-label {
-    font-size: .58rem;
-    color: rgba(255,255,255,.4);
+    font-size: .62rem;
+    color: var(--ink-mute);
     font-family: sans-serif;
-    margin-top: .15rem;
+    margin-top: .2rem;
     line-height: 1.3;
   }
   .counter-divider {
     width: 1px;
     height: 28px;
-    background: rgba(255,255,255,.1);
+    background: var(--paper-3);
   }
 
   /* ── FEEDBACK BUTTON (floating) ─────────────────────────── */
@@ -752,15 +766,8 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
         justify-content: center;
         align-items: center;
     }
+    #home-screen { background-image: url('hero_home_desktop.jpg'); background-attachment: fixed; }
 }
-  .home-header {
-    background-image: url('hero_home_mobile.jpg');
-    background-size: cover;
-    background-position: center;
-  }
-  @media(min-width:768px){
-    .home-header { background-image: url('hero_home_desktop.jpg'); }
-  }
 
   /* ── ACHIEVEMENTS BUTTON ─────────────────────────────────── */
   .ach-level-card {
@@ -834,9 +841,24 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
     color: white;
     border-bottom: none;
   }
+  /* Issue 6: per-level top-bar colours */
+  .top-bar.level-中一 { background: #E8B800; }
+  .top-bar.level-中一 .back-btn,
+  .top-bar.level-中一 .top-bar-title { color: #3D2A00; }
+  .top-bar.level-中二 { background: #1a2a5e; }
+  .top-bar.level-中三 { background: #6CBFA0; }
+  .top-bar.level-中三 .back-btn,
+  .top-bar.level-中三 .top-bar-title { color: #0a3d2e; }
+  .top-bar.level-中四 { background: #2D6A4F; }
   .back-btn { color: rgba(255,255,255,.85); }
   .top-bar-title { color: white; font-family: var(--font-body); font-size:1.05rem; }
-  .units-list { background: var(--blue-soft); padding:.7rem; max-width:540px; margin:0 auto; }
+  /* Issue 5: desktop 3-column grid for unit buttons */
+  .units-list { background: var(--blue-soft); padding:.7rem; max-width:960px; margin:0 auto; }
+  @media(min-width:700px) {
+    .units-list { padding: 1rem 1.2rem; }
+    .unit-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; align-items: start; }
+    .unit-group-label { grid-column: 1 / -1; }
+  }
   .unit-group-label {
     font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
     color: var(--blue); font-family:var(--font-ui); font-weight:700;
@@ -847,6 +869,11 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
     border: 1px solid var(--paper-3);
     border-left: 3px solid var(--green-mid);
   }
+  /* Issue 6: unit-btn accent colour matches level */
+  .level-中一 .unit-btn { border-left-color: #E8B800; }
+  .level-中二 .unit-btn { border-left-color: #1a2a5e; }
+  .level-中三 .unit-btn { border-left-color: #6CBFA0; }
+  .level-中四 .unit-btn { border-left-color: #2D6A4F; }
   .unit-btn:hover { border-color: var(--gold); border-left-color: var(--gold); }
   .unit-btn-name { font-size:.95rem; font-family: var(--font-body); }
   .unit-btn-sub  { font-size:.72rem; font-family: var(--font-ui); }
@@ -922,42 +949,23 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
       新加坡中学G3华文 · 中一至中四词语总复习
     </div>
     <div style="margin-top:.6rem;position:relative;z-index:1;">
-      <div id="home-rank-pill" style="display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.35);border:1.5px solid rgba(255,255,255,.6);border-radius:20px;padding:5px 16px;font-size:.88rem;color:white;font-family:var(--font-body);">
+      <div id="home-rank-pill" style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.75);border:1.5px solid rgba(26,42,94,.3);border-radius:20px;padding:5px 16px;font-size:.88rem;color:#1a2a5e;font-family:var(--font-body);">
         🌱 词语学徒 · 0%
       </div>
     </div>
   </div>
 
-  <!-- User identity pill -->
-  <div class="user-pill">
+  <!-- User identity pill — email | badge | 修改身份 | 退出 -->
+  <div class="user-pill" style="max-width:520px;">
     <span class="user-email" id="user-email-display"></span>
     <div style="display:flex;align-items:center;gap:.4rem;">
+      <span class="user-type-badge" id="user-type-badge"></span>
       <button class="profile-btn" onclick="showProfileModal()">✏️ 修改身份</button>
       <button class="user-signout" onclick="signOut()">退出</button>
     </div>
   </div>
-  <!-- User type badge -->
-  <div style="padding:0 1.2rem .3rem;max-width:480px;margin:0 auto;width:100%;">
-    <span class="user-type-badge" id="user-type-badge"></span>
-  </div>
-  <!-- Teacher mode banner -->
-  <!-- Usage counter -->
-  <div class="stats-counter-card" id="stats-counter-card">
-    <div class="counter-item">
-      <div class="counter-num" id="counter-bukit">—</div>
-      <div class="counter-label">百德中学<br>学生人数</div>
-    </div>
-    <div class="counter-divider"></div>
-    <div class="counter-item">
-      <div class="counter-num" id="counter-total">—</div>
-      <div class="counter-label">所有学校<br>学生总人数</div>
-    </div>
-    <div class="counter-divider"></div>
-    <div class="counter-item">
-      <div class="counter-num" id="counter-teachers">—</div>
-      <div class="counter-label">教师<br>人数</div>
-    </div>
-  </div>
+  <!-- Usage counter — moved below levels grid -->
+
 
   <div class="progress-wrap">
     <div class="overview-card">
@@ -1017,6 +1025,28 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
     <button class="level-card" id="lc-中二" onclick="showLevel('中二')"><div class="level-card-accent acc-2"></div><div class="level-badge-corner" id="badge-中二" style="opacity:.3">🎯</div><div class="level-name">中二</div><div class="level-count" id="count-中二">— 词语</div><div class="level-chapter-count" id="chap-中二">0/0 章</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中二" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中二">0% 掌握</div></button>
     <button class="level-card" id="lc-中三" onclick="showLevel('中三')"><div class="level-card-accent acc-3"></div><div class="level-badge-corner" id="badge-中三" style="opacity:.3">🏅</div><div class="level-name">中三</div><div class="level-count" id="count-中三">— 词语</div><div class="level-chapter-count" id="chap-中三">0/0 章</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中三" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中三">0% 掌握</div></button>
     <button class="level-card" id="lc-中四" onclick="showLevel('中四')"><div class="level-card-accent acc-4"></div><div class="level-badge-corner" id="badge-中四" style="opacity:.3">🏆</div><div class="level-name">中四</div><div class="level-count" id="count-中四">— 词语</div><div class="level-chapter-count" id="chap-中四">0/0 章</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中四" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中四">0% 掌握</div></button>
+  </div>
+  <!-- Usage counter — bottom of home screen -->
+  <div style="padding:.5rem 1.2rem 1.5rem;max-width:520px;margin:0 auto;width:100%;">
+    <div class="stats-counter-card" id="stats-counter-card">
+      <div style="font-size:.72rem;color:#1a2a5e;font-family:var(--font-ui);font-weight:600;text-align:center;margin-bottom:.6rem;letter-spacing:.03em;">🤝 词王训练营学习伙伴</div>
+      <div style="display:flex;justify-content:space-around;align-items:center;">
+        <div class="counter-item">
+          <div class="counter-num" id="counter-bukit">—</div>
+          <div class="counter-label">百德中学学生</div>
+        </div>
+        <div class="counter-divider"></div>
+        <div class="counter-item">
+          <div class="counter-num" id="counter-total">—</div>
+          <div class="counter-label">所有学校学生</div>
+        </div>
+        <div class="counter-divider"></div>
+        <div class="counter-item">
+          <div class="counter-num" id="counter-teachers">—</div>
+          <div class="counter-label">教师</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -4752,6 +4782,15 @@ function updateHomeStats() {
 function showLevel(level) {
   currentLevel = level;
   document.getElementById('level-screen-title').textContent = level + ' 词语';
+  // Apply level colour class to top-bar and units-list
+  const topBar = document.querySelector('#level-screen .top-bar');
+  const unitsList = document.getElementById('units-list');
+  ['中一','中二','中三','中四'].forEach(l => {
+    topBar.classList.remove('level-' + l);
+    unitsList.classList.remove('level-' + l);
+  });
+  topBar.classList.add('level-' + level);
+  unitsList.classList.add('level-' + level);
   renderUnitsList(level);
   showScreen('level-screen');
 }
