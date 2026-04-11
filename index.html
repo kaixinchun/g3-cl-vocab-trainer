@@ -380,17 +380,19 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
     z-index: 2;
   }
   .welcome-card {
-    background: rgba(253,250,244,.96);
-    border: 1.5px solid rgba(245,200,0,.4);
-    border-radius: var(--r);
-    padding: 2rem 1.5rem 1.5rem;
-    width: 100%;
-    max-width: 400px;
-    box-shadow: var(--shadow-lg);
-    text-align: center;
-    position: relative;
-    z-index: 1;
-  }
+  background: rgba(253,250,244,.55);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255,255,255,.45);
+  border-radius: var(--r);
+  padding: 2rem 1.5rem 1.5rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.6);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
   .welcome-logo {
     font-size: 3rem;
     margin-bottom: .8rem;
@@ -873,7 +875,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
 <!-- WELCOME / LOGIN SCREEN -->
 <div id="welcome-screen" class="screen active">
   <div class="welcome-card">
-    <div class="welcome-logo">📖</div>
+    <div class="welcome-logo">👑</div>
     <div class="welcome-title">词王训练营</div>
     <div class="welcome-sub">
       新加坡中学G3华文<br>
@@ -901,7 +903,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
     <div class="welcome-error" id="welcome-error"></div>
     <button class="welcome-btn" onclick="submitWelcome()">开始学习 →</button>
     <div class="welcome-note">
-      你的信息只用于统计使用情况。首次填写后无需再次登录。<br>
+      你的信息只用于保存学习进展与统计使用情况。首次填写后无需再次登录。<br>
       如需更改身份，可在主页进行修改。
     </div>
     <div class="welcome-credit-school">
@@ -4394,7 +4396,7 @@ let ENGLISH_DEFS = Object.assign({}, ENGLISH_DEFS_FALLBACK);
 const SHEETS_CONFIG = {
   SHEET_ID: '1u1B4BWMv79CS-AYPwNdyaK9lxcu9Ahht0jAB0C-QHCc',
   // After publishing, replace each URL with your actual published CSV URLs:
-  DEFS_URL:    'https://docs.google.com/spreadsheets/d/e/2PACX-1vTmKL5Wrkx5ZuTSQLP2e-i6SvmQZLKhefICqxDnnolvzlYOI1vpGEME7eLKFDEdazlDVyojx59TlgHA/pub?gid=1908098366&single=true&output=csv',
+  DEFS_URL:    'https://docs.google.com/spreadsheets/d/e/2PACX-1vTmKL5Wrkx5ZuTSQLP2e-i6SvmQZLKhefICqxDnnolvzlYOI1vpGEME7eLKFDEdazlDVyojx59TlgHA/pub?gid=0&single=true&output=csv',
   EXAMPLES_URL:'https://docs.google.com/spreadsheets/d/e/2PACX-1vTmKL5Wrkx5ZuTSQLP2e-i6SvmQZLKhefICqxDnnolvzlYOI1vpGEME7eLKFDEdazlDVyojx59TlgHA/pub?gid=770772674&single=true&output=csv',
   ENGLISH_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTmKL5Wrkx5ZuTSQLP2e-i6SvmQZLKhefICqxDnnolvzlYOI1vpGEME7eLKFDEdazlDVyojx59TlgHA/pub?gid=1523377999&single=true&output=csv',
   PINYIN_URL:  'https://docs.google.com/spreadsheets/d/e/2PACX-1vTmKL5Wrkx5ZuTSQLP2e-i6SvmQZLKhefICqxDnnolvzlYOI1vpGEME7eLKFDEdazlDVyojx59TlgHA/pub?gid=1908098366&single=true&output=csv',
@@ -5941,14 +5943,14 @@ function updateAchievementsScreen() {
     // Top row
     const topRow = document.createElement('div');
     topRow.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:8px;';
-    topRow.innerHTML = \`
+    topRow.innerHTML = `
       <span style="font-size:1.6rem;line-height:1;\${!prevLevelComplete ? 'filter:grayscale(1)' : ''}">\${rc.emoji}</span>
       <div style="flex:1;">
         <div style="font-size:1.05rem;color:var(--ink);font-family:var(--font-body);">\${level}</div>
         <div style="font-size:.75rem;color:var(--blue);font-family:var(--font-ui);font-weight:600;">\${rc.title}\${levelDone ? ' ✓' : !prevLevelComplete ? ' — 未解锁' : ' · 进行中'}</div>
       </div>
       <div style="font-size:.9rem;font-family:var(--font-ui);font-weight:500;color:var(--ink-mute);">\${levelPct}%</div>
-    \`;
+    `;
     card.appendChild(topRow);
 
     // Badge count
@@ -5962,7 +5964,7 @@ function updateAchievementsScreen() {
     // Progress bar
     const track = document.createElement('div');
     track.style.cssText = 'background:var(--paper-3);border-radius:4px;height:6px;overflow:hidden;margin-bottom:8px;';
-    track.innerHTML = \`<div style="height:100%;border-radius:4px;width:\${levelPct}%;background:linear-gradient(90deg,var(--green-mid),var(--gold));transition:width .5s;"></div>\`;
+    track.innerHTML = `<div style="height:100%;border-radius:4px;width:\${levelPct}%;background:linear-gradient(90deg,var(--green-mid),var(--gold));transition:width .5s;"></div>`;
     card.appendChild(track);
 
     // Badge chips (show up to 8, collapsed)
@@ -6132,7 +6134,7 @@ Be brave and try — every wrong answer is a learning opportunity. The path to b
       s.states.forEach(st => {
         const row = document.createElement('div');
         row.className = 'guide-state-row';
-        row.innerHTML = \`<span class="guide-state-badge \${st.cls}">\${st.label}</span><span class="guide-body">\${st.desc}</span>\`;
+        row.innerHTML = `<span class="guide-state-badge \${st.cls}">\${st.label}</span><span class="guide-body">\${st.desc}</span>`;
         sec.appendChild(row);
       });
     } else if (s.body) {
