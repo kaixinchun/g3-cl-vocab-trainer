@@ -678,9 +678,35 @@ html{overflow-x:hidden;}
     background: var(--paper-3);
   }
 
+  /* ── STUDY BOTTOM NAV PILLS ─────────────────────────────── */
+  .study-nav-pill {
+    position: fixed;
+    bottom: 1.1rem;
+    background: rgba(30,40,60,.78);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: rgba(255,255,255,.9);
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 20px;
+    padding: .45rem .9rem;
+    font-size: .72rem;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    z-index: 50;
+    display: none;
+    align-items: center;
+    gap: .3rem;
+    transition: background var(--t);
+    white-space: nowrap;
+  }
+  .study-nav-pill:hover { background: rgba(30,40,60,.95); }
+  .study-nav-pill-left   { left: 1rem; }
+  .study-nav-pill-center { left: 50%; transform: translateX(-50%); }
+  .study-nav-pill.show   { display: flex; }
+
   /* ── FEEDBACK BUTTON (floating) ─────────────────────────── */
   .feedback-fab {
-    position: fixed;
     bottom: 1.1rem;
     right: 1rem;
     background: rgba(38,96,164,.85);
@@ -882,6 +908,23 @@ html{overflow-x:hidden;}
   .unit-btn:hover { border-color: var(--gold); border-left-color: var(--gold); }
   .unit-btn-name { font-size:.95rem; font-family: var(--font-body); }
   .unit-btn-sub  { font-size:.72rem; font-family: var(--font-ui); }
+  .unit-target-btn {
+    display: block;
+    width: 100%;
+    margin-bottom: .35rem;
+    padding: .5rem .9rem;
+    background: var(--red-soft);
+    border: 1px solid rgba(192,57,43,.25);
+    border-radius: var(--r-sm);
+    color: var(--red);
+    font-size: .78rem;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: all var(--t);
+  }
+  .unit-target-btn:hover { background: var(--red); color: white; }
 
   /* ── STUDY SCREEN improvements ───────────────────────────── */
   .study-header { background: white; }
@@ -933,8 +976,7 @@ html{overflow-x:hidden;}
     <div class="welcome-error" id="welcome-error"></div>
     <button class="welcome-btn" onclick="submitWelcome()">开始学习 →</button>
     <div class="welcome-note">
-      你的信息只用于保存学习进展与统计使用情况。<br>
-      首次填写后无需再次登录。<br>
+      你的信息只用于保存学习进展与统计使用情况。首次填写后无需再次登录。<br>
       如需更改身份，可在主页进行修改。
     </div>
     <div class="welcome-credit-school">
@@ -1081,7 +1123,6 @@ html{overflow-x:hidden;}
     <div class="study-nav">
       <button class="back-btn" onclick="exitStudy()">‹</button>
       <div class="study-title" id="study-title"></div>
-      <button class="back-btn" onclick="if(confirm('返回主页？当前练习进度不会丢失。'))showScreen('home-screen')" title="返回主页" style="font-size:.75rem;padding:.2rem .55rem;color:var(--ink-mute);">🏠</button>
     </div>
     <div class="mode-tabs">
       <button class="mode-tab active" data-mode="flashcard" onclick="switchMode('flashcard')">词语闪卡<span class="mode-tab-sub">Flashcard</span></button>
@@ -1092,8 +1133,12 @@ html{overflow-x:hidden;}
     <div class="study-progress-bar"><div class="study-progress-fill" id="study-progress-fill" style="width:0%"></div></div>
   </div>
 
+  <!-- Fixed bottom navigation pills -->
+  <button id="study-home-btn" onclick="if(confirm('返回主页？当前练习进度不会丢失。'))showScreen('home-screen')" class="study-nav-pill study-nav-pill-left">🏠 返回主页</button>
+  <button id="study-chapter-btn" onclick="exitStudy()" class="study-nav-pill study-nav-pill-center">↩ 返回<span id="study-chapter-label">单元</span></button>
+
   <!-- Flashcard -->
-  <div id="flashcard-mode" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;gap:.8rem;">
+  <div id="flashcard-mode" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:.6rem 1rem 1rem;gap:.7rem;overflow-y:auto;">
     <div class="card-counter" id="fc-counter">1 / 20</div>
     <div class="flashcard" id="flashcard" onclick="flipCard()">
       <div class="card-face card-front">
@@ -1201,7 +1246,8 @@ html{overflow-x:hidden;}
     <div class="results-actions">
       <button class="action-btn action-weak" id="btn-retry-weak" onclick="retryWeak()">🔁 只练习未掌握词语</button>
       <button class="action-btn action-primary" onclick="retryAll()">重新练习全部</button>
-      <button class="action-btn action-secondary" onclick="exitStudy()">返回词语列表</button>
+      <button class="action-btn action-secondary" onclick="returnToChapter()">返回章节列表</button>
+      <button class="action-btn action-secondary" onclick="showScreen('home-screen');updateHomeStats()">🏠 返回主页</button>
     </div>
   </div>
 </div>
@@ -4736,6 +4782,11 @@ function showScreen(id) {
     const showOnScreens = ['study-screen', 'results-screen'];
     fab.classList.toggle('show', showOnScreens.includes(id));
   }
+  // Show study bottom pills only on study screen
+  const homeBtn    = document.getElementById('study-home-btn');
+  const chapterBtn = document.getElementById('study-chapter-btn');
+  if (homeBtn)    homeBtn.classList.toggle('show', id === 'study-screen');
+  if (chapterBtn) chapterBtn.classList.toggle('show', id === 'study-screen');
   // Refresh achievements if navigating there
   if (id === 'achievements-screen') {
     try { updateAchievementsScreen(); } catch(e) {}
@@ -4844,15 +4895,45 @@ function renderUnitsList(level) {
 
       const btn = document.createElement('button');
       btn.className = 'unit-btn';
+
+      // Count unmastered (attempted but not yet mastered)
+      const unmastered = words.filter(w => isLearning(w) && !isMastered(w));
+      const notStarted = words.filter(w => !progress[w] || (progress[w].box === 0 && !progress[w].wrongCount && !progress[w].fcKnown));
+      const unmasteredChip = unmastered.length > 0
+        ? `<span style="font-size:.62rem;background:var(--red-soft);color:var(--red);border-radius:8px;padding:.1rem .45rem;font-family:sans-serif;font-weight:600;flex-shrink:0;">${unmastered.length} 未掌握</span>`
+        : '';
+      const notStartedChip = notStarted.length > 0 && pct === 0
+        ? ''
+        : notStarted.length > 0
+        ? `<span style="font-size:.62rem;background:var(--paper-2);color:var(--ink-mute);border-radius:8px;padding:.1rem .45rem;font-family:sans-serif;flex-shrink:0;">${notStarted.length} 未开始</span>`
+        : '';
+
       btn.innerHTML = `
         <div class="unit-dot ${dot}"></div>
         <div class="unit-btn-info">
           <div class="unit-btn-name">${key}</div>
-          <div class="unit-btn-sub">${words.length} 词语 · ${mastered} 已掌握${bestStr ? ' · ' + bestStr : ''}</div>
+          <div style="display:flex;align-items:center;gap:.3rem;flex-wrap:wrap;margin-top:.15rem;">
+            <span class="unit-btn-sub" style="margin:0;">${words.length} 词语 · ${mastered} 已掌握${bestStr ? ' · ' + bestStr : ''}</span>
+            ${unmasteredChip}${notStartedChip}
+          </div>
         </div>
         <div class="unit-mastery-bar"><div class="unit-mastery-fill ${fill}" style="width:${pct}%"></div></div>`;
       btn.onclick = () => startStudy(level, key, words);
-      grp.appendChild(btn);
+
+      // Targeted practice button — only show if there are unmastered words
+      if (unmastered.length > 0) {
+        const targetBtn = document.createElement('button');
+        targetBtn.className = 'unit-target-btn';
+        targetBtn.innerHTML = `🎯 练习 ${unmastered.length} 个未掌握`;
+        targetBtn.onclick = (e) => {
+          e.stopPropagation();
+          startStudy(level, key, unmastered, true);
+        };
+        grp.appendChild(btn);
+        grp.appendChild(targetBtn);
+      } else {
+        grp.appendChild(btn);
+      }
     });
     container.appendChild(grp);
   });
@@ -4877,7 +4958,15 @@ function startStudy(level, unitKey, words, weakOnly=false) {
   sessionWrong   = 0;
   sessionWrongWords = [];
 
-  document.getElementById('study-title').textContent = weakOnly ? '未掌握词语复习' : unitKey;
+  document.getElementById('study-title').textContent = weakOnly && unitKey !== '未掌握词语'
+    ? unitKey + ' · 未掌握'
+    : weakOnly ? '未掌握词语复习' : unitKey;
+
+  // Update chapter return button label
+  const chapterLabel = document.getElementById('study-chapter-label');
+  if (chapterLabel) {
+    chapterLabel.textContent = level ? `（${level}）单元` : '章节列表';
+  }
   switchMode(currentMode, true);
   showScreen('study-screen');
 }
@@ -4886,6 +4975,12 @@ function startWeakWords() {
   const weak = getWeakWords();
   if (!weak.length) { showToast('暂时没有未掌握词语！'); return; }
   startStudy(null, '未掌握词语', weak, true);
+}
+
+function returnToChapter() {
+  updateHomeStats();
+  if (currentLevel) { renderUnitsList(currentLevel); showScreen('level-screen'); }
+  else showScreen('home-screen');
 }
 
 function exitStudy() {
