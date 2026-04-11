@@ -55,9 +55,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
   z-index:20;
 }
 .home-header{
-  /* HERO IMAGE: replace background-color with background-image for production */
-  /* background-image: url('hero_home_mobile.jpg'); */
-  /* @media(min-width:768px){ background-image: url('hero_home_desktop.jpg'); } */
+  /* Hero image applied in the "HERO IMAGE SUPPORT" block further below */
   background: linear-gradient(160deg, var(--hero-blue) 0%, #1A5FAA 100%);
   background-size:cover; background-position:center;
   padding:2rem 1.2rem 1.4rem;
@@ -355,16 +353,14 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
 @keyframes spin{to{transform:rotate(360deg)}}
 
   /* ── WELCOME SCREEN ──────────────────────────────────── */
+  /* NOTE: hero image applied in the "HERO IMAGE SUPPORT" block below */
   #welcome-screen {
-    /* HERO IMAGE: uncomment for production */
-    /* background-image: url('hero_login_mobile.jpg'); */
-    /* @media(min-width:768px){ background-image: url('hero_login_desktop.jpg'); } */
     background: linear-gradient(160deg, var(--hero-green) 0%, #2A6A10 60%, #1A5276 100%);
     background-size: cover;
     background-position: center;
     align-items: center;
-    justify-content: center;
-    padding: 1.5rem;
+    justify-content: flex-start;
+    padding: 2rem 1.5rem 1.5rem;
     min-height: 100vh;
     position: relative;
   }
@@ -748,20 +744,17 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
 
   /* ── HERO IMAGE SUPPORT ──────────────────────────────────── */
   #welcome-screen {
-    background-image: url('hero_login_mobile.jpg');
+    background-image: url('Vocab_king_mobile_background.jpg');
     background-size: cover;
     background-position: center bottom;
   }
   @media(min-width:768px){
     #welcome-screen { 
-        background-image: url('hero_login_desktop.jpg');
+        background-image: url('Vocab_king_desktop_background.jpg');
         background-position: center;
-        justify-content: flex-end;
+        justify-content: center;
         align-items: center;
-        padding-top: 0;
-        padding-bottom: 0;
-        padding-right: 4%;
-        padding-left: 0;
+        padding: 1.5rem;
     }
 }
   .home-header {
@@ -5403,7 +5396,8 @@ function launchApp(email, userType) {
   updateFeedbackFab();
 
   showScreen('home-screen');
-  loadProgress().then(() => {
+  // Guard with Promise.resolve() in case loadProgress() sync version is still in place
+  Promise.resolve(loadProgress()).then(() => {
     fetchSheetData();
     fetchUsageStats();
   });
@@ -5460,14 +5454,19 @@ function saveProfileEdit() {
 
 // ── CHECK LOGIN ON STARTUP ────────────────────────────────────
 async function checkLoginState() {
+  // Timeout fallback: if IndexedDB hangs (can happen on GitHub Pages /
+  // restricted browsers / first visit), don't block indefinitely.
+  const idbWithTimeout = (key) =>
+    Promise.race([
+      idbGet(key).catch(() => null),
+      new Promise(r => setTimeout(() => r(null), 2000))
+    ]);
+
   let email = sessionStorage.getItem(USER_KEY) || localStorage.getItem(USER_KEY);
-  if (!email) {
-    try { email = await idbGet(USER_KEY); } catch(e) {}
-  }
+  if (!email) email = await idbWithTimeout(USER_KEY);
+
   let userType = sessionStorage.getItem(USER_TYPE_KEY) || localStorage.getItem(USER_TYPE_KEY);
-  if (!userType) {
-    try { userType = await idbGet(USER_TYPE_KEY); } catch(e) {}
-  }
+  if (!userType) userType = await idbWithTimeout(USER_TYPE_KEY);
 
   if (email && userType) {
     try {
