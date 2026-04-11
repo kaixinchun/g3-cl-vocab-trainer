@@ -895,14 +895,14 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
       <option value="百德中学学生">百德中学学生 (Bukit View Sec Student)</option>
       <option value="其他学校学生">其他学校学生 (Student from Another School)</option>
       <option value="家长">家长 (Parent)</option>
-      <option value="教师">教师 (Teacher)</option>
+      <option value="老师">老师 (Teacher)</option>
       <option value="公众人士">公众人士 (General Public)</option>
     </select>
     <div class="welcome-error" id="welcome-error"></div>
     <button class="welcome-btn" onclick="submitWelcome()">开始学习 →</button>
     <div class="welcome-note">
-      你的信息只用于保存个人学习进展以及统计应用使用情况。首次填写后无需再次登录。<br>
-      如需更改身份（学生/教师/公众人士），可在主页进行修改。
+      你的信息只用于统计使用情况。首次填写后无需再次登录。<br>
+      如需更改身份，可在主页进行修改。
     </div>
     <div class="welcome-credit-school">
       百德中学 · Bukit View Secondary School
@@ -1192,7 +1192,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
       <option value="百德中学学生">百德中学学生 (Bukit View Sec Student)</option>
       <option value="其他学校学生">其他学校学生 (Student from Another School)</option>
       <option value="家长">家长 (Parent)</option>
-      <option value="教师">教师 (Teacher)</option>
+      <option value="老师">老师 (Teacher)</option>
       <option value="公众人士">公众人士 (General Public)</option>
     </select>
     <div class="modal-actions">
@@ -4392,6 +4392,7 @@ const SHEETS_CONFIG = {
   DEFS_URL:    'YOUR_DEFS_CSV_URL_HERE',
   EXAMPLES_URL:'YOUR_EXAMPLES_CSV_URL_HERE',
   ENGLISH_URL: 'YOUR_ENGLISH_CSV_URL_HERE',
+  PINYIN_URL:  'YOUR_PINYIN_CSV_URL_HERE',
 };
 
 const DATA_CACHE_KEY   = 'cl_vocab_sheet_data';
@@ -4432,8 +4433,8 @@ async function fetchCSV(url) {
 }
 
 // ── APPLY FETCHED DATA ────────────────────────────────────────
-function applySheetData(defsRows, exRows, engRows) {
-  let defsUpdated = 0, exUpdated = 0, engUpdated = 0;
+function applySheetData(defsRows, exRows, engRows, pyRows) {
+  let defsUpdated = 0, exUpdated = 0, engUpdated = 0, pyUpdated = 0;
 
   // DEFS: col C (index 2) = word, col D (index 3) = definition
   defsRows.slice(1).forEach(row => {
@@ -4462,8 +4463,20 @@ function applySheetData(defsRows, exRows, engRows) {
     }
   });
 
-  console.log(`Sheet data applied: ${defsUpdated} defs, ${exUpdated} examples, ${engUpdated} English`);
-  return { defsUpdated, exUpdated, engUpdated };
+  // PINYIN: col D (index 3) = word, col E (index 4) = pinyin
+  // 词语表 structure: 序号, 年级, 单元, 词语, 拼音, 词性, 兼词性
+  if (pyRows && pyRows.length > 1) {
+    pyRows.slice(1).forEach(row => {
+      const word = (row[3]||'').trim();
+      const py   = (row[4]||'').trim();
+      if (word && py) {
+        PINYIN_DATA[word] = py; pyUpdated++;
+      }
+    });
+  }
+
+  console.log(`Sheet data applied: ${defsUpdated} defs, ${exUpdated} examples, ${engUpdated} English, ${pyUpdated} pinyin`);
+  return { defsUpdated, exUpdated, engUpdated, pyUpdated };
 }
 
 // ── MAIN FETCH FUNCTION ───────────────────────────────────────
@@ -4483,7 +4496,7 @@ async function fetchSheetData(forceRefresh = false) {
         // Use cached data
         const cached = await idbGet(DATA_CACHE_KEY);
         if (cached) {
-          applySheetData(cached.defs, cached.ex, cached.eng);
+          applySheetData(cached.defs, cached.ex, cached.eng, cached.py || []);
           hideDataLoader();
           updateHomeStats();
           return;
@@ -4495,16 +4508,21 @@ async function fetchSheetData(forceRefresh = false) {
   showDataLoader('正在加载最新词语数据…');
 
   try {
-    const [defsRows, exRows, engRows] = await Promise.all([
+    const fetchPinyin = SHEETS_CONFIG.PINYIN_URL && SHEETS_CONFIG.PINYIN_URL !== 'YOUR_PINYIN_CSV_URL_HERE'
+      ? fetchCSV(SHEETS_CONFIG.PINYIN_URL)
+      : Promise.resolve([]);
+
+    const [defsRows, exRows, engRows, pyRows] = await Promise.all([
       fetchCSV(SHEETS_CONFIG.DEFS_URL),
       fetchCSV(SHEETS_CONFIG.EXAMPLES_URL),
       fetchCSV(SHEETS_CONFIG.ENGLISH_URL),
+      fetchPinyin,
     ]);
 
-    applySheetData(defsRows, exRows, engRows);
+    applySheetData(defsRows, exRows, engRows, pyRows);
 
-    // Cache for offline use
-    await idbSet(DATA_CACHE_KEY, { defs: defsRows, ex: exRows, eng: engRows });
+    // Cache
+    await idbSet(DATA_CACHE_KEY, { defs: defsRows, ex: exRows, eng: engRows, py: pyRows });
     localStorage.setItem(DATA_CACHE_TS, Date.now().toString());
 
     hideDataLoader();
@@ -4517,7 +4535,7 @@ async function fetchSheetData(forceRefresh = false) {
     try {
       const cached = await idbGet(DATA_CACHE_KEY);
       if (cached) {
-        applySheetData(cached.defs, cached.ex, cached.eng);
+        applySheetData(cached.defs, cached.ex, cached.eng, cached.py || []);
         showToast('使用离线缓存数据');
       }
     } catch(e2) {}
@@ -5299,7 +5317,7 @@ const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz-hhl4DucGncxBSsr
 const USER_KEY      = 'cl_vocab_user_email';
 const USER_TYPE_KEY = 'cl_vocab_user_type';
 
-const TEACHER_TYPES = ['教师'];
+const TEACHER_TYPES = ['老师'];
 const STUDENT_TYPES = ['百德中学学生', '其他学校学生'];
 
 function getUserType() {
