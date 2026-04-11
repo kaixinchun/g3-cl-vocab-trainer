@@ -55,10 +55,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
   z-index:20;
 }
 .home-header{
-  /* HERO IMAGE: replace background-color with background-image for production */
-  /* background-image: url('hero_home_mobile.jpg'); */
-  /* @media(min-width:768px){ background-image: url('hero_home_desktop.jpg'); } */
-  background: linear-gradient(160deg, var(--hero-blue) 0%, #1A5FAA 100%);
+  background-image: url('hero_home_mobile.jpg');
   background-size:cover; background-position:center;
   padding:2rem 1.2rem 1.4rem;
   text-align:center;
@@ -66,7 +63,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
 }
 .home-header::after{
   content:'';position:absolute;inset:0;
-  background:linear-gradient(to bottom, rgba(40,120,200,.15) 0%, rgba(40,120,200,.35) 100%);
+  background:rgba(0,0,0,0.28);
   pointer-events:none;
 }
 .home-title{
@@ -74,17 +71,18 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
   font-size:clamp(1.7rem,5vw,2.3rem);
   color:#FFFFFF;
   letter-spacing:.08em;
-  text-shadow:0 2px 12px rgba(0,0,0,.3);
+  text-shadow:0 2px 12px rgba(0,0,0,.55);
   position:relative;z-index:1;
 }
 .home-subtitle{
   font-size:.82rem;
-  color:rgba(255,255,255,.85);
+  color:rgba(255,255,255,0.95);
   letter-spacing:.04em;
   font-family:var(--font-ui);
   margin-top:.35rem;
   line-height:1.7;
   position:relative;z-index:1;
+  text-shadow:0 1px 4px rgba(0,0,0,.5);
 }
 .progress-wrap{padding:0 1.2rem .8rem;max-width:520px;margin:0 auto;width:100%;}
 .overview-card{
@@ -259,7 +257,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
 .cloze-wrap{flex:1;display:flex;flex-direction:column;padding:.9rem;gap:.7rem;max-width:480px;margin:0 auto;width:100%;overflow-y:auto;}
 .cloze-card{background:white;border:1px solid var(--paper-3);border-radius:var(--r);padding:1.3rem 1.1rem;box-shadow:var(--shadow-sm);}
 .cloze-label{font-size:.65rem;font-family:sans-serif;color:var(--ink-mute);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.6rem;}
-.cloze-sentence{font-size:1rem;color:var(--ink);line-height:1.9;word-break:break-all;}
+.cloze-sentence{font-size:1rem;color:var(--ink);font-family:var(--font-ui);line-height:1.9;word-break:break-all;}
 .cloze-blank{display:inline-block;border-bottom:2px solid var(--ink);min-width:64px;text-align:center;margin:0 .15em;padding:0 .25em;color:var(--blue);font-weight:bold;transition:color var(--t),border-color var(--t);}
 .cloze-blank.correct{color:var(--green);border-color:var(--green);}
 .cloze-blank.wrong{color:var(--red);border-color:var(--red);}
@@ -616,13 +614,14 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
   }
   .profile-btn:hover { color: rgba(255,255,255,.7); }
   .user-type-badge {
-    font-size: .62rem;
-    background: rgba(245,200,0,.15);
-    border: 1px solid rgba(245,200,0,.25);
+    font-size: .72rem;
+    background: rgba(245,200,0,.22);
+    border: 1px solid rgba(245,200,0,.45);
     border-radius: 10px;
-    padding: .1rem .5rem;
-    color: rgba(245,200,0,.7);
+    padding: .15rem .65rem;
+    color: #F5C800;
     font-family: sans-serif;
+    font-weight: 600;
   }
 
   /* ── STUDENT COUNTER ────────────────────────────────────── */
@@ -710,7 +709,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
     background: var(--paper-2);
     border: 1.5px solid var(--paper-3);
     border-radius: var(--r-sm);
-    font-family: inherit;
+    font-family: var(--font-ui);
     font-size: .88rem;
     color: var(--ink);
     resize: none;
@@ -721,13 +720,15 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
   .feedback-textarea:focus { border-color: var(--blue); }
   .captcha-row {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: .6rem;
+    gap: .4rem;
     margin-bottom: .75rem;
     font-size: .85rem;
     font-family: sans-serif;
     color: var(--ink-soft);
   }
+  .captcha-row > span:first-child { width: 100%; margin-bottom: .1rem; }
   .captcha-q { flex: 1; }
   .captcha-input {
     width: 64px;
@@ -854,7 +855,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
   .study-header { background: white; }
   .flashcard { min-height: 260px; }
   .mcq-word { font-family: var(--font-display); }
-  .cloze-sentence { font-size: 1.05rem; font-family: var(--font-body); line-height: 2; }
+  .cloze-sentence { font-size: 1.05rem; font-family: var(--font-ui); line-height: 2; }
 
   /* ── RESPONSIVE MAX-WIDTH ────────────────────────────────── */
   .mcq-wrap, .cloze-wrap { max-width: 560px; }
@@ -921,7 +922,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
       新加坡中学G3华文 · 中一至中四词语总复习
     </div>
     <div style="margin-top:.6rem;position:relative;z-index:1;">
-      <div id="home-rank-pill" style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.6);border-radius:20px;padding:5px 16px;font-size:.88rem;color:white;font-family:var(--font-body);">
+      <div id="home-rank-pill" style="display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.35);border:1.5px solid rgba(255,255,255,.6);border-radius:20px;padding:5px 16px;font-size:.88rem;color:white;font-family:var(--font-body);">
         🌱 词语学徒 · 0%
       </div>
     </div>
@@ -940,10 +941,6 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
     <span class="user-type-badge" id="user-type-badge"></span>
   </div>
   <!-- Teacher mode banner -->
-  <div class="teacher-banner" id="teacher-banner">
-    👩‍🏫 教师模式 — 你的使用记录不会被保存
-  </div>
-
   <!-- Usage counter -->
   <div class="stats-counter-card" id="stats-counter-card">
     <div class="counter-item">
@@ -1038,6 +1035,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
     <div class="study-nav">
       <button class="back-btn" onclick="exitStudy()">‹</button>
       <div class="study-title" id="study-title"></div>
+      <button class="back-btn" onclick="if(confirm('返回主页？当前练习进度不会丢失。'))showScreen('home-screen')" title="返回主页" style="font-size:.75rem;padding:.2rem .55rem;color:var(--ink-mute);">🏠</button>
     </div>
     <div class="mode-tabs">
       <button class="mode-tab active" data-mode="flashcard" onclick="switchMode('flashcard')">词语闪卡<span class="mode-tab-sub">Flashcard</span></button>
@@ -1064,6 +1062,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
         <div class="pinyin-line" id="fc-pinyin"></div>
         <div class="speaker-row">
           <button class="speaker-btn" onclick="speakWord(event)" title="朗读词语">🔊 词语</button>
+          <button class="speaker-btn" onclick="speakMeaning(event)" title="朗读释义">🔊 释义</button>
           <button class="speaker-btn" onclick="speakExample(event)" title="朗读例句">🔊 例句</button>
         </div>
         <div class="def-meaning" id="fc-meaning"></div>
@@ -1083,6 +1082,9 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
       <div class="mcq-prompt-label">这个词语是什么意思？</div>
       <div class="mcq-word" id="def-word"></div>
       <div class="mcq-context" id="def-context"></div>
+      <div class="speaker-row" style="margin-top:.5rem;">
+        <button class="speaker-btn" onclick="speak(document.getElementById('def-word').textContent,this)" title="朗读词语">🔊 朗读</button>
+      </div>
     </div>
     <div class="mcq-options" id="def-options"></div>
     <div class="mcq-feedback" id="def-feedback"></div>
@@ -1094,6 +1096,9 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
     <div class="cloze-card">
       <div class="cloze-label">选出正确的词语填入空格</div>
       <div class="cloze-sentence" id="cloze-sentence"></div>
+      <div class="speaker-row" style="margin-top:.6rem;">
+        <button class="speaker-btn" onclick="speakCloze(this)" title="朗读句子">🔊 朗读句子</button>
+      </div>
     </div>
     <div class="mcq-options" id="cloze-options"></div>
     <div class="cloze-feedback" id="cloze-feedback"></div>
@@ -1217,6 +1222,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
     </div>
     <textarea class="feedback-textarea" id="feedback-text" placeholder="请描述问题，例如：答案有误、拼音不对、例句不通顺等……"></textarea>
     <div class="captcha-row">
+      <span style="font-size:.75rem;color:var(--ink-mute);font-family:var(--font-ui);">🤖 验证你是真人，请回答：</span>
       <span class="captcha-q" id="captcha-question"></span>
       <span>= </span>
       <input class="captcha-input" id="captcha-answer" type="number" placeholder="?">
@@ -4950,7 +4956,7 @@ function renderDefinition(word) {
   const correct = DEFS[word];
   const opts = buildMCQOptions(word, correct, DEFS, currentLevel);
 
-  renderOptions('mcq-options', opts, correct, (isRight) => {
+  renderOptions('def-options', opts, correct, (isRight) => {
     const fb = document.getElementById('def-feedback');
     fb.textContent = isRight ? '✓ 正确！' : `✗ 正确答案是：${correct}`;
     fb.className = 'mcq-feedback show ' + (isRight ? 'correct' : 'wrong');
@@ -5041,20 +5047,20 @@ function renderEnglish(word) {
 function renderOptions(containerId, opts, correct, onSelect) {
   const letters = ['A','B','C','D'];
   const container = document.getElementById(containerId);
+  const isEnglish = (containerId === 'eng-options');
   container.innerHTML = '';
   opts.forEach((opt, i) => {
     const btn = document.createElement('button');
     btn.className = 'mcq-option';
-    btn.innerHTML = `<span class="option-letter">${letters[i]||''}</span><span>${opt}</span>`;
+    const speakerHtml = isEnglish ? '' : `<button class="option-speak-btn" onclick="event.stopPropagation();speak('${opt.replace(/'/g,"\\'").replace(/"/g,'&quot;')}',this)" title="朗读" style="background:none;border:none;cursor:pointer;font-size:.85rem;padding:0 .2rem;flex-shrink:0;">🔊</button>`;
+    btn.innerHTML = `<span class="option-letter">${letters[i]||''}</span><span style="flex:1">${opt}</span>${speakerHtml}`;
     btn.onclick = () => {
-      // Disable all
       container.querySelectorAll('.mcq-option').forEach(b => b.disabled = true);
       const isRight = (opt === correct);
       btn.classList.add(isRight ? 'correct' : 'wrong');
       if (!isRight) {
-        // Reveal correct
         container.querySelectorAll('.mcq-option').forEach(b => {
-          if (b.querySelector('span:last-child').textContent === correct)
+          if (b.querySelector('span:nth-child(2)').textContent === correct)
             b.classList.add('reveal-correct');
         });
       }
@@ -5381,17 +5387,12 @@ function launchApp(email, userType) {
   const badge = document.getElementById('user-type-badge');
   if (badge) badge.textContent = userType || '';
 
-  // Teacher banner
-  const teacherBanner = document.getElementById('teacher-banner');
-  if (teacherBanner) {
-    teacherBanner.classList.toggle('show', TEACHER_TYPES.includes(userType));
-  }
-
   // Show feedback FAB on study screens
   updateFeedbackFab();
 
   showScreen('home-screen');
-  loadProgress().then(() => {
+  // Guard with Promise.resolve() in case loadProgress() sync version is still in place
+  Promise.resolve(loadProgress()).then(() => {
     fetchSheetData();
     fetchUsageStats();
   });
@@ -5438,8 +5439,6 @@ function saveProfileEdit() {
   // Update badge + banner
   const badge = document.getElementById('user-type-badge');
   if (badge) badge.textContent = userType;
-  const teacherBanner = document.getElementById('teacher-banner');
-  if (teacherBanner) teacherBanner.classList.toggle('show', TEACHER_TYPES.includes(userType));
   // Report the change to GAS
   reportLogin(email, userType);
   closeProfileModal();
@@ -5448,14 +5447,19 @@ function saveProfileEdit() {
 
 // ── CHECK LOGIN ON STARTUP ────────────────────────────────────
 async function checkLoginState() {
+  // Timeout fallback: if IndexedDB hangs (can happen on GitHub Pages /
+  // restricted browsers / first visit), don't block indefinitely.
+  const idbWithTimeout = (key) =>
+    Promise.race([
+      idbGet(key).catch(() => null),
+      new Promise(r => setTimeout(() => r(null), 2000))
+    ]);
+
   let email = sessionStorage.getItem(USER_KEY) || localStorage.getItem(USER_KEY);
-  if (!email) {
-    try { email = await idbGet(USER_KEY); } catch(e) {}
-  }
+  if (!email) email = await idbWithTimeout(USER_KEY);
+
   let userType = sessionStorage.getItem(USER_TYPE_KEY) || localStorage.getItem(USER_TYPE_KEY);
-  if (!userType) {
-    try { userType = await idbGet(USER_TYPE_KEY); } catch(e) {}
-  }
+  if (!userType) userType = await idbWithTimeout(USER_TYPE_KEY);
 
   if (email && userType) {
     try {
@@ -6180,11 +6184,20 @@ function speakWord(event) {
   if (word) speak(word, event.currentTarget);
 }
 
+function speakMeaning(event) {
+  const meaning = document.getElementById('fc-meaning').textContent;
+  if (meaning) speak(meaning, event.currentTarget);
+}
+
 function speakExample(event) {
   const ex = document.getElementById('fc-example').textContent;
-  // Clean up the 【word】 bracket format before speaking
   const clean = ex.replace(/【|】/g, '');
   if (clean) speak(clean, event.currentTarget);
+}
+
+function speakCloze(btn) {
+  const text = document.getElementById('cloze-sentence').textContent;
+  if (text) speak(text, btn);
 }
 
 // ══════════════════════════════════════════════════════════════
