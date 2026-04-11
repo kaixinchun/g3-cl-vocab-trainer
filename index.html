@@ -239,7 +239,7 @@ html{overflow-x:hidden;}
 .flip-hint{font-size:.7rem;color:var(--ink-mute);font-family:sans-serif;text-align:center;}
 
 /* MCQ (shared by meaning-mcq, english-mcq) */
-.mcq-wrap{flex:1;display:flex;flex-direction:column;padding:.9rem;gap:.7rem;max-width:480px;margin:0 auto;width:100%;overflow-y:auto;}
+.mcq-wrap{flex:1;display:flex;flex-direction:column;padding:.9rem;gap:.7rem;max-width:480px;margin:0 auto;width:100%;overflow-y:auto;padding-bottom:4.5rem;}
 .mcq-question-card{background:white;border:1px solid var(--paper-3);border-radius:var(--r);padding:1.3rem 1.1rem;text-align:center;box-shadow:var(--shadow-sm);}
 .mcq-prompt-label{font-size:.65rem;font-family:sans-serif;color:var(--ink-mute);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;}
 .mcq-word{font-family:var(--font-display);font-size:clamp(2.2rem,7vw,3rem);color:var(--ink);letter-spacing:.05em;font-weight:700;}
@@ -264,7 +264,7 @@ html{overflow-x:hidden;}
 .next-btn:hover{background:var(--ink-soft);transform:translateY(-1px);}
 
 /* CLOZE (MCQ-style) */
-.cloze-wrap{flex:1;display:flex;flex-direction:column;padding:.9rem;gap:.7rem;max-width:480px;margin:0 auto;width:100%;overflow-y:auto;}
+.cloze-wrap{flex:1;display:flex;flex-direction:column;padding:.9rem;gap:.7rem;max-width:480px;margin:0 auto;width:100%;overflow-y:auto;padding-bottom:4.5rem;}
 .cloze-card{background:white;border:1px solid var(--paper-3);border-radius:var(--r);padding:1.3rem 1.1rem;box-shadow:var(--shadow-sm);}
 .cloze-label{font-size:.65rem;font-family:sans-serif;color:var(--ink-mute);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.6rem;}
 .cloze-sentence{font-size:1rem;color:var(--ink);font-family:var(--font-ui);line-height:1.9;word-break:break-all;}
@@ -699,10 +699,33 @@ html{overflow-x:hidden;}
     gap: .3rem;
     transition: background var(--t);
     white-space: nowrap;
+    min-width: 5.2rem;
+    justify-content: center;
+    text-align: center;
   }
   .study-nav-pill:hover { background: rgba(30,40,60,.95); }
-  .study-nav-pill-left   { left: 1rem; }
-  .study-nav-pill-center { left: 50%; transform: translateX(-50%); }
+  /* left: 返回主页 — school navy */
+  .study-nav-pill-left   {
+    left: .9rem;
+    background: rgba(26,42,94,.82);
+    border-color: rgba(255,255,255,.22);
+  }
+  .study-nav-pill-left:hover { background: rgba(26,42,94,1); }
+  /* center: 返回单元 — school forest green */
+  .study-nav-pill-center {
+    left: 50%; transform: translateX(-50%);
+    background: rgba(45,106,79,.82);
+    border-color: rgba(255,255,255,.22);
+  }
+  .study-nav-pill-center:hover { background: rgba(45,106,79,1); }
+  /* right: 提供反馈 — school gold/amber */
+  .study-nav-pill-right {
+    right: .9rem;
+    background: rgba(184,140,0,.88);
+    border-color: rgba(255,255,255,.22);
+    color: #fff;
+  }
+  .study-nav-pill-right:hover { background: rgba(184,140,0,1); }
   .study-nav-pill.show   { display: flex; }
 
   /* ── FEEDBACK BUTTON (floating) ─────────────────────────── */
@@ -719,12 +742,12 @@ html{overflow-x:hidden;}
     cursor: pointer;
     box-shadow: var(--shadow-md);
     z-index: 50;
-    display: flex;
+    display: none;
     align-items: center;
     gap: .3rem;
     backdrop-filter: blur(6px);
     transition: all var(--t);
-    display: none;
+    position: fixed;
   }
   .feedback-fab.show { display: flex; }
   .feedback-fab:hover { background: rgba(38,96,164,1); transform: translateY(-1px); }
@@ -1135,10 +1158,11 @@ html{overflow-x:hidden;}
 
   <!-- Fixed bottom navigation pills -->
   <button id="study-home-btn" onclick="if(confirm('返回主页？当前练习进度不会丢失。'))showScreen('home-screen')" class="study-nav-pill study-nav-pill-left">🏠 返回主页</button>
-  <button id="study-chapter-btn" onclick="exitStudy()" class="study-nav-pill study-nav-pill-center">↩ 返回<span id="study-chapter-label">单元</span></button>
+  <button id="study-chapter-btn" onclick="exitStudy()" class="study-nav-pill study-nav-pill-center">↩ 返回单元</button>
+  <button id="study-feedback-btn" onclick="showFeedbackModal()" class="study-nav-pill study-nav-pill-right">💬 提供反馈</button>
 
   <!-- Flashcard -->
-  <div id="flashcard-mode" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:.6rem 1rem 1rem;gap:.7rem;overflow-y:auto;">
+  <div id="flashcard-mode" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.6rem 1rem 4.5rem;gap:.7rem;overflow-y:auto;">
     <div class="card-counter" id="fc-counter">1 / 20</div>
     <div class="flashcard" id="flashcard" onclick="flipCard()">
       <div class="card-face card-front">
@@ -4783,10 +4807,12 @@ function showScreen(id) {
     fab.classList.toggle('show', showOnScreens.includes(id));
   }
   // Show study bottom pills only on study screen
-  const homeBtn    = document.getElementById('study-home-btn');
-  const chapterBtn = document.getElementById('study-chapter-btn');
-  if (homeBtn)    homeBtn.classList.toggle('show', id === 'study-screen');
-  if (chapterBtn) chapterBtn.classList.toggle('show', id === 'study-screen');
+  const homeBtn     = document.getElementById('study-home-btn');
+  const chapterBtn  = document.getElementById('study-chapter-btn');
+  const feedbackBtn = document.getElementById('study-feedback-btn');
+  if (homeBtn)     homeBtn.classList.toggle('show', id === 'study-screen');
+  if (chapterBtn)  chapterBtn.classList.toggle('show', id === 'study-screen');
+  if (feedbackBtn) feedbackBtn.classList.toggle('show', id === 'study-screen');
   // Refresh achievements if navigating there
   if (id === 'achievements-screen') {
     try { updateAchievementsScreen(); } catch(e) {}
@@ -5770,20 +5796,21 @@ loadProgress = async function() {
 
 // ── SAVE CODE: encode/decode ──────────────────────────────────
 function encodeProgress() {
-  // Only encode words that have been touched (non-default state)
+  // Encode touched words: [index, box, wrongCount, fcKnown(0/1), clozeOk(0/1)]
   const touched = WORD_INDEX
     .map((w, i) => {
       const p = progress[w];
       if (!p) return null;
-      if (p.box === 0 && !p.wrongCount) return null;
-      return [i, p.box || 0, p.wrongCount || 0];
+      const fcK = p.fcKnown ? 1 : 0;
+      const clK = p.clozeOk ? 1 : 0;
+      if (p.box === 0 && !p.wrongCount && !fcK && !clK) return null;
+      return [i, p.box || 0, p.wrongCount || 0, fcK, clK];
     })
     .filter(Boolean);
 
   if (!touched.length) return null;
 
   const raw = JSON.stringify(touched);
-  // Use btoa with UTF-8 encoding
   try {
     const b64 = btoa(unescape(encodeURIComponent(raw)));
     return b64;
@@ -5795,9 +5822,16 @@ function decodeProgress(code) {
     const raw = decodeURIComponent(escape(atob(code.trim())));
     const entries = JSON.parse(raw);
     const restored = {};
-    entries.forEach(([idx, box, wrongCount]) => {
+    entries.forEach(entry => {
+      // Support old 3-element format and new 5-element format
+      const [idx, box, wrongCount, fcK, clK] = entry;
       const word = WORD_INDEX[idx];
-      if (word) restored[word] = { box, wrongCount, lastSeen: Date.now() };
+      if (word) {
+        const rec = { box: box || 0, wrongCount: wrongCount || 0, lastSeen: Date.now() };
+        if (fcK === 1) rec.fcKnown = true;
+        if (clK === 1) rec.clozeOk = true;
+        restored[word] = rec;
+      }
     });
     return restored;
   } catch(e) { return null; }
