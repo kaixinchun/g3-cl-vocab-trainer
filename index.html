@@ -107,6 +107,9 @@ html{overflow-x:hidden;}
 .global-bar-fill{height:100%;background:linear-gradient(90deg,var(--green-mid),var(--gold));border-radius:4px;transition:width .6s ease;}
 .global-bar-label{font-size:.68rem;color:var(--ink-mute);font-family:var(--font-ui);text-align:right;}
 .levels-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;padding:0 1.2rem 1rem;max-width:520px;margin:0 auto;width:100%;}
+@media(min-width:700px){
+  .levels-grid{grid-template-columns:repeat(4,1fr);max-width:960px;}
+}
 .level-card{
   background:white;
   border:1.5px solid var(--paper-3);
@@ -345,8 +348,8 @@ html{overflow-x:hidden;}
   .install-close{color:rgba(255,255,255,.4);font-size:1.1rem;padding:.2rem;cursor:pointer;flex-shrink:0;}
   /* ── SAVE PROGRESS BUTTON (home screen) ─────────── */
   .save-restore-row{display:flex;gap:.5rem;padding:0 1.2rem .6rem;max-width:480px;margin:0 auto;width:100%;}
-  .save-btn,.restore-btn{flex:1;padding:.65rem;border:1px solid rgba(245,200,0,.2);border-radius:var(--r-sm);background:rgba(255,255,255,.07);color:rgba(255,255,255,.75);font-size:.78rem;cursor:pointer;font-family:inherit;transition:all var(--t);display:flex;align-items:center;justify-content:center;gap:.35rem;}
-  .save-btn:hover,.restore-btn:hover{background:rgba(255,255,255,.12);border-color:rgba(245,200,0,.4);}
+  .save-btn,.restore-btn{flex:1;padding:.65rem;border:1px solid var(--paper-3);border-radius:var(--r-sm);background:white;color:var(--ink-soft);font-size:.78rem;cursor:pointer;font-family:inherit;transition:all var(--t);display:flex;align-items:center;justify-content:center;gap:.35rem;box-shadow:var(--shadow-sm);}
+  .save-btn:hover,.restore-btn:hover{background:var(--paper-2);border-color:var(--paper-3);}
   /* ── SYNC INDICATOR ──────────────────────────────── */
   .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--amber);display:inline-block;margin-left:.3rem;vertical-align:middle;}
   .sync-dot.synced{background:var(--green);}
@@ -1019,7 +1022,7 @@ html{overflow-x:hidden;}
     <button class="level-card" id="lc-中四" onclick="showLevel('中四')"><div class="level-card-accent acc-4"></div><div class="level-badge-corner" id="badge-中四" style="opacity:.3">🏆</div><div class="level-name">中四</div><div class="level-count" id="count-中四">— 词语</div><div class="level-chapter-count" id="chap-中四">0/0 章</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中四" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中四">0% 掌握</div></button>
   </div>
   <!-- Usage counter — bottom of home screen -->
-  <div style="padding:.5rem 1.2rem 1.5rem;max-width:520px;margin:0 auto;width:100%;">
+  <div style="padding:.5rem 1.2rem 1.5rem;max-width:960px;margin:0 auto;width:100%;">
     <div class="stats-counter-card" id="stats-counter-card">
       <div style="font-size:.72rem;color:#1a2a5e;font-family:var(--font-ui);font-weight:600;text-align:center;margin-bottom:.6rem;letter-spacing:.03em;">🤝 词王训练营学习伙伴</div>
       <div style="display:flex;justify-content:space-around;align-items:center;">
@@ -1030,12 +1033,22 @@ html{overflow-x:hidden;}
         <div class="counter-divider"></div>
         <div class="counter-item">
           <div class="counter-num" id="counter-total">—</div>
-          <div class="counter-label">所有学校学生</div>
+          <div class="counter-label">外校学生</div>
         </div>
         <div class="counter-divider"></div>
         <div class="counter-item">
           <div class="counter-num" id="counter-teachers">—</div>
           <div class="counter-label">教师</div>
+        </div>
+        <div class="counter-divider"></div>
+        <div class="counter-item">
+          <div class="counter-num" id="counter-parents">—</div>
+          <div class="counter-label">家长</div>
+        </div>
+        <div class="counter-divider"></div>
+        <div class="counter-item">
+          <div class="counter-num" id="counter-public">—</div>
+          <div class="counter-label">公众人士</div>
         </div>
       </div>
     </div>
@@ -5347,7 +5360,7 @@ updateHomeStats();
 // ══════════════════════════════════════════════════════════════
 
 // ── CONFIG — replace with your deployed Google Apps Script URL ──
-const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzqQq8i-_tecvF6zP9M2t3eIJhog8lr6EuhCC4vyjGA7qK0qfO2LJDlwWAWPpAR_MoT/exec';
+const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxzcVZdVYwJjp6LaqiTIiga21bsx4IpmhTyaZ6brEwgEHNxT3WQrN-f9Sup5t8-QtY3/exec';
 // Example: 'https://script.google.com/macros/s/AKfycbx.../exec'
 
 
@@ -5543,11 +5556,15 @@ async function fetchUsageStats() {
       const bv  = document.getElementById('counter-bukit');
       const tot = document.getElementById('counter-total');
       const tch = document.getElementById('counter-teachers');
-      if (bv)  bv.textContent  = data.bukitViewStudents;
-      if (tot) tot.textContent = data.totalStudents;
-      if (tch) tch.textContent = data.teachers;
+      const par = document.getElementById('counter-parents');
+      const pub = document.getElementById('counter-public');
+      if (bv)  bv.textContent  = data.bukitViewStudents  ?? '—';
+      if (tot) tot.textContent = data.otherSchoolStudents ?? '—';
+      if (tch) tch.textContent = data.teachers            ?? '—';
+      if (par) par.textContent = data.parents             ?? '—';
+      if (pub) pub.textContent = data.publicUsers         ?? '—';
     }
-  } catch(e) {}
+  } catch(e) { console.warn('Stats fetch failed:', e); }
 }
 
 // ── SUPPRESS OLD reportToSheets (no longer logging scores) ───
