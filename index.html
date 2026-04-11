@@ -895,7 +895,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
       <option value="百德中学学生">百德中学学生 (Bukit View Sec Student)</option>
       <option value="其他学校学生">其他学校学生 (Student from Another School)</option>
       <option value="家长">家长 (Parent)</option>
-      <option value="老师">老师 (Teacher)</option>
+      <option value="教师">教师 (Teacher)</option>
       <option value="公众人士">公众人士 (General Public)</option>
     </select>
     <div class="welcome-error" id="welcome-error"></div>
@@ -945,7 +945,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
     👩‍🏫 教师模式 — 你的使用记录不会被保存
   </div>
 
-  <!-- Student counter -->
+  <!-- Usage counter -->
   <div class="stats-counter-card" id="stats-counter-card">
     <div class="counter-item">
       <div class="counter-num" id="counter-bukit">—</div>
@@ -955,6 +955,11 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
     <div class="counter-item">
       <div class="counter-num" id="counter-total">—</div>
       <div class="counter-label">所有学校<br>学生总人数</div>
+    </div>
+    <div class="counter-divider"></div>
+    <div class="counter-item">
+      <div class="counter-num" id="counter-teachers">—</div>
+      <div class="counter-label">教师<br>人数</div>
     </div>
   </div>
 
@@ -1192,7 +1197,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
       <option value="百德中学学生">百德中学学生 (Bukit View Sec Student)</option>
       <option value="其他学校学生">其他学校学生 (Student from Another School)</option>
       <option value="家长">家长 (Parent)</option>
-      <option value="老师">老师 (Teacher)</option>
+      <option value="教师">教师 (Teacher)</option>
       <option value="公众人士">公众人士 (General Public)</option>
     </select>
     <div class="modal-actions">
@@ -4387,12 +4392,11 @@ let ENGLISH_DEFS = Object.assign({}, ENGLISH_DEFS_FALLBACK);
 //   英文翻译  →  %E8%8B%B1%E6%96%87%E7%BF%BB%E8%AF%91
 
 const SHEETS_CONFIG = {
-  SHEET_ID: 'https://docs.google.com/spreadsheets/d/1u1B4BWMv79CS-AYPwNdyaK9lxcu9Ahht0jAB0C-QHCc',
+  SHEET_ID: '1u1B4BWMv79CS-AYPwNdyaK9lxcu9Ahht0jAB0C-QHCc',
   // After publishing, replace each URL with your actual published CSV URLs:
-  DEFS_URL:    'https://docs.google.com/spreadsheets/d/e/2PACX-1vTmKL5Wrkx5ZuTSQLP2e-i6SvmQZLKhefICqxDnnolvzlYOI1vpGEME7eLKFDEdazlDVyojx59TlgHA/pub?gid=0&single=true&output=csv',
+  DEFS_URL:    'https://docs.google.com/spreadsheets/d/e/2PACX-1vTmKL5Wrkx5ZuTSQLP2e-i6SvmQZLKhefICqxDnnolvzlYOI1vpGEME7eLKFDEdazlDVyojx59TlgHA/pub?gid=1908098366&single=true&output=csv',
   EXAMPLES_URL:'https://docs.google.com/spreadsheets/d/e/2PACX-1vTmKL5Wrkx5ZuTSQLP2e-i6SvmQZLKhefICqxDnnolvzlYOI1vpGEME7eLKFDEdazlDVyojx59TlgHA/pub?gid=770772674&single=true&output=csv',
-  ENGLISH_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTmKL5Wrkx5ZuTSQLP2e-i6SvmQZLKhefICqxDnnolvzlYOI1vpGEME7eLKFDEdazlDVyojx59TlgHA/pub?gid=1523377999&single=true&output=csv
-',
+  ENGLISH_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTmKL5Wrkx5ZuTSQLP2e-i6SvmQZLKhefICqxDnnolvzlYOI1vpGEME7eLKFDEdazlDVyojx59TlgHA/pub?gid=1523377999&single=true&output=csv',
   PINYIN_URL:  'https://docs.google.com/spreadsheets/d/e/2PACX-1vTmKL5Wrkx5ZuTSQLP2e-i6SvmQZLKhefICqxDnnolvzlYOI1vpGEME7eLKFDEdazlDVyojx59TlgHA/pub?gid=1908098366&single=true&output=csv',
 };
 
@@ -5307,7 +5311,7 @@ updateHomeStats();
 // ══════════════════════════════════════════════════════════════
 
 // ── CONFIG — replace with your deployed Google Apps Script URL ──
-const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyDFRJoVDugkER4SSD8DrOYmx70gX5N57gam5HvA9w-BrDxd1GPG8IMn5Q8TOEMgGw5/exec';
+const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz-hhl4DucGncxBSsr276IY00rVyaAp74ns3x24xmAhI92DFqgQVDxuo1iKczUj9LpA/exec';
 // Example: 'https://script.google.com/macros/s/AKfycbx.../exec'
 
 
@@ -5318,7 +5322,7 @@ const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyDFRJoVDugkER4SSD
 const USER_KEY      = 'cl_vocab_user_email';
 const USER_TYPE_KEY = 'cl_vocab_user_type';
 
-const TEACHER_TYPES = ['老师'];
+const TEACHER_TYPES = ['教师'];
 const STUDENT_TYPES = ['百德中学学生', '其他学校学生'];
 
 function getUserType() {
@@ -5494,10 +5498,12 @@ async function fetchUsageStats() {
     const res = await fetch(GAS_ENDPOINT + '?action=stats');
     const data = await res.json();
     if (data.ok) {
-      const bv = document.getElementById('counter-bukit');
+      const bv  = document.getElementById('counter-bukit');
       const tot = document.getElementById('counter-total');
-      if (bv) bv.textContent = data.bukitViewStudents;
+      const tch = document.getElementById('counter-teachers');
+      if (bv)  bv.textContent  = data.bukitViewStudents;
       if (tot) tot.textContent = data.totalStudents;
+      if (tch) tch.textContent = data.teachers;
     }
   } catch(e) {}
 }
