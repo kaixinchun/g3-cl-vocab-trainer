@@ -55,8 +55,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
   z-index:20;
 }
 .home-header{
-  /* Hero image applied in the "HERO IMAGE SUPPORT" block further below */
-  background: linear-gradient(160deg, var(--hero-blue) 0%, #1A5FAA 100%);
+  background-image: url('Vocab_king_mobile_background.png');
   background-size:cover; background-position:center;
   padding:2rem 1.2rem 1.4rem;
   text-align:center;
@@ -64,7 +63,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
 }
 .home-header::after{
   content:'';position:absolute;inset:0;
-  background:linear-gradient(to bottom, rgba(40,120,200,.15) 0%, rgba(40,120,200,.35) 100%);
+  background:rgba(0,0,0,0.28);
   pointer-events:none;
 }
 .home-title{
@@ -72,17 +71,18 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
   font-size:clamp(1.7rem,5vw,2.3rem);
   color:#FFFFFF;
   letter-spacing:.08em;
-  text-shadow:0 2px 12px rgba(0,0,0,.3);
+  text-shadow:0 2px 12px rgba(0,0,0,.55);
   position:relative;z-index:1;
 }
 .home-subtitle{
   font-size:.82rem;
-  color:rgba(255,255,255,.85);
+  color:rgba(255,255,255,0.95);
   letter-spacing:.04em;
   font-family:var(--font-ui);
   margin-top:.35rem;
   line-height:1.7;
   position:relative;z-index:1;
+  text-shadow:0 1px 4px rgba(0,0,0,.5);
 }
 .progress-wrap{padding:0 1.2rem .8rem;max-width:520px;margin:0 auto;width:100%;}
 .overview-card{
@@ -353,14 +353,16 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
 @keyframes spin{to{transform:rotate(360deg)}}
 
   /* ── WELCOME SCREEN ──────────────────────────────────── */
-  /* NOTE: hero image applied in the "HERO IMAGE SUPPORT" block below */
   #welcome-screen {
+    /* HERO IMAGE: uncomment for production */
+    /* background-image: url('hero_login_mobile.jpg'); */
+    /* @media(min-width:768px){ background-image: url('hero_login_desktop.jpg'); } */
     background: linear-gradient(160deg, var(--hero-green) 0%, #2A6A10 60%, #1A5276 100%);
     background-size: cover;
     background-position: center;
     align-items: center;
-    justify-content: flex-start;
-    padding: 2rem 1.5rem 1.5rem;
+    justify-content: center;
+    padding: 1.5rem;
     min-height: 100vh;
     position: relative;
   }
@@ -615,13 +617,14 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
   }
   .profile-btn:hover { color: rgba(255,255,255,.7); }
   .user-type-badge {
-    font-size: .62rem;
-    background: rgba(245,200,0,.15);
-    border: 1px solid rgba(245,200,0,.25);
+    font-size: .72rem;
+    background: rgba(245,200,0,.22);
+    border: 1px solid rgba(245,200,0,.45);
     border-radius: 10px;
-    padding: .1rem .5rem;
-    color: rgba(245,200,0,.7);
+    padding: .15rem .65rem;
+    color: #F5C800;
     font-family: sans-serif;
+    font-weight: 600;
   }
 
   /* ── STUDENT COUNTER ────────────────────────────────────── */
@@ -744,27 +747,29 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
 
   /* ── HERO IMAGE SUPPORT ──────────────────────────────────── */
   #welcome-screen {
-    background-image: url('Vocab_king_mobile_background.jpg');
+    background-image: url('hero_login_mobile.jpg');
     background-size: cover;
     background-position: center bottom;
   }
   @media(min-width:768px){
     #welcome-screen { 
-        background-image: url('Vocab_king_desktop_background.jpg');
-        background-size: cover;
-        background-position: center center;
-        justify-content: center;
+        background-image: url('hero_login_desktop.jpg');
+        background-position: center;
+        justify-content: flex-end;
         align-items: center;
-        padding: 1.5rem;
+        padding-top: 0;
+        padding-bottom: 0;
+        padding-right: 4%;
+        padding-left: 0;
     }
 }
   .home-header {
-    background-image: url('hero_home_mobile.jpg');
+    background-image: url('Vocab_king_mobile_background.png');
     background-size: cover;
     background-position: center;
   }
   @media(min-width:768px){
-    .home-header { background-image: url('hero_home_desktop.jpg'); }
+    .home-header { background-image: url('Vocab_king_desktop_background.png'); }
   }
 
   /* ── ACHIEVEMENTS BUTTON ─────────────────────────────────── */
@@ -927,7 +932,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
       新加坡中学G3华文 · 中一至中四词语总复习
     </div>
     <div style="margin-top:.6rem;position:relative;z-index:1;">
-      <div id="home-rank-pill" style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.6);border-radius:20px;padding:5px 16px;font-size:.88rem;color:white;font-family:var(--font-body);">
+      <div id="home-rank-pill" style="display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.35);border:1.5px solid rgba(255,255,255,.6);border-radius:20px;padding:5px 16px;font-size:.88rem;color:white;font-family:var(--font-body);">
         🌱 词语学徒 · 0%
       </div>
     </div>
@@ -946,10 +951,6 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
     <span class="user-type-badge" id="user-type-badge"></span>
   </div>
   <!-- Teacher mode banner -->
-  <div class="teacher-banner" id="teacher-banner">
-    👩‍🏫 教师模式 — 你的使用记录不会被保存
-  </div>
-
   <!-- Usage counter -->
   <div class="stats-counter-card" id="stats-counter-card">
     <div class="counter-item">
@@ -5387,18 +5388,11 @@ function launchApp(email, userType) {
   const badge = document.getElementById('user-type-badge');
   if (badge) badge.textContent = userType || '';
 
-  // Teacher banner
-  const teacherBanner = document.getElementById('teacher-banner');
-  if (teacherBanner) {
-    teacherBanner.classList.toggle('show', TEACHER_TYPES.includes(userType));
-  }
-
   // Show feedback FAB on study screens
   updateFeedbackFab();
 
   showScreen('home-screen');
-  // Guard with Promise.resolve() in case loadProgress() sync version is still in place
-  Promise.resolve(loadProgress()).then(() => {
+  loadProgress().then(() => {
     fetchSheetData();
     fetchUsageStats();
   });
@@ -5445,8 +5439,6 @@ function saveProfileEdit() {
   // Update badge + banner
   const badge = document.getElementById('user-type-badge');
   if (badge) badge.textContent = userType;
-  const teacherBanner = document.getElementById('teacher-banner');
-  if (teacherBanner) teacherBanner.classList.toggle('show', TEACHER_TYPES.includes(userType));
   // Report the change to GAS
   reportLogin(email, userType);
   closeProfileModal();
@@ -5455,19 +5447,14 @@ function saveProfileEdit() {
 
 // ── CHECK LOGIN ON STARTUP ────────────────────────────────────
 async function checkLoginState() {
-  // Timeout fallback: if IndexedDB hangs (can happen on GitHub Pages /
-  // restricted browsers / first visit), don't block indefinitely.
-  const idbWithTimeout = (key) =>
-    Promise.race([
-      idbGet(key).catch(() => null),
-      new Promise(r => setTimeout(() => r(null), 2000))
-    ]);
-
   let email = sessionStorage.getItem(USER_KEY) || localStorage.getItem(USER_KEY);
-  if (!email) email = await idbWithTimeout(USER_KEY);
-
+  if (!email) {
+    try { email = await idbGet(USER_KEY); } catch(e) {}
+  }
   let userType = sessionStorage.getItem(USER_TYPE_KEY) || localStorage.getItem(USER_TYPE_KEY);
-  if (!userType) userType = await idbWithTimeout(USER_TYPE_KEY);
+  if (!userType) {
+    try { userType = await idbGet(USER_TYPE_KEY); } catch(e) {}
+  }
 
   if (email && userType) {
     try {
@@ -6041,37 +6028,37 @@ function renderGuide() {
       icon: '📝',
       title: zh ? '四种练习模式' : 'Four Practice Modes',
       body: zh
-        ? `词语闪卡：翻转卡片，自己判断是否认识。
+        ? '词语闪卡：翻转卡片，自己判断是否认识。
 填空挑战：在句子中选出正确词语填入空格——这是最难的模式，完成后才算已掌握。
 华文解释：选出正确的中文释义。
 英文翻译：选出正确的英文翻译。
 
-注意：华文解释和英文翻译不影响掌握状态。`
-        : `Flashcard: Flip the card and judge if you know the word.
+注意：华文解释和英文翻译不影响掌握状态。'
+        : 'Flashcard: Flip the card and judge if you know the word.
 Fill-in Challenge: Select the correct word to fill the blank in a sentence — the hardest mode, and required for mastery.
 Definition: Choose the correct Chinese definition.
 English: Choose the correct English translation.
 
-Note: Definition and English modes do not affect mastery status.`
+Note: Definition and English modes do not affect mastery status.'
     },
     {
       icon: '🏅',
       title: zh ? '成就与称号' : 'Badges & Ranks',
       body: zh
-        ? `每完成一个课文类别（生活空间/核心/巩固）的全部词语，获得⭐成就章。
+        ? '每完成一个课文类别（生活空间/核心/巩固）的全部词语，获得⭐成就章。
 完成整个单元（三个类别）获得🎖️单元章。
 完成整个年级获得年级称号：
-🌱 词语学徒（中一）→ 🎯 词语能手（中二）→ 🏅 词语达人（中三）→ 🏆 词语宗师（中四）→ 👑 顶级词王（全部完成）`
-        : `Complete all words in a component (生活空间/核心/巩固) to earn a ⭐ badge.
+🌱 词语学徒（中一）→ 🎯 词语能手（中二）→ 🏅 词语达人（中三）→ 🏆 词语宗师（中四）→ 👑 顶级词王（全部完成）'
+        : 'Complete all words in a component (生活空间/核心/巩固) to earn a ⭐ badge.
 Complete all three components of a unit to earn a 🎖️ unit badge.
 Complete a full level to earn a rank title:
-🌱 Apprentice (Sec 1) → 🎯 Expert (Sec 2) → 🏅 Master (Sec 3) → 🏆 Grand Master (Sec 4) → 👑 Grand Vocab King (All levels)`
+🌱 Apprentice (Sec 1) → 🎯 Expert (Sec 2) → 🏅 Master (Sec 3) → 🏆 Grand Master (Sec 4) → 👑 Grand Vocab King (All levels)'
     },
     {
       icon: '💾',
       title: zh ? '如何保存进度' : 'Saving Your Progress',
       body: zh
-        ? `你的学习进度会自动保存在当前设备上。
+        ? '你的学习进度会自动保存在当前设备上。
 
 换设备时：
 1. 在当前设备上，点击主页的「保存进度」，复制进度码。
@@ -6079,8 +6066,8 @@ Complete a full level to earn a rank title:
 
 最可靠的方式：每次使用同一个电邮地址，再配合进度码作备份。
 
-注意：清除浏览器数据或Safari历史记录会删除本地进度。建议定期保存进度码到备忘录。`
-        : `Your progress is automatically saved on your current device.
+注意：清除浏览器数据或Safari历史记录会删除本地进度。建议定期保存进度码到备忘录。'
+        : 'Your progress is automatically saved on your current device.
 
 Switching devices:
 1. On your current device, tap Save Progress on the home screen and copy the code.
@@ -6088,24 +6075,24 @@ Switching devices:
 
 Most reliable approach: always use the same email address, and keep a progress code as backup.
 
-Warning: Clearing browser data or Safari history will delete local progress. Save your code to Notes regularly.`
+Warning: Clearing browser data or Safari history will delete local progress. Save your code to Notes regularly.'
     },
     {
       icon: '📱',
       title: zh ? '不同设备的使用方式' : 'Using on Different Devices',
       body: zh
-        ? `iPhone/iPad（Safari）：点击分享→「添加到主屏幕」，即可像App一样使用。
+        ? 'iPhone/iPad（Safari）：点击分享→「添加到主屏幕」，即可像App一样使用。
 Android（Chrome）：点击右上角菜单→「添加到主屏幕」。
 Chromebook：Chrome地址栏右侧会出现安装图标，点击安装。
 Windows电脑：直接在Chrome或Edge浏览器中打开使用，无需安装。
 
-注意：本应用需要网络连接才能使用。`
-        : `iPhone/iPad (Safari): Tap Share → Add to Home Screen to use it like an app.
+注意：本应用需要网络连接才能使用。'
+        : 'iPhone/iPad (Safari): Tap Share → Add to Home Screen to use it like an app.
 Android (Chrome): Tap the menu → Add to Home Screen.
 Chromebook: Click the install icon in the address bar.
 Windows: Open directly in Chrome or Edge — no installation needed.
 
-Note: This app requires an internet connection.`
+Note: This app requires an internet connection.'
     },
     {
       icon: '💬',
@@ -6118,12 +6105,12 @@ Note: This app requires an internet connection.`
       icon: '🌟',
       title: zh ? '学习这件事，你来做主！' : 'Own Your Learning!',
       body: zh
-        ? `这个应用是为了支持你的自主学习而设计的。老师无法看到你的答题情况，只知道你有在使用这个工具。
+        ? '这个应用是为了支持你的自主学习而设计的。老师无法看到你的答题情况，只知道你有在使用这个工具。
 
-勇于尝试，不要怕出错——每一次答错都是学习的机会。词王之路不是一蹴而就的，持之以恒才是关键！加油！💪`
-        : `This app is designed to support your independent learning. Your teacher cannot see your individual answers — only that you are using the tool.
+勇于尝试，不要怕出错——每一次答错都是学习的机会。词王之路不是一蹴而就的，持之以恒才是关键！加油！💪'
+        : 'This app is designed to support your independent learning. Your teacher cannot see your individual answers — only that you are using the tool.
 
-Be brave and try — every wrong answer is a learning opportunity. The path to becoming a Vocabulary King takes time and persistence. Keep going! 💪`
+Be brave and try — every wrong answer is a learning opportunity. The path to becoming a Vocabulary King takes time and persistence. Keep going! 💪'
     },
   ];
 
