@@ -5944,12 +5944,12 @@ function updateAchievementsScreen() {
     const topRow = document.createElement('div');
     topRow.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:8px;';
     topRow.innerHTML = `
-      <span style="font-size:1.6rem;line-height:1;\${!prevLevelComplete ? 'filter:grayscale(1)' : ''}">\${rc.emoji}</span>
+      <span style="font-size:1.6rem;line-height:1;${!prevLevelComplete ? 'filter:grayscale(1)' : ''}">${rc.emoji}</span>
       <div style="flex:1;">
-        <div style="font-size:1.05rem;color:var(--ink);font-family:var(--font-body);">\${level}</div>
-        <div style="font-size:.75rem;color:var(--blue);font-family:var(--font-ui);font-weight:600;">\${rc.title}\${levelDone ? ' ✓' : !prevLevelComplete ? ' — 未解锁' : ' · 进行中'}</div>
+        <div style="font-size:1.05rem;color:var(--ink);font-family:var(--font-body);">${level}</div>
+        <div style="font-size:.75rem;color:var(--blue);font-family:var(--font-ui);font-weight:600;">${rc.title}${levelDone ? ' ✓' : !prevLevelComplete ? ' — 未解锁' : ' · 进行中'}</div>
       </div>
-      <div style="font-size:.9rem;font-family:var(--font-ui);font-weight:500;color:var(--ink-mute);">\${levelPct}%</div>
+      <div style="font-size:.9rem;font-family:var(--font-ui);font-weight:500;color:var(--ink-mute);">${levelPct}%</div>
     `;
     card.appendChild(topRow);
 
@@ -5964,7 +5964,7 @@ function updateAchievementsScreen() {
     // Progress bar
     const track = document.createElement('div');
     track.style.cssText = 'background:var(--paper-3);border-radius:4px;height:6px;overflow:hidden;margin-bottom:8px;';
-    track.innerHTML = `<div style="height:100%;border-radius:4px;width:\${levelPct}%;background:linear-gradient(90deg,var(--green-mid),var(--gold));transition:width .5s;"></div>`;
+    track.innerHTML = `<div style="height:100%;border-radius:4px;width:${levelPct}%;background:linear-gradient(90deg,var(--green-mid),var(--gold));transition:width .5s;"></div>`;
     card.appendChild(track);
 
     // Badge chips (show up to 8, collapsed)
@@ -6134,7 +6134,7 @@ Be brave and try — every wrong answer is a learning opportunity. The path to b
       s.states.forEach(st => {
         const row = document.createElement('div');
         row.className = 'guide-state-row';
-        row.innerHTML = `<span class="guide-state-badge \${st.cls}">\${st.label}</span><span class="guide-body">\${st.desc}</span>`;
+        row.innerHTML = `<span class="guide-state-badge ${st.cls}">${st.label}</span><span class="guide-body">${st.desc}</span>`;
         sec.appendChild(row);
       });
     } else if (s.body) {
