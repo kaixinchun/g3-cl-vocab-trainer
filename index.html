@@ -259,7 +259,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
 .cloze-wrap{flex:1;display:flex;flex-direction:column;padding:.9rem;gap:.7rem;max-width:480px;margin:0 auto;width:100%;overflow-y:auto;}
 .cloze-card{background:white;border:1px solid var(--paper-3);border-radius:var(--r);padding:1.3rem 1.1rem;box-shadow:var(--shadow-sm);}
 .cloze-label{font-size:.65rem;font-family:sans-serif;color:var(--ink-mute);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.6rem;}
-.cloze-sentence{font-size:1rem;color:var(--ink);font-family:var(--font-ui);line-height:1.9;word-break:break-all;}
+.cloze-sentence{font-size:1rem;color:var(--ink);line-height:1.9;word-break:break-all;}
 .cloze-blank{display:inline-block;border-bottom:2px solid var(--ink);min-width:64px;text-align:center;margin:0 .15em;padding:0 .25em;color:var(--blue);font-weight:bold;transition:color var(--t),border-color var(--t);}
 .cloze-blank.correct{color:var(--green);border-color:var(--green);}
 .cloze-blank.wrong{color:var(--red);border-color:var(--red);}
@@ -356,10 +356,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
 
   /* ── WELCOME SCREEN ──────────────────────────────────── */
   #welcome-screen {
-    /* HERO IMAGE: uncomment for production */
-    /* background-image: url('hero_login_mobile.jpg'); */
-    /* @media(min-width:768px){ background-image: url('hero_login_desktop.jpg'); } */
-    background: linear-gradient(160deg, var(--hero-green) 0%, #2A6A10 60%, #1A5276 100%);
+    background-image: url('Vocab_king_mobile_background.jpg');
     background-size: cover;
     background-position: center;
     align-items: center;
@@ -367,6 +364,14 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
     padding: 1.5rem;
     min-height: 100vh;
     position: relative;
+  }
+  #welcome-screen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.28);
+    pointer-events: none;
+    z-index: 0;
   }
   #welcome-screen::before {
     content: '';
@@ -713,7 +718,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
     background: var(--paper-2);
     border: 1.5px solid var(--paper-3);
     border-radius: var(--r-sm);
-    font-family: var(--font-ui);
+    font-family: inherit;
     font-size: .88rem;
     color: var(--ink);
     resize: none;
@@ -724,15 +729,13 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
   .feedback-textarea:focus { border-color: var(--blue); }
   .captcha-row {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: .4rem;
+    gap: .6rem;
     margin-bottom: .75rem;
     font-size: .85rem;
     font-family: sans-serif;
     color: var(--ink-soft);
   }
-  .captcha-row > span:first-child { width: 100%; margin-bottom: .1rem; }
   .captcha-q { flex: 1; }
   .captcha-input {
     width: 64px;
@@ -750,20 +753,16 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
 
   /* ── HERO IMAGE SUPPORT ──────────────────────────────────── */
   #welcome-screen {
-    background-image: url('hero_login_mobile.jpg');
+    background-image: url('Vocab_king_mobile_background.jpg');
     background-size: cover;
-    background-position: center bottom;
+    background-position: center;
   }
   @media(min-width:768px){
-    #welcome-screen { 
-        background-image: url('hero_login_desktop.jpg');
+    #welcome-screen {
+        background-image: url('Vocab_king_desktop_background.jpg');
         background-position: center;
-        justify-content: flex-end;
+        justify-content: center;
         align-items: center;
-        padding-top: 0;
-        padding-bottom: 0;
-        padding-right: 4%;
-        padding-left: 0;
     }
 }
   .home-header {
@@ -868,7 +867,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
   .study-header { background: white; }
   .flashcard { min-height: 260px; }
   .mcq-word { font-family: var(--font-display); }
-  .cloze-sentence { font-size: 1.05rem; font-family: var(--font-ui); line-height: 2; }
+  .cloze-sentence { font-size: 1.05rem; font-family: var(--font-body); line-height: 2; }
 
   /* ── RESPONSIVE MAX-WIDTH ────────────────────────────────── */
   .mcq-wrap, .cloze-wrap { max-width: 560px; }
@@ -1052,7 +1051,6 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
     <div class="study-nav">
       <button class="back-btn" onclick="exitStudy()">‹</button>
       <div class="study-title" id="study-title"></div>
-      <button class="back-btn" onclick="if(confirm('返回主页？当前练习进度不会丢失。'))showScreen('home-screen')" title="返回主页" style="font-size:.75rem;padding:.2rem .55rem;color:var(--ink-mute);">🏠</button>
     </div>
     <div class="mode-tabs">
       <button class="mode-tab active" data-mode="flashcard" onclick="switchMode('flashcard')">词语闪卡<span class="mode-tab-sub">Flashcard</span></button>
@@ -1079,7 +1077,6 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
         <div class="pinyin-line" id="fc-pinyin"></div>
         <div class="speaker-row">
           <button class="speaker-btn" onclick="speakWord(event)" title="朗读词语">🔊 词语</button>
-          <button class="speaker-btn" onclick="speakMeaning(event)" title="朗读释义">🔊 释义</button>
           <button class="speaker-btn" onclick="speakExample(event)" title="朗读例句">🔊 例句</button>
         </div>
         <div class="def-meaning" id="fc-meaning"></div>
@@ -1099,9 +1096,6 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
       <div class="mcq-prompt-label">这个词语是什么意思？</div>
       <div class="mcq-word" id="def-word"></div>
       <div class="mcq-context" id="def-context"></div>
-      <div class="speaker-row" style="margin-top:.5rem;">
-        <button class="speaker-btn" onclick="speak(document.getElementById('def-word').textContent,this)" title="朗读词语">🔊 朗读</button>
-      </div>
     </div>
     <div class="mcq-options" id="def-options"></div>
     <div class="mcq-feedback" id="def-feedback"></div>
@@ -1113,9 +1107,6 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
     <div class="cloze-card">
       <div class="cloze-label">选出正确的词语填入空格</div>
       <div class="cloze-sentence" id="cloze-sentence"></div>
-      <div class="speaker-row" style="margin-top:.6rem;">
-        <button class="speaker-btn" onclick="speakCloze(this)" title="朗读句子">🔊 朗读句子</button>
-      </div>
     </div>
     <div class="mcq-options" id="cloze-options"></div>
     <div class="cloze-feedback" id="cloze-feedback"></div>
@@ -1239,7 +1230,6 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
     </div>
     <textarea class="feedback-textarea" id="feedback-text" placeholder="请描述问题，例如：答案有误、拼音不对、例句不通顺等……"></textarea>
     <div class="captcha-row">
-      <span style="font-size:.75rem;color:var(--ink-mute);font-family:var(--font-ui);">🤖 验证你是真人，请回答：</span>
       <span class="captcha-q" id="captcha-question"></span>
       <span>= </span>
       <input class="captcha-input" id="captcha-answer" type="number" placeholder="?">
@@ -4973,7 +4963,7 @@ function renderDefinition(word) {
   const correct = DEFS[word];
   const opts = buildMCQOptions(word, correct, DEFS, currentLevel);
 
-  renderOptions('def-options', opts, correct, (isRight) => {
+  renderOptions('mcq-options', opts, correct, (isRight) => {
     const fb = document.getElementById('def-feedback');
     fb.textContent = isRight ? '✓ 正确！' : `✗ 正确答案是：${correct}`;
     fb.className = 'mcq-feedback show ' + (isRight ? 'correct' : 'wrong');
@@ -5064,13 +5054,11 @@ function renderEnglish(word) {
 function renderOptions(containerId, opts, correct, onSelect) {
   const letters = ['A','B','C','D'];
   const container = document.getElementById(containerId);
-  const isEnglish = (containerId === 'eng-options');
   container.innerHTML = '';
   opts.forEach((opt, i) => {
     const btn = document.createElement('button');
     btn.className = 'mcq-option';
-    const speakerHtml = isEnglish ? '' : `<button class="option-speak-btn" onclick="event.stopPropagation();speak('${opt.replace(/'/g,"\\'").replace(/"/g,'&quot;')}',this)" title="朗读">🔊</button>`;
-    btn.innerHTML = `<span class="option-letter">${letters[i]||''}</span><span style="flex:1">${opt}</span>${speakerHtml}`;
+    btn.innerHTML = `<span class="option-letter">${letters[i]||''}</span><span>${opt}</span>`;
     btn.onclick = () => {
       // Disable all
       container.querySelectorAll('.mcq-option').forEach(b => b.disabled = true);
@@ -5079,7 +5067,7 @@ function renderOptions(containerId, opts, correct, onSelect) {
       if (!isRight) {
         // Reveal correct
         container.querySelectorAll('.mcq-option').forEach(b => {
-          if (b.querySelector('span:nth-child(2)').textContent === correct)
+          if (b.querySelector('span:last-child').textContent === correct)
             b.classList.add('reveal-correct');
         });
       }
@@ -6205,24 +6193,11 @@ function speakWord(event) {
   if (word) speak(word, event.currentTarget);
 }
 
-function speakMeaning(event) {
-  const meaning = document.getElementById('fc-meaning').textContent;
-  if (meaning) speak(meaning, event.currentTarget);
-}
-
 function speakExample(event) {
   const ex = document.getElementById('fc-example').textContent;
   // Clean up the 【word】 bracket format before speaking
   const clean = ex.replace(/【|】/g, '');
   if (clean) speak(clean, event.currentTarget);
-}
-
-function speakCloze(btn) {
-  // Read the cloze sentence with the blank replaced by the word
-  const sentenceEl = document.getElementById('cloze-sentence');
-  const blankEl = document.getElementById('cloze-blank');
-  let text = sentenceEl.textContent;
-  speak(text, btn);
 }
 
 // ══════════════════════════════════════════════════════════════
