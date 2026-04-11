@@ -4,61 +4,135 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>词王训练营 · 百德中学</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
 
   <!-- PWA -->
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="词语温习">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <meta name="theme-color" content="#1a1a2e">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="词王训练营">
+  <link rel="apple-touch-icon" href="icon192.png">
+  <meta name="theme-color" content="#4A9A20">
 <style>
 :root {
-  --ink:#1a1a2e; --ink-soft:#3d3d5c; --ink-mute:#7a7a9a;
-  --paper:#fafaf8; --paper-2:#f0efe9; --paper-3:#e4e2d8;
+  /* ── V3 PALETTE — drawn from hero image colours ── */
+  --ink:#1A2A10; --ink-soft:#3A5A2A; --ink-mute:#7A8A7A;
+  --paper:#FDFAF4; --paper-2:#F5F0E5; --paper-3:#E8E0CC;
   --red:#c0392b; --red-soft:#fae8e6;
-  --green:#1a7a4a; --green-soft:#d0eadc;
-  --amber:#c47c00; --amber-soft:#faefd5;
-  --blue:#2660a4; --blue-soft:#d5e4f5;
+  --green:#3A8A1A; --green-mid:#5FAD2A; --green-soft:#E8F5D0;
+  --amber:#B07A00; --amber-soft:#FFF8CC;
+  --blue:#2878C8; --blue-soft:#EEF6FF;
   --purple:#6b35a8; --purple-soft:#e8dcf5;
-  --shadow-sm:0 1px 4px rgba(0,0,0,.10);
-  --shadow-md:0 4px 16px rgba(0,0,0,.12);
-  --shadow-lg:0 8px 32px rgba(0,0,0,.15);
-  --r:12px; --r-sm:8px; --t:.2s ease;
+  --gold:#F5C800; --gold-dark:#C49A00; --gold-soft:#FFFBCC;
+  --hero-green:#4A9A20;
+  --hero-blue:#2878C8;
+  --shadow-sm:0 1px 4px rgba(0,0,0,.08);
+  --shadow-md:0 4px 16px rgba(0,0,0,.10);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.13);
+  --r:14px; --r-sm:10px; --t:.2s ease;
+  /* ── TYPOGRAPHY ── */
+  --font-display:'Noto Serif SC', 'STSong', serif;
+  --font-body:'ZCOOL QingKe HuangYou', 'KaiTi', 'STKaiti', serif;
+  --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper);color:var(--ink);min-height:100vh;font-size:16px;line-height:1.6;}
+body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-height:100vh;font-size:17px;line-height:1.7;}
 .screen{display:none;width:100%;min-height:100vh;}
 .screen.active{display:flex;flex-direction:column;}
 
 /* HOME */
-#home-screen{background:linear-gradient(160deg,#1a4a1a 0%,#1a3a2a 35%,#0d2d4a 100%);color:white;overflow-y:auto;position:relative;}#home-screen::before{content:'';position:fixed;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#2E7D32 0%,#2E7D32 33%,#F5C800 33%,#F5C800 66%,#1A5276 66%,#1A5276 100%);z-index:20;}
-.home-header{padding:1.8rem 1.2rem 1rem;text-align:center;}
-.home-title{font-size:clamp(1.5rem,5vw,2rem);color:#F5C800;letter-spacing:.08em;text-shadow:0 2px 12px rgba(0,0,0,.4);}
-.home-subtitle{font-size:.76rem;color:rgba(255,255,255,.6);letter-spacing:.04em;font-family:sans-serif;margin-top:.3rem;line-height:1.7;}
-.progress-wrap{padding:0 1.2rem .8rem;max-width:480px;margin:0 auto;width:100%;}
-.overview-card{background:rgba(255,255,255,.07);border:1px solid rgba(245,200,0,.2);border-radius:var(--r);padding:.9rem 1.1rem;backdrop-filter:blur(8px);}
-.overview-card h3{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);font-family:sans-serif;margin-bottom:.5rem;}
+#home-screen{
+  background:var(--blue-soft);
+  color:var(--ink);
+  overflow-y:auto;
+  position:relative;
+}
+#home-screen::before{
+  content:'';position:fixed;top:0;left:0;right:0;height:5px;
+  background:linear-gradient(90deg,#5FAD2A 0%,#5FAD2A 33%,#F5C800 33%,#F5C800 66%,#2878C8 66%,#2878C8 100%);
+  z-index:20;
+}
+.home-header{
+  /* HERO IMAGE: replace background-color with background-image for production */
+  /* background-image: url('hero_home_mobile.jpg'); */
+  /* @media(min-width:768px){ background-image: url('hero_home_desktop.jpg'); } */
+  background: linear-gradient(160deg, var(--hero-blue) 0%, #1A5FAA 100%);
+  background-size:cover; background-position:center;
+  padding:2rem 1.2rem 1.4rem;
+  text-align:center;
+  position:relative;
+}
+.home-header::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom, rgba(40,120,200,.15) 0%, rgba(40,120,200,.35) 100%);
+  pointer-events:none;
+}
+.home-title{
+  font-family:var(--font-display);
+  font-size:clamp(1.7rem,5vw,2.3rem);
+  color:#FFFFFF;
+  letter-spacing:.08em;
+  text-shadow:0 2px 12px rgba(0,0,0,.3);
+  position:relative;z-index:1;
+}
+.home-subtitle{
+  font-size:.82rem;
+  color:rgba(255,255,255,.85);
+  letter-spacing:.04em;
+  font-family:var(--font-ui);
+  margin-top:.35rem;
+  line-height:1.7;
+  position:relative;z-index:1;
+}
+.progress-wrap{padding:0 1.2rem .8rem;max-width:520px;margin:0 auto;width:100%;}
+.overview-card{
+  background:white;
+  border:1.5px solid var(--paper-3);
+  border-left:4px solid var(--green-mid);
+  border-radius:var(--r);
+  padding:1rem 1.2rem;
+  box-shadow:var(--shadow-sm);
+}
+.overview-card h3{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--green-mid);font-family:var(--font-ui);font-weight:700;margin-bottom:.6rem;}
 .stat-row{display:flex;gap:.8rem;justify-content:space-between;}
 .stat-item{text-align:center;flex:1;}
-.stat-num{font-size:1.6rem;font-weight:bold;color:#F5C800;line-height:1;}
-.stat-label{font-size:.65rem;color:rgba(255,255,255,.45);font-family:sans-serif;margin-top:.2rem;}
-.global-bar{background:rgba(255,255,255,.12);border-radius:4px;height:5px;margin:.7rem 0 .2rem;overflow:hidden;}
-.global-bar-fill{height:100%;background:linear-gradient(90deg,#2E7D32,#F5C800);border-radius:4px;transition:width .6s ease;}
-.global-bar-label{font-size:.65rem;color:rgba(255,255,255,.4);font-family:sans-serif;text-align:right;}
-.levels-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;padding:0 1.2rem 1rem;max-width:480px;margin:0 auto;width:100%;}
-.level-card{background:rgba(255,255,255,.07);border:1px solid rgba(245,200,0,.15);border-radius:var(--r);padding:.9rem;cursor:pointer;transition:all var(--t);text-align:left;position:relative;overflow:hidden;}
-.level-card:hover,.level-card:focus{background:rgba(255,255,255,.12);border-color:rgba(245,200,0,.45);transform:translateY(-2px);box-shadow:var(--shadow-md);outline:none;}
-.level-card-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r) var(--r) 0 0;}
+.stat-num{font-size:1.8rem;font-weight:bold;line-height:1;font-family:var(--font-ui);}
+.stat-num.n-total{color:var(--ink);}
+.stat-num.n-mastered{color:var(--green);}
+.stat-num.n-learning{color:var(--amber);}
+.stat-label{font-size:.7rem;color:var(--ink-mute);font-family:var(--font-ui);margin-top:.2rem;}
+.global-bar{background:var(--paper-3);border-radius:4px;height:6px;margin:.8rem 0 .25rem;overflow:hidden;}
+.global-bar-fill{height:100%;background:linear-gradient(90deg,var(--green-mid),var(--gold));border-radius:4px;transition:width .6s ease;}
+.global-bar-label{font-size:.68rem;color:var(--ink-mute);font-family:var(--font-ui);text-align:right;}
+.levels-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;padding:0 1.2rem 1rem;max-width:520px;margin:0 auto;width:100%;}
+.level-card{
+  background:white;
+  border:1.5px solid var(--paper-3);
+  border-radius:var(--r);
+  padding:1rem;
+  cursor:pointer;
+  transition:all var(--t);
+  text-align:left;
+  position:relative;
+  overflow:hidden;
+  box-shadow:var(--shadow-sm);
+}
+.level-card:hover,.level-card:focus{border-color:var(--gold);transform:translateY(-2px);box-shadow:var(--shadow-md);outline:none;}
+.level-card.lc-active{border-color:var(--green-mid);background:var(--green-soft);}
+.level-card-accent{position:absolute;top:0;left:0;right:0;height:4px;border-radius:var(--r) var(--r) 0 0;}
 .acc-1{background:linear-gradient(90deg,#e74c3c,#c0392b);}
-.acc-2{background:linear-gradient(90deg,#2980b9,#1a5276);}
-.acc-3{background:linear-gradient(90deg,#27ae60,#1a7a4a);}
+.acc-2{background:linear-gradient(90deg,var(--blue),#1a5276);}
+.acc-3{background:linear-gradient(90deg,var(--green-mid),var(--green));}
 .acc-4{background:linear-gradient(90deg,#d35400,#a04000);}
-.level-name{font-size:1rem;color:#F5C800;margin-bottom:.15rem;}
-.level-count{font-size:.68rem;color:rgba(255,255,255,.4);font-family:sans-serif;}
-.level-mini-bar{background:rgba(255,255,255,.12);border-radius:3px;height:4px;margin-top:.5rem;overflow:hidden;}
-.level-mini-fill{height:100%;background:rgba(255,255,255,.5);border-radius:3px;transition:width .5s ease;}
-.level-mastery-pct{font-size:.62rem;color:rgba(255,255,255,.38);font-family:sans-serif;margin-top:.2rem;}
+.level-name{font-size:1.1rem;color:var(--ink);margin-bottom:.2rem;font-family:var(--font-body);}
+.level-count{font-size:.72rem;color:var(--ink-mute);font-family:var(--font-ui);}
+.level-badge-corner{position:absolute;top:.5rem;right:.7rem;font-size:1.1rem;line-height:1;}
+.level-chapter-count{font-size:.68rem;color:var(--ink-mute);font-family:var(--font-ui);margin-top:.1rem;}
+.level-mini-bar{background:var(--paper-3);border-radius:3px;height:4px;margin-top:.6rem;overflow:hidden;}
+.level-mini-fill{height:100%;border-radius:3px;transition:width .5s ease;}
+.level-mastery-pct{font-size:.68rem;color:var(--ink-mute);font-family:var(--font-ui);margin-top:.25rem;}
 .weak-btn{display:flex;align-items:center;gap:.7rem;background:rgba(192,57,43,.22);border:1px solid rgba(192,57,43,.38);border-radius:var(--r);padding:.8rem 1.1rem;cursor:pointer;width:calc(100% - 2.4rem);max-width:calc(480px - 2.4rem);margin:0 auto .7rem;transition:all var(--t);color:white;}
 .weak-btn:hover{background:rgba(192,57,43,.38);transform:translateY(-1px);}
 .weak-btn-icon{font-size:1.3rem;}
@@ -92,9 +166,27 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
 .study-header{padding:.6rem .9rem;border-bottom:1px solid var(--paper-3);background:white;}
 .study-nav{display:flex;align-items:center;gap:.6rem;margin-bottom:.4rem;}
 .study-title{font-size:.88rem;color:var(--ink-soft);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.mode-tabs{display:flex;background:var(--paper-2);border-radius:20px;padding:3px;gap:2px;overflow-x:auto;}
-.mode-tab{padding:.28rem .6rem;border-radius:16px;border:none;background:none;font-size:.68rem;font-family:sans-serif;color:var(--ink-mute);cursor:pointer;transition:all var(--t);white-space:nowrap;flex-shrink:0;}
-.mode-tab.active{background:white;color:var(--ink);box-shadow:var(--shadow-sm);font-weight:600;}
+.mode-tabs{display:grid;grid-template-columns:repeat(4,1fr);background:white;border-bottom:1px solid var(--paper-3);gap:0;}
+.mode-tab{
+  padding:.7rem .3rem;
+  border:none;
+  background:none;
+  font-size:.9rem;
+  font-family:var(--font-body);
+  color:var(--ink-mute);
+  cursor:pointer;
+  transition:all var(--t);
+  white-space:nowrap;
+  text-align:center;
+  border-bottom:3px solid transparent;
+  position:relative;
+}
+.mode-tab.active{font-weight:600;}
+.mode-tab[data-mode="flashcard"].active{color:#1a5276;border-bottom-color:#2878C8;background:rgba(40,120,200,.06);}
+.mode-tab[data-mode="cloze"].active{color:#7B4400;border-bottom-color:#C47C00;background:rgba(196,124,0,.06);}
+.mode-tab[data-mode="definition"].active{color:#1a5c35;border-bottom-color:#3A8A1A;background:rgba(58,138,26,.06);}
+.mode-tab[data-mode="english"].active{color:#3d0066;border-bottom-color:#6b35a8;background:rgba(107,53,168,.06);}
+.mode-tab-sub{display:block;font-size:.6rem;font-family:var(--font-ui);opacity:.6;margin-top:.1rem;}
 .study-progress-bar{height:3px;background:var(--paper-2);border-radius:2px;overflow:hidden;margin-top:.4rem;}
 .study-progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:2px;transition:width .3s ease;}
 
@@ -109,13 +201,29 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
 .flashcard.flipped .card-back{opacity:1;}
 .card-tag{position:absolute;top:.7rem;right:.8rem;font-size:.6rem;font-family:sans-serif;color:var(--ink-mute);letter-spacing:.08em;text-transform:uppercase;}
 .card-tap-hint{position:absolute;bottom:.7rem;font-size:.62rem;color:var(--ink-mute);font-family:sans-serif;opacity:.7;}
-.word-display{font-size:clamp(2rem,8vw,2.8rem);color:var(--ink);text-align:center;line-height:1.2;letter-spacing:.05em;}
-.word-context{font-size:.7rem;color:var(--ink-mute);font-family:sans-serif;margin-top:.3rem;}
-.def-word{font-size:clamp(1.3rem,5vw,1.8rem);color:var(--ink);margin-bottom:.5rem;letter-spacing:.05em;text-align:center;}
-.def-meaning{font-size:.86rem;color:var(--ink-soft);line-height:1.5;max-width:280px;text-align:center;}
-.def-example{font-size:.76rem;color:var(--ink-mute);margin-top:.45rem;font-style:italic;line-height:1.5;max-width:280px;text-align:center;}
+.word-display{
+  font-family:var(--font-display);
+  font-size:clamp(2.8rem,9vw,3.8rem);
+  color:var(--ink);
+  text-align:center;
+  line-height:1.2;
+  letter-spacing:.05em;
+  font-weight:700;
+}
+.word-context{font-size:.8rem;color:var(--ink-mute);font-family:var(--font-ui);margin-top:.35rem;}
+.def-word{
+  font-family:var(--font-display);
+  font-size:clamp(2rem,6vw,2.8rem);
+  color:var(--ink);
+  margin-bottom:.3rem;
+  letter-spacing:.05em;
+  text-align:center;
+  font-weight:700;
+}
+.def-meaning{font-size:1rem;color:var(--ink-soft);line-height:1.6;max-width:300px;text-align:center;font-family:var(--font-body);}
+.def-example{font-size:.88rem;color:var(--ink-mute);margin-top:.5rem;font-style:italic;line-height:1.6;max-width:300px;text-align:center;font-family:var(--font-body);}
 .self-mark-btns{display:flex;gap:.6rem;width:100%;max-width:380px;}
-.mark-btn{flex:1;padding:.75rem;border:none;border-radius:var(--r-sm);font-size:.86rem;cursor:pointer;font-family:inherit;transition:all var(--t);display:flex;align-items:center;justify-content:center;gap:.3rem;font-weight:600;}
+.mark-btn{flex:1;padding:1rem;border:none;border-radius:var(--r-sm);font-size:1rem;cursor:pointer;font-family:var(--font-body);transition:all var(--t);display:flex;align-items:center;justify-content:center;gap:.3rem;font-weight:600;min-height:52px;}
 .mark-known{background:var(--green-soft);color:var(--green);}
 .mark-known:hover{background:var(--green);color:white;transform:translateY(-1px);}
 .mark-unknown{background:var(--red-soft);color:var(--red);}
@@ -126,10 +234,10 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
 .mcq-wrap{flex:1;display:flex;flex-direction:column;padding:.9rem;gap:.7rem;max-width:480px;margin:0 auto;width:100%;overflow-y:auto;}
 .mcq-question-card{background:white;border:1px solid var(--paper-3);border-radius:var(--r);padding:1.3rem 1.1rem;text-align:center;box-shadow:var(--shadow-sm);}
 .mcq-prompt-label{font-size:.65rem;font-family:sans-serif;color:var(--ink-mute);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;}
-.mcq-word{font-size:clamp(1.6rem,6vw,2.2rem);color:var(--ink);letter-spacing:.05em;}
+.mcq-word{font-family:var(--font-display);font-size:clamp(2.2rem,7vw,3rem);color:var(--ink);letter-spacing:.05em;font-weight:700;}
 .mcq-context{font-size:.7rem;color:var(--ink-mute);font-family:sans-serif;margin-top:.25rem;}
 .mcq-options{display:flex;flex-direction:column;gap:.45rem;}
-.mcq-option{padding:.8rem .9rem;background:white;border:1.5px solid var(--paper-3);border-radius:var(--r-sm);cursor:pointer;font-size:.86rem;text-align:left;transition:all var(--t);font-family:inherit;color:var(--ink);line-height:1.4;display:flex;align-items:flex-start;gap:.55rem;}
+.mcq-option{padding:1rem 1rem;background:white;border:1.5px solid var(--paper-3);border-radius:var(--r-sm);cursor:pointer;font-size:1rem;text-align:left;transition:all var(--t);font-family:var(--font-body);color:var(--ink);line-height:1.5;display:flex;align-items:flex-start;gap:.6rem;min-height:56px;}
 .mcq-option:hover:not(:disabled){border-color:var(--blue);background:var(--blue-soft);}
 .mcq-option:disabled{cursor:default;}
 .mcq-option.correct{border-color:var(--green);background:var(--green-soft);color:var(--green);}
@@ -248,7 +356,12 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
 
   /* ── WELCOME SCREEN ──────────────────────────────────── */
   #welcome-screen {
-    background: linear-gradient(160deg, #1a4a1a 0%, #1a3a2a 35%, #0d2d4a 100%);
+    /* HERO IMAGE: uncomment for production */
+    /* background-image: url('hero_login_mobile.jpg'); */
+    /* @media(min-width:768px){ background-image: url('hero_login_desktop.jpg'); } */
+    background: linear-gradient(160deg, var(--hero-green) 0%, #2A6A10 60%, #1A5276 100%);
+    background-size: cover;
+    background-position: center;
     align-items: center;
     justify-content: center;
     padding: 1.5rem;
@@ -261,19 +374,22 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
     top: 0; left: 0; right: 0;
     height: 5px;
     background: linear-gradient(90deg,
-      #2E7D32 0%, #2E7D32 33%,
+      #5FAD2A 0%, #5FAD2A 33%,
       #F5C800 33%, #F5C800 66%,
-      #1A5276 66%, #1A5276 100%);
+      #2878C8 66%, #2878C8 100%);
+    z-index: 2;
   }
   .welcome-card {
-    background: rgba(255,255,255,.07);
-    border: 1px solid rgba(245,200,0,.25);
+    background: rgba(253,250,244,.96);
+    border: 1.5px solid rgba(245,200,0,.4);
     border-radius: var(--r);
     padding: 2rem 1.5rem 1.5rem;
     width: 100%;
-    max-width: 380px;
-    backdrop-filter: blur(10px);
+    max-width: 400px;
+    box-shadow: var(--shadow-lg);
     text-align: center;
+    position: relative;
+    z-index: 1;
   }
   .welcome-logo {
     font-size: 3rem;
@@ -281,23 +397,24 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
   }
   .welcome-title {
     font-size: 1.6rem;
-    color: #F5C800;
+    font-family: var(--font-display);
+    color: #3A6A10;
     letter-spacing: .08em;
     margin-bottom: .3rem;
-    text-shadow: 0 2px 12px rgba(0,0,0,.4);
   }
   .welcome-sub {
-    font-size: .78rem;
-    color: rgba(255,255,255,.6);
-    font-family: sans-serif;
+    font-size: .82rem;
+    color: var(--ink-soft);
+    font-family: var(--font-ui);
     letter-spacing: .04em;
-    margin-bottom: 1.8rem;
+    margin-bottom: 1.6rem;
     line-height: 1.7;
   }
   .welcome-label {
-    font-size: .78rem;
-    color: rgba(255,255,255,.6);
-    font-family: sans-serif;
+    font-size: .82rem;
+    color: var(--ink-soft);
+    font-family: var(--font-ui);
+    font-weight: 600;
     text-align: left;
     margin-bottom: .4rem;
     display: block;
@@ -305,22 +422,22 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
   .welcome-input {
     width: 100%;
     padding: .85rem 1rem;
-    background: rgba(255,255,255,.1);
-    border: 1.5px solid rgba(255,255,255,.2);
+    background: white;
+    border: 1.5px solid var(--paper-3);
     border-radius: var(--r-sm);
-    color: white;
+    color: var(--ink);
     font-size: .95rem;
     font-family: sans-serif;
     outline: none;
     transition: border-color var(--t);
     margin-bottom: 1rem;
   }
-  .welcome-input::placeholder { color: rgba(255,255,255,.3); }
-  .welcome-input:focus { border-color: #f0e6c8; }
-  .welcome-input.error { border-color: #e74c3c; }
+  .welcome-input::placeholder { color: var(--ink-mute); }
+  .welcome-input:focus { border-color: var(--green-mid); }
+  .welcome-input.error { border-color: var(--red); }
   .welcome-error {
     font-size: .75rem;
-    color: #f5c6c0;
+    color: var(--red);
     font-family: sans-serif;
     margin-top: -.6rem;
     margin-bottom: .8rem;
@@ -331,13 +448,13 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
   .welcome-btn {
     width: 100%;
     padding: .9rem;
-    background: #2E7D32;
+    background: var(--hero-green);
     color: white;
     border: none;
     border-radius: var(--r-sm);
-    font-size: .95rem;
+    font-size: 1.05rem;
     font-weight: bold;
-    font-family: inherit;
+    font-family: var(--font-body);
     cursor: pointer;
     transition: all var(--t);
     margin-bottom: 1rem;
@@ -346,29 +463,29 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
   .welcome-btn:hover {
     background: #3a9e40;
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(46,125,50,.4);
+    box-shadow: 0 4px 16px rgba(74,154,32,.4);
   }
   .welcome-note {
-    font-size: .68rem;
-    color: rgba(255,255,255,.4);
-    font-family: sans-serif;
-    line-height: 1.5;
+    font-size: .72rem;
+    color: var(--ink-mute);
+    font-family: var(--font-ui);
+    line-height: 1.6;
     margin-bottom: .9rem;
   }
   /* School name credit — visible but understated */
   .welcome-credit-school {
     font-size: .75rem;
-    color: rgba(255,255,255,.45);
-    font-family: sans-serif;
+    color: var(--ink-mute);
+    font-family: var(--font-ui);
     letter-spacing: .04em;
     padding-top: .85rem;
-    border-top: 1px solid rgba(255,255,255,.1);
+    border-top: 1px solid var(--paper-3);
   }
   /* Personal credit — significantly smaller, very discreet */
   .welcome-credit-name {
     font-size: .6rem;
-    color: rgba(255,255,255,.2);
-    font-family: sans-serif;
+    color: var(--ink-mute);
+    font-family: var(--font-ui);
     letter-spacing: .03em;
     margin-top: .25rem;
   }
@@ -376,8 +493,8 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
   .welcome-credit-year {
     display: inline-block;
     font-size: .58rem;
-    color: rgba(255,255,255,.18);
-    font-family: sans-serif;
+    color: var(--ink-mute);
+    font-family: var(--font-ui);
     margin-left: .4rem;
     letter-spacing: .06em;
   }
@@ -430,6 +547,323 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
   }
   .user-signout:hover { color: rgba(255,255,255,.7); }
 
+
+  /* ── PINYIN ──────────────────────────────────────────────── */
+  .pinyin-line {
+    font-size: .78rem;
+    color: var(--ink-mute);
+    font-family: sans-serif;
+    letter-spacing: .06em;
+    margin-bottom: .25rem;
+    text-align: center;
+  }
+
+  /* ── SPEAKER BUTTONS ────────────────────────────────────── */
+  .speaker-row {
+    display: flex;
+    gap: .5rem;
+    justify-content: center;
+    margin-top: .5rem;
+  }
+  .speaker-btn {
+    background: var(--paper-2);
+    border: 1px solid var(--paper-3);
+    border-radius: 20px;
+    padding: .28rem .75rem;
+    font-size: .75rem;
+    font-family: sans-serif;
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+    transition: all var(--t);
+  }
+  .speaker-btn:hover { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
+  .speaker-btn.speaking { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
+
+  /* ── USER TYPE SELECT ───────────────────────────────────── */
+  .welcome-select {
+    width: 100%;
+    padding: .85rem 1rem;
+    background: white;
+    border: 1.5px solid var(--paper-3);
+    border-radius: var(--r-sm);
+    color: var(--ink);
+    font-size: .88rem;
+    font-family: sans-serif;
+    outline: none;
+    transition: border-color var(--t);
+    margin-bottom: 1rem;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+  }
+  .welcome-select:focus { border-color: #f0e6c8; }
+  .welcome-select option { background: #1a3a2a; color: white; }
+  .welcome-select.error { border-color: #e74c3c; }
+
+  /* ── PROFILE EDIT MODAL ─────────────────────────────────── */
+  .profile-btn {
+    font-size: .68rem;
+    color: rgba(255,255,255,.3);
+    font-family: sans-serif;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: .2rem .4rem;
+    border-radius: 4px;
+    transition: color var(--t);
+  }
+  .profile-btn:hover { color: rgba(255,255,255,.7); }
+  .user-type-badge {
+    font-size: .62rem;
+    background: rgba(245,200,0,.15);
+    border: 1px solid rgba(245,200,0,.25);
+    border-radius: 10px;
+    padding: .1rem .5rem;
+    color: rgba(245,200,0,.7);
+    font-family: sans-serif;
+  }
+
+  /* ── STUDENT COUNTER ────────────────────────────────────── */
+  .stats-counter-card {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(245,200,0,.15);
+    border-radius: var(--r-sm);
+    padding: .55rem .9rem;
+    margin: 0 1.2rem .6rem;
+    max-width: calc(480px - 2.4rem);
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: .5rem;
+  }
+  .counter-item { text-align: center; }
+  .counter-num {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #F5C800;
+    line-height: 1;
+  }
+  .counter-label {
+    font-size: .58rem;
+    color: rgba(255,255,255,.4);
+    font-family: sans-serif;
+    margin-top: .15rem;
+    line-height: 1.3;
+  }
+  .counter-divider {
+    width: 1px;
+    height: 28px;
+    background: rgba(255,255,255,.1);
+  }
+
+  /* ── FEEDBACK BUTTON (floating) ─────────────────────────── */
+  .feedback-fab {
+    position: fixed;
+    bottom: 1.1rem;
+    right: 1rem;
+    background: rgba(38,96,164,.85);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: .45rem .85rem;
+    font-size: .72rem;
+    font-family: sans-serif;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+    backdrop-filter: blur(6px);
+    transition: all var(--t);
+    display: none;
+  }
+  .feedback-fab.show { display: flex; }
+  .feedback-fab:hover { background: rgba(38,96,164,1); transform: translateY(-1px); }
+
+  /* ── FEEDBACK MODAL ─────────────────────────────────────── */
+  .feedback-modal-inner .modal-sub { font-size:.72rem; }
+  .feedback-context-box {
+    background: var(--paper-2);
+    border-radius: var(--r-sm);
+    padding: .5rem .75rem;
+    font-size: .75rem;
+    color: var(--ink-soft);
+    font-family: sans-serif;
+    margin-bottom: .75rem;
+    line-height: 1.5;
+  }
+  .feedback-context-label {
+    font-size: .62rem;
+    color: var(--ink-mute);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-bottom: .2rem;
+  }
+  .feedback-textarea {
+    width: 100%;
+    padding: .7rem;
+    background: var(--paper-2);
+    border: 1.5px solid var(--paper-3);
+    border-radius: var(--r-sm);
+    font-family: inherit;
+    font-size: .88rem;
+    color: var(--ink);
+    resize: none;
+    height: 90px;
+    outline: none;
+    margin-bottom: .6rem;
+  }
+  .feedback-textarea:focus { border-color: var(--blue); }
+  .captcha-row {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    margin-bottom: .75rem;
+    font-size: .85rem;
+    font-family: sans-serif;
+    color: var(--ink-soft);
+  }
+  .captcha-q { flex: 1; }
+  .captcha-input {
+    width: 64px;
+    padding: .45rem .5rem;
+    border: 1.5px solid var(--paper-3);
+    border-radius: var(--r-sm);
+    font-size: .9rem;
+    text-align: center;
+    font-family: sans-serif;
+    outline: none;
+  }
+  .captcha-input:focus { border-color: var(--blue); }
+  .captcha-input.error { border-color: var(--red); }
+
+
+  /* ── HERO IMAGE SUPPORT ──────────────────────────────────── */
+  #welcome-screen {
+    background-image: url('hero_login_mobile.jpg');
+    background-size: cover;
+    background-position: center bottom;
+  }
+  @media(min-width:768px){
+    #welcome-screen { background-image: url('hero_login_desktop.jpg'); }
+  }
+  .home-header {
+    background-image: url('hero_home_mobile.jpg');
+    background-size: cover;
+    background-position: center;
+  }
+  @media(min-width:768px){
+    .home-header { background-image: url('hero_home_desktop.jpg'); }
+  }
+
+  /* ── ACHIEVEMENTS BUTTON ─────────────────────────────────── */
+  .ach-level-card {
+    background: white;
+    border-radius: 10px;
+    border: 0.5px solid var(--paper-3);
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+  .ach-level-card.locked { opacity: .45; }
+  .ach-badge-row { display:flex; gap:5px; flex-wrap:wrap; margin-top:8px; }
+  .ach-badge {
+    display:flex; align-items:center; gap:4px;
+    border-radius:20px; padding:4px 10px;
+    font-size:.75rem; font-family:var(--font-ui); border:0.5px solid;
+  }
+  .ach-badge.earned { background:#FFF8E1; border-color:var(--gold); color:#7B5A00; }
+  .ach-badge.not-earned { background:var(--paper-2); border-color:var(--paper-3); color:var(--ink-mute); opacity:.55; }
+  .ach-badge.unit-badge { background:#EEF6FF; border-color:var(--blue); color:#0D3A7B; }
+
+  /* ── GUIDE SCREEN ────────────────────────────────────────── */
+  .guide-section {
+    background: white;
+    border-radius: var(--r-sm);
+    border: 0.5px solid var(--paper-3);
+    padding: 1rem 1.1rem;
+    margin-bottom: .9rem;
+  }
+  .guide-section-title {
+    font-size: 1rem;
+    color: var(--hero-green);
+    font-family: var(--font-body);
+    font-weight: 700;
+    margin-bottom: .5rem;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+  }
+  .guide-body {
+    font-size: .9rem;
+    color: var(--ink-soft);
+    font-family: var(--font-body);
+    line-height: 1.7;
+  }
+  .guide-state-row {
+    display: flex;
+    align-items: flex-start;
+    gap: .7rem;
+    padding: .5rem 0;
+    border-bottom: 0.5px solid var(--paper-2);
+  }
+  .guide-state-row:last-child { border-bottom: none; }
+  .guide-state-badge {
+    font-size: .72rem;
+    font-family: var(--font-ui);
+    border-radius: 8px;
+    padding: .2rem .6rem;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: .1rem;
+  }
+  .gs-mastered { background:var(--green-soft); color:var(--green); }
+  .gs-learning  { background:var(--amber-soft); color:var(--amber); }
+  .gs-unstarted { background:var(--paper-2); color:var(--ink-mute); }
+
+  /* ── LEVEL SCREEN — light palette ───────────────────────── */
+  #level-screen { background:var(--blue-soft); overflow-y:auto; }
+  .top-bar {
+    background: var(--blue);
+    color: white;
+    border-bottom: none;
+  }
+  .back-btn { color: rgba(255,255,255,.85); }
+  .top-bar-title { color: white; font-family: var(--font-body); font-size:1.05rem; }
+  .units-list { background: var(--blue-soft); padding:.7rem; max-width:540px; margin:0 auto; }
+  .unit-group-label {
+    font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color: var(--blue); font-family:var(--font-ui); font-weight:700;
+    padding:.3rem .4rem; margin-bottom:.3rem;
+  }
+  .unit-btn {
+    background: white;
+    border: 1px solid var(--paper-3);
+    border-left: 3px solid var(--green-mid);
+  }
+  .unit-btn:hover { border-color: var(--gold); border-left-color: var(--gold); }
+  .unit-btn-name { font-size:.95rem; font-family: var(--font-body); }
+  .unit-btn-sub  { font-size:.72rem; font-family: var(--font-ui); }
+
+  /* ── STUDY SCREEN improvements ───────────────────────────── */
+  .study-header { background: white; }
+  .flashcard { min-height: 260px; }
+  .mcq-word { font-family: var(--font-display); }
+  .cloze-sentence { font-size: 1.05rem; font-family: var(--font-body); line-height: 2; }
+
+  /* ── RESPONSIVE MAX-WIDTH ────────────────────────────────── */
+  .mcq-wrap, .cloze-wrap { max-width: 560px; }
+  @media(min-width:600px) {
+    .flashcard { max-width: 480px; }
+    .self-mark-btns { max-width: 480px; }
+  }
+
 </style>
 </head>
 <body>
@@ -445,7 +879,7 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
       新加坡中学G3华文<br>
       中一至中四课文词语总复习
     </div>
-    <label class="welcome-label">请输入你的学校电邮地址</label>
+    <label class="welcome-label">请输入你的电邮地址</label>
     <input
       class="welcome-input"
       id="welcome-email"
@@ -455,11 +889,20 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
       autocapitalize="none"
       onkeydown="if(event.key==='Enter') submitWelcome()"
     >
+    <label class="welcome-label" style="margin-top:.2rem">请选择你的身份</label>
+    <select class="welcome-select" id="welcome-usertype">
+      <option value="">── 请选择 ──</option>
+      <option value="百德中学学生">百德中学学生 (Bukit View Sec Student)</option>
+      <option value="其他学校学生">其他学校学生 (Student from Another School)</option>
+      <option value="家长">家长 (Parent)</option>
+      <option value="教师">教师 (Teacher)</option>
+      <option value="公众人士">公众人士 (General Public)</option>
+    </select>
     <div class="welcome-error" id="welcome-error"></div>
     <button class="welcome-btn" onclick="submitWelcome()">开始学习 →</button>
     <div class="welcome-note">
-      你的电邮地址只用于记录学习进度。<br>
-      首次输入后，无需再次登录。
+      你的信息只用于保存个人学习进展以及统计应用使用情况。首次填写后无需再次登录。<br>
+      如需更改身份（学生/教师/公众人士），可在主页进行修改。
     </div>
     <div class="welcome-credit-school">
       百德中学 · Bukit View Secondary School
@@ -476,28 +919,52 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
   <div class="home-header">
     <div class="home-title">词王训练营</div>
     <div class="home-subtitle">
-      新加坡中学G3华文<br>
-      中一至中四课文词语总复习
+      新加坡中学G3华文 · 中一至中四词语总复习
+    </div>
+    <div style="margin-top:.6rem;position:relative;z-index:1;">
+      <div id="home-rank-pill" style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.6);border-radius:20px;padding:5px 16px;font-size:.88rem;color:white;font-family:var(--font-body);">
+        🌱 词语学徒 · 0%
+      </div>
     </div>
   </div>
 
   <!-- User identity pill -->
   <div class="user-pill">
     <span class="user-email" id="user-email-display"></span>
-    <button class="user-signout" onclick="signOut()">退出登录</button>
+    <div style="display:flex;align-items:center;gap:.4rem;">
+      <button class="profile-btn" onclick="showProfileModal()">✏️ 修改身份</button>
+      <button class="user-signout" onclick="signOut()">退出</button>
+    </div>
+  </div>
+  <!-- User type badge -->
+  <div style="padding:0 1.2rem .3rem;max-width:480px;margin:0 auto;width:100%;">
+    <span class="user-type-badge" id="user-type-badge"></span>
   </div>
   <!-- Teacher mode banner -->
   <div class="teacher-banner" id="teacher-banner">
-    👩‍🏫 教师模式 — 学习记录不会被保存到数据表
+    👩‍🏫 教师模式 — 你的使用记录不会被保存
+  </div>
+
+  <!-- Student counter -->
+  <div class="stats-counter-card" id="stats-counter-card">
+    <div class="counter-item">
+      <div class="counter-num" id="counter-bukit">—</div>
+      <div class="counter-label">百德中学<br>学生人数</div>
+    </div>
+    <div class="counter-divider"></div>
+    <div class="counter-item">
+      <div class="counter-num" id="counter-total">—</div>
+      <div class="counter-label">所有学校<br>学生总人数</div>
+    </div>
   </div>
 
   <div class="progress-wrap">
     <div class="overview-card">
       <h3>总体进度</h3>
       <div class="stat-row">
-        <div class="stat-item"><div class="stat-num" id="stat-total">—</div><div class="stat-label">词语</div></div>
-        <div class="stat-item"><div class="stat-num" id="stat-mastered">0</div><div class="stat-label">已掌握</div></div>
-        <div class="stat-item"><div class="stat-num" id="stat-learning">0</div><div class="stat-label">学习中</div></div>
+        <div class="stat-item"><div class="stat-num n-total" id="stat-total">—</div><div class="stat-label">词语</div></div>
+        <div class="stat-item"><div class="stat-num n-mastered" id="stat-mastered">0</div><div class="stat-label">已掌握</div></div>
+        <div class="stat-item"><div class="stat-num n-learning" id="stat-learning">0</div><div class="stat-label">学习中</div></div>
       </div>
       <div class="global-bar"><div class="global-bar-fill" id="global-bar-fill" style="width:0%"></div></div>
       <div class="global-bar-label" id="global-bar-label">0% 已掌握</div>
@@ -526,6 +993,11 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
     <div class="install-close" onclick="event.stopPropagation();dismissInstall()">✕</div>
   </div>
   <!-- Save / Restore row -->
+  <!-- Action buttons row -->
+  <div style="display:flex;gap:.5rem;padding:0 1.2rem .5rem;max-width:520px;margin:0 auto;width:100%;">
+    <button onclick="showScreen('achievements-screen');updateAchievementsScreen()" style="flex:2;padding:.75rem;background:var(--gold);color:#7B5A00;border:none;border-radius:var(--r-sm);font-size:.92rem;font-family:var(--font-body);font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;">🏅 我的成就</button>
+    <button onclick="showScreen('guide-screen');renderGuide()" style="flex:1;padding:.75rem;background:white;color:var(--blue);border:1.5px solid var(--blue);border-radius:var(--r-sm);font-size:.88rem;font-family:var(--font-body);cursor:pointer;">❓ 指南</button>
+  </div>
   <div class="save-restore-row">
     <button class="save-btn" onclick="showSaveModal()">💾 保存进度</button>
     <button class="restore-btn" onclick="showRestoreModal()">🔄 恢复进度</button>
@@ -534,16 +1006,16 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
   <button class="weak-btn" id="weak-words-btn" onclick="startWeakWords()" style="display:none">
     <div class="weak-btn-icon">⚠️</div>
     <div class="weak-btn-text">
-      <div class="weak-btn-title">复习薄弱词语</div>
-      <div class="weak-btn-sub">专门练习你还不认识的词</div>
+      <div class="weak-btn-title">复习未掌握词语</div>
+      <div class="weak-btn-sub">集中练习还未掌握的词语</div>
     </div>
     <div class="weak-btn-count" id="weak-count-badge">0</div>
   </button>
   <div class="levels-grid">
-    <button class="level-card" onclick="showLevel('中一')"><div class="level-card-accent acc-1"></div><div class="level-name">中一</div><div class="level-count" id="count-中一">— 词语</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中一" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中一">0% 掌握</div></button>
-    <button class="level-card" onclick="showLevel('中二')"><div class="level-card-accent acc-2"></div><div class="level-name">中二</div><div class="level-count" id="count-中二">— 词语</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中二" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中二">0% 掌握</div></button>
-    <button class="level-card" onclick="showLevel('中三')"><div class="level-card-accent acc-3"></div><div class="level-name">中三</div><div class="level-count" id="count-中三">— 词语</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中三" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中三">0% 掌握</div></button>
-    <button class="level-card" onclick="showLevel('中四')"><div class="level-card-accent acc-4"></div><div class="level-name">中四</div><div class="level-count" id="count-中四">— 词语</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中四" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中四">0% 掌握</div></button>
+    <button class="level-card" id="lc-中一" onclick="showLevel('中一')"><div class="level-card-accent acc-1"></div><div class="level-badge-corner" id="badge-中一">🌱</div><div class="level-name">中一</div><div class="level-count" id="count-中一">— 词语</div><div class="level-chapter-count" id="chap-中一">0/0 章</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中一" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中一">0% 掌握</div></button>
+    <button class="level-card" id="lc-中二" onclick="showLevel('中二')"><div class="level-card-accent acc-2"></div><div class="level-badge-corner" id="badge-中二" style="opacity:.3">🎯</div><div class="level-name">中二</div><div class="level-count" id="count-中二">— 词语</div><div class="level-chapter-count" id="chap-中二">0/0 章</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中二" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中二">0% 掌握</div></button>
+    <button class="level-card" id="lc-中三" onclick="showLevel('中三')"><div class="level-card-accent acc-3"></div><div class="level-badge-corner" id="badge-中三" style="opacity:.3">🏅</div><div class="level-name">中三</div><div class="level-count" id="count-中三">— 词语</div><div class="level-chapter-count" id="chap-中三">0/0 章</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中三" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中三">0% 掌握</div></button>
+    <button class="level-card" id="lc-中四" onclick="showLevel('中四')"><div class="level-card-accent acc-4"></div><div class="level-badge-corner" id="badge-中四" style="opacity:.3">🏆</div><div class="level-name">中四</div><div class="level-count" id="count-中四">— 词语</div><div class="level-chapter-count" id="chap-中四">0/0 章</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中四" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中四">0% 掌握</div></button>
   </div>
 </div>
 
@@ -564,10 +1036,10 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
       <div class="study-title" id="study-title"></div>
     </div>
     <div class="mode-tabs">
-      <button class="mode-tab active" data-mode="flashcard" onclick="switchMode('flashcard')">闪卡</button>
-      <button class="mode-tab" data-mode="mcq" onclick="switchMode('mcq')">中文选择</button>
-      <button class="mode-tab" data-mode="cloze" onclick="switchMode('cloze')">填空选择</button>
-      <button class="mode-tab" data-mode="english" onclick="switchMode('english')">英文翻译</button>
+      <button class="mode-tab active" data-mode="flashcard" onclick="switchMode('flashcard')">词语闪卡<span class="mode-tab-sub">Flashcard</span></button>
+      <button class="mode-tab" data-mode="cloze" onclick="switchMode('cloze')">填空挑战<span class="mode-tab-sub">Fill-in</span></button>
+      <button class="mode-tab" data-mode="definition" onclick="switchMode('definition')">华文解释<span class="mode-tab-sub">Definition</span></button>
+      <button class="mode-tab" data-mode="english" onclick="switchMode('english')">英文翻译<span class="mode-tab-sub">English</span></button>
     </div>
     <div class="study-progress-bar"><div class="study-progress-fill" id="study-progress-fill" style="width:0%"></div></div>
   </div>
@@ -585,6 +1057,11 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
       <div class="card-face card-back">
         <span class="card-tag">释义</span>
         <div class="def-word" id="fc-back-word"></div>
+        <div class="pinyin-line" id="fc-pinyin"></div>
+        <div class="speaker-row">
+          <button class="speaker-btn" onclick="speakWord(event)" title="朗读词语">🔊 词语</button>
+          <button class="speaker-btn" onclick="speakExample(event)" title="朗读例句">🔊 例句</button>
+        </div>
         <div class="def-meaning" id="fc-meaning"></div>
         <div class="def-example" id="fc-example"></div>
       </div>
@@ -597,15 +1074,15 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
   </div>
 
   <!-- MCQ: Chinese meaning -->
-  <div class="mcq-wrap" id="mcq-mode" style="display:none">
+  <div class="mcq-wrap" id="definition-mode" style="display:none">
     <div class="mcq-question-card">
       <div class="mcq-prompt-label">这个词语是什么意思？</div>
-      <div class="mcq-word" id="mcq-word"></div>
-      <div class="mcq-context" id="mcq-context"></div>
+      <div class="mcq-word" id="def-word"></div>
+      <div class="mcq-context" id="def-context"></div>
     </div>
-    <div class="mcq-options" id="mcq-options"></div>
-    <div class="mcq-feedback" id="mcq-feedback"></div>
-    <button class="next-btn" id="mcq-next" onclick="nextQuestion()">下一题 →</button>
+    <div class="mcq-options" id="def-options"></div>
+    <div class="mcq-feedback" id="def-feedback"></div>
+    <button class="next-btn" id="def-next" onclick="nextQuestion()">下一题 →</button>
   </div>
 
   <!-- Cloze: sentence + MCQ options -->
@@ -663,11 +1140,11 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
       <div id="history-rows">暂无记录</div>
     </div>
     <div class="weak-preview" id="weak-preview">
-      <div class="weak-preview-title">⚠️ 需要继续练习的词语</div>
+      <div class="weak-preview-title">📚 本次未掌握词语</div>
       <div class="weak-words-chips" id="weak-chips"></div>
     </div>
     <div class="results-actions">
-      <button class="action-btn action-weak" id="btn-retry-weak" onclick="retryWeak()">🔁 只练习错误的词语</button>
+      <button class="action-btn action-weak" id="btn-retry-weak" onclick="retryWeak()">🔁 只练习未掌握词语</button>
       <button class="action-btn action-primary" onclick="retryAll()">重新练习全部</button>
       <button class="action-btn action-secondary" onclick="exitStudy()">返回词语列表</button>
     </div>
@@ -700,9 +1177,131 @@ body{font-family:'Georgia','Noto Serif SC','STSong',serif;background:var(--paper
   </div>
 </div>
 
+<!-- FEEDBACK FAB -->
+<button class="feedback-fab" id="feedback-fab" onclick="showFeedbackModal()">
+  💬 反馈
+</button>
+
+<!-- PROFILE EDIT MODAL -->
+<div class="modal-overlay" id="profile-modal">
+  <div class="modal">
+    <div class="modal-title">✏️ 修改身份</div>
+    <div class="modal-sub">请重新选择你的身份类型。</div>
+    <select class="welcome-select" id="profile-usertype" style="background:var(--paper-2);border-color:var(--paper-3);color:var(--ink);margin-bottom:.8rem;">
+      <option value="">── 请选择 ──</option>
+      <option value="百德中学学生">百德中学学生 (Bukit View Sec Student)</option>
+      <option value="其他学校学生">其他学校学生 (Student from Another School)</option>
+      <option value="家长">家长 (Parent)</option>
+      <option value="教师">教师 (Teacher)</option>
+      <option value="公众人士">公众人士 (General Public)</option>
+    </select>
+    <div class="modal-actions">
+      <button class="modal-btn modal-btn-primary" onclick="saveProfileEdit()">保存</button>
+      <button class="modal-btn modal-btn-secondary" onclick="closeProfileModal()">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- FEEDBACK MODAL -->
+<div class="modal-overlay" id="feedback-modal">
+  <div class="modal feedback-modal-inner">
+    <div class="modal-title">💬 内容反馈</div>
+    <div class="modal-sub">发现闪卡或题目有错误？请告诉我们，帮助改善这个学习工具！</div>
+    <div id="feedback-context-display" style="display:none">
+      <div class="feedback-context-label">反馈的题目</div>
+      <div class="feedback-context-box" id="feedback-context-box"></div>
+    </div>
+    <textarea class="feedback-textarea" id="feedback-text" placeholder="请描述问题，例如：答案有误、拼音不对、例句不通顺等……"></textarea>
+    <div class="captcha-row">
+      <span class="captcha-q" id="captcha-question"></span>
+      <span>= </span>
+      <input class="captcha-input" id="captcha-answer" type="number" placeholder="?">
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn modal-btn-primary" onclick="submitFeedback()">提交</button>
+      <button class="modal-btn modal-btn-secondary" onclick="closeFeedbackModal()">取消</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ACHIEVEMENTS SCREEN -->
+<div id="achievements-screen" class="screen">
+  <div style="background:var(--blue);height:5px;background:linear-gradient(90deg,#5FAD2A 33%,#F5C800 33% 66%,#2878C8 66%);"></div>
+  <div style="background:var(--blue);padding:14px 16px;display:flex;align-items:center;gap:10px;">
+    <button class="back-btn" style="color:white;" onclick="showScreen('home-screen')">‹</button>
+    <div style="font-size:1.15rem;color:white;font-family:var(--font-body);">我的成就</div>
+    <div style="margin-left:auto;font-size:.75rem;color:rgba(255,255,255,.6);font-family:var(--font-ui);">词王训练营</div>
+  </div>
+
+  <!-- RANK HERO -->
+  <div id="ach-rank-hero" style="background:linear-gradient(135deg,#0d2d4a,var(--blue));padding:20px 16px;display:flex;align-items:center;gap:16px;border-bottom:3px solid var(--gold);">
+    <div id="ach-rank-emoji" style="font-size:3.2rem;line-height:1;flex-shrink:0;">🌱</div>
+    <div style="flex:1;">
+      <div id="ach-rank-name" style="font-size:1.4rem;color:var(--gold);font-family:var(--font-body);">词语学徒</div>
+      <div id="ach-rank-next" style="font-size:.75rem;color:rgba(255,255,255,.55);font-family:var(--font-ui);margin-top:3px;line-height:1.4;"></div>
+    </div>
+    <div style="text-align:center;min-width:64px;">
+      <div id="ach-mastery-pct" style="font-size:1.8rem;font-weight:700;color:var(--gold);font-family:var(--font-ui);line-height:1;">0%</div>
+      <div style="font-size:.68rem;color:rgba(255,255,255,.45);font-family:var(--font-ui);margin-top:2px;">总掌握率</div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px;background:var(--blue-soft);">
+    <div style="background:white;border-radius:8px;border:0.5px solid var(--paper-3);padding:10px 6px;text-align:center;">
+      <div id="ach-mastered-n" style="font-size:1.4rem;font-weight:500;color:var(--green);font-family:var(--font-ui);line-height:1.1;">0</div>
+      <div style="font-size:.68rem;color:var(--ink-mute);font-family:var(--font-ui);margin-top:3px;">已掌握</div>
+    </div>
+    <div style="background:white;border-radius:8px;border:0.5px solid var(--paper-3);padding:10px 6px;text-align:center;">
+      <div id="ach-learning-n" style="font-size:1.4rem;font-weight:500;color:var(--amber);font-family:var(--font-ui);line-height:1.1;">0</div>
+      <div style="font-size:.68rem;color:var(--ink-mute);font-family:var(--font-ui);margin-top:3px;">学习中</div>
+    </div>
+    <div style="background:white;border-radius:8px;border:0.5px solid var(--paper-3);padding:10px 6px;text-align:center;">
+      <div id="ach-unstarted-n" style="font-size:1.4rem;font-weight:500;color:var(--ink-mute);font-family:var(--font-ui);line-height:1.1;">0</div>
+      <div style="font-size:.68rem;color:var(--ink-mute);font-family:var(--font-ui);margin-top:3px;">未开始</div>
+    </div>
+  </div>
+
+  <div style="background:var(--blue-soft);padding:0 12px 16px;">
+    <!-- Section header -->
+    <div style="font-size:.72rem;color:var(--blue);font-family:var(--font-ui);font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 0 8px;border-left:3px solid var(--blue);padding-left:8px;margin-bottom:4px;">各年级进度 · 成就章</div>
+    <div id="ach-levels-container"></div>
+    <div style="text-align:center;font-size:.8rem;color:var(--ink-mute);font-family:var(--font-ui);padding:12px 0 4px;">完成全部四个年级 → 荣获 👑 顶级词王</div>
+  </div>
+</div>
+
+<!-- USER GUIDE SCREEN -->
+<div id="guide-screen" class="screen" style="background:var(--paper);overflow-y:auto;">
+  <div style="background:var(--hero-green);height:5px;background:linear-gradient(90deg,#5FAD2A 33%,#F5C800 33% 66%,#2878C8 66%);"></div>
+  <div style="background:var(--hero-green);padding:14px 16px;display:flex;align-items:center;gap:10px;">
+    <button class="back-btn" style="color:white;" onclick="showScreen('home-screen')">‹</button>
+    <div style="font-size:1.1rem;color:white;font-family:var(--font-body);">使用指南</div>
+    <button id="guide-lang-toggle" onclick="toggleGuideLang()" style="margin-left:auto;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:16px;padding:4px 12px;font-size:.75rem;font-family:var(--font-ui);color:white;cursor:pointer;">English</button>
+  </div>
+  <div id="guide-content" style="padding:16px;max-width:560px;margin:0 auto;"></div>
+</div>
+
+<!-- BADGE CELEBRATION OVERLAY -->
+<div id="badge-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;align-items:center;justify-content:center;padding:1.5rem;">
+  <div id="badge-overlay-inner" style="background:white;border-radius:var(--r);padding:2rem 1.5rem;width:100%;max-width:360px;text-align:center;box-shadow:var(--shadow-lg);">
+    <div id="badge-celebration-emoji" style="font-size:4rem;line-height:1;margin-bottom:.8rem;">⭐</div>
+    <div id="badge-celebration-title" style="font-size:1.3rem;color:var(--ink);font-family:var(--font-body);margin-bottom:.4rem;">成就解锁！</div>
+    <div id="badge-celebration-subtitle" style="font-size:.88rem;color:var(--ink-mute);font-family:var(--font-ui);margin-bottom:1.2rem;line-height:1.5;"></div>
+    <button onclick="closeBadgeOverlay()" style="background:var(--gold);color:var(--ink);border:none;border-radius:var(--r-sm);padding:.85rem 2rem;font-size:1rem;font-family:var(--font-body);cursor:pointer;font-weight:600;">继续加油！</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
+const POS_TAGS = {"淘气": "形容词", "惹": "动词", "两肋插刀": "成语", "赵": "名词", "科技": "名词", "来者不拒": "成语", "口头禅": "名词", "小事一桩": "成语", "人缘": "名词", "性格": "名词", "直率": "形容词", "得罪": "动词", "别扭": "形容词", "争辩": "动词", "即使": "虚词", "冤枉": "动词", "推荐": "动词", "有福同享，有难同当": "俗语", "助人为快乐之本": "俗语", "健将": "名词", "内向": "形容词", "系列": "名词", "捣乱": "动词", "瞬间": "名词", "兴致勃勃": "成语", "粘": "动词", "蛋液": "名词", "狼狈": "形容词", "讥讽": "动词", "赌气": "动词", "嚷": "动词", "小心翼翼": "成语", "荧光笔": "名词", "抵挡": "动词", "拉扯": "动词", "手足无措": "成语", "布置": "动词", "体会": "动词", "服气": "动词", "证明": "动词", "居然": "副词", "恨不得": "副词", "审案": "动词", "律师": "名词", "振振有词": "成语", "心虚": "名词", "哑口无言": "成语", "判决": "动词", "泄": "动词", "既然": "虚词", "辩护": "动词", "报复": "动词", "错误": "名词", "葡萄": "名词", "象征": "动词", "风俗": "名词", "辞旧迎新": "成语", "燃放": "动词", "瓶瓶罐罐": "名词", "厄运": "名词", "前夕": "名词", "碗碟": "名词", "预示": "动词", "兆头": "名词", "忙碌": "形容词", "遥远": "形容词", "恭敬": "形容词", "万事大吉": "成语", "元旦": "名词", "除夕": "名词", "贼": "名词", "鱼尾纹": "名词", "装饰": "名词", "圣诞": "名词", "格格不入": "成语", "结婚": "动词", "嫁": "动词", "视讯": "名词", "沉默寡言": "成语", "副": "数量词", "酷": "形容词", "承诺": "动词", "歉意": "名词", "围炉": "名词", "蒸腾": "动词", "叽叽喳喳": "名词", "缺席": "名词", "悦耳": "形容词", "闹别扭": "名词", "吞吞吐吐": "成语", "红枣": "名词", "儿媳妇": "名词", "莫名其妙": "成语", "疑惑": "动词", "大吉大利": "成语", "魅力": "名词", "博物馆": "名词", "悠久": "形容词", "遗产": "动词", "巴刹": "名词", "同胞": "名词", "融合": "动词", "皇宫": "名词", "城堡": "名词", "时尚": "名词", "彩绘": "名词", "流连忘返": "成语", "娱乐": "动词", "探索": "动词", "娘惹": "名词", "拍摄": "动词", "平均": "形容词", "繁忙": "形容词", "闪耀": "动词", "文明": "名词", "品尝": "动词", "安详": "形容词", "休闲": "动词", "横梁": "名词", "覆盖": "动词", "玻璃": "名词", "瀑布": "名词", "循环": "动词", "谷": "名词", "株": "数量词", "设施": "名词", "蹦跳": "动词", "甚至": "副词", "主题": "名词", "别具一格": "成语", "投降": "动词", "自治": "动词", "栏": "名词", "棕色": "名词", "氧化": "动词", "陌生": "名词", "宁静": "形容词", "属于": "动词", "面积": "名词", "天花板": "名词", "坚持不懈": "成语", "开卷有益": "成语", "以礼待人": "成语", "新颖": "形容词", "戏剧": "名词", "工作坊": "名词", "尴尬": "形容词", "维护": "动词", "友谊": "名词", "一帆风顺": "成语", "有效": "形容词", "策略": "名词", "嘉宾": "名词", "辅导员": "名词", "一诺千金": "成语", "言出必行": "成语", "起码": "名词", "赖床": "动词", "滋味": "名词", "催促": "动词", "哀求": "动词", "硬着头皮": "成语", "藤鞭": "名词", "抡": "动词", "挨打": "动词", "女佣": "名词", "雨蓬": "名词", "泪痕": "名词", "猛": "形容词", "嗓子眼": "名词", "允许": "动词", "早晨": "名词", "毛病": "名词", "不得了": "副词", "情愿": "名词", "缘故": "名词", "相貌": "名词", "讲究": "动词", "何必": "副词", "记账": "名词", "亏": "动词", "撇": "动词", "慢条斯理": "成语", "起航": "动词", "焦急": "形容词", "记性": "名词", "精明": "形容词", "剩": "动词", "牙膏": "名词", "橡皮擦": "名词", "薯条": "名词", "番茄酱": "名词", "偶尔": "副词", "评委": "名词", "晋级": "名词", "奖励": "动词", "获得": "动词", "企业": "名词", "创新": "动词", "牧场": "名词", "潜水": "名词", "艘": "数量词", "屁股": "名词", "翘": "动词", "潜水艇": "名词", "仿佛": "副词", "确切": "形容词", "浑身": "名词", "基因": "名词", "一哄而散": "成语", "手势": "名词", "颁布": "动词", "泛": "动词", "泡沫": "名词", "腾空而起": "成语", "降落": "动词", "打量": "动词", "伤脑筋": "名词", "拜访": "动词", "中央": "名词", "漫步": "动词", "绞尽脑汁": "成语", "华侨": "名词", "银行": "名词", "由衷": "副词", "摩天大楼": "名词", "薄薄的": "名词", "抨击": "动词", "挫折": "名词", "打交道": "动词", "而已": "虚词", "油漆": "名词", "栏杆": "名词", "宿舍": "名词", "凭": "虚词", "欣慰": "动词", "订购": "动词", "塔台": "名词", "范围": "名词", "特殊": "形容词", "警惕": "动词", "失误": "动词", "不堪设想": "成语", "脂肪": "名词", "及时": "副词", "一旦": "副词", "心满意足": "成语", "截至": "动词", "行驶": "动词", "延误": "动词", "稳定": "形容词", "幕后": "名词", "贡献": "名词", "明知山有虎，偏向虎山行": "俗语", "漏夜": "名词", "轨道": "名词", "凌晨": "名词", "就绪": "动词", "隧道": "名词", "扫描": "动词", "裂痕": "名词", "顺畅": "形容词", "全力以赴": "成语", "职业": "名词", "故障": "名词", "岗位": "名词", "维修": "动词", "确保": "动词", "投入": "动词", "默默无闻": "成语", "新谣": "名词", "芝麻": "名词", "朗朗上口": "名词", "奉献": "动词", "繁荣": "形容词", "平凡": "形容词", "光芒": "名词", "微不足道": "成语", "敬业乐业": "名词", "犹豫": "形容词", "不分青红皂白": "成语", "教训": "动词", "叛逆": "动词", "委屈": "动词", "内疚": "形容词", "不妨": "动词", "匿名": "动词", "监督": "动词", "代沟": "名词", "上瘾": "动词", "疏远": "形容词", "迎刃而解": "成语", "体谅": "动词", "无可厚非": "成语", "称赞": "动词", "崇拜": "名词", "爱不释手": "成语", "碰钉子": "成语", "泼冷水": "名词", "抽屉": "名词", "精疲力竭": "成语", "衰老": "形容词", "抑郁": "形容词", "寂寞": "形容词", "启齿": "动词", "打退堂鼓": "成语", "懊恼": "动词", "伺机": "副词", "心不在焉": "成语", "破天荒": "成语", "仓促": "形容词", "打理": "动词", "家务": "名词", "严肃": "形容词", "安抚": "名词", "干脆": "副词", "风筝": "名词", "挣脱": "动词", "惊讶": "形容词", "斑": "名词", "缠绕": "动词", "搂": "动词", "捐款": "动词", "拯救": "动词", "医疗": "名词", "研究": "动词", "优惠": "动词", "券": "名词", "四肢": "名词", "敏捷": "形容词", "穿梭": "动词", "友善": "形容词", "辨识": "动词", "害羞": "形容词", "馋": "形容词", "调皮": "名词", "摔跤": "动词", "推出": "动词", "亲切": "形容词", "大摇大摆": "成语", "独一无二": "成语", "凶猛": "形容词", "尤其": "副词", "愧疚": "形容词", "光泽": "名词", "懒懒地": "形容词", "妻子": "名词", "啾啾": "名词", "仰": "动词", "凝望": "动词", "鸟笼": "名词", "隔": "动词", "愤怒": "动词", "畏罪潜逃": "成语", "喵": "名词", "衔": "动词", "搞": "动词", "失踪": "动词", "估计": "动词", "活泼": "形容词", "丰富": "形容词", "褐": "名词", "盘旋": "动词", "丝毫": "副词", "面面相觑": "成语", "愣": "动词", "傻": "形容词", "急促": "形容词", "因素": "名词", "水喉": "名词", "资源": "名词", "艰巨": "形容词", "昂贵": "形容词", "消耗": "名词", "干旱": "形容词", "扩大": "动词", "蓄水池": "名词", "洗澡": "动词", "浴室": "名词", "趋势": "名词", "开源节流": "成语", "媒体": "名词", "塑料": "名词", "吨": "数量词", "廉价": "形容词", "提供": "动词", "铺": "动词", "污染": "动词", "焚烧": "动词", "烟尘": "名词", "土壤": "名词", "遏制": "动词", "倡导": "动词", "逐渐": "副词", "威胁": "动词", "煞费苦心": "成语", "统计": "动词", "选择": "动词", "泛滥": "动词", "寿命": "名词", "途径": "名词", "缺乏": "动词", "亿": "数量词", "遗憾": "形容词", "谨慎": "形容词", "妥善": "动词", "自卑": "名词", "身材": "名词", "羡慕": "动词", "抗拒": "动词", "诱惑": "动词", "毅力": "名词", "戒": "名词", "茫然": "名词", "瞌睡": "动词", "嫌": "动词", "逼": "动词", "烹饪": "动词", "符合": "动词", "选修": "动词", "憋": "名词", "委婉": "形容词", "彻底": "形容词", "缝": "动词", "掩": "动词", "恐惧": "形容词", "走廊": "名词", "锁": "动词", "熄灯": "动词", "颤抖": "动词", "隐约": "名词", "瑟瑟": "名词", "恐怖": "形容词", "通宵": "名词", "惊悚": "形容词", "和谐": "形容词", "冤家": "名词", "误会": "名词", "脖子": "名词", "社交媒体": "名词", "缺陷": "动词", "姿势": "名词", "拘束": "动词", "嘈杂": "形容词", "沮丧": "形容词", "若有所思": "成语", "模糊": "形容词", "敏感": "形容词", "掩饰": "动词", "摄影": "名词", "谷底": "名词", "简陋": "形容词", "政府": "名词", "开辟": "动词", "市镇": "名词", "宗教": "名词", "综合": "动词", "诊疗所": "名词", "经济": "名词", "蓬勃": "形容词", "富裕": "形容词", "变迁": "动词", "障碍": "名词", "驰名": "动词", "屡次": "副词", "荣誉": "名词", "姿态": "名词", "接触": "动词", "翠绿": "名词", "心旷神怡": "成语", "合拢": "动词", "林荫": "名词", "樟宜": "名词", "耸立": "动词", "温馨": "名词", "欣赏": "动词", "粗糙": "形容词", "婆娑": "名词", "撑": "动词", "同甘共苦": "成语", "茁壮": "形容词", "移民": "名词", "接纳": "动词", "无怨无悔": "成语", "千姿百态": "成语", "空旷": "名词", "患": "名词", "失智症": "形容词", "寻找": "动词", "流逝": "动词", "嬉戏": "动词", "咖喱卜": "名词", "俏皮": "形容词", "鲜艳": "形容词", "承载": "动词", "沉重": "形容词", "贸易": "动词", "丝绸": "名词", "陆地": "名词", "奢侈": "形容词", "瓷器": "名词", "仪式": "名词", "秉持": "动词", "枢纽": "名词", "港口": "名词", "致力": "名词", "勾勒": "名词", "高瞻远瞩": "成语", "运输": "动词", "传承": "动词", "可谓": "动词", "岛屿": "名词", "海峡": "名词", "历史": "名词", "挖掘": "动词", "区域": "名词", "汇集": "动词", "赋予": "动词", "海纳百川": "成语", "椰浆饭": "名词", "黄姜饭": "名词", "发芽": "动词", "兼容并蓄": "成语", "携手": "动词", "辉煌": "形容词", "得天独厚": "成语", "给予": "动词", "婉转": "动词", "瞩目": "动词", "求同存异": "成语", "皇帝": "名词", "典型": "名词", "普及": "名词", "真伪": "形容词", "步伐": "名词", "询问": "动词", "人云亦云": "成语", "免疫": "动词", "凝聚力": "名词", "辨别": "动词", "良好": "形容词", "人际": "名词", "坦率": "形容词", "隐瞒": "动词", "粗鲁": "形容词", "分歧": "名词", "矛盾": "形容词", "磋商": "动词", "彼此": "代词", "融洽": "动词", "诀窍": "名词", "聆听": "动词", "死党": "名词", "强迫": "形容词", "橱窗": "名词", "狭窄": "形容词", "铅笔盒": "名词", "拧": "动词", "抿": "名词", "肺炎": "名词", "纸屑": "名词", "肿瘤": "名词", "癌症": "名词", "徒劳无功": "成语", "擦拭": "动词", "某": "代词", "苍白": "名词", "鼓掌": "动词", "忠实": "形容词", "异乎寻常": "成语", "痊愈": "动词", "清晰": "形容词", "调剂": "名词", "目睹": "动词", "鄙夷": "动词", "流淌": "动词", "窗帘": "名词", "提心吊胆": "成语", "封": "数量词", "古董": "名词", "衡量": "动词", "纯洁": "形容词", "歧途": "名词", "蔬菜": "名词", "麦片": "名词", "蛋白质": "名词", "睡眠": "动词", "体魄": "名词", "频率": "名词", "韵律": "名词", "汲取": "动词", "敞开": "动词", "心扉": "名词", "缔造": "动词", "聊天": "名词", "郊外": "名词", "淋漓": "动词", "手札": "名词", "抒发": "动词", "休憩": "动词", "均衡": "形容词", "享受": "动词", "饮茶": "名词", "唐": "名词", "磨": "动词", "葱": "名词", "橘子": "名词", "宋": "名词", "鼎盛": "名词", "柴": "名词", "醋": "名词", "沸水": "名词", "调匀": "动词", "搅拌": "动词", "步骤": "名词", "鉴赏": "动词", "消暑": "动词", "菌": "名词", "所谓": "名词", "源远流长": "成语", "异军突起": "成语", "五花八门": "成语", "舞蹈": "名词", "节奏": "名词", "霹雳舞": "名词", "肌肉": "名词", "风靡": "形容词", "掀起": "动词", "热潮": "名词", "雨后春笋": "成语", "爆发力": "名词", "默契": "名词", "焕发": "动词", "真挚": "形容词", "名额": "名词", "链接": "名词", "师傅": "名词", "擅长": "动词", "裁缝": "名词", "编织": "名词", "匠人": "名词", "烘焙": "动词", "讲述": "动词", "黎明": "名词", "苏醒": "名词", "禽": "名词", "晚霞": "名词", "添砖加瓦": "成语", "族裔": "名词", "鲜为人知": "成语", "宵夜": "名词", "唇齿相依": "成语", "亲戚": "名词", "援手": "动词", "侥幸": "形容词", "慷慨解囊": "成语", "渡": "动词", "篱笆": "名词", "心力交瘁": "成语", "雪中送炭": "成语", "恰好": "副词", "弥补": "动词", "谚语": "名词", "和睦": "名词", "冷漠": "名词", "挑剔": "动词", "网络": "名词", "开销": "动词", "锯子": "名词", "遛": "动词", "拴": "动词", "渠道": "名词", "弊端": "名词", "划算": "动词", "久而久之": "成语", "培训": "动词", "阐述": "动词", "铿锵": "名词", "雅俗": "形容词", "抑扬顿挫": "成语", "僵硬": "形容词", "言简意赅": "成语", "啰唆": "动词", "遐想": "动词", "枯燥": "形容词", "筛选": "动词", "欲": "副词", "浏览": "动词", "沟通": "动词", "举手投足": "成语", "乏味": "形容词", "润滑剂": "名词", "不胜枚举": "成语", "扼腕": "成语", "体恤": "动词", "氛围": "名词", "谦虚": "形容词", "裨益": "名词", "严峻": "形容词", "流言蜚语": "成语", "扰乱": "动词", "甚嚣尘上": "成语", "基础": "名词", "涵盖": "动词", "畅所欲言": "成语", "尊重": "形容词", "广泛": "形容词", "导致": "动词", "崛起": "动词", "颠覆": "动词", "报刊": "名词", "书籍": "名词", "传播": "动词", "拨": "动词", "限制": "动词", "天涯": "名词", "屏幕": "名词", "按钮": "名词", "疆界": "名词", "庞大": "形容词", "前所未有": "成语", "创建": "动词", "阶段": "名词", "同侪": "名词", "撰写": "动词", "筹备": "动词", "募捐": "动词", "实践": "动词", "震撼": "动词", "循规蹈矩": "成语", "融会贯通": "成语", "腼腆": "形容词", "咨询": "动词", "数据": "名词", "分析": "动词", "冰淇淋": "名词", "充实": "形容词", "贯穿": "动词", "勇于": "动词", "雄鹰": "名词", "渺小": "形容词", "坐井观天": "成语", "自鸣得意": "成语", "孤陋寡闻": "成语", "奥妙": "名词", "寓言": "名词", "桨": "名词", "浅尝辄止": "成语", "哲学": "名词", "比喻": "名词", "热忱": "名词", "持之以恒": "成语", "清澈": "形容词", "干涸": "动词", "浇灌": "动词", "九牛一毛": "成语", "落伍": "名词", "楷模": "名词", "孜孜不倦": "成语", "敷衍": "动词", "逆水行舟": "成语", "淘汰": "动词", "佐证": "名词", "平庸": "形容词", "岂": "副词", "层出不穷": "成语", "诠释": "动词", "抛锚": "动词", "郁闷": "形容词", "叼": "名词", "逗": "动词", "挑战": "动词", "绊": "动词", "攀登": "动词", "雀跃": "动词", "山脉": "名词", "宇宙": "名词", "体验": "名词", "信任": "名词", "依赖": "动词", "跋涉": "动词", "牵挂": "动词", "唤": "动词", "喉咙": "名词", "绽放": "动词", "绷": "动词", "一般": "形容词", "无奈": "副词", "寺庙": "名词", "幽静": "形容词", "诧异": "形容词", "贱": "形容词", "哽咽": "动词", "眼眶": "名词", "咀嚼": "动词", "搬迁": "动词", "孝顺": "名词", "探望": "动词", "谅解": "动词", "隆重": "形容词", "诅咒": "动词", "洋溢": "动词", "慈祥": "名词", "潭": "名词", "教授": "名词", "割舍": "名词", "神圣": "名词", "介意": "动词", "演奏": "动词", "责无旁贷": "成语", "分忧": "动词", "残障": "动词", "聘请": "动词", "同工同酬": "成语", "权利": "名词", "雇主": "动词", "纠纷": "名词", "小贩": "名词", "摊位": "名词", "呵护": "动词", "缓解": "动词", "乞丐": "名词", "跪": "动词", "肮脏": "形容词", "贫穷": "形容词", "赤裸裸": "形容词", "祈求": "动词", "距离": "名词", "慈悲": "形容词", "阻挡": "动词", "肆无忌惮": "成语", "褴褛": "名词", "革履": "名词", "侦探": "动词", "仁慈": "名词", "叩头": "动词", "残疾": "名词", "质朴": "名词", "大概": "副词", "晓得": "动词", "蓦然": "副词", "推心置腹": "成语", "否则": "虚词", "感恩": "动词", "匆匆": "名词", "婴儿": "名词", "翅膀": "名词", "呈献": "动词", "扣人心弦": "成语", "爱恋": "名词", "唏嘘": "动词", "著名": "形容词", "兴旺": "名词", "负荷": "名词", "反映": "动词", "岔路口": "数量词", "惆怅": "形容词", "紧凑": "形容词", "小卒": "名词", "兴衰": "动词", "轿子": "名词", "何况": "虚词", "耻笑": "动词", "搀扶": "动词", "罢了": "虚词", "姊妹": "名词", "顽劣": "形容词", "溺爱": "动词", "颈项": "名词", "鬓": "名词", "桃": "名词", "瓣": "数量词", "重逢": "动词", "稀罕": "形容词", "拜见": "动词", "面善": "动词", "大吃一惊": "成语", "三顾茅庐": "成语", "争霸": "动词", "足智多谋": "成语", "起伏": "动词", "斥责": "动词", "严寒": "形容词", "恳请": "动词", "心直口快": "成语", "酿": "动词", "涌": "动词", "繁殖": "动词", "饲料": "名词", "佳肴": "名词", "啃": "动词", "入侵": "动词", "盎然": "名词", "砍伐": "动词", "栖息": "动词", "牢记": "名词", "勿": "副词", "惩罚": "动词", "平衡": "形容词", "珍稀": "形容词", "茂密": "形容词", "恶劣": "形容词", "浸泡": "动词", "牺牲": "动词", "锐减": "动词", "保育": "动词", "储存": "名词", "身躯": "名词", "侵蚀": "动词", "空隙": "名词", "堤": "名词", "貌不惊人": "成语", "窥视": "动词", "宣布": "动词", "狩猎": "名词", "饥饿": "名词", "糟蹋": "动词", "毁灭": "动词", "罪魁祸首": "成语", "竞争": "动词", "袭击": "动词", "违背": "动词", "拼搏": "动词", "面目全非": "成语", "举措": "动词", "联盟": "名词", "迄今": "副词", "蜿蜒": "动词", "辽阔": "形容词", "诸多": "副词", "古迹": "名词", "雕刻": "名词", "啧啧称奇": "成语", "赞叹": "动词", "底蕴": "名词", "灿烂": "形容词", "金碧辉煌": "成语", "绚丽": "形容词", "高耸": "名词", "颇": "副词", "独树一帜": "成语", "赋税": "名词", "揭竿而起": "成语", "暴虐": "动词", "葬送": "成语", "推卸": "动词", "停滞": "动词", "趾高气扬": "成语", "谦逊": "形容词", "梦寐以求": "成语", "昌盛": "形容词", "自知之明": "成语", "忍无可忍": "成语", "一无是处": "成语", "协作": "动词", "论坛": "名词", "毋庸讳言": "成语", "棘手": "名词", "肆虐": "动词", "谋求": "动词", "里程碑": "名词", "开拓": "动词", "先驱": "名词", "气馁": "形容词", "出类拔萃": "成语", "韧性": "名词", "浩瀚": "形容词", "天方夜谭": "成语", "百折不挠": "成语", "研发": "名词", "畅销": "动词", "贬": "动词", "粮食": "名词", "豁达": "形容词", "满腔": "名词", "霜": "名词", "遣": "动词", "挽": "动词", "豪迈": "形容词", "慷慨激昂": "成语", "勉励": "动词", "朝廷": "名词", "笔锋": "名词", "扎": "动词", "喧腾": "动词", "感悟": "动词", "崭新": "名词", "迥然": "副词", "奋斗": "动词", "崎岖": "形容词", "抵达": "动词"};
+
+const PINYIN_DATA = {"淘气": "táo qì", "惹": "rě", "两肋插刀": "liǎng lèi chā dāo", "赵": "zhào", "科技": "kē jì", "来者不拒": "lái zhě bù jù", "口头禅": "kǒu tóu chán", "小事一桩": "xiǎo shì yī zhuāng", "人缘": "rén yuán", "性格": "xìng gé", "直率": "zhí shuài", "得罪": "dé zuì", "别扭": "biè niǔ", "争辩": "zhēng biàn", "即使": "jí shǐ", "冤枉": "yuān wǎng", "推荐": "tuī jiàn", "有福同享，有难同当": "yǒu fú tóng xiǎng, yǒu nán tóng dāng", "助人为快乐之本": "zhù rén wéi kuài lè zhī běn", "健将": "jiàn jiàng", "内向": "nèi xiàng", "系列": "xì liè", "捣乱": "dǎo luàn", "瞬间": "shùn jiān", "兴致勃勃": "xìng zhì bó bó", "粘": "zhān", "蛋液": "dàn yè", "狼狈": "láng bèi", "讥讽": "jī fěng", "赌气": "dǔ qì", "嚷": "rǎng", "小心翼翼": "xiǎo xīn yì yì", "荧光笔": "yíng guāng bǐ", "抵挡": "dǐ dǎng", "拉扯": "lā chě", "手足无措": "shǒu zú wú cuò", "布置": "bù zhì", "体会": "tǐ huì", "服气": "fú qì", "证明": "zhèng míng", "居然": "jū rán", "恨不得": "hèn bù dé", "审案": "shěn àn", "律师": "lǜ shī", "振振有词": "zhèn zhèn yǒu cí", "心虚": "xīn xū", "哑口无言": "yǎ kǒu wú yán", "判决": "pàn jué", "泄": "xiè", "既然": "jì rán", "辩护": "biàn hù", "报复": "bào fù", "错误": "cuò wù", "葡萄": "pú táo", "象征": "xiàng zhēng", "风俗": "fēng sú", "辞旧迎新": "cí jiù yíng xīn", "燃放": "rán fàng", "瓶瓶罐罐": "píng píng guàn guàn", "厄运": "è yùn", "前夕": "qián xī", "碗碟": "wǎn dié", "预示": "yù shì", "兆头": "zhào tou", "忙碌": "máng lù", "遥远": "yáo yuǎn", "恭敬": "gōng jìng", "万事大吉": "wàn shì dà jí", "元旦": "yuán dàn", "除夕": "chú xī", "贼": "zéi", "鱼尾纹": "yú wěi wén", "装饰": "zhuāng shì", "圣诞": "shèng dàn", "格格不入": "gé gé bù rù", "结婚": "jié hūn", "嫁": "jià", "视讯": "shì xùn", "沉默寡言": "chén mò guǎ yán", "副": "fù", "酷": "kù", "承诺": "chéng nuò", "歉意": "qiàn yì", "围炉": "wéi lú", "蒸腾": "zhēng téng", "叽叽喳喳": "jī jī zhā zhā", "缺席": "quē xí", "悦耳": "yuè ěr", "闹别扭": "nào biè niǔ", "吞吞吐吐": "tūn tūn tǔ tǔ", "红枣": "hóng zǎo", "儿媳妇": "ér xí fù", "莫名其妙": "mò míng qí miào", "疑惑": "yí huò", "大吉大利": "dà jí dà lì", "魅力": "mèi lì", "博物馆": "bó wù guǎn", "悠久": "yōu jiǔ", "遗产": "yí chǎn", "巴刹": "bā shā", "同胞": "tóng bāo", "融合": "róng hé", "皇宫": "huáng gōng", "城堡": "chéng bǎo", "时尚": "shí shàng", "彩绘": "cǎi huì", "流连忘返": "liú lián wàng fǎn", "娱乐": "yú lè", "探索": "tàn suǒ", "娘惹": "niáng rě", "拍摄": "pāi shè", "平均": "píng jūn", "繁忙": "fán máng", "闪耀": "shǎn yào", "文明": "wén míng", "品尝": "pǐn cháng", "安详": "ān xiáng", "休闲": "xiū xián", "横梁": "héng liáng", "覆盖": "fù gài", "玻璃": "bō lí", "瀑布": "pù bù", "循环": "xún huán", "谷": "gǔ", "株": "zhū", "设施": "shè shī", "蹦跳": "bèng tiào", "甚至": "shèn zhì", "主题": "zhǔ tí", "别具一格": "bié jù yī gé", "投降": "tóu xiáng", "自治": "zì zhì", "栏": "lán", "棕色": "zōng sè", "氧化": "yǎng huà", "陌生": "mò shēng", "宁静": "níng jìng", "属于": "shǔ yú", "面积": "miàn jī", "天花板": "tiān huā bǎn", "坚持不懈": "jiān chí bù xiè", "开卷有益": "kāi juàn yǒu yì", "以礼待人": "yǐ lǐ dài rén", "新颖": "xīn yǐng", "戏剧": "xì jù", "工作坊": "gōng zuō fang", "尴尬": "gān gà", "维护": "wéi hù", "友谊": "yǒu yì", "一帆风顺": "yī fān fēng shùn", "有效": "yǒu xiào", "策略": "cè lüè", "嘉宾": "jiā bīn", "辅导员": "fǔ dǎo yuán", "一诺千金": "yí nuò qiān jīn", "言出必行": "yán chū bì xíng", "起码": "qǐ mǎ", "赖床": "lài chuáng", "滋味": "zī wèi", "催促": "cuī cù", "哀求": "āi qiú", "硬着头皮": "yìng zhe tóu pí", "藤鞭": "téng biān", "抡": "lūn", "挨打": "ái dǎ", "女佣": "nǚ yōng", "雨蓬": "yǔ péng", "泪痕": "lèi hén", "猛": "měng", "嗓子眼": "sǎng zi yǎn", "允许": "yǔn xǔ", "早晨": "zǎo chén", "毛病": "máo bìng", "不得了": "bù dé le", "情愿": "qíng yuàn", "缘故": "yuán gù", "相貌": "xiàng mào", "讲究": "jiǎng jiū", "何必": "hé bì", "记账": "jì zhàng", "亏": "kuī", "撇": "piē", "慢条斯理": "màn tiáo sī lǐ", "起航": "qǐ háng", "焦急": "jiāo jí", "记性": "jì xìng", "精明": "jīng míng", "剩": "shèng", "牙膏": "yá gāo", "橡皮擦": "xiàng pí cā", "薯条": "shǔ tiáo", "番茄酱": "fān qié jiàng", "偶尔": "ǒu ěr", "评委": "píng wěi", "晋级": "jìn jí", "奖励": "jiǎng lì", "获得": "huò dé", "企业": "qǐ yè", "创新": "chuàng xīn", "牧场": "mù chǎng", "潜水": "qián shuǐ", "艘": "sōu", "屁股": "pì gǔ", "翘": "qiào", "潜水艇": "qián shuǐ tǐng", "仿佛": "fǎng fú", "确切": "què qiè", "浑身": "hún shēn", "基因": "jī yīn", "一哄而散": "yī hòng ér sàn", "手势": "shǒu shì", "颁布": "bān bù", "泛": "fàn", "泡沫": "pào mò", "腾空而起": "téng kōng ér qǐ", "降落": "jiàng luò", "打量": "dǎ liàng", "伤脑筋": "shāng nǎo jīn", "拜访": "bài fǎng", "中央": "zhōng yāng", "漫步": "màn bù", "绞尽脑汁": "jiǎo jìn nǎo zhī", "华侨": "huá qiáo", "银行": "yín háng", "由衷": "yóu zhōng", "摩天大楼": "mó tiān dà lóu", "薄薄的": "báo báo de", "抨击": "pēng jī", "挫折": "cuò zhé", "打交道": "dǎ jiāo dào", "而已": "ér yǐ", "油漆": "yóu qī", "栏杆": "lán gān", "宿舍": "sù shè", "凭": "píng", "欣慰": "xīn wèi", "订购": "dìng gòu", "塔台": "tǎ tái", "范围": "fàn wéi", "特殊": "tè shū", "警惕": "jǐng tì", "失误": "shī wù", "不堪设想": "bù kān shè xiǎng", "脂肪": "zhī fáng", "及时": "jí shí", "一旦": "yí dàn", "心满意足": "xīn mǎn yì zú", "截至": "jié zhì", "行驶": "xíng shǐ", "延误": "yán wù", "稳定": "wěn dìng", "幕后": "mù hòu", "贡献": "gòng xiàn", "明知山有虎，偏向虎山行": "míng zhī shān yǒu hǔ, piān xiàng hǔ shān xíng", "漏夜": "lòu yè", "轨道": "guǐ dào", "凌晨": "líng chén", "就绪": "jiù xù", "隧道": "suì dào", "扫描": "sǎo miáo", "裂痕": "liè hén", "顺畅": "shùn chàng", "全力以赴": "quán lì yǐ fù", "职业": "zhí yè", "故障": "gù zhàng", "岗位": "gǎng wèi", "维修": "wéi xiū", "确保": "què bǎo", "投入": "tóu rù", "默默无闻": "mò mò wú wén", "新谣": "xīn yáo", "芝麻": "zhī má", "朗朗上口": "lǎng lǎng shàng kǒu", "奉献": "fèng xiàn", "繁荣": "fán róng", "平凡": "píng fán", "光芒": "guāng máng", "微不足道": "wēi bù zú dào", "敬业乐业": "jìng yè lè yè", "犹豫": "yóu yù", "不分青红皂白": "bù fēn qīng hóng zào bái", "教训": "jiào xùn", "叛逆": "pàn nì", "委屈": "wěi qū", "内疚": "nèi jiù", "不妨": "bù fáng", "匿名": "nì míng", "监督": "jiān dū", "代沟": "dài gōu", "上瘾": "shàng yǐn", "疏远": "shū yuǎn", "迎刃而解": "yíng rèn ér jiě", "体谅": "tǐ liàng", "无可厚非": "wú kě hòu fēi", "称赞": "chēng zàn", "崇拜": "chóng bài", "爱不释手": "ài bù shì shǒu", "碰钉子": "pèng dīng zi", "泼冷水": "pō lěng shuǐ", "抽屉": "chōu tì", "精疲力竭": "jīng pí lì jié", "衰老": "shuāi lǎo", "抑郁": "yì yù", "寂寞": "jì mò", "启齿": "qǐ chǐ", "打退堂鼓": "dǎ tuì táng gǔ", "懊恼": "ào nǎo", "伺机": "sì jī", "心不在焉": "xīn bù zài yān", "破天荒": "pò tiān huāng", "仓促": "cāng cù", "打理": "dǎ lǐ", "家务": "jiā wù", "严肃": "yán sù", "安抚": "ān fǔ", "干脆": "gān cuì", "风筝": "fēng zhēng", "挣脱": "zhèng tuō", "惊讶": "jīng yà", "斑": "bān", "缠绕": "chán rào", "搂": "lǒu", "捐款": "juān kuǎn", "拯救": "zhěng jiù", "医疗": "yī liáo", "研究": "yán jiū", "优惠": "yōu huì", "券": "quàn", "四肢": "sì zhī", "敏捷": "mǐn jié", "穿梭": "chuān suō", "友善": "yǒu shàn", "辨识": "biàn shí", "害羞": "hài xiū", "馋": "chán", "调皮": "tiáo pí", "摔跤": "shuāi jiāo", "推出": "tuī chū", "亲切": "qīn qiè", "大摇大摆": "dà yáo dà bǎi", "独一无二": "dú yī wú èr", "凶猛": "xiōng měng", "尤其": "yóu qí", "愧疚": "kuì jiù", "光泽": "guāng zé", "懒懒地": "lǎn lǎn dì", "妻子": "qī zǐ", "啾啾": "jiū jiū", "仰": "yǎng", "凝望": "níng wàng", "鸟笼": "niǎo lóng", "隔": "gé", "愤怒": "fèn nù", "畏罪潜逃": "wèi zuì qián táo", "喵": "miāo", "衔": "xián", "搞": "gǎo", "失踪": "shī zōng", "估计": "gū jì", "活泼": "huó pō", "丰富": "fēng fù", "褐": "hè", "盘旋": "pán xuán", "丝毫": "sī háo", "面面相觑": "miàn miàn xiāng qù", "愣": "lèng", "傻": "shǎ", "急促": "jí cù", "因素": "yīn sù", "水喉": "shuǐ hóu", "资源": "zī yuán", "艰巨": "jiān jù", "昂贵": "áng guì", "消耗": "xiāo hào", "干旱": "gān hàn", "扩大": "kuò dà", "蓄水池": "xù shuǐ chí", "洗澡": "xǐ zǎo", "浴室": "yù shì", "趋势": "qū shì", "开源节流": "kāi yuán jié liú", "媒体": "méi tǐ", "塑料": "sù liào", "吨": "dūn", "廉价": "lián jià", "提供": "tí gōng", "铺": "pù", "污染": "wū rǎn", "焚烧": "fén shāo", "烟尘": "yān chén", "土壤": "tǔ rǎng", "遏制": "è zhì", "倡导": "chàng dǎo", "逐渐": "zhú jiàn", "威胁": "wēi xié", "煞费苦心": "shà fèi kǔ xīn", "统计": "tǒng jì", "选择": "xuǎn zé", "泛滥": "fàn làn", "寿命": "shòu mìng", "途径": "tú jìng", "缺乏": "quē fá", "亿": "yì", "遗憾": "yí hàn", "谨慎": "jǐn shèn", "妥善": "tuǒ shàn", "自卑": "zì bēi", "身材": "shēn cái", "羡慕": "xiàn mù", "抗拒": "kàng jù", "诱惑": "yòu huò", "毅力": "yì lì", "戒": "jiè", "茫然": "máng rán", "瞌睡": "kē shuì", "嫌": "xián", "逼": "bī", "烹饪": "pēng rèn", "符合": "fú hé", "选修": "xuǎn xiū", "憋": "biē", "委婉": "wěi wǎn", "彻底": "chè dǐ", "缝": "fèng", "掩": "yǎn", "恐惧": "kǒng jù", "走廊": "zǒu láng", "锁": "suǒ", "熄灯": "xī dēng", "颤抖": "chàn dǒu", "隐约": "yǐn yuē", "瑟瑟": "sè sè", "恐怖": "kǒng bù", "通宵": "tōng xiāo", "惊悚": "jīng sǒng", "和谐": "hé xié", "冤家": "yuān jiā", "误会": "wù huì", "脖子": "bó zi", "社交媒体": "shè jiāo méi tǐ", "缺陷": "quē xiàn", "姿势": "zī shì", "拘束": "jū shù", "嘈杂": "cáo zá", "沮丧": "jǔ sàng", "若有所思": "ruò yǒu suǒ sī", "模糊": "mó hú", "敏感": "mǐn gǎn", "掩饰": "yǎn shì", "摄影": "shè yǐng", "谷底": "gǔ dǐ", "简陋": "jiǎn lòu", "政府": "zhèng fǔ", "开辟": "kāi pì", "市镇": "shì zhèn", "宗教": "zōng jiào", "综合": "zōng hé", "诊疗所": "zhěn liáo suǒ", "经济": "jīng jì", "蓬勃": "péng bó", "富裕": "fù yù", "变迁": "biàn qiān", "障碍": "zhàng ài", "驰名": "chí míng", "屡次": "lǚ cì", "荣誉": "róng yù", "姿态": "zī tài", "接触": "jiē chù", "翠绿": "cuì lǜ", "心旷神怡": "xīn kuàng shén yí", "合拢": "hé lǒng", "林荫": "lín yīn", "樟宜": "zhāng yí", "耸立": "sǒng lì", "温馨": "wēn xīn", "欣赏": "xīn shǎng", "粗糙": "cū cāo", "婆娑": "pó suō", "撑": "chēng", "同甘共苦": "tóng gān gòng kǔ", "茁壮": "zhuó zhuàng", "移民": "yí mín", "接纳": "jiē nà", "无怨无悔": "wú yuàn wú huǐ", "千姿百态": "qiān zī bǎi tài", "空旷": "kōng kuàng", "患": "huàn", "失智症": "shī zhì zhèng", "寻找": "xún zhǎo", "流逝": "liú shì", "嬉戏": "xī xì", "咖喱卜": "gā lí bo", "俏皮": "qiào pí", "鲜艳": "xiān yàn", "承载": "chéng zài", "沉重": "chén zhòng", "贸易": "mào yì", "丝绸": "sī chóu", "陆地": "lù dì", "奢侈": "shē chǐ", "瓷器": "cí qì", "仪式": "yí shì", "秉持": "bǐng chí", "枢纽": "shū niǔ", "港口": "gǎng kǒu", "致力": "zhì lì", "勾勒": "gōu lè", "高瞻远瞩": "gāo zhān yuǎn zhǔ", "运输": "yùn shū", "传承": "chuán chéng", "可谓": "kě wèi", "岛屿": "dǎo yǔ", "海峡": "hǎi xiá", "历史": "lì shǐ", "挖掘": "wā jué", "区域": "qū yù", "汇集": "huì jí", "赋予": "fù yǔ", "海纳百川": "hǎi nà bǎi chuān", "椰浆饭": "yē jiāng fàn", "黄姜饭": "huáng jiāng fàn", "发芽": "fā yá", "兼容并蓄": "jiān róng bìng xù", "携手": "xié shǒu", "辉煌": "huī huáng", "得天独厚": "dé tiān dú hòu", "给予": "jǐ yǔ", "婉转": "wǎn zhuǎn", "瞩目": "zhǔ mù", "求同存异": "qiú tóng cún yì", "皇帝": "huáng dì", "典型": "diǎn xíng", "普及": "pǔ jí", "真伪": "zhēn wěi", "步伐": "bù fá", "询问": "xún wèn", "人云亦云": "rén yún yì yún", "免疫": "miǎn yì", "凝聚力": "níng jù lì", "辨别": "biàn bié", "良好": "liáng hǎo", "人际": "rén jì", "坦率": "tǎn shuài", "隐瞒": "yǐn mán", "粗鲁": "cū lǔ", "分歧": "fēn qí", "矛盾": "máo dùn", "磋商": "cuō shāng", "彼此": "bǐ cǐ", "融洽": "róng qià", "诀窍": "jué qiào", "聆听": "líng tīng", "死党": "sǐ dǎng", "强迫": "qiǎng pò", "橱窗": "chú chuāng", "狭窄": "xiá zhǎi", "铅笔盒": "qiān bǐ hé", "拧": "níng", "抿": "mǐn", "肺炎": "fèi yán", "纸屑": "zhǐ xiè", "肿瘤": "zhǒng liú", "癌症": "ái zhèng", "徒劳无功": "tú láo wú gōng", "擦拭": "cā shì", "某": "mǒu", "苍白": "cāng bái", "鼓掌": "gǔ zhǎng", "忠实": "zhōng shí", "异乎寻常": "yì hū xún cháng", "痊愈": "quán yù", "清晰": "qīng xī", "调剂": "tiáo jì", "目睹": "mù dǔ", "鄙夷": "bǐ yí", "流淌": "liú tǎng", "窗帘": "chuāng lián", "提心吊胆": "tí xīn diào dǎn", "封": "fēng", "古董": "gǔ dǒng", "衡量": "héng liáng", "纯洁": "chún jié", "歧途": "qí tú", "蔬菜": "shū cài", "麦片": "mài piàn", "蛋白质": "dàn bái zhì", "睡眠": "shuì mián", "体魄": "tǐ pò", "频率": "pín lǜ", "韵律": "yùn lǜ", "汲取": "jí qǔ", "敞开": "chǎng kāi", "心扉": "xīn fēi", "缔造": "dì zào", "聊天": "liáo tiān", "郊外": "jiāo wài", "淋漓": "lín lí", "手札": "shǒu zhá", "抒发": "shū fā", "休憩": "xiū qì", "均衡": "jūn héng", "享受": "xiǎng shòu", "饮茶": "yǐn chá", "唐": "táng", "磨": "mó", "葱": "cōng", "橘子": "jú zi", "宋": "sòng", "鼎盛": "dǐng shèng", "柴": "chái", "醋": "cù", "沸水": "fèi shuǐ", "调匀": "tiáo yún", "搅拌": "jiǎo bàn", "步骤": "bù zhòu", "鉴赏": "jiàn shǎng", "消暑": "xiāo shǔ", "菌": "jūn", "所谓": "suǒ wèi", "源远流长": "yuán yuǎn liú cháng", "异军突起": "yì jūn tū qǐ", "五花八门": "wǔ huā bā mén", "舞蹈": "wǔ dǎo", "节奏": "jié zòu", "霹雳舞": "pī lì wǔ", "肌肉": "jī ròu", "风靡": "fēng mǐ", "掀起": "xiān qǐ", "热潮": "rè cháo", "雨后春笋": "yǔ hòu chūn sǔn", "爆发力": "bào fā lì", "默契": "mò qì", "焕发": "huàn fā", "真挚": "zhēn zhì", "名额": "míng é", "链接": "liàn jiē", "师傅": "shī fù", "擅长": "shàn cháng", "裁缝": "cái féng", "编织": "biān zhī", "匠人": "jiàng rén", "烘焙": "hōng bèi", "讲述": "jiǎng shù", "黎明": "lí míng", "苏醒": "sū xǐng", "禽": "qín", "晚霞": "wǎn xiá", "添砖加瓦": "tiān zhuān jiā wǎ", "族裔": "zú yì", "鲜为人知": "xiǎn wéi rén zhī", "宵夜": "xiāo yè", "唇齿相依": "chún chǐ xiāng yī", "亲戚": "qīn qī", "援手": "yuán shǒu", "侥幸": "jiǎo xìng", "慷慨解囊": "kāng kǎi jiě náng", "渡": "dù", "篱笆": "lí bā", "心力交瘁": "xīn lì jiāo cuì", "雪中送炭": "xuě zhōng sòng tàn", "恰好": "qià hǎo", "弥补": "mí bǔ", "谚语": "yàn yǔ", "和睦": "hé mù", "冷漠": "lěng mò", "挑剔": "tiāo tī", "网络": "wǎng luò", "开销": "kāi xiāo", "锯子": "jù zi", "遛": "liú", "拴": "shuān", "渠道": "qú dào", "弊端": "bì duān", "划算": "huá suàn", "久而久之": "jiǔ ér jiǔ zhī", "培训": "péi xùn", "阐述": "chǎn shù", "铿锵": "kēng qiāng", "雅俗": "yǎ sú", "抑扬顿挫": "yì yáng dùn cuò", "僵硬": "jiāng yìng", "言简意赅": "yán jiǎn yì gāi", "啰唆": "luō suō", "遐想": "xiá xiǎng", "枯燥": "kū zào", "筛选": "shāi xuǎn", "欲": "yù", "浏览": "liú lǎn", "沟通": "gōu tōng", "举手投足": "jǔ shǒu tóu zú", "乏味": "fá wèi", "润滑剂": "rùn huá jì", "不胜枚举": "bù shèng méi jǔ", "扼腕": "è wàn", "体恤": "tǐ xù", "氛围": "fēn wéi", "谦虚": "qiān xū", "裨益": "bì yì", "严峻": "yán jùn", "流言蜚语": "liú yán fēi yǔ", "扰乱": "rǎo luàn", "甚嚣尘上": "shèn xiāo chén shàng", "基础": "jī chǔ", "涵盖": "hán gài", "畅所欲言": "chàng suǒ yù yán", "尊重": "zūn zhòng", "广泛": "guǎng fàn", "导致": "dǎo zhì", "崛起": "jué qǐ", "颠覆": "diān fù", "报刊": "bào kān", "书籍": "shū jí", "传播": "chuán bō", "拨": "bō", "限制": "xiàn zhì", "天涯": "tiān yá", "屏幕": "píng mù", "按钮": "àn niǔ", "疆界": "jiāng jiè", "庞大": "páng dà", "前所未有": "qián suǒ wèi yǒu", "创建": "chuàng jiàn", "阶段": "jiē duàn", "同侪": "tóng chái", "撰写": "zhuàn xiě", "筹备": "chóu bèi", "募捐": "mù juān", "实践": "shí jiàn", "震撼": "zhèn hàn", "循规蹈矩": "xún guī dǎo jǔ", "融会贯通": "róng huì guàn tōng", "腼腆": "miǎn tiǎn", "咨询": "zī xún", "数据": "shù jù", "分析": "fēn xī", "冰淇淋": "bīng qí lín", "充实": "chōng shí", "贯穿": "guàn chuān", "勇于": "yǒng yú", "雄鹰": "xióng yīng", "渺小": "miǎo xiǎo", "坐井观天": "zuò jǐng guān tiān", "自鸣得意": "zì míng dé yì", "孤陋寡闻": "gū lòu guǎ wén", "奥妙": "ào miào", "寓言": "yù yán", "桨": "jiǎng", "浅尝辄止": "qiǎn cháng zhé zhǐ", "哲学": "zhé xué", "比喻": "bǐ yù", "热忱": "rè chén", "持之以恒": "chí zhī yǐ héng", "清澈": "qīng chè", "干涸": "gān hé", "浇灌": "jiāo guàn", "九牛一毛": "jiǔ niú yì máo", "落伍": "luò wǔ", "楷模": "kǎi mó", "孜孜不倦": "zī zī bù juàn", "敷衍": "fū yǎn", "逆水行舟": "nì shuǐ xíng zhōu", "淘汰": "táo tài", "佐证": "zuǒ zhèng", "平庸": "píng yōng", "岂": "qǐ", "层出不穷": "céng chū bù qióng", "诠释": "quán shì", "抛锚": "pāo máo", "郁闷": "yù mèn", "叼": "diāo", "逗": "dòu", "挑战": "tiǎo zhàn", "绊": "bàn", "攀登": "pān dēng", "雀跃": "què yuè", "山脉": "shān mài", "宇宙": "yǔ zhòu", "体验": "tǐ yàn", "信任": "xìn rèn", "依赖": "yī lài", "跋涉": "bá shè", "牵挂": "qiān guà", "唤": "huàn", "喉咙": "hóu lóng", "绽放": "zhàn fàng", "绷": "bēng", "一般": "yì bān", "无奈": "wú nài", "寺庙": "sì miào", "幽静": "yōu jìng", "诧异": "chà yì", "贱": "jiàn", "哽咽": "gěng yè", "眼眶": "yǎn kuàng", "咀嚼": "jǔ jué", "搬迁": "bān qiān", "孝顺": "xiào shùn", "探望": "tàn wàng", "谅解": "liàng jiě", "隆重": "lóng zhòng", "诅咒": "zǔ zhòu", "洋溢": "yáng yì", "慈祥": "cí xiáng", "潭": "tán", "教授": "jiào shòu", "割舍": "gē shě", "神圣": "shén shèng", "介意": "jiè yì", "演奏": "yǎn zòu", "责无旁贷": "zé wú páng dài", "分忧": "fēn yōu", "残障": "cán zhàng", "聘请": "pìn qǐng", "同工同酬": "tóng gōng tóng chóu", "权利": "quán lì", "雇主": "gù zhǔ", "纠纷": "jiū fēn", "小贩": "xiǎo fàn", "摊位": "tān wèi", "呵护": "hē hù", "缓解": "huǎn jiě", "乞丐": "qǐ gài", "跪": "guì", "肮脏": "āng zāng", "贫穷": "pín qióng", "赤裸裸": "chì luǒ luǒ", "祈求": "qí qiú", "距离": "jù lí", "慈悲": "cí bēi", "阻挡": "zǔ dǎng", "肆无忌惮": "sì wú jì dàn", "褴褛": "lán lǚ", "革履": "gé lǚ", "侦探": "zhēn tàn", "仁慈": "rén cí", "叩头": "kòu tóu", "残疾": "cán jí", "质朴": "zhì piáo", "大概": "dà gài", "晓得": "xiǎo de", "蓦然": "mò rán", "推心置腹": "tuī xīn zhì fù", "否则": "fǒu zé", "感恩": "gǎn ēn", "匆匆": "cōng cōng", "婴儿": "yīng ér", "翅膀": "chì bǎng", "呈献": "chéng xiàn", "扣人心弦": "kòu rén xīn xián", "爱恋": "ài liàn", "唏嘘": "xī xū", "著名": "zhù míng", "兴旺": "xīng wàng", "负荷": "fù hè", "反映": "fǎn yìng", "岔路口": "chà lù kǒu", "惆怅": "chóu chàng", "紧凑": "jǐn còu", "小卒": "xiǎo zú", "兴衰": "xīng shuāi", "轿子": "jiào zi", "何况": "hé kuàng", "耻笑": "chǐ xiào", "搀扶": "chān fú", "罢了": "bà le", "姊妹": "zǐ mèi", "顽劣": "wán liè", "溺爱": "nì ài", "颈项": "jǐng xiàng", "鬓": "bìn", "桃": "táo", "瓣": "bàn", "重逢": "chóng féng", "稀罕": "xī hǎn", "拜见": "bài jiàn", "面善": "miàn shàn", "大吃一惊": "dà chī yī jīng", "三顾茅庐": "sān gù máo lú", "争霸": "zhēng bà", "足智多谋": "zú zhì duō móu", "起伏": "qǐ fú", "斥责": "chì zé", "严寒": "yán hán", "恳请": "kěn qǐng", "心直口快": "xīn zhí kǒu kuài", "酿": "niàng", "涌": "yǒng", "繁殖": "fán zhí", "饲料": "sì liào", "佳肴": "jiā yáo", "啃": "kěn", "入侵": "rù qīn", "盎然": "àng rán", "砍伐": "kǎn fá", "栖息": "qī xī", "牢记": "láo jì", "勿": "wù", "惩罚": "chéng fá", "平衡": "píng héng", "珍稀": "zhēn xī", "茂密": "mào mì", "恶劣": "è liè", "浸泡": "jìn pào", "牺牲": "xī shēng", "锐减": "ruì jiǎn", "保育": "bǎo yù", "储存": "chǔ cún", "身躯": "shēn qū", "侵蚀": "qīn shí", "空隙": "kòng xì", "堤": "dī", "貌不惊人": "mào bù jīng rén", "窥视": "kuī shì", "宣布": "xuān bù", "狩猎": "shòu liè", "饥饿": "jī è", "糟蹋": "zāo tà", "毁灭": "huǐ miè", "罪魁祸首": "zuì kuí huò shǒu", "竞争": "jìng zhēng", "袭击": "xí jī", "违背": "wéi bèi", "拼搏": "pīn bó", "面目全非": "miàn mù quán fēi", "举措": "jǔ cuò", "联盟": "lián méng", "迄今": "qì jīn", "蜿蜒": "wān yán", "辽阔": "liáo kuò", "诸多": "zhū duō", "古迹": "gǔ jì", "雕刻": "diāo kè", "啧啧称奇": "zé zé chēng qí", "赞叹": "zàn tàn", "底蕴": "dǐ yùn", "灿烂": "càn làn", "金碧辉煌": "jīn bì huī huáng", "绚丽": "xuàn lì", "高耸": "gāo sǒng", "颇": "pǒ", "独树一帜": "dú shù yī zhì", "赋税": "fù shuì", "揭竿而起": "jiē gān ér qǐ", "暴虐": "bào nüè", "葬送": "zàng sòng", "推卸": "tuī xiè", "停滞": "tíng zhì", "趾高气扬": "zhǐ gāo qì yáng", "谦逊": "qiān xùn", "梦寐以求": "mèng mèi yǐ qiú", "昌盛": "chāng shèng", "自知之明": "zì zhī zhī míng", "忍无可忍": "rěn wú kě rěn", "一无是处": "yī wú shì chù", "协作": "xié zuò", "论坛": "lùn tán", "毋庸讳言": "wú yōng huì yán", "棘手": "jí shǒu", "肆虐": "sì nüè", "谋求": "móu qiú", "里程碑": "lǐ chéng bēi", "开拓": "kāi tuò", "先驱": "xiān qū", "气馁": "qì něi", "出类拔萃": "chū lèi bá cuì", "韧性": "rèn xìng", "浩瀚": "hào hàn", "天方夜谭": "tiān fāng yè tán", "百折不挠": "bǎi zhé bù náo", "研发": "yán fā", "畅销": "chàng xiāo", "贬": "biǎn", "粮食": "liáng shí", "豁达": "huò dá", "满腔": "mǎn qiāng", "霜": "shuāng", "遣": "qiǎn", "挽": "wǎn", "豪迈": "háo mài", "慷慨激昂": "kāng kǎi jī áng", "勉励": "miǎn lì", "朝廷": "cháo tíng", "笔锋": "bǐ fēng", "扎": "zhā", "喧腾": "xuān téng", "感悟": "gǎn wù", "崭新": "zhǎn xīn", "迥然": "jiǒng rán", "奋斗": "fèn dòu", "崎岖": "qí qū", "抵达": "dǐ dá"};
+
+// Near-synonym pairs that should never be used as distractors for each other
+const SYNONYM_EXCLUDE = {"残障": ["残疾"], "残疾": ["残障"], "忙碌": ["繁忙"], "繁忙": ["忙碌"], "陌生": ["生疏"], "宁静": ["安详"], "安详": ["宁静"], "融合": ["融洽"], "融洽": ["和睦", "融合"], "和睦": ["融洽"], "疑惑": ["迷惑"], "迷惑": ["疑惑"], "委屈": ["冤枉"], "冤枉": ["委屈"], "催促": ["敦促"], "敦促": ["催促"], "允许": ["准许"], "准许": ["允许"], "获得": ["取得"], "取得": ["获得"], "维护": ["保护"], "保护": ["维护"], "真挚": ["真诚"], "真诚": ["真挚"], "坦率": ["直率"], "直率": ["坦率"], "粗鲁": ["无礼"], "无礼": ["粗鲁"], "聆听": ["倾听"], "倾听": ["聆听"], "擅长": ["善于"], "善于": ["擅长"], "谦虚": ["谦逊"], "谦逊": ["谦虚"], "豪迈": ["豁达"], "豁达": ["豪迈"], "奋斗": ["拼搏"], "拼搏": ["奋斗"], "惩罚": ["处罚"], "处罚": ["惩罚"], "昌盛": ["繁荣"], "繁荣": ["昌盛"], "停滞": ["停止"], "停止": ["停滞"], "棘手": ["困难"], "困难": ["棘手"], "肆虐": ["横行"], "横行": ["肆虐"], "气馁": ["沮丧"], "沮丧": ["气馁"], "震撼": ["感动"], "感动": ["震撼"], "腼腆": ["害羞"], "害羞": ["腼腆"], "愤怒": ["愤慨"], "愤慨": ["愤怒"], "恐惧": ["恐怖", "惊悚"], "恐怖": ["恐惧"], "惊悚": ["恐惧"], "孤陋寡闻": ["坐井观天"], "坐井观天": ["孤陋寡闻"], "承诺": ["保证"], "保证": ["承诺"], "歉意": ["抱歉"], "抱歉": ["歉意"], "装饰": ["点缀"], "点缀": ["装饰"], "探索": ["探寻"], "探寻": ["探索"], "娱乐": ["休闲"], "休闲": ["娱乐"], "创新": ["革新"], "革新": ["创新"], "策略": ["方法"], "方法": ["策略"], "嘉宾": ["贵宾"], "贵宾": ["嘉宾"], "珍稀": ["稀有"], "稀有": ["珍稀"], "平衡": ["均衡"], "均衡": ["平衡"], "承载": ["承担"], "承担": ["承载"], "流逝": ["消逝"], "消逝": ["流逝"], "鲜艳": ["艳丽"], "艳丽": ["鲜艳"], "矛盾": ["冲突", "分歧"], "冲突": ["矛盾"], "分歧": ["矛盾"]};
+
 const VOCAB = {
   "中一": {
     "单元一 生活空间": ["淘气","惹","两肋插刀","赵","科技","来者不拒","口头禅","小事一桩","人缘","性格","直率","得罪","别扭","争辩","即使","冤枉","推荐","有福同享，有难同当","助人为快乐之本","健将","内向","系列"],
@@ -3975,10 +4574,29 @@ function saveProgress() {
 
 function getWordBox(w) { return (progress[w] && progress[w].box) || 0; }
 
+// ── MASTERY: requires BOTH flashcard 认识了 AND cloze correct ─
+// progress[w].fcKnown  = true when marked 认识了 on flashcard
+// progress[w].clozeOk = true when answered correctly in 填空挑战
+// Getting cloze wrong resets clozeOk (demotes mastery)
+function isMastered(w)   {
+  return !!(progress[w] && progress[w].fcKnown && progress[w].clozeOk);
+}
+function isLearning(w)   {
+  if (isMastered(w)) return false;
+  return !!(progress[w] && (progress[w].fcKnown || progress[w].clozeOk ||
+            progress[w].box > 0 || progress[w].wrongCount > 0));
+}
+
 function markWordCorrect(w) {
   if (!progress[w]) progress[w] = { box:0, wrongCount:0 };
   progress[w].box = Math.min(2, (progress[w].box||0) + 1);
   progress[w].lastSeen = Date.now();
+  // Mark mode-specific condition
+  if (currentMode === 'flashcard') {
+    progress[w].fcKnown = true;
+  } else if (currentMode === 'cloze') {
+    progress[w].clozeOk = true;
+  }
   saveProgress();
 }
 
@@ -3986,6 +4604,27 @@ function markWordWrong(w) {
   if (!progress[w]) progress[w] = { box:0, wrongCount:0 };
   progress[w].box = 0;
   progress[w].wrongCount = (progress[w].wrongCount||0) + 1;
+  progress[w].lastSeen = Date.now();
+  // Cloze wrong demotes mastery
+  if (currentMode === 'cloze') {
+    progress[w].clozeOk = false;
+  }
+  saveProgress();
+}
+
+// markWord for flashcard self-mark
+function markWordKnownFlashcard(w) {
+  if (!progress[w]) progress[w] = { box:0, wrongCount:0 };
+  progress[w].box = Math.min(2, (progress[w].box||0) + 1);
+  progress[w].fcKnown = true;
+  progress[w].lastSeen = Date.now();
+  saveProgress();
+}
+function markWordUnknownFlashcard(w) {
+  if (!progress[w]) progress[w] = { box:0, wrongCount:0 };
+  progress[w].box = 0;
+  progress[w].wrongCount = (progress[w].wrongCount||0) + 1;
+  progress[w].fcKnown = false;
   progress[w].lastSeen = Date.now();
   saveProgress();
 }
@@ -4003,25 +4642,36 @@ function saveSessionResult(unitKey, score, mode) {
 }
 
 // ══ STATISTICS ═════════════════════════════════════════════
-function getMastered(words) { return words.filter(w => getWordBox(w) >= 2).length; }
+function getMastered(words) { return words.filter(w => isMastered(w)).length; }
 function getAllWords() {
   return Object.values(VOCAB).flatMap(u => Object.values(u).flat());
 }
 function getWeakWords() {
-  return getAllWords().filter(w => progress[w] && progress[w].box === 0 && progress[w].wrongCount > 0);
+  // 未掌握：attempted but not yet mastered
+  return getAllWords().filter(w => isLearning(w) && !isMastered(w));
 }
 
 // ══ SCREEN NAV ═════════════════════════════════════════════
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  const target = document.getElementById(id);
+  if (target) target.classList.add('active');
   window.scrollTo(0, 0);
+  const fab = document.getElementById('feedback-fab');
+  if (fab) {
+    const showOnScreens = ['study-screen', 'results-screen'];
+    fab.classList.toggle('show', showOnScreens.includes(id));
+  }
+  // Refresh achievements if navigating there
+  if (id === 'achievements-screen') {
+    try { updateAchievementsScreen(); } catch(e) {}
+  }
 }
 
 function updateHomeStats() {
   const all = getAllWords();
   const mastered = getMastered(all);
-  const learning = all.filter(w => progress[w] && progress[w].box === 1).length;
+  const learning = all.filter(w => isLearning(w)).length;
   const weak     = getWeakWords();
 
   document.getElementById('stat-total').textContent    = all.length;
@@ -4055,6 +4705,19 @@ function updateHomeStats() {
     document.getElementById('weak-count-badge').textContent = weak.length;
   } else {
     wb.style.display = 'none';
+  }
+
+  // Update rank pill
+  const rankPill = document.getElementById('home-rank-pill');
+  if (rankPill) {
+    const pct = Math.round(getMastered(all) / all.length * 100);
+    try {
+      const badges = loadBadges();
+      const rank = getCurrentRank(badges);
+      rankPill.textContent = rank.emoji + ' ' + rank.title + ' · ' + pct + '%';
+    } catch(e) {
+      rankPill.textContent = '🌱 词语学徒 · ' + pct + '%';
+    }
   }
 }
 
@@ -4131,15 +4794,15 @@ function startStudy(level, unitKey, words, weakOnly=false) {
   sessionWrong   = 0;
   sessionWrongWords = [];
 
-  document.getElementById('study-title').textContent = weakOnly ? '薄弱词语复习' : unitKey;
+  document.getElementById('study-title').textContent = weakOnly ? '未掌握词语复习' : unitKey;
   switchMode(currentMode, true);
   showScreen('study-screen');
 }
 
 function startWeakWords() {
   const weak = getWeakWords();
-  if (!weak.length) { showToast('暂时没有薄弱词语！'); return; }
-  startStudy(null, '薄弱词语', weak, true);
+  if (!weak.length) { showToast('暂时没有未掌握词语！'); return; }
+  startStudy(null, '未掌握词语', weak, true);
 }
 
 function exitStudy() {
@@ -4162,7 +4825,7 @@ function switchMode(mode, force=false) {
   }
 
   // For MCQ/cloze, filter to words with definitions
-  if (mode === 'mcq') {
+  if (mode === 'definition') {
     const dWords = currentWords.filter(w => DEFS[w]);
     if (dWords.length < 4) {
       showToast('请先尝试闪卡模式');
@@ -4191,7 +4854,7 @@ function switchMode(mode, force=false) {
 
   // Show/hide mode panels
   document.getElementById('flashcard-mode').style.display = mode==='flashcard' ? 'flex' : 'none';
-  document.getElementById('mcq-mode').style.display       = mode==='mcq'       ? 'flex' : 'none';
+  document.getElementById('definition-mode').style.display       = mode==='definition'       ? 'flex' : 'none';
   document.getElementById('cloze-mode').style.display     = mode==='cloze'     ? 'flex' : 'none';
   document.getElementById('english-mode').style.display   = mode==='english'   ? 'flex' : 'none';
 
@@ -4205,7 +4868,7 @@ function renderQuestion() {
 
   const word = currentWords[currentIdx];
   if      (currentMode === 'flashcard') renderFlashcard(word);
-  else if (currentMode === 'mcq')       renderMCQ(word);
+  else if (currentMode === 'definition')       renderDefinition(word);
   else if (currentMode === 'cloze')     renderCloze(word);
   else if (currentMode === 'english')   renderEnglish(word);
 }
@@ -4218,6 +4881,9 @@ function renderFlashcard(word) {
   document.getElementById('fc-word').textContent      = word;
   document.getElementById('fc-context').textContent   = getUnitContext(word);
   document.getElementById('fc-back-word').textContent = word;
+  // Show pinyin underneath the word on back face
+  const pyEl = document.getElementById('fc-pinyin');
+  if (pyEl) pyEl.textContent = PINYIN_DATA[word] || '';
   document.getElementById('fc-meaning').textContent   = DEFS[word] || '（义项见课本）';
   // Show example with word filled in
   const ex = EXAMPLES[word] ? EXAMPLES[word].replace('__', '【'+word+'】') : '';
@@ -4237,27 +4903,36 @@ function flipCard() {
 
 function markWord(known) {
   const word = currentWords[currentIdx];
-  if (known) { markWordCorrect(word); sessionCorrect++; showToast('✓ 已记住！'); }
-  else       { markWordWrong(word);   sessionWrong++;   sessionWrongWords.push(word); showToast('✗ 加入复习队列'); }
+  if (known) {
+    markWordKnownFlashcard(word);
+    sessionCorrect++;
+    const alreadyMastered = isMastered(word);
+    showToast(alreadyMastered ? '👑 已掌握！' : '✓ 继续完成填空挑战可达到已掌握！');
+  } else {
+    markWordUnknownFlashcard(word);
+    sessionWrong++;
+    sessionWrongWords.push(word);
+    showToast('继续练习，你会掌握的！');
+  }
   currentIdx++;
   setTimeout(renderQuestion, 320);
 }
 
 // ── MCQ: Chinese meaning ──────────────────────────────────
-function renderMCQ(word) {
-  document.getElementById('mcq-word').textContent    = word;
-  document.getElementById('mcq-context').textContent = getUnitContext(word);
-  document.getElementById('mcq-feedback').className  = 'mcq-feedback';
-  document.getElementById('mcq-next').className      = 'next-btn';
+function renderDefinition(word) {
+  document.getElementById('def-word').textContent    = word;
+  document.getElementById('def-context').textContent = getUnitContext(word);
+  document.getElementById('def-feedback').className  = 'mcq-feedback';
+  document.getElementById('def-next').className      = 'next-btn';
 
   const correct = DEFS[word];
   const opts = buildMCQOptions(word, correct, DEFS, currentLevel);
 
   renderOptions('mcq-options', opts, correct, (isRight) => {
-    const fb = document.getElementById('mcq-feedback');
+    const fb = document.getElementById('def-feedback');
     fb.textContent = isRight ? '✓ 正确！' : `✗ 正确答案是：${correct}`;
     fb.className = 'mcq-feedback show ' + (isRight ? 'correct' : 'wrong');
-    document.getElementById('mcq-next').className = 'next-btn show';
+    document.getElementById('def-next').className = 'next-btn show';
     if (isRight) { markWordCorrect(word); sessionCorrect++; }
     else         { markWordWrong(word);   sessionWrong++;   sessionWrongWords.push(word); }
   });
@@ -4282,13 +4957,20 @@ function renderCloze(word) {
     ? Object.values(VOCAB[currentLevel]).flat().filter(w => w !== word && EXAMPLES[w])
     : getAllWords().filter(w => w !== word && EXAMPLES[w]);
 
-  // Prefer same-length words (±1 char) as distractors for better plausibility
+  // Prefer same-POS, same-length words as distractors
+  // Exclude near-synonyms
   const wLen = word.length;
-  const byLen = [...same, ...fallback].filter(w => Math.abs(w.length - wLen) <= 1 && w !== word);
-  const others = [...same, ...fallback].filter(w => !byLen.includes(w) && w !== word);
+  const samePOSFilter = w => isSamePOS(word, w) && !isSynonymDistractor(word, w) && w !== word;
+  const byLen = [...same, ...fallback].filter(w =>
+    Math.abs(w.length - wLen) <= 1 && samePOSFilter(w));
+  const others = [...same, ...fallback].filter(w =>
+    !byLen.includes(w) && samePOSFilter(w));
+  // Relaxed fallback (ignore POS) if not enough
+  const relaxed = [...same, ...fallback].filter(w =>
+    !byLen.includes(w) && !others.includes(w) && w !== word && !isSynonymDistractor(word, w));
 
-  shuffleArray(byLen); shuffleArray(others);
-  const distractors = [...new Set([...byLen, ...others])].slice(0, 3);
+  shuffleArray(byLen); shuffleArray(others); shuffleArray(relaxed);
+  const distractors = [...new Set([...byLen, ...others, ...relaxed])].slice(0, 3);
 
   const opts = [word, ...distractors];
   shuffleArray(opts);
@@ -4361,17 +5043,41 @@ function renderOptions(containerId, opts, correct, onSelect) {
 }
 
 // ── DISTRACTOR BUILDER ────────────────────────────────────
+function isSynonymDistractor(target, candidate) {
+  const excl = SYNONYM_EXCLUDE[target] || [];
+  return excl.includes(candidate);
+}
+
+function isSamePOS(word, candidate) {
+  const posA = POS_TAGS[word]      || '';
+  const posB = POS_TAGS[candidate] || '';
+  if (!posA || !posB) return true; // unknown - allow
+  return posA === posB;
+}
+
 function buildMCQOptions(word, correct, defsObj, level) {
-  // Prefer distractors from same unit, then same level, then global
-  const unitWords = getUnitWords(word, level);
+  const unitWords  = getUnitWords(word, level);
   const levelWords = level ? Object.values(VOCAB[level]).flat() : [];
-  const allW = getAllWords();
+  const allW       = getAllWords();
+
+  function eligible(w) {
+    return w !== word &&
+           defsObj[w] &&
+           defsObj[w] !== correct &&
+           !isSynonymDistractor(word, w) &&
+           isSamePOS(word, w);
+  }
 
   const pools = [
-    unitWords.filter(w => w !== word && defsObj[w] && defsObj[w] !== correct),
-    levelWords.filter(w => w !== word && defsObj[w] && defsObj[w] !== correct),
-    allW.filter(w => w !== word && defsObj[w] && defsObj[w] !== correct)
+    unitWords.filter(eligible),
+    levelWords.filter(eligible),
+    allW.filter(eligible)
   ];
+
+  // Fallback: relax POS constraint if not enough distractors
+  function eligibleRelaxed(w) {
+    return w !== word && defsObj[w] && defsObj[w] !== correct && !isSynonymDistractor(word, w);
+  }
 
   const seen = new Set([correct]);
   const distractors = [];
@@ -4385,6 +5091,18 @@ function buildMCQOptions(word, correct, defsObj, level) {
       }
     }
     if (distractors.length >= 3) break;
+  }
+
+  // If still short, relax POS
+  if (distractors.length < 3) {
+    const fallback = allW.filter(eligibleRelaxed);
+    shuffleArray(fallback);
+    for (const w of fallback) {
+      if (!seen.has(defsObj[w]) && distractors.length < 3) {
+        seen.add(defsObj[w]);
+        distractors.push(defsObj[w]);
+      }
+    }
   }
 
   const opts = [correct, ...distractors];
@@ -4467,7 +5185,7 @@ function showResults() {
 }
 
 function modeLabel(m) {
-  return m==='flashcard'?'闪卡':m==='mcq'?'中文选择':m==='cloze'?'填空选择':'英文翻译';
+  return m==='flashcard'?'闪卡':m==='definition'?'中文选择':m==='cloze'?'填空选择':'英文翻译';
 }
 
 function renderHistoryPanel() {
@@ -4578,44 +5296,38 @@ const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz-hhl4DucGncxBSsr
 // AUTHENTICATION & USER IDENTITY
 // ══════════════════════════════════════════════════════════════
 
-const USER_KEY       = 'cl_vocab_user_email';
-const USER_TYPE_KEY  = 'cl_vocab_user_type';
+const USER_KEY      = 'cl_vocab_user_email';
+const USER_TYPE_KEY = 'cl_vocab_user_type';
 
-// Domain detection
-function detectUserType(email) {
-  if (!email) return 'unknown';
-  const lower = email.toLowerCase().trim();
-  if (lower.endsWith('@students.edu.sg')) return 'student';
-  if (lower.endsWith('@moe.edu.sg'))      return 'teacher';
-  return 'external';
-}
+const TEACHER_TYPES = ['教师'];
+const STUDENT_TYPES = ['百德中学学生', '其他学校学生'];
 
-function getUserType()  {
+function getUserType() {
   return sessionStorage.getItem(USER_TYPE_KEY) ||
-         localStorage.getItem(USER_TYPE_KEY) || 'unknown';
+         localStorage.getItem(USER_TYPE_KEY) || '';
 }
-
-function isTeacher()  { return getUserType() === 'teacher'; }
-function isStudent()  { return getUserType() === 'student'; }
+function isTeacher() { return TEACHER_TYPES.includes(getUserType()); }
+function isStudent() { return STUDENT_TYPES.includes(getUserType()); }
 
 // ── WELCOME SCREEN LOGIC ─────────────────────────────────────
 function submitWelcome() {
-  const input = document.getElementById('welcome-email');
-  const errEl = document.getElementById('welcome-error');
-  const email = (input.value || '').trim().toLowerCase();
+  const emailInput = document.getElementById('welcome-email');
+  const typeInput  = document.getElementById('welcome-usertype');
+  const email    = (emailInput.value || '').trim().toLowerCase();
+  const userType = (typeInput.value  || '').trim();
 
-  // Basic validation
-  if (!email) {
-    showWelcomeError('请输入你的电邮地址');
-    return;
-  }
+  if (!email) { showWelcomeError('请输入你的电邮地址'); return; }
   if (!email.includes('@') || !email.includes('.')) {
-    showWelcomeError('请输入有效的电邮地址');
-    return;
+    showWelcomeError('请输入有效的电邮地址'); return;
   }
+  if (!userType) { showWelcomeError('请选择你的身份'); return; }
 
-  // Save identity
-  const userType = detectUserType(email);
+  saveUserIdentity(email, userType);
+  reportRegistration(email, userType);
+  launchApp(email, userType);
+}
+
+function saveUserIdentity(email, userType) {
   try {
     localStorage.setItem(USER_KEY, email);
     localStorage.setItem(USER_TYPE_KEY, userType);
@@ -4624,37 +5336,43 @@ function submitWelcome() {
   } catch(e) {}
   idbSet(USER_KEY, email).catch(() => {});
   idbSet(USER_TYPE_KEY, userType).catch(() => {});
-
-  launchApp(email, userType);
 }
 
 function showWelcomeError(msg) {
   const errEl = document.getElementById('welcome-error');
-  const input = document.getElementById('welcome-email');
+  const emailInput = document.getElementById('welcome-email');
   errEl.textContent = msg;
   errEl.classList.add('show');
-  input.classList.add('error');
+  emailInput.classList.add('error');
   setTimeout(() => {
     errEl.classList.remove('show');
-    input.classList.remove('error');
+    emailInput.classList.remove('error');
   }, 3000);
 }
 
 // ── LAUNCH APP AFTER LOGIN ────────────────────────────────────
 function launchApp(email, userType) {
-  // Update UI
   const emailDisplay = document.getElementById('user-email-display');
   if (emailDisplay) emailDisplay.textContent = email;
 
-  // Show teacher banner if applicable
+  // Update type badge
+  const badge = document.getElementById('user-type-badge');
+  if (badge) badge.textContent = userType || '';
+
+  // Teacher banner
   const teacherBanner = document.getElementById('teacher-banner');
-  if (teacherBanner && userType === 'teacher') {
-    teacherBanner.classList.add('show');
+  if (teacherBanner) {
+    teacherBanner.classList.toggle('show', TEACHER_TYPES.includes(userType));
   }
 
-  // Switch to home screen
+  // Show feedback FAB on study screens
+  updateFeedbackFab();
+
   showScreen('home-screen');
-  loadProgress().then(() => fetchSheetData());
+  loadProgress().then(() => {
+    fetchSheetData();
+    fetchUsageStats();
+  });
 }
 
 // ── SIGN OUT ─────────────────────────────────────────────────
@@ -4667,52 +5385,106 @@ function signOut() {
     sessionStorage.removeItem(USER_TYPE_KEY);
   } catch(e) {}
   idbSet(USER_KEY, null).catch(() => {});
+  idbSet(USER_TYPE_KEY, null).catch(() => {});
   showScreen('welcome-screen');
 }
 
 // ── GET CURRENT USER EMAIL ────────────────────────────────────
-// Override the stub from PWA section
 function getUserEmail() {
   return sessionStorage.getItem(USER_KEY) ||
-         localStorage.getItem(USER_KEY) ||
-         'unknown';
+         localStorage.getItem(USER_KEY) || 'unknown';
 }
 
-// ── PATCH reportToSheets: skip if teacher ────────────────────
-const _origReport = reportToSheets;
-reportToSheets = async function(scoreData) {
-  if (isTeacher()) {
-    console.log('Teacher mode — skipping sheet report');
-    return;
-  }
-  // Add user type to payload
-  scoreData.userType = getUserType();
-  await _origReport(scoreData);
-};
+// ── PROFILE EDIT ─────────────────────────────────────────────
+function showProfileModal() {
+  const modal = document.getElementById('profile-modal');
+  const sel   = document.getElementById('profile-usertype');
+  if (sel) sel.value = getUserType();
+  if (modal) modal.classList.add('show');
+}
+
+function closeProfileModal() {
+  document.getElementById('profile-modal').classList.remove('show');
+}
+
+function saveProfileEdit() {
+  const sel      = document.getElementById('profile-usertype');
+  const userType = sel ? sel.value : '';
+  if (!userType) { showToast('请选择身份'); return; }
+  const email = getUserEmail();
+  saveUserIdentity(email, userType);
+  // Update badge + banner
+  const badge = document.getElementById('user-type-badge');
+  if (badge) badge.textContent = userType;
+  const teacherBanner = document.getElementById('teacher-banner');
+  if (teacherBanner) teacherBanner.classList.toggle('show', TEACHER_TYPES.includes(userType));
+  // Report the change to GAS
+  reportLogin(email, userType);
+  closeProfileModal();
+  showToast('✓ 身份已更新');
+}
 
 // ── CHECK LOGIN ON STARTUP ────────────────────────────────────
 async function checkLoginState() {
-  // Try sources in order: sessionStorage → localStorage → IndexedDB
   let email = sessionStorage.getItem(USER_KEY) || localStorage.getItem(USER_KEY);
   if (!email) {
     try { email = await idbGet(USER_KEY); } catch(e) {}
   }
+  let userType = sessionStorage.getItem(USER_TYPE_KEY) || localStorage.getItem(USER_TYPE_KEY);
+  if (!userType) {
+    try { userType = await idbGet(USER_TYPE_KEY); } catch(e) {}
+  }
 
-  if (email) {
-    // Restore to session storage (in case it was only in IDB)
+  if (email && userType) {
     try {
       sessionStorage.setItem(USER_KEY, email);
-      const userType = detectUserType(email);
       sessionStorage.setItem(USER_TYPE_KEY, userType);
       localStorage.setItem(USER_KEY, email);
       localStorage.setItem(USER_TYPE_KEY, userType);
     } catch(e) {}
-    launchApp(email, detectUserType(email));
+    reportLogin(email, userType);
+    launchApp(email, userType);
   } else {
-    // First time — show welcome screen (already active by default)
     showScreen('welcome-screen');
   }
 }
+
+// ── GAS REPORTING ─────────────────────────────────────────────
+async function gasPost(payload) {
+  if (!GAS_ENDPOINT || GAS_ENDPOINT === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') return null;
+  try {
+    const res = await fetch(GAS_ENDPOINT, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+    return await res.json();
+  } catch(e) { return null; }
+}
+
+async function reportRegistration(email, userType) {
+  await gasPost({ action: 'register', email, userType });
+}
+
+async function reportLogin(email, userType) {
+  await gasPost({ action: 'login', email, userType });
+}
+
+async function fetchUsageStats() {
+  if (!GAS_ENDPOINT || GAS_ENDPOINT === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') return;
+  try {
+    const res = await fetch(GAS_ENDPOINT + '?action=stats');
+    const data = await res.json();
+    if (data.ok) {
+      const bv = document.getElementById('counter-bukit');
+      const tot = document.getElementById('counter-total');
+      if (bv) bv.textContent = data.bukitViewStudents;
+      if (tot) tot.textContent = data.totalStudents;
+    }
+  } catch(e) {}
+}
+
+// ── SUPPRESS OLD reportToSheets (no longer logging scores) ───
+function reportToSheets() { /* Score logging removed. Only usage tracked. */ }
 
 
 // ── MASTER WORD LIST (for index-based save code) ──────────────
@@ -4913,54 +5685,576 @@ document.getElementById('restore-modal').addEventListener('click', function(e) {
   if (e.target === this) closeRestoreModal();
 });
 
-// ── GOOGLE SHEETS REPORTING ───────────────────────────────────
-function getUserEmail() {
-  // Try to get from Google Sign-In if available
+// getUserEmail defined in auth section
+
+// reportToSheets stub — overridden later in auth section
+function reportToSheets() {}
+
+// Score reporting removed — only usage stats are collected.
+// (reportToSheets is now a no-op defined in the auth section)
+
+
+// ══════════════════════════════════════════════════════════════
+// GAMIFICATION — BADGES, RANKS, ACHIEVEMENTS
+// ══════════════════════════════════════════════════════════════
+
+const RANK_CONFIG = {
+  '中一': { emoji: '🌱', title: '词语学徒', next: '词语能手' },
+  '中二': { emoji: '🎯', title: '词语能手', next: '词语达人' },
+  '中三': { emoji: '🏅', title: '词语达人', next: '词语宗师' },
+  '中四': { emoji: '🏆', title: '词语宗师', next: '顶级词王' },
+  '全部': { emoji: '👑', title: '顶级词王', next: null },
+};
+
+// badges[level][unitKey][type] = true/false
+// type: 生活空间/核心/巩固/全单元
+const BADGE_STORAGE_KEY = 'cl_badges_v3';
+
+function loadBadges() {
   try {
-    if (window.google && google.accounts && google.accounts.id) {
-      return sessionStorage.getItem('cl_user_email') || 'student';
-    }
-  } catch(e) {}
-  return sessionStorage.getItem('cl_user_email') || 'student';
+    const b = localStorage.getItem(BADGE_STORAGE_KEY);
+    return b ? JSON.parse(b) : {};
+  } catch(e) { return {}; }
 }
 
-async function reportToSheets(scoreData) {
-  if (!GAS_ENDPOINT || GAS_ENDPOINT === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') return;
-  try {
-    const payload = {
-      email:     getUserEmail(),
-      level:     currentLevel || '',
-      unit:      currentUnit  || '',
-      mode:      currentMode  || '',
-      score:     scoreData.score,
-      correct:   scoreData.correct,
-      wrong:     scoreData.wrong,
-      weakWords: scoreData.weakWords || []
-    };
-    // Use sendBeacon for reliability (works even if page closes)
-    const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
-    if (navigator.sendBeacon) {
-      navigator.sendBeacon(GAS_ENDPOINT, blob);
+function saveBadges(badges) {
+  try { localStorage.setItem(BADGE_STORAGE_KEY, JSON.stringify(badges)); } catch(e) {}
+}
+
+// Check and award badges after any progress update
+function checkAndAwardBadges() {
+  const badges = loadBadges();
+  const newlyEarned = [];
+
+  Object.entries(VOCAB).forEach(([level, units]) => {
+    if (!badges[level]) badges[level] = {};
+
+    // Component badges (生活空间, 核心, 巩固)
+    Object.entries(units).forEach(([unitKey, words]) => {
+      if (!badges[level][unitKey]) badges[level][unitKey] = {};
+      const allMastered = words.every(w => isMastered(w));
+      if (allMastered && !badges[level][unitKey].component) {
+        badges[level][unitKey].component = true;
+        newlyEarned.push({
+          emoji: '⭐',
+          title: `成就解锁：${unitKey}`,
+          subtitle: `你已掌握${level}${unitKey}的全部词语！继续努力，完成整个单元！`,
+          level: 'component'
+        });
+      }
+    });
+
+    // Unit badges — check each 单元 (group of 生活空间/核心/巩固)
+    const unitNums = [...new Set(Object.keys(units).map(k => k.match(/单元\S+/)?.[0]))].filter(Boolean);
+    unitNums.forEach(unitNum => {
+      const unitKeys = Object.keys(units).filter(k => k.startsWith(unitNum));
+      const allUnitMastered = unitKeys.every(uk => badges[level]?.[uk]?.component);
+      if (allUnitMastered && !badges[level][unitNum + '_unit']) {
+        badges[level][unitNum + '_unit'] = true;
+        newlyEarned.push({
+          emoji: '🎖️',
+          title: `单元完成：${level} ${unitNum}`,
+          subtitle: `太棒了！你已完全掌握${level}${unitNum}的生活空间、核心与巩固词语！`,
+          level: 'unit'
+        });
+      }
+    });
+
+    // Level badge — all words in level mastered
+    const allLevelWords = Object.values(units).flat();
+    const allLevelMastered = allLevelWords.every(w => isMastered(w));
+    if (allLevelMastered && !badges[level]['_level']) {
+      badges[level]['_level'] = true;
+      const rc = RANK_CONFIG[level];
+      newlyEarned.push({
+        emoji: rc.emoji,
+        title: `🎉 ${rc.title} — ${level}完成！`,
+        subtitle: `你已掌握${level}全部词语，荣获「${rc.title}」称号！继续向${rc.next}进发！`,
+        level: 'level'
+      });
+    }
+  });
+
+  // All levels complete = 顶级词王
+  const allComplete = Object.keys(VOCAB).every(lv => badges[lv]?.['_level']);
+  if (allComplete && !badges['_wangzhe']) {
+    badges['_wangzhe'] = true;
+    newlyEarned.push({
+      emoji: '👑',
+      title: '顶级词王！',
+      subtitle: '你已掌握中一至中四全部991个词语！你就是真正的词王！',
+      level: 'ultimate'
+    });
+  }
+
+  saveBadges(badges);
+  if (newlyEarned.length > 0) showBadgeCelebration(newlyEarned);
+  updateLevelBadgeCorners(badges);
+  return badges;
+}
+
+let _celebrationQueue = [];
+function showBadgeCelebration(earned) {
+  _celebrationQueue = [..._celebrationQueue, ...earned];
+  if (_celebrationQueue.length === 1) processNextCelebration();
+}
+
+function processNextCelebration() {
+  if (_celebrationQueue.length === 0) return;
+  const item = _celebrationQueue[0];
+  if (item.level === 'level' || item.level === 'ultimate') {
+    // Full screen for level and ultimate
+    document.getElementById('badge-celebration-emoji').textContent = item.emoji;
+    document.getElementById('badge-celebration-title').textContent = item.title;
+    document.getElementById('badge-celebration-subtitle').textContent = item.subtitle;
+    const overlay = document.getElementById('badge-overlay');
+    overlay.style.display = 'flex';
+  } else {
+    // Toast for component/unit badges
+    showToast(item.emoji + ' ' + item.title);
+    _celebrationQueue.shift();
+    setTimeout(processNextCelebration, 2200);
+  }
+}
+
+function closeBadgeOverlay() {
+  document.getElementById('badge-overlay').style.display = 'none';
+  _celebrationQueue.shift();
+  setTimeout(processNextCelebration, 300);
+}
+
+function updateLevelBadgeCorners(badges) {
+  const levels = ['中一','中二','中三','中四'];
+  levels.forEach(lv => {
+    const el = document.getElementById('badge-' + lv);
+    if (!el) return;
+    if (badges[lv]?.['_level']) {
+      el.style.opacity = '1';
+      const lc = document.getElementById('lc-' + lv);
+      if (lc) lc.classList.add('lc-active');
     } else {
-      fetch(GAS_ENDPOINT, { method: 'POST', body: JSON.stringify(payload) }).catch(() => {});
+      // Show dim unless any progress
+      const hasProgress = badges[lv] && Object.keys(badges[lv]).length > 0;
+      el.style.opacity = hasProgress ? '0.6' : '0.3';
     }
-  } catch(e) { /* Silent fail — don't disrupt student */ }
+  });
 }
 
-// ── PATCH showResults to call reportToSheets ──────────────────
-const _origShowResults = showResults;
-showResults = function() {
-  _origShowResults();
-  // Report to Google Sheets
-  const total = sessionCorrect + sessionWrong;
-  const pct   = total > 0 ? Math.round(sessionCorrect / total * 100) : 100;
-  reportToSheets({
-    score:     pct,
-    correct:   sessionCorrect,
-    wrong:     sessionWrong,
-    weakWords: [...new Set(sessionWrongWords)].slice(0, 20)
+function getCurrentRank(badges) {
+  const levels = ['中一','中二','中三','中四'];
+  if (badges['_wangzhe']) return RANK_CONFIG['全部'];
+  for (let i = levels.length - 1; i >= 0; i--) {
+    if (badges[levels[i]]?.['_level']) return RANK_CONFIG[levels[i]];
+  }
+  return RANK_CONFIG['中一']; // default: 学徒
+}
+
+// ── UPDATE HOME STATS with badge check ──────────────────────
+const _origUpdateHomeStats = updateHomeStats;
+updateHomeStats = function() {
+  _origUpdateHomeStats();
+  const badges = checkAndAwardBadges();
+  updateLevelBadgeCorners(badges);
+  // Update chapter counts on level cards
+  Object.keys(VOCAB).forEach(level => {
+    const units = VOCAB[level];
+    const totalChapters = Object.keys(units).length;
+    let earnedChapters = 0;
+    Object.keys(units).forEach(uk => {
+      if (badges[level]?.[uk]?.component) earnedChapters++;
+    });
+    const el = document.getElementById('chap-' + level);
+    if (el) el.textContent = earnedChapters + '/' + totalChapters + ' 章';
+  });
+  // Update level fill colours to use green when active
+  Object.keys(VOCAB).forEach(level => {
+    const fill = document.getElementById('bar-' + level);
+    if (fill) fill.style.background = 'linear-gradient(90deg,var(--green-mid),var(--gold))';
   });
 };
+
+// ── ACHIEVEMENTS SCREEN ──────────────────────────────────────
+function updateAchievementsScreen() {
+  const badges = loadBadges();
+  const all = getAllWords();
+  const mastered = all.filter(w => isMastered(w)).length;
+  const learning = all.filter(w => isLearning(w)).length;
+  const unstarted = all.length - mastered - learning;
+  const pct = Math.round(mastered / all.length * 100);
+
+  const rank = getCurrentRank(badges);
+  document.getElementById('ach-rank-emoji').textContent = rank.emoji;
+  document.getElementById('ach-rank-name').textContent = rank.title;
+  document.getElementById('ach-rank-next').textContent = rank.next
+    ? '下一目标：完成当前年级全部词语 → 晋升「' + rank.next + '」'
+    : '🎉 已达到最高荣誉！';
+  document.getElementById('ach-mastery-pct').textContent = pct + '%';
+  document.getElementById('ach-mastered-n').textContent = mastered;
+  document.getElementById('ach-learning-n').textContent = learning;
+  document.getElementById('ach-unstarted-n').textContent = unstarted;
+
+  // Render level cards
+  const container = document.getElementById('ach-levels-container');
+  container.innerHTML = '';
+  const levels = ['中一','中二','中三','中四'];
+  let prevLevelComplete = true;
+
+  levels.forEach(level => {
+    const rc = RANK_CONFIG[level];
+    const units = VOCAB[level];
+    const levelWords = Object.values(units).flat();
+    const levelMastered = levelWords.filter(w => isMastered(w)).length;
+    const levelPct = Math.round(levelMastered / levelWords.length * 100);
+    const levelDone = badges[level]?.['_level'];
+    const totalChapters = Object.keys(units).length;
+    let earnedChapters = 0;
+    Object.keys(units).forEach(uk => { if (badges[level]?.[uk]?.component) earnedChapters++; });
+
+    const card = document.createElement('div');
+    card.className = 'ach-level-card' + (!prevLevelComplete ? ' locked' : '');
+
+    // Top row
+    const topRow = document.createElement('div');
+    topRow.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:8px;';
+    topRow.innerHTML = \`
+      <span style="font-size:1.6rem;line-height:1;\${!prevLevelComplete ? 'filter:grayscale(1)' : ''}">\${rc.emoji}</span>
+      <div style="flex:1;">
+        <div style="font-size:1.05rem;color:var(--ink);font-family:var(--font-body);">\${level}</div>
+        <div style="font-size:.75rem;color:var(--blue);font-family:var(--font-ui);font-weight:600;">\${rc.title}\${levelDone ? ' ✓' : !prevLevelComplete ? ' — 未解锁' : ' · 进行中'}</div>
+      </div>
+      <div style="font-size:.9rem;font-family:var(--font-ui);font-weight:500;color:var(--ink-mute);">\${levelPct}%</div>
+    \`;
+    card.appendChild(topRow);
+
+    // Badge count
+    if (prevLevelComplete) {
+      const countDiv = document.createElement('div');
+      countDiv.style.cssText = 'font-size:.72rem;color:var(--ink-mute);font-family:var(--font-ui);margin-bottom:5px;';
+      countDiv.textContent = earnedChapters + ' / ' + totalChapters + ' 成就章已获得';
+      card.appendChild(countDiv);
+    }
+
+    // Progress bar
+    const track = document.createElement('div');
+    track.style.cssText = 'background:var(--paper-3);border-radius:4px;height:6px;overflow:hidden;margin-bottom:8px;';
+    track.innerHTML = \`<div style="height:100%;border-radius:4px;width:\${levelPct}%;background:linear-gradient(90deg,var(--green-mid),var(--gold));transition:width .5s;"></div>\`;
+    card.appendChild(track);
+
+    // Badge chips (show up to 8, collapsed)
+    if (prevLevelComplete) {
+      const badgeRow = document.createElement('div');
+      badgeRow.className = 'ach-badge-row';
+      Object.keys(units).forEach(uk => {
+        const earned = badges[level]?.[uk]?.component;
+        const chip = document.createElement('div');
+        chip.className = 'ach-badge ' + (earned ? 'earned' : 'not-earned');
+        chip.textContent = (earned ? '⭐ ' : '○ ') + uk;
+        badgeRow.appendChild(chip);
+      });
+      // Unit-level badges
+      const unitNums = [...new Set(Object.keys(units).map(k => k.match(/单元\S+/)?.[0]))].filter(Boolean);
+      unitNums.forEach(un => {
+        const earned = badges[level]?.[un + '_unit'];
+        if (earned) {
+          const chip = document.createElement('div');
+          chip.className = 'ach-badge unit-badge';
+          chip.textContent = '🎖️ ' + un + ' 全部';
+          badgeRow.appendChild(chip);
+        }
+      });
+      card.appendChild(badgeRow);
+    }
+
+    container.appendChild(card);
+    prevLevelComplete = !!levelDone;
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// USER GUIDE
+// ══════════════════════════════════════════════════════════════
+let _guideLang = 'zh';
+
+function toggleGuideLang() {
+  _guideLang = _guideLang === 'zh' ? 'en' : 'zh';
+  document.getElementById('guide-lang-toggle').textContent = _guideLang === 'zh' ? 'English' : '中文';
+  renderGuide();
+}
+
+function renderGuide() {
+  const zh = _guideLang === 'zh';
+  const sections = [
+    {
+      icon: '🎮',
+      title: zh ? '欢迎来到词王训练营！' : 'Welcome to Vocabulary Boot Camp!',
+      body: zh
+        ? '你的词王之路从这里开始！完成四个年级的词语学习，从词语学徒一步步晋升，最终荣获顶级词王👑的称号。'
+        : 'Your journey to becoming a Vocabulary King starts here! Master vocabulary across four levels and rise from Apprentice all the way to the ultimate title of Grand Vocab King 👑.'
+    },
+    {
+      icon: '📊',
+      title: zh ? '词语掌握状态' : 'Mastery States',
+      body: null,
+      states: [
+        { cls: 'gs-unstarted', label: zh?'未开始':'Not started', desc: zh?'还没有练习过这个词语。':'You have not practised this word yet.' },
+        { cls: 'gs-learning',  label: zh?'学习中':'In progress',  desc: zh?'已经开始学习，但尚未同时完成词语闪卡和填空挑战。华文解释和英文翻译不计入掌握状态。':'You have started, but have not yet completed both Flashcard and Fill-in Challenge. Definition and English tabs do not count toward mastery.' },
+        { cls: 'gs-mastered',  label: zh?'已掌握':'Mastered',     desc: zh?'已在词语闪卡标记「认识了」，并在填空挑战中答对。如果填空挑战答错，状态会退回学习中。':'Marked 认识了 on flashcard AND answered correctly in Fill-in Challenge. Getting Fill-in wrong will demote the word back to 学习中.' },
+      ]
+    },
+    {
+      icon: '📝',
+      title: zh ? '四种练习模式' : 'Four Practice Modes',
+      body: zh
+        ? '词语闪卡：翻转卡片，自己判断是否认识。
+填空挑战：在句子中选出正确词语填入空格——这是最难的模式，完成后才算已掌握。
+华文解释：选出正确的中文释义。
+英文翻译：选出正确的英文翻译。
+
+注意：华文解释和英文翻译不影响掌握状态。'
+        : 'Flashcard: Flip the card and judge if you know the word.
+Fill-in Challenge: Select the correct word to fill the blank in a sentence — the hardest mode, and required for mastery.
+Definition: Choose the correct Chinese definition.
+English: Choose the correct English translation.
+
+Note: Definition and English modes do not affect mastery status.'
+    },
+    {
+      icon: '🏅',
+      title: zh ? '成就与称号' : 'Badges & Ranks',
+      body: zh
+        ? '每完成一个课文类别（生活空间/核心/巩固）的全部词语，获得⭐成就章。
+完成整个单元（三个类别）获得🎖️单元章。
+完成整个年级获得年级称号：
+🌱 词语学徒（中一）→ 🎯 词语能手（中二）→ 🏅 词语达人（中三）→ 🏆 词语宗师（中四）→ 👑 顶级词王（全部完成）'
+        : 'Complete all words in a component (生活空间/核心/巩固) to earn a ⭐ badge.
+Complete all three components of a unit to earn a 🎖️ unit badge.
+Complete a full level to earn a rank title:
+🌱 Apprentice (Sec 1) → 🎯 Expert (Sec 2) → 🏅 Master (Sec 3) → 🏆 Grand Master (Sec 4) → 👑 Grand Vocab King (All levels)'
+    },
+    {
+      icon: '💾',
+      title: zh ? '如何保存进度' : 'Saving Your Progress',
+      body: zh
+        ? '你的学习进度会自动保存在当前设备上。
+
+换设备时：
+1. 在当前设备上，点击主页的「保存进度」，复制进度码。
+2. 在新设备上，打开同一网址，登录后点击「恢复进度」，粘贴进度码。
+
+最可靠的方式：每次使用同一个电邮地址，再配合进度码作备份。
+
+注意：清除浏览器数据或Safari历史记录会删除本地进度。建议定期保存进度码到备忘录。'
+        : 'Your progress is automatically saved on your current device.
+
+Switching devices:
+1. On your current device, tap Save Progress on the home screen and copy the code.
+2. On the new device, open the same URL, log in, tap Restore Progress, and paste the code.
+
+Most reliable approach: always use the same email address, and keep a progress code as backup.
+
+Warning: Clearing browser data or Safari history will delete local progress. Save your code to Notes regularly.'
+    },
+    {
+      icon: '📱',
+      title: zh ? '不同设备的使用方式' : 'Using on Different Devices',
+      body: zh
+        ? 'iPhone/iPad（Safari）：点击分享→「添加到主屏幕」，即可像App一样使用。
+Android（Chrome）：点击右上角菜单→「添加到主屏幕」。
+Chromebook：Chrome地址栏右侧会出现安装图标，点击安装。
+Windows电脑：直接在Chrome或Edge浏览器中打开使用，无需安装。
+
+注意：本应用需要网络连接才能使用。'
+        : 'iPhone/iPad (Safari): Tap Share → Add to Home Screen to use it like an app.
+Android (Chrome): Tap the menu → Add to Home Screen.
+Chromebook: Click the install icon in the address bar.
+Windows: Open directly in Chrome or Edge — no installation needed.
+
+Note: This app requires an internet connection.'
+    },
+    {
+      icon: '💬',
+      title: zh ? '发现错误？告诉我们！' : 'Found an Error? Let Us Know!',
+      body: zh
+        ? '在练习过程中，点击屏幕右下角的「💬 反馈」按钮，描述问题（如：答案有误、例句不通顺等）。你的反馈会帮助改善这个学习工具！'
+        : 'During practice, tap the 💬 Feedback button at the bottom right of the screen, and describe the issue (e.g. wrong answer, unnatural example sentence). Your feedback helps improve this tool!'
+    },
+    {
+      icon: '🌟',
+      title: zh ? '学习这件事，你来做主！' : 'Own Your Learning!',
+      body: zh
+        ? '这个应用是为了支持你的自主学习而设计的。老师无法看到你的答题情况，只知道你有在使用这个工具。
+
+勇于尝试，不要怕出错——每一次答错都是学习的机会。词王之路不是一蹴而就的，持之以恒才是关键！加油！💪'
+        : 'This app is designed to support your independent learning. Your teacher cannot see your individual answers — only that you are using the tool.
+
+Be brave and try — every wrong answer is a learning opportunity. The path to becoming a Vocabulary King takes time and persistence. Keep going! 💪'
+    },
+  ];
+
+  const container = document.getElementById('guide-content');
+  container.innerHTML = '';
+
+  sections.forEach(s => {
+    const sec = document.createElement('div');
+    sec.className = 'guide-section';
+
+    const titleEl = document.createElement('div');
+    titleEl.className = 'guide-section-title';
+    titleEl.textContent = s.icon + ' ' + s.title;
+    sec.appendChild(titleEl);
+
+    if (s.states) {
+      s.states.forEach(st => {
+        const row = document.createElement('div');
+        row.className = 'guide-state-row';
+        row.innerHTML = \`<span class="guide-state-badge \${st.cls}">\${st.label}</span><span class="guide-body">\${st.desc}</span>\`;
+        sec.appendChild(row);
+      });
+    } else if (s.body) {
+      const bodyEl = document.createElement('div');
+      bodyEl.className = 'guide-body';
+      bodyEl.style.whiteSpace = 'pre-line';
+      bodyEl.textContent = s.body;
+      sec.appendChild(bodyEl);
+    }
+
+    container.appendChild(sec);
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// SPEAKER / READ-ALOUD (Web Speech API)
+// ══════════════════════════════════════════════════════════════
+let _currentUtterance = null;
+
+function speak(text, btn) {
+  if (!window.speechSynthesis) { showToast('此浏览器不支持朗读功能'); return; }
+  window.speechSynthesis.cancel();
+  if (_currentUtterance && btn) {
+    document.querySelectorAll('.speaker-btn').forEach(b => b.classList.remove('speaking'));
+    _currentUtterance = null;
+    return;
+  }
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = 'zh-CN';
+  utt.rate = 0.85;
+  if (btn) btn.classList.add('speaking');
+  utt.onend = () => {
+    if (btn) btn.classList.remove('speaking');
+    _currentUtterance = null;
+  };
+  utt.onerror = () => {
+    if (btn) btn.classList.remove('speaking');
+    _currentUtterance = null;
+  };
+  _currentUtterance = utt;
+  window.speechSynthesis.speak(utt);
+}
+
+function speakWord(event) {
+  const word = document.getElementById('fc-back-word').textContent;
+  if (word) speak(word, event.currentTarget);
+}
+
+function speakExample(event) {
+  const ex = document.getElementById('fc-example').textContent;
+  // Clean up the 【word】 bracket format before speaking
+  const clean = ex.replace(/【|】/g, '');
+  if (clean) speak(clean, event.currentTarget);
+}
+
+// ══════════════════════════════════════════════════════════════
+// FEEDBACK FORM
+// ══════════════════════════════════════════════════════════════
+let _captchaA, _captchaB;
+
+function generateCaptcha() {
+  _captchaA = Math.floor(Math.random() * 9) + 1;
+  _captchaB = Math.floor(Math.random() * 9) + 1;
+  const el = document.getElementById('captcha-question');
+  if (el) el.textContent = _captchaA + ' + ' + _captchaB + ' = ？';
+  const ans = document.getElementById('captcha-answer');
+  if (ans) { ans.value = ''; ans.classList.remove('error'); }
+}
+
+function updateFeedbackFab() {
+  const fab = document.getElementById('feedback-fab');
+  if (fab) fab.classList.add('show');
+}
+
+function showFeedbackModal() {
+  generateCaptcha();
+  // Auto-fill context from current question
+  const ctx = document.getElementById('feedback-context-display');
+  const box = document.getElementById('feedback-context-box');
+  const word = currentWords && currentWords[currentIdx] ? currentWords[currentIdx] : null;
+  if (word && currentMode) {
+    const modeStr = {flashcard:'词语闪卡', definition:'华文解释', cloze:'填空挑战', english:'英文翻译'}[currentMode] || currentMode;
+    if (ctx) ctx.style.display = 'block';
+    if (box) box.textContent = '词语：' + word + '　模式：' + modeStr + (currentUnit ? '　单元：' + currentUnit : '');
+  } else {
+    if (ctx) ctx.style.display = 'none';
+  }
+  const ta = document.getElementById('feedback-text');
+  if (ta) ta.value = '';
+  document.getElementById('feedback-modal').classList.add('show');
+}
+
+function closeFeedbackModal() {
+  document.getElementById('feedback-modal').classList.remove('show');
+}
+
+async function submitFeedback() {
+  const text = (document.getElementById('feedback-text').value || '').trim();
+  const ansEl = document.getElementById('captcha-answer');
+  const ans = parseInt(ansEl.value);
+
+  if (!text) { showToast('请填写反馈内容'); return; }
+  if (isNaN(ans) || ans !== _captchaA + _captchaB) {
+    ansEl.classList.add('error');
+    showToast('验证码不正确，请重试');
+    generateCaptcha();
+    return;
+  }
+
+  const word = currentWords && currentWords[currentIdx] ? currentWords[currentIdx] : null;
+  const modeStr = {flashcard:'词语闪卡',definition:'华文解释',cloze:'填空挑战',english:'英文翻译'}[currentMode] || currentMode;
+
+  closeFeedbackModal();
+  showToast('正在提交…');
+
+  if (!GAS_ENDPOINT || GAS_ENDPOINT === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+    showToast('✓ 反馈已记录（GAS未配置）');
+    return;
+  }
+
+  try {
+    await gasPost({
+      action: 'feedback',
+      email: getUserEmail(),
+      userType: getUserType(),
+      feedbackText: text,
+      questionContext: {
+        word:         word || '',
+        mode:         modeStr,
+        level:        currentLevel || '',
+        unit:         currentUnit  || '',
+        questionText: word ? (currentMode === 'cloze' ? (EXAMPLES[word]||'') : word) : ''
+      }
+    });
+    showToast('✓ 反馈已提交，谢谢！');
+  } catch(e) {
+    showToast('提交失败，请稍后再试');
+  }
+}
+
+// Close modals on overlay click
+document.getElementById('profile-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeProfileModal();
+});
+document.getElementById('feedback-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeFeedbackModal();
+});
 
 // ── PWA INSTALL PROMPT ────────────────────────────────────────
 let deferredInstallPrompt = null;
@@ -5026,4 +6320,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </script>
 </body>
-<
+</html>
