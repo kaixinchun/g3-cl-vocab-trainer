@@ -365,14 +365,6 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
     min-height: 100vh;
     position: relative;
   }
-  #welcome-screen::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.28);
-    pointer-events: none;
-    z-index: 0;
-  }
   #welcome-screen::before {
     content: '';
     position: absolute;
@@ -461,7 +453,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
     border-radius: var(--r-sm);
     font-size: 1.05rem;
     font-weight: bold;
-    font-family: var(--font-body);
+    font-family: var(--font-display);
     cursor: pointer;
     transition: all var(--t);
     margin-bottom: 1rem;
@@ -474,7 +466,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
   }
   .welcome-note {
     font-size: .72rem;
-    color: var(--ink-mute);
+    color: #1a2a5e;
     font-family: var(--font-ui);
     line-height: 1.6;
     margin-bottom: .9rem;
@@ -482,16 +474,16 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
   /* School name credit — visible but understated */
   .welcome-credit-school {
     font-size: .75rem;
-    color: var(--ink-mute);
+    color: #1a2a5e;
     font-family: var(--font-ui);
     letter-spacing: .04em;
     padding-top: .85rem;
-    border-top: 1px solid var(--paper-3);
+    border-top: 1px solid rgba(26,42,94,.2);
   }
   /* Personal credit — significantly smaller, very discreet */
   .welcome-credit-name {
     font-size: .6rem;
-    color: var(--ink-mute);
+    color: #1a2a5e;
     font-family: var(--font-ui);
     letter-spacing: .03em;
     margin-top: .25rem;
@@ -500,7 +492,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);min-h
   .welcome-credit-year {
     display: inline-block;
     font-size: .58rem;
-    color: var(--ink-mute);
+    color: #1a2a5e;
     font-family: var(--font-ui);
     margin-left: .4rem;
     letter-spacing: .06em;
