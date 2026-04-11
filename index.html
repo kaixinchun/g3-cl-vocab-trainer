@@ -999,7 +999,8 @@ html{overflow-x:hidden;}
     <div class="welcome-error" id="welcome-error"></div>
     <button class="welcome-btn" onclick="submitWelcome()">开始学习 →</button>
     <div class="welcome-note">
-      你的信息只用于保存学习进展与统计使用情况。首次填写后无需再次登录。<br>
+      你的信息只用于保存学习进展与统计使用情况。<br>
+            首次填写后无需再次登录。<br>
       如需更改身份，可在主页进行修改。
     </div>
     <div class="welcome-credit-school">
@@ -4803,8 +4804,8 @@ function showScreen(id) {
   window.scrollTo(0, 0);
   const fab = document.getElementById('feedback-fab');
   if (fab) {
-    const showOnScreens = ['study-screen', 'results-screen'];
-    fab.classList.toggle('show', showOnScreens.includes(id));
+    // Only show on results-screen; study-screen uses the pill button instead
+    fab.classList.toggle('show', id === 'results-screen');
   }
   // Show study bottom pills only on study screen
   const homeBtn     = document.getElementById('study-home-btn');
@@ -5823,15 +5824,22 @@ function decodeProgress(code) {
     const entries = JSON.parse(raw);
     const restored = {};
     entries.forEach(entry => {
-      // Support old 3-element format and new 5-element format
       const [idx, box, wrongCount, fcK, clK] = entry;
       const word = WORD_INDEX[idx];
-      if (word) {
-        const rec = { box: box || 0, wrongCount: wrongCount || 0, lastSeen: Date.now() };
+      if (!word) return;
+      const rec = { box: box || 0, wrongCount: wrongCount || 0, lastSeen: Date.now() };
+      if (entry.length >= 5) {
+        // New format: explicit flags
         if (fcK === 1) rec.fcKnown = true;
         if (clK === 1) rec.clozeOk = true;
-        restored[word] = rec;
+      } else {
+        // Old format (3 elements): infer mastery from box value.
+        // box=2 means the word was fully practiced (both flashcard known + cloze correct).
+        // box=1 means flashcard was marked known at minimum.
+        if (box >= 2) { rec.fcKnown = true; rec.clozeOk = true; }
+        else if (box >= 1) { rec.fcKnown = true; }
       }
+      restored[word] = rec;
     });
     return restored;
   } catch(e) { return null; }
@@ -5888,12 +5896,22 @@ function restoreFromCode() {
     showToast('❌ 进度码无效，请检查后重试');
     return;
   }
-  // Merge: don't overwrite words that are already further along
+  // Merge: take the furthest-along state for each word
   Object.entries(restored).forEach(([word, data]) => {
     const current = progress[word];
-    if (!current || current.box < data.box) {
+    if (!current) {
       progress[word] = data;
+      return;
     }
+    // Merge flags: union of mastery (never downgrade)
+    const merged = Object.assign({}, current);
+    if (data.fcKnown) merged.fcKnown = true;
+    if (data.clozeOk) merged.clozeOk = true;
+    merged.box = Math.max(current.box || 0, data.box || 0);
+    // Keep higher wrongCount only if it means more practice attempted
+    merged.wrongCount = Math.max(current.wrongCount || 0, data.wrongCount || 0);
+    merged.lastSeen = Math.max(current.lastSeen || 0, data.lastSeen || 0) || Date.now();
+    progress[word] = merged;
   });
   saveProgress();
   updateHomeStats();
