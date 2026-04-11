@@ -1,28 +1,17 @@
 {
-  "name": "华文词语温习",
-  "short_name": "词语温习",
-  "description": "S1–4 Express Chinese Vocabulary Revision",
-  "start_url": "/cl-vocab/",
-  "scope": "/cl-vocab/",
+  "name": "词王训练营",
+  "short_name": "词王训练营",
+  "description": "新加坡中学G3华文词语总复习 · 百德中学",
+  "start_url": "/g3-cl-vocab-trainer/",
+  "scope": "/g3-cl-vocab-trainer/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#1a1a2e",
-  "theme_color": "#1a1a2e",
+  "background_color": "#FFFFFF",
+  "theme_color": "#4A9A20",
   "lang": "zh-Hans",
   "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+    { "src": "icon192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ],
-  "categories": ["education"],
-  "screenshots": []
+  "categories": ["education"]
 }
