@@ -229,6 +229,7 @@ html{overflow-x:hidden;}
   font-weight:700;
 }
 .def-meaning{font-size:1rem;color:var(--ink-soft);line-height:1.6;max-width:300px;text-align:center;font-family:var(--font-body);}
+.def-english{font-size:.82rem;color:var(--ink-mute);margin-top:.25rem;max-width:300px;text-align:center;font-family:var(--font-ui);letter-spacing:.01em;}
 .def-example{font-size:.88rem;color:var(--ink-mute);margin-top:.5rem;font-style:italic;line-height:1.6;max-width:300px;text-align:center;font-family:var(--font-body);}
 .self-mark-btns{display:flex;gap:.6rem;width:100%;max-width:380px;}
 .mark-btn{flex:1;padding:1rem;border:none;border-radius:var(--r-sm);font-size:1rem;cursor:pointer;font-family:var(--font-body);transition:all var(--t);display:flex;align-items:center;justify-content:center;gap:.3rem;font-weight:600;min-height:52px;}
@@ -268,9 +269,9 @@ html{overflow-x:hidden;}
 .cloze-card{background:white;border:1px solid var(--paper-3);border-radius:var(--r);padding:1.3rem 1.1rem;box-shadow:var(--shadow-sm);}
 .cloze-label{font-size:.65rem;font-family:sans-serif;color:var(--ink-mute);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.6rem;}
 .cloze-sentence{font-size:1rem;color:var(--ink);font-family:var(--font-ui);line-height:1.9;word-break:break-all;}
-.cloze-blank{display:inline-block;border-bottom:2px solid var(--ink);min-width:64px;text-align:center;margin:0 .15em;padding:0 .25em;color:var(--blue);font-weight:bold;transition:color var(--t),border-color var(--t);}
-.cloze-blank.correct{color:var(--green);border-color:var(--green);}
-.cloze-blank.wrong{color:var(--red);border-color:var(--red);}
+.cloze-blank{display:inline-block;min-width:64px;text-align:center;margin:0 .15em;padding:0 .25em;color:var(--ink);font-weight:bold;transition:color var(--t);}
+.cloze-blank.correct{color:var(--green);}
+.cloze-blank.wrong{color:var(--red);}
 /* Cloze uses same .mcq-options / .mcq-option styles */
 .cloze-feedback{text-align:center;font-size:.8rem;font-family:sans-serif;padding:.55rem;border-radius:var(--r-sm);font-weight:600;display:none;}
 .cloze-feedback.show{display:block;}
@@ -1182,6 +1183,7 @@ html{overflow-x:hidden;}
           <button class="speaker-btn" onclick="speakExample(event)" title="朗读例句">🔊 例句</button>
         </div>
         <div class="def-meaning" id="fc-meaning"></div>
+        <div class="def-english" id="fc-english"></div>
         <div class="def-example" id="fc-example"></div>
       </div>
     </div>
@@ -5150,6 +5152,9 @@ function renderFlashcard(word) {
   const pyEl = document.getElementById('fc-pinyin');
   if (pyEl) pyEl.textContent = PINYIN_DATA[word] || '';
   document.getElementById('fc-meaning').textContent   = DEFS[word] || '（义项见课本）';
+  // Show English translation if available
+  const engEl = document.getElementById('fc-english');
+  if (engEl) engEl.textContent = ENGLISH_DEFS[word] ? ENGLISH_DEFS[word] : '';
   // Show example with word filled in
   const ex = EXAMPLES[word] ? EXAMPLES[word].replace('__', '【'+word+'】') : '';
   document.getElementById('fc-example').textContent   = ex;
