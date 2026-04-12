@@ -897,34 +897,18 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     margin-bottom: 10px;
   }
   .ach-level-card.locked { opacity: .45; }
-  .ach-badge-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px 6px; margin-top:10px; }
-  .ach-unit-divider { grid-column:1/-1; border:none; border-top:0.5px solid var(--paper-3); margin:2px 0; }
-  .ach-unit-row { grid-column:1/-1; display:flex; align-items:center; justify-content:space-between; margin-bottom:2px; }
+  .ach-badge-row { display:grid; grid-template-columns:repeat(3,1fr); gap:14px 8px; margin-top:12px; }
+  .ach-unit-divider { grid-column:1/-1; border:none; border-top:0.5px solid var(--paper-3); margin:4px 0 2px; }
+  .ach-unit-row { grid-column:1/-1; display:flex; align-items:center; justify-content:space-between; padding-bottom:6px; }
   .ach-unit-label { font-size:.68rem; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-mute); font-family:var(--font-ui); }
-  .ach-unit-seal { background:#1a2a5e; color:#e8c800; font-size:.65rem; font-family:var(--font-ui); font-weight:700; border-radius:12px; padding:2px 9px; letter-spacing:.04em; }
-  .ach-badge { display:flex; flex-direction:column; align-items:center; gap:5px; }
-  .ach-badge-circle {
-    width:60px; height:60px; border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    position:relative; flex-shrink:0;
-    font-size:1.4rem; border:2px solid;
-  }
-  .ach-badge-circle .ach-lock {
-    position:absolute; bottom:-3px; right:-3px;
-    width:18px; height:18px; border-radius:50%;
-    background:var(--paper-3); border:1px solid var(--paper-2);
-    display:flex; align-items:center; justify-content:center;
-    font-size:.6rem; line-height:1;
-  }
-  .ach-badge-lbl { font-size:.65rem; font-family:var(--font-ui); text-align:center; line-height:1.35; color:var(--ink-mute); }
-  .ach-badge.type-sks .ach-badge-circle { background:#E8F5D0; border-color:#5FAD2A; }
-  .ach-badge.type-sks .ach-badge-lbl    { color:#275010; font-weight:600; }
-  .ach-badge.type-hx  .ach-badge-circle { background:#FFF8CC; border-color:#C49A00; }
-  .ach-badge.type-hx  .ach-badge-lbl    { color:#7A4F00; font-weight:600; }
-  .ach-badge.type-gf  .ach-badge-circle { background:#EEF6FF; border-color:#2878C8; }
-  .ach-badge.type-gf  .ach-badge-lbl    { color:#0C3A6E; font-weight:600; }
-  .ach-badge.locked .ach-badge-circle { background:var(--paper-2); border-color:var(--paper-3); filter:grayscale(1); opacity:.5; }
-  .ach-badge.locked .ach-badge-lbl    { color:var(--ink-mute); font-weight:400; }
+  .ach-unit-seal { background:#1a2a5e; color:#e8c800; font-size:.65rem; font-family:var(--font-ui); font-weight:700; border-radius:12px; padding:3px 10px; letter-spacing:.04em; }
+  .ach-badge { display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .ach-badge svg { display:block; }
+  .ach-badge-lbl { font-size:.68rem; font-family:var(--font-ui); text-align:center; line-height:1.35; }
+  .ach-badge.type-sks .ach-badge-lbl { color:#275010; font-weight:600; }
+  .ach-badge.type-hx  .ach-badge-lbl { color:#7A4F00; font-weight:600; }
+  .ach-badge.type-gf  .ach-badge-lbl { color:#0C3A6E; font-weight:600; }
+  .ach-badge.locked   .ach-badge-lbl { color:var(--ink-mute); font-weight:400; }
 
   /* ── GUIDE SCREEN ────────────────────────────────────────── */
   .guide-section {
@@ -1482,7 +1466,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 
 
 <!-- ACHIEVEMENTS SCREEN -->
-<div id="achievements-screen" class="screen">
+<div id="achievements-screen" class="screen" style="overflow-y:auto;">
   <div style="background:var(--blue);height:5px;background:linear-gradient(90deg,#5FAD2A 33%,#F5C800 33% 66%,#2878C8 66%);"></div>
   <div style="background:var(--blue);padding:14px 16px;display:flex;align-items:center;gap:10px;">
     <button class="back-btn" style="color:white;" onclick="showScreen('home-screen')">‹</button>
@@ -6716,23 +6700,121 @@ function updateAchievementsScreen() {
     track.innerHTML = `<div style="height:100%;border-radius:4px;width:${levelPct}%;background:linear-gradient(90deg,var(--green-mid),var(--gold));transition:width .5s;"></div>`;
     card.appendChild(track);
 
-    // Circular coloured badge grid — grouped by unit
+    // Circular metallic badge grid — grouped by unit
     if (prevLevelComplete) {
+      // SVG defs (gradients/filters) injected once into the page if not present
+      if (!document.getElementById('ach-svg-defs')) {
+        const defs = document.createElementNS('http://www.w3.org/2000/svg','svg');
+        defs.id = 'ach-svg-defs';
+        defs.setAttribute('width','0'); defs.setAttribute('height','0');
+        defs.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden;';
+        defs.innerHTML = `<defs>
+          <radialGradient id="bg-sks" cx="38%" cy="30%" r="65%">
+            <stop offset="0%" stop-color="#d8f5a8"/>
+            <stop offset="55%" stop-color="#7ec832"/>
+            <stop offset="100%" stop-color="#3a7a10"/>
+          </radialGradient>
+          <radialGradient id="bg-hx" cx="38%" cy="30%" r="65%">
+            <stop offset="0%" stop-color="#fff5aa"/>
+            <stop offset="55%" stop-color="#e8b800"/>
+            <stop offset="100%" stop-color="#8a5e00"/>
+          </radialGradient>
+          <radialGradient id="bg-gf" cx="38%" cy="30%" r="65%">
+            <stop offset="0%" stop-color="#b0d8ff"/>
+            <stop offset="55%" stop-color="#3a8ae0"/>
+            <stop offset="100%" stop-color="#0a3d90"/>
+          </radialGradient>
+          <radialGradient id="bg-lock" cx="38%" cy="30%" r="65%">
+            <stop offset="0%" stop-color="#e8e8e8"/>
+            <stop offset="100%" stop-color="#b0b0b0"/>
+          </radialGradient>
+          <radialGradient id="shine" cx="35%" cy="25%" r="48%">
+            <stop offset="0%" stop-color="rgba(255,255,255,.55)"/>
+            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+          </radialGradient>
+          <linearGradient id="star-gold" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#ffe84a"/>
+            <stop offset="100%" stop-color="#c87800"/>
+          </linearGradient>
+          <filter id="badge-shadow" x="-15%" y="-15%" width="130%" height="130%">
+            <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="rgba(0,0,0,.28)"/>
+          </filter>
+        </defs>`;
+        document.body.appendChild(defs);
+      }
+
+      function makeBadgeSVG(type, earned) {
+        const bgId = earned ? 'bg-' + type : 'bg-lock';
+        const NS = 'http://www.w3.org/2000/svg';
+        const svg = document.createElementNS(NS, 'svg');
+        svg.setAttribute('width','64'); svg.setAttribute('height','64');
+        svg.setAttribute('viewBox','0 0 68 68');
+        // circle
+        const circle = document.createElementNS(NS, 'circle');
+        circle.setAttribute('cx','34'); circle.setAttribute('cy','34'); circle.setAttribute('r','32');
+        circle.setAttribute('fill', 'url(#' + bgId + ')');
+        circle.setAttribute('filter','url(#badge-shadow)');
+        svg.appendChild(circle);
+        // inner ring highlight
+        const ring = document.createElementNS(NS, 'circle');
+        ring.setAttribute('cx','34'); ring.setAttribute('cy','34'); ring.setAttribute('r','29');
+        ring.setAttribute('fill','none');
+        ring.setAttribute('stroke','rgba(255,255,255,.32)'); ring.setAttribute('stroke-width','1');
+        svg.appendChild(ring);
+        if (earned) {
+          // star path (5-point, centred at 34,32)
+          const star = document.createElementNS(NS, 'path');
+          star.setAttribute('d','M34 13 L37.8 25 L50 25 L40.2 32.5 L44 44.5 L34 37 L24 44.5 L27.8 32.5 L18 25 L30.2 25 Z');
+          star.setAttribute('fill','url(#star-gold)');
+          star.setAttribute('stroke','rgba(255,255,255,.4)'); star.setAttribute('stroke-width','0.6');
+          star.setAttribute('stroke-linejoin','round');
+          svg.appendChild(star);
+        } else {
+          // ghost star
+          const ghost = document.createElementNS(NS, 'path');
+          ghost.setAttribute('d','M34 13 L37.8 25 L50 25 L40.2 32.5 L44 44.5 L34 37 L24 44.5 L27.8 32.5 L18 25 L30.2 25 Z');
+          ghost.setAttribute('fill','rgba(180,180,180,.35)');
+          svg.appendChild(ghost);
+          // padlock body
+          const lockBody = document.createElementNS(NS, 'rect');
+          lockBody.setAttribute('x','27'); lockBody.setAttribute('y','35');
+          lockBody.setAttribute('width','14'); lockBody.setAttribute('height','11');
+          lockBody.setAttribute('rx','2.5'); lockBody.setAttribute('fill','#888');
+          svg.appendChild(lockBody);
+          // padlock shackle
+          const shackle = document.createElementNS(NS, 'path');
+          shackle.setAttribute('d','M30 35 v-4.5 a4 4 0 0 1 8 0 v4.5');
+          shackle.setAttribute('fill','none'); shackle.setAttribute('stroke','#888');
+          shackle.setAttribute('stroke-width','2.5'); shackle.setAttribute('stroke-linecap','round');
+          svg.appendChild(shackle);
+          // keyhole dot
+          const dot = document.createElementNS(NS, 'circle');
+          dot.setAttribute('cx','34'); dot.setAttribute('cy','41');
+          dot.setAttribute('r','2'); dot.setAttribute('fill','#bbb');
+          svg.appendChild(dot);
+        }
+        // shine overlay
+        const shine = document.createElementNS(NS, 'circle');
+        shine.setAttribute('cx','34'); shine.setAttribute('cy','34'); shine.setAttribute('r','32');
+        shine.setAttribute('fill','url(#shine)');
+        svg.appendChild(shine);
+        return svg;
+      }
+
+      const typeMap  = { '生活空间':'sks', '核心':'hx', '巩固':'gf' };
       const badgeRow = document.createElement('div');
       badgeRow.className = 'ach-badge-row';
       const unitNums = [...new Set(Object.keys(units).map(k => k.match(/单元\S+/)?.[0]))].filter(Boolean);
-      const typeMap = { '生活空间': 'sks', '核心': 'hx', '巩固': 'gf' };
-      const typeEmoji = { sks: '⭐', hx: '⭐', gf: '⭐' };
+
       unitNums.forEach((un, idx) => {
-        // Divider between units (not before first)
         if (idx > 0) {
           const div = document.createElement('hr');
           div.className = 'ach-unit-divider';
           badgeRow.appendChild(div);
         }
-        // Unit row: label + seal (seal only if all 3 components earned)
+        // Unit row: label + seal only when all 3 earned
         const unitKeys = Object.keys(units).filter(k => k.startsWith(un));
-        const allThreeEarned = unitKeys.every(uk => badges[level]?.[uk]?.component);
+        const allThreeEarned = unitKeys.length >= 3 && unitKeys.every(uk => badges[level]?.[uk]?.component);
         const unitRowEl = document.createElement('div');
         unitRowEl.className = 'ach-unit-row';
         const lbl = document.createElement('span');
@@ -6746,26 +6828,18 @@ function updateAchievementsScreen() {
           unitRowEl.appendChild(seal);
         }
         badgeRow.appendChild(unitRowEl);
+
         // Three component badges
         ['生活空间','核心','巩固'].forEach(compType => {
           const uk = un + ' ' + compType;
-          const earned = badges[level]?.[uk]?.component;
+          const earned = !!(badges[level]?.[uk]?.component);
           const typeKey = typeMap[compType];
           const badge = document.createElement('div');
           badge.className = 'ach-badge type-' + typeKey + (earned ? '' : ' locked');
-          const circle = document.createElement('div');
-          circle.className = 'ach-badge-circle';
-          circle.textContent = '⭐';
-          if (!earned) {
-            const lock = document.createElement('span');
-            lock.className = 'ach-lock';
-            lock.textContent = '🔒';
-            circle.appendChild(lock);
-          }
+          badge.appendChild(makeBadgeSVG(typeKey, earned));
           const lblEl = document.createElement('div');
           lblEl.className = 'ach-badge-lbl';
           lblEl.textContent = compType;
-          badge.appendChild(circle);
           badge.appendChild(lblEl);
           badgeRow.appendChild(badge);
         });
