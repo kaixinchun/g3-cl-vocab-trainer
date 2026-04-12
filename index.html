@@ -158,6 +158,8 @@ html{overflow-x:hidden;}
 .units-list{padding:.7rem;max-width:520px;margin:0 auto;}
 .unit-group{margin-bottom:1rem;}
 .unit-group-label{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute);font-family:sans-serif;padding:.3rem .4rem;margin-bottom:.3rem;}
+.unit-group-title{font-size:.78rem;font-weight:400;color:var(--ink-mute);font-family:var(--font-ui);}
+.unit-comp-title{font-size:.72rem;font-weight:400;color:var(--ink-mute);font-family:var(--font-ui);margin-left:.2rem;}
 .unit-btn{display:flex;align-items:center;gap:.7rem;width:100%;padding:.75rem .9rem;background:white;border:1px solid var(--paper-3);border-radius:var(--r-sm);cursor:pointer;margin-bottom:.35rem;transition:all var(--t);text-align:left;}
 .unit-btn:hover{border-color:var(--blue);box-shadow:var(--shadow-sm);transform:translateX(2px);}
 .unit-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
@@ -1274,6 +1276,7 @@ html{overflow-x:hidden;}
     <div class="results-actions">
       <button class="action-btn action-weak" id="btn-retry-weak" onclick="retryWeak()">🔁 只练习未掌握词语</button>
       <button class="action-btn action-primary" onclick="retryAll()">重新练习全部</button>
+      <button class="action-btn action-secondary" id="btn-back-component" onclick="returnToComponent()" style="display:none;">↩ 返回此组件</button>
       <button class="action-btn action-secondary" onclick="returnToChapter()">返回章节列表</button>
       <button class="action-btn action-secondary" onclick="showScreen('home-screen');updateHomeStats()">🏠 返回主页</button>
     </div>
@@ -1327,6 +1330,9 @@ html{overflow-x:hidden;}
     <div class="modal-actions">
       <button class="modal-btn modal-btn-primary" onclick="saveProfileEdit()">保存</button>
       <button class="modal-btn modal-btn-secondary" onclick="closeProfileModal()">取消</button>
+    </div>
+    <div id="teacher-badge-reset" style="display:none;text-align:center;padding:.5rem 0 .2rem;border-top:1px solid #f0ede5;margin-top:.5rem;">
+      <button onclick="resetBadges()" style="background:none;border:none;font-size:.68rem;color:#bbb;cursor:pointer;font-family:var(--font-ui);text-decoration:underline;">🔧 重置成就徽章（测试用）</button>
     </div>
   </div>
 </div>
@@ -1426,12 +1432,12 @@ html{overflow-x:hidden;}
       <div style="border-top:1px solid #f0ede5;padding:.7rem 0 .3rem;font-size:.6rem;color:#bbb;font-family:var(--font-ui);letter-spacing:.04em;">词王训练营 · 百德中学 Bukit View Secondary · for.edu.sg/g3cl-vocabking</div>
     </div>
     <div style="display:flex;gap:.5rem;padding:.8rem 1.4rem 1.2rem;">
-      <button onclick="shareCelebration(1)" style="padding:.75rem 1rem;background:#F5F0E5;color:#555;border:none;border-radius:10px;font-size:.88rem;font-family:var(--font-ui);cursor:pointer;display:flex;align-items:center;gap:.3rem;">📤 分享</button>
+      <button onclick="shareCelebration(1)" style="padding:.75rem 1rem;background:#F5F0E5;color:#555;border:none;border-radius:10px;font-size:.88rem;font-family:var(--font-ui);cursor:pointer;">📤 分享</button>
       <button onclick="closeBadgeOverlay()" style="flex:1;padding:.75rem;background:#5FAD2A;color:white;border:none;border-radius:10px;font-size:.88rem;font-family:var(--font-body);font-weight:700;cursor:pointer;">继续加油 →</button>
     </div>
   </div>
 
-  <!-- T2: UNIT ✨ -->
+  <!-- T2: UNIT 🎖️ -->
   <div id="cel-t2" style="display:none;background:linear-gradient(145deg,#0d2d4a,#1a3a6e);border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.5);border:1px solid rgba(245,200,0,.3);width:100%;max-width:360px;">
     <div style="height:5px;background:linear-gradient(90deg,#F5C800,#E8B800,#F5C800);"></div>
     <div style="padding:1.8rem 1.4rem 1rem;text-align:center;">
@@ -1443,7 +1449,7 @@ html{overflow-x:hidden;}
       <div style="border-top:1px solid rgba(255,255,255,.1);padding:.65rem 1.4rem .3rem;font-size:.6rem;color:rgba(255,255,255,.3);font-family:var(--font-ui);letter-spacing:.04em;">词王训练营 · 百德中学 Bukit View Secondary · for.edu.sg/g3cl-vocabking</div>
     </div>
     <div style="display:flex;gap:.5rem;padding:.8rem 1.4rem 1.3rem;">
-      <button onclick="shareCelebration(2)" style="padding:.78rem 1rem;background:rgba(255,255,255,.12);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.2);border-radius:10px;font-size:.85rem;font-family:var(--font-ui);cursor:pointer;display:flex;align-items:center;gap:.35rem;">📤 分享</button>
+      <button onclick="shareCelebration(2)" style="padding:.78rem 1rem;background:rgba(255,255,255,.12);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.2);border-radius:10px;font-size:.85rem;font-family:var(--font-ui);cursor:pointer;">📤 分享</button>
       <button onclick="closeBadgeOverlay()" style="flex:1;padding:.78rem;background:#F5C800;color:#3D2A00;border:none;border-radius:10px;font-size:.9rem;font-family:var(--font-body);font-weight:700;cursor:pointer;">继续挑战 →</button>
     </div>
   </div>
@@ -1451,7 +1457,7 @@ html{overflow-x:hidden;}
   <!-- T3: LEVEL 🏅 -->
   <div id="cel-t3" style="display:none;background:linear-gradient(160deg,#0a1628,#1a0a2e,#0a1628);border-radius:16px;overflow:hidden;box-shadow:0 12px 60px rgba(0,0,0,.6);border:1px solid rgba(245,200,0,.5);width:100%;max-width:380px;position:relative;">
     <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(245,200,0,.08) 0%,transparent 65%);pointer-events:none;"></div>
-    <div id="t3-shimmer" style="height:5px;background:linear-gradient(90deg,#E8B800,#fff,#F5C800,#fff,#E8B800);background-size:200% 100%;animation:cel-shimmer 2s linear infinite;"></div>
+    <div style="height:5px;background:linear-gradient(90deg,#E8B800,#fff,#F5C800,#fff,#E8B800);background-size:200% 100%;animation:cel-shimmer 2s linear infinite;"></div>
     <div style="padding:2rem 1.4rem 1rem;text-align:center;position:relative;">
       <div id="t3-emoji" style="font-size:4rem;line-height:1;margin-bottom:.8rem;"></div>
       <div style="display:inline-block;background:rgba(245,200,0,.15);border:1px solid rgba(245,200,0,.4);border-radius:20px;padding:.25rem .9rem;font-size:.68rem;font-family:var(--font-ui);color:#F5C800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.9rem;">称号解锁 · RANK UNLOCKED</div>
@@ -1462,7 +1468,7 @@ html{overflow-x:hidden;}
       <div id="t3-share-preview" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:.75rem 1rem;margin:0 0 .8rem;font-size:.7rem;color:rgba(255,255,255,.55);font-family:var(--font-ui);line-height:1.6;text-align:left;"></div>
     </div>
     <div style="display:flex;gap:.5rem;padding:.4rem 1.4rem 1.4rem;">
-      <button onclick="shareCelebration(3)" style="padding:.82rem 1.1rem;background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.2);border-radius:10px;font-size:.85rem;font-family:var(--font-ui);cursor:pointer;display:flex;align-items:center;gap:.35rem;white-space:nowrap;">📤 分享</button>
+      <button onclick="shareCelebration(3)" style="padding:.82rem 1.1rem;background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.2);border-radius:10px;font-size:.85rem;font-family:var(--font-ui);cursor:pointer;white-space:nowrap;">📤 分享</button>
       <button onclick="closeBadgeOverlay()" id="t3-continue-btn" style="flex:1;padding:.82rem;background:#F5C800;color:#3D2A00;border:none;border-radius:10px;font-size:.9rem;font-family:var(--font-body);font-weight:700;cursor:pointer;"></button>
     </div>
   </div>
@@ -1491,7 +1497,7 @@ html{overflow-x:hidden;}
       </div>
     </div>
     <div style="display:flex;gap:.5rem;padding:.4rem 1.4rem 1.5rem;">
-      <button onclick="shareCelebration(4)" style="padding:.85rem 1.1rem;background:rgba(245,200,0,.15);color:#F5C800;border:1px solid rgba(245,200,0,.35);border-radius:10px;font-size:.85rem;font-family:var(--font-ui);cursor:pointer;display:flex;align-items:center;gap:.35rem;white-space:nowrap;">📤 分享</button>
+      <button onclick="shareCelebration(4)" style="padding:.85rem 1.1rem;background:rgba(245,200,0,.15);color:#F5C800;border:1px solid rgba(245,200,0,.35);border-radius:10px;font-size:.85rem;font-family:var(--font-ui);cursor:pointer;white-space:nowrap;">📤 分享</button>
       <button onclick="closeBadgeOverlay()" style="flex:1;padding:.85rem;background:linear-gradient(135deg,#F5C800,#E8B800);color:#3D2A00;border:none;border-radius:10px;font-size:.95rem;font-family:var(--font-body);font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(245,200,0,.4);">我是顶级词王！</button>
     </div>
   </div>
@@ -1507,6 +1513,54 @@ const PINYIN_DATA = {"淘气": "táo qì", "惹": "rě", "两肋插刀": "liǎng
 
 // Near-synonym pairs that should never be used as distractors for each other
 const SYNONYM_EXCLUDE = {"残障": ["残疾"], "残疾": ["残障"], "忙碌": ["繁忙"], "繁忙": ["忙碌"], "陌生": ["生疏"], "宁静": ["安详"], "安详": ["宁静"], "融合": ["融洽"], "融洽": ["和睦", "融合"], "和睦": ["融洽"], "疑惑": ["迷惑"], "迷惑": ["疑惑"], "委屈": ["冤枉"], "冤枉": ["委屈"], "催促": ["敦促"], "敦促": ["催促"], "允许": ["准许"], "准许": ["允许"], "获得": ["取得"], "取得": ["获得"], "维护": ["保护"], "保护": ["维护"], "真挚": ["真诚"], "真诚": ["真挚"], "坦率": ["直率"], "直率": ["坦率"], "粗鲁": ["无礼"], "无礼": ["粗鲁"], "聆听": ["倾听"], "倾听": ["聆听"], "擅长": ["善于"], "善于": ["擅长"], "谦虚": ["谦逊"], "谦逊": ["谦虚"], "豪迈": ["豁达"], "豁达": ["豪迈"], "奋斗": ["拼搏"], "拼搏": ["奋斗"], "惩罚": ["处罚"], "处罚": ["惩罚"], "昌盛": ["繁荣"], "繁荣": ["昌盛"], "停滞": ["停止"], "停止": ["停滞"], "棘手": ["困难"], "困难": ["棘手"], "肆虐": ["横行"], "横行": ["肆虐"], "气馁": ["沮丧"], "沮丧": ["气馁"], "震撼": ["感动"], "感动": ["震撼"], "腼腆": ["害羞"], "害羞": ["腼腆"], "愤怒": ["愤慨"], "愤慨": ["愤怒"], "恐惧": ["恐怖", "惊悚"], "恐怖": ["恐惧"], "惊悚": ["恐惧"], "孤陋寡闻": ["坐井观天"], "坐井观天": ["孤陋寡闻"], "承诺": ["保证"], "保证": ["承诺"], "歉意": ["抱歉"], "抱歉": ["歉意"], "装饰": ["点缀"], "点缀": ["装饰"], "探索": ["探寻"], "探寻": ["探索"], "娱乐": ["休闲"], "休闲": ["娱乐"], "创新": ["革新"], "革新": ["创新"], "策略": ["方法"], "方法": ["策略"], "嘉宾": ["贵宾"], "贵宾": ["嘉宾"], "珍稀": ["稀有"], "稀有": ["珍稀"], "平衡": ["均衡"], "均衡": ["平衡"], "承载": ["承担"], "承担": ["承载"], "流逝": ["消逝"], "消逝": ["流逝"], "鲜艳": ["艳丽"], "艳丽": ["鲜艳"], "矛盾": ["冲突", "分歧"], "冲突": ["矛盾"], "分歧": ["矛盾"]};
+
+
+// ── UNIT & COMPONENT TITLES ───────────────────────────────────
+const UNIT_TITLES = {
+  '中一': {
+    '单元一': { unit: '新同学 新鲜事', components: ['《我的新同学》','《一个蛋两个蛋三个蛋》','《张老师"审案"》'] },
+    '单元二': { unit: '团圆',         components: ['《世界各地的新年风俗》','《团圆饭》','《幸运饺子》'] },
+    '单元三': { unit: '相约狮城',     components: ['《走街串巷逛狮城》','《魅力四射 星耀樟宜》','《国家美术馆探秘》'] },
+    '单元四': { unit: '习惯的力量',   components: ['《培养好习惯》','《迟到》','《差不多先生》'] },
+    '单元五': { unit: '创新与改变',   components: ['《我是创新王》','《海底牧场游记》','《难忘的建筑之旅》'] },
+    '单元六': { unit: '小人物 大贡献',components: ['《我们的无名英雄》','《我为狮城做贡献》','《小人物的心声》'] },
+  },
+  '中二': {
+    '单元一': { unit: '爱的表达',     components: ['《我想对您说》','《把爱说出来》','《放风筝》'] },
+    '单元二': { unit: '关爱动物',     components: ['《助养野生动物》','《猫》','《山中奇遇》'] },
+    '单元三': { unit: '绿色生活',     components: ['《水都去哪儿了》','《人类最糟糕的发明》','《手机被丢弃之后》'] },
+    '单元四': { unit: '成长的足迹',   components: ['《心情手账》','《恐怖事件》','《最美的姿势》'] },
+    '单元五': { unit: '心系家园',     components: ['《组屋：新加坡一道美丽的风景线》','《雨树》','《如果走散了》'] },
+    '单元六': { unit: '与世界相连',   components: ['《新加坡与世界的联系》','《多元而开放的新加坡》','《别上假信息的当》'] },
+  },
+  '中三': {
+    '单元一': { unit: '有你做伴',     components: ['《如何建立良好的人际关系》','《谢谢你的沉默》','《饼干罐的秘密》'] },
+    '单元二': { unit: '健康生活',     components: ['《健康生活系列广告》','《吃茶 喝茶 品茶》','《街舞》'] },
+    '单元三': { unit: '走进社区',     components: ['《我的社区节》','《远亲不如近邻》','《社区网络群组让邻里感情更深厚》'] },
+    '单元四': { unit: '沟通你我他',   components: ['《成为演说高手》','《沟通面对面》','《社交媒体拉近你我他》'] },
+    '单元五': { unit: '学无止境',     components: ['《你在学什么》','《学然后知不足》','《终身学习》'] },
+    '单元六': { unit: '发现真善美',   components: ['《真善美摄影展》','《父亲和鱼》','《唯一的听众》'] },
+  },
+  '中四': {
+    '单元一': { unit: '心手相连',     components: ['《关怀满人间——慈善团体简介》','《坦然走过乞丐》','《给善良插上翅膀》'] },
+    '单元二': { unit: '文学世界',     components: ['《戏剧中的人生百态》','《林黛玉进贾府》','《三顾茅庐》'] },
+    '单元三': { unit: '平衡之道',     components: ['《被破坏的生态平衡》','《对抗气候变化的超级英雄——红树林》','《狼鹿效应》'] },
+    '单元四': { unit: '知己知彼',     components: ['《亚细安知多少》','《自知之明》','《小国更需要合作》'] },
+    '单元五': { unit: '勇于逐梦',     components: ['《追逐梦想——为梦想加油点赞》','《江城子·密州出猎》','《在山的那边》'] },
+  },
+};
+
+// Helper: get unit title string for a level+unitNum
+function getUnitTitle(level, unitNum) {
+  return UNIT_TITLES[level]?.[unitNum]?.unit || '';
+}
+
+// Helper: get component title for a specific component key (生活空间=0, 核心=1, 巩固=2)
+function getComponentTitle(level, unitNum, componentType) {
+  const idx = {'生活空间':0,'核心':1,'巩固':2}[componentType] ?? -1;
+  if (idx < 0) return '';
+  return UNIT_TITLES[level]?.[unitNum]?.components[idx] || '';
+}
 
 const VOCAB = {
   "中一": {
@@ -4985,9 +5039,10 @@ function renderUnitsList(level) {
   Object.entries(grouped).forEach(([unitNum, items]) => {
     const grp = document.createElement('div');
     grp.className = 'unit-group';
-    grp.innerHTML = `<div class="unit-group-label">${unitNum}</div>`;
+    const unitTitle = getUnitTitle(level, unitNum);
+    grp.innerHTML = `<div class="unit-group-label">${unitNum}${unitTitle ? `<span class="unit-group-title"> · ${unitTitle}</span>` : ''}</div>`;
 
-    items.forEach(({ key, words }) => {
+    items.forEach(({ key, type, words }) => {
       const mastered = getMastered(words);
       const pct = Math.round(mastered / words.length * 100);
       const dot  = pct===0?'dot-none':pct<50?'dot-some':pct<100?'dot-most':'dot-all';
@@ -5014,10 +5069,14 @@ function renderUnitsList(level) {
         ? `<span style="font-size:.62rem;background:var(--paper-2);color:var(--ink-mute);border-radius:8px;padding:.1rem .45rem;font-family:sans-serif;flex-shrink:0;">${notStarted.length} 未开始</span>`
         : '';
 
+      const m2 = key.match(/^(单元\S+)\s+(.+)$/);
+      const unitNum2 = m2 ? m2[1] : key;
+      const compType = m2 ? m2[2] : '';
+      const compTitle = getComponentTitle(level, unitNum2, compType);
       btn.innerHTML = `
         <div class="unit-dot ${dot}"></div>
         <div class="unit-btn-info">
-          <div class="unit-btn-name">${key}</div>
+          <div class="unit-btn-name">${key}${compTitle ? `<span class="unit-comp-title"> ${compTitle}</span>` : ''}</div>
           <div style="display:flex;align-items:center;gap:.3rem;flex-wrap:wrap;margin-top:.15rem;">
             <span class="unit-btn-sub" style="margin:0;">${words.length} 词语 · ${mastered} 已掌握${bestStr ? ' · ' + bestStr : ''}</span>
             ${unmasteredChip}${notStartedChip}
@@ -5141,6 +5200,15 @@ function showWeakDashboard(weak) {
 
 function closeWeakDashboard() {
   document.getElementById('weak-dashboard-overlay').classList.remove('show');
+}
+
+function returnToComponent() {
+  // Re-enter the same component we just studied
+  if (currentLevel && currentUnit) {
+    const words = VOCAB[currentLevel]?.[currentUnit];
+    if (words) { startStudy(currentLevel, currentUnit, words); return; }
+  }
+  returnToChapter();
 }
 
 function returnToChapter() {
@@ -5526,6 +5594,9 @@ function showResults() {
   }
 
   sendXAPIScore(pct);
+  // Show "返回此组件" only when studying a real unit (not weak-words session)
+  const backCompBtn = document.getElementById('btn-back-component');
+  if (backCompBtn) backCompBtn.style.display = (currentUnit && currentUnit !== '未掌握词语') ? 'block' : 'none';
   showScreen('results-screen');
   updateHomeStats();
 }
@@ -5751,6 +5822,8 @@ function showProfileModal() {
   const sel   = document.getElementById('profile-usertype');
   if (sel) sel.value = getUserType();
   if (modal) modal.classList.add('show');
+  const resetRow = document.getElementById('teacher-badge-reset');
+  if (resetRow) resetRow.style.display = isTeacher() ? 'block' : 'none';
 }
 
 function closeProfileModal() {
@@ -6126,6 +6199,13 @@ function saveBadges(badges) {
   try { localStorage.setItem(BADGE_STORAGE_KEY, JSON.stringify(badges)); } catch(e) {}
 }
 
+function resetBadges() {
+  if (!confirm('重置所有成就徽章？（进度不受影响）')) return;
+  localStorage.removeItem(BADGE_STORAGE_KEY);
+  updateHomeStats();
+  showToast('✓ 成就已重置');
+}
+
 // Check and award badges after any progress update
 function checkAndAwardBadges() {
   const badges = loadBadges();
@@ -6137,8 +6217,8 @@ function checkAndAwardBadges() {
     // Component badges (生活空间, 核心, 巩固)
     Object.entries(units).forEach(([unitKey, words]) => {
       if (!badges[level][unitKey]) badges[level][unitKey] = {};
-      const allMastered = words.every(w => isMastered(w));
-      if (allMastered && !badges[level][unitKey].component) {
+      const allFCKnown = words.every(w => progress[w]?.fcKnown);
+      if (allFCKnown && !badges[level][unitKey].component) {
         badges[level][unitKey].component = true;
         newlyEarned.push({
           emoji: '⭐',
@@ -6154,7 +6234,7 @@ function checkAndAwardBadges() {
     const unitNums = [...new Set(Object.keys(units).map(k => k.match(/单元\S+/)?.[0]))].filter(Boolean);
     unitNums.forEach(unitNum => {
       const unitKeys = Object.keys(units).filter(k => k.startsWith(unitNum));
-      const allUnitMastered = unitKeys.every(uk => badges[level]?.[uk]?.component);
+      const allUnitMastered = unitKeys.every(uk => (units[uk]||[]).every(w => isMastered(w)));
       if (allUnitMastered && !badges[level][unitNum + '_unit']) {
         badges[level][unitNum + '_unit'] = true;
         const unitWords2 = unitKeys.flatMap(uk => units[uk] || []);
@@ -6263,7 +6343,7 @@ function processNextCelebration() {
     _celT1QuoteIdx++;
     document.getElementById('t1-unit').textContent = item.unitLabel || '';
     document.getElementById('t1-message').innerHTML =
-      '你掌握了这个类别的全部词语。<br><br>' +
+      '你完成了这个类别的全部闪卡！<br>再完成填空挑战，即可正式掌握。<br><br>' +
       '<span style="font-style:italic;">\u201c' + q.quote + '\u201d</span><br>' +
       '<span style="font-size:.72rem;color:#aaa;">\u2014\u2014 ' + q.source + '</span>';
     document.getElementById('cel-t1').style.display = 'block';
