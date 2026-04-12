@@ -832,7 +832,61 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
         justify-content: center;
         align-items: center;
     }
-}
+  }
+
+  /* ── DESKTOP SPLIT WELCOME (≥768px) ─────────────────────── */
+  @media(min-width:768px){
+    .welcome-card { display: none; }
+    .welcome-split { display: flex !important; }
+  }
+  .welcome-split {
+    display: none;
+    width: min(860px, 92vw);
+    max-height: 92vh;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,.22), 0 4px 16px rgba(0,0,0,.12);
+    border: 1px solid rgba(255,255,255,.45);
+    position: relative;
+    z-index: 3;
+  }
+  .ws-left {
+    flex: 1.1;
+    background: rgba(253,250,244,.18);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    padding: 2.8rem 2.2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .ws-left-top { width: 100%; }
+  .ws-crown { font-size: 3.2rem; line-height: 1; margin-bottom: .2rem; filter: drop-shadow(0 2px 6px rgba(0,0,0,.15)); }
+  .ws-title { font-family: var(--font-display); font-size: 3rem; font-weight: 900; color: #1a2a5e; letter-spacing: .06em; line-height: 1.05; margin-bottom: .4rem; }
+  .ws-sub { font-size: .82rem; color: #2D6A4F; font-family: var(--font-ui); letter-spacing: .05em; line-height: 1.6; }
+  .ws-features { width: 100%; display: flex; flex-direction: column; gap: .55rem; margin: 1.4rem 0; }
+  .ws-feature { display: flex; align-items: flex-start; gap: .65rem; }
+  .ws-feat-icon { font-size: 1.1rem; line-height: 1.3; flex-shrink: 0; }
+  .ws-feat-text { font-size: .78rem; color: #1a2a5e; font-family: var(--font-ui); line-height: 1.5; text-align: left; }
+  .ws-feat-text strong { color: #1a2a5e; font-weight: 700; }
+  .ws-credit { font-size: .62rem; color: #2D6A4F; font-family: var(--font-ui); letter-spacing: .04em; line-height: 1.6; }
+  .ws-right {
+    flex: 1;
+    background: rgba(253,250,244,.22);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-left: 1px solid rgba(255,255,255,.35);
+    padding: 2.4rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .ws-heading { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; color: #1a2a5e; margin-bottom: .25rem; }
+  .ws-sub2 { font-size: .75rem; color: #2D6A4F; font-family: var(--font-ui); margin-bottom: 1.4rem; line-height: 1.5; }
 
   /* ── ACHIEVEMENTS BUTTON ─────────────────────────────────── */
   .ach-level-card {
@@ -974,6 +1028,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   }
 
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -981,6 +1036,45 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 
 <!-- WELCOME / LOGIN SCREEN -->
 <div id="welcome-screen" class="screen active">
+  <!-- DESKTOP SPLIT LAYOUT (hidden on mobile, shown via CSS ≥768px) -->
+  <div class="welcome-split">
+    <div class="ws-left">
+      <div class="ws-left-top">
+        <div class="ws-crown">👑</div>
+        <div class="ws-title">词王训练营</div>
+        <div class="ws-sub">新加坡中学 G3 华文<br>中一至中四课文词语总复习</div>
+      </div>
+      <div class="ws-features">
+        <div class="ws-feature"><span class="ws-feat-icon">🃏</span><div class="ws-feat-text"><strong>词语闪卡</strong> — 翻转卡片，认识词语</div></div>
+        <div class="ws-feature"><span class="ws-feat-icon">✏️</span><div class="ws-feat-text"><strong>填空挑战</strong> — 在例句中选出正确词语</div></div>
+        <div class="ws-feature"><span class="ws-feat-icon">📊</span><div class="ws-feat-text"><strong>进度追踪</strong> — 掌握情况一目了然</div></div>
+        <div class="ws-feature"><span class="ws-feat-icon">🏆</span><div class="ws-feat-text"><strong>成就系统</strong> — 完成单元解锁专属称号</div></div>
+      </div>
+      <div class="ws-credit">百德中学 · Bukit View Secondary School<br>郑凯欣老师 · Mdm Chun Kai Xin &nbsp;© 2026</div>
+    </div>
+    <div class="ws-right">
+      <div class="ws-heading">开始学习</div>
+      <div class="ws-sub2">输入你的电邮地址即可开始，进度自动保存。</div>
+      <label class="welcome-label">电邮地址</label>
+      <input class="welcome-input" id="welcome-email-desktop" type="email" placeholder="e.g. name@students.edu.sg"
+        autocomplete="email" autocapitalize="none" onkeydown="if(event.key==='Enter') submitWelcome()">
+      <label class="welcome-label" style="margin-top:.2rem">你的身份</label>
+      <select class="welcome-select" id="welcome-usertype-desktop">
+        <option value="">── 请选择 ──</option>
+        <option value="百德中学学生">百德中学学生 (Bukit View Sec Student)</option>
+        <option value="其他学校学生">其他学校学生 (Student from Another School)</option>
+        <option value="家长">家长 (Parent)</option>
+        <option value="教师">教师 (Teacher)</option>
+        <option value="公众人士">公众人士 (General Public)</option>
+      </select>
+      <div class="welcome-error" id="welcome-error-desktop"></div>
+      <button class="welcome-btn" onclick="submitWelcome()">开始学习 →</button>
+      <div class="welcome-note" style="margin-top:.5rem">
+        你的信息只用于保存学习进展与统计使用情况。首次填写后无需再次登录。如需更改身份，可在主页进行修改。
+      </div>
+    </div>
+  </div>
+
   <div class="welcome-card">
     <div class="welcome-logo">👑</div>
     <div class="welcome-title">词王训练营</div>
@@ -5735,10 +5829,12 @@ function isStudent() { return STUDENT_TYPES.includes(getUserType()); }
 
 // ── WELCOME SCREEN LOGIC ─────────────────────────────────────
 function submitWelcome() {
-  const emailInput = document.getElementById('welcome-email');
-  const typeInput  = document.getElementById('welcome-usertype');
-  const email    = (emailInput.value || '').trim().toLowerCase();
-  const userType = (typeInput.value  || '').trim();
+  // Read from desktop split panel if visible, otherwise mobile card
+  const desktopVisible = window.innerWidth >= 768;
+  const emailInput = document.getElementById(desktopVisible ? 'welcome-email-desktop' : 'welcome-email');
+  const typeInput  = document.getElementById(desktopVisible ? 'welcome-usertype-desktop' : 'welcome-usertype');
+  const email    = (emailInput ? emailInput.value : '').trim().toLowerCase();
+  const userType = (typeInput  ? typeInput.value  : '').trim();
 
   if (!email) { showWelcomeError('请输入你的电邮地址'); return; }
   if (!email.includes('@') || !email.includes('.')) {
@@ -5763,14 +5859,15 @@ function saveUserIdentity(email, userType) {
 }
 
 function showWelcomeError(msg) {
-  const errEl = document.getElementById('welcome-error');
-  const emailInput = document.getElementById('welcome-email');
-  errEl.textContent = msg;
-  errEl.classList.add('show');
-  emailInput.classList.add('error');
+  const desktopVisible = window.innerWidth >= 768;
+  const suffix = desktopVisible ? '-desktop' : '';
+  const errEl = document.getElementById('welcome-error' + suffix);
+  const emailInput = document.getElementById('welcome-email' + suffix);
+  if (errEl) { errEl.textContent = msg; errEl.classList.add('show'); }
+  if (emailInput) emailInput.classList.add('error');
   setTimeout(() => {
-    errEl.classList.remove('show');
-    emailInput.classList.remove('error');
+    if (errEl) errEl.classList.remove('show');
+    if (emailInput) emailInput.classList.remove('error');
   }, 3000);
 }
 
@@ -6413,27 +6510,74 @@ function closeBadgeOverlay() {
   setTimeout(processNextCelebration, 300);
 }
 
-function shareCelebration(tier) {
-  var msg = '';
-  var item = _celebrationQueue[0];
-  if (tier === 1) {
-    msg = '\u6211\u5728\u8bcd\u738b\u8bad\u7ec3\u8425\u5b8c\u6210\u4e86' + (item.unitLabel||'\u4e00\u4e2a\u7c7b\u522b') + '\u7684\u5168\u90e8\u8bcd\u8bed\uff01\u2b50\n\u767e\u5fb7\u4e2d\u5b66 Bukit View Secondary\n\uD83D\uDC49 for.edu.sg/g3cl-vocabking';
-  } else if (tier === 2) {
-    msg = '\u6211\u5728\u8bcd\u738b\u8bad\u7ec3\u8425\u5b8c\u6210\u4e86' + (item.unitLabel||'\u4e00\u4e2a\u5355\u5143') + '\u7684\u5168\u90e8\u8bcd\u8bed\uff01\uD83C\uDF96\uFE0F\n\u767e\u5fb7\u4e2d\u5b66 Bukit View Secondary\n\uD83D\uDC49 for.edu.sg/g3cl-vocabking';
-  } else if (tier === 3) {
-    var rc3 = RANK_CONFIG[item.levelKey];
+async function shareCelebration(tier) {
+  var cardId = ['','cel-t1','cel-t2','cel-t3','cel-t4'][tier];
+  var cardEl = document.getElementById(cardId);
+  if (!cardEl) return;
+
+  showToast('\u6b63\u5728\u751f\u6210\u5206\u4eab\u56fe\u7247\u2026');
+
+  try {
+    // Temporarily add watermark to card
+    var wm = document.createElement('div');
+    wm.style.cssText = 'text-align:center;font-size:.6rem;font-family:sans-serif;opacity:.6;padding:.4rem 0 .2rem;letter-spacing:.04em;';
+    wm.textContent = '\ud83d\udc49 for.edu.sg/g3cl-vocabking';
+    cardEl.appendChild(wm);
+
+    var canvas = await html2canvas(cardEl, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: null,
+      logging: false,
+      allowTaint: true
+    });
+
+    cardEl.removeChild(wm);
+
+    var blob = await new Promise(function(res) { canvas.toBlob(res, 'image/png'); });
+    var file = new File([blob], 'vocabking-achievement.png', { type: 'image/png' });
+    var item = _celebrationQueue[0];
+    var url = 'https://for.edu.sg/g3cl-vocabking';
+
+    // Mobile: try image file share (Instagram, TikTok, WhatsApp, X etc.)
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: '\u8bcd\u738b\u8bad\u7ec3\u8425\u6210\u5c31', url: url });
+    } else if (navigator.share) {
+      // Fallback: share URL + text without image
+      await navigator.share({ text: _buildShareText(tier, item), url: url });
+    } else {
+      // Desktop: download the image
+      var objUrl = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = objUrl; a.download = 'vocabking-achievement.png'; a.click();
+      setTimeout(function(){ URL.revokeObjectURL(objUrl); }, 2000);
+      showToast('\u2713 \u56fe\u7247\u5df2\u4e0b\u8f7d\uff0c\u53ef\u4e0a\u4f20\u5230\u4efb\u4f55\u5e73\u53f0\u5206\u4eab\uff01');
+    }
+  } catch(err) {
+    // html2canvas failed or share cancelled — fall back to text
+    cardEl.querySelector && cardEl.querySelector('[data-wm]') && cardEl.removeChild(cardEl.querySelector('[data-wm]'));
+    var item = _celebrationQueue[0];
+    var fallbackMsg = _buildShareText(tier, item);
+    if (navigator.share) {
+      navigator.share({ text: fallbackMsg, url: 'https://for.edu.sg/g3cl-vocabking' }).catch(function(){});
+    } else {
+      navigator.clipboard && navigator.clipboard.writeText(fallbackMsg + '\nhttps://for.edu.sg/g3cl-vocabking')
+        .then(function(){ showToast('\u2713 \u5df2\u590d\u5236\uff0c\u53ef\u8d34\u5230\u4efb\u4f55\u5e73\u53f0\u5206\u4eab\uff01'); })
+        .catch(function(){ showToast('\u8bf7\u624b\u52a8\u590d\u5236\u5206\u4eab\u5185\u5bb9'); });
+    }
+  }
+}
+
+function _buildShareText(tier, item) {
+  var pre = '\u6211\u5728\u8bcd\u738b\u8bad\u7ec3\u8425';
+  if (tier === 1) return pre + '\u5b8c\u6210\u4e86' + (item.unitLabel||'\u4e00\u4e2a\u7c7b\u522b') + '\u7684\u5168\u90e8\u8bcd\u8bed\uff01\u2b50\n\u767e\u5fb7\u4e2d\u5b66 Bukit View Secondary';
+  if (tier === 2) return pre + '\u5b8c\u6210\u4e86' + (item.unitLabel||'\u4e00\u4e2a\u5355\u5143') + '\u7684\u5168\u90e8\u8bcd\u8bed\uff01\ud83c\udf96\ufe0f\n\u767e\u5fb7\u4e2d\u5b66 Bukit View Secondary';
+  if (tier === 3) {
+    var rc = RANK_CONFIG[item.levelKey];
     var tw = Object.values(VOCAB[item.levelKey]).flat().length;
-    msg = '\u6211\u5728\u8bcd\u738b\u8bad\u7ec3\u8425\u638c\u63e1\u4e86' + item.levelKey + '\u5168\u90e8 ' + tw + ' \u4e2a\u8bcd\u8bed\uff0c\u8363\u83b7\u300c' + rc3.title + '\u300d\u79f0\u53f7\uff01' + rc3.emoji + '\n\u767e\u5fb7\u4e2d\u5b66 Bukit View Secondary\n\uD83D\uDC49 for.edu.sg/g3cl-vocabking';
-  } else if (tier === 4) {
-    msg = '\u6211\u5728\u8bcd\u738b\u8bad\u7ec3\u8425\u638c\u63e1\u4e86\u4e2d\u4e00\u81f3\u4e2d\u56db\u5168\u90e8 991 \u4e2a\u8bcd\u8bed\uff0c\u8363\u83b7\u300c\u9876\u7ea7\u8bcd\u738b\u300d\uD83D\uDC51 \u79f0\u53f7\uff01\n\u767e\u5fb7\u4e2d\u5b66 Bukit View Secondary School\n\u8bcd\u738b\u8bad\u7ec3\u8425 \u00b7 \u65b0\u52a0\u5761\u4e2d\u5b66G3\u534e\u6587\n\uD83D\uDC49 for.edu.sg/g3cl-vocabking';
+    return pre + '\u638c\u63e1\u4e86' + item.levelKey + '\u5168\u90e8 ' + tw + ' \u4e2a\u8bcd\u8bed\uff0c\u8363\u83b7\u300c' + rc.title + '\u300d\u79f0\u53f7\uff01' + rc.emoji + '\n\u767e\u5fb7\u4e2d\u5b66 Bukit View Secondary';
   }
-  if (navigator.share) {
-    navigator.share({ text: msg }).catch(function(){});
-  } else {
-    navigator.clipboard.writeText(msg)
-      .then(function(){ showToast('\u2713 \u5df2\u590d\u5236\uff0c\u53ef\u8d34\u5230\u4efb\u4f55\u5e73\u53f0\u5206\u4eab\uff01'); })
-      .catch(function(){ showToast('\u8bf7\u624b\u52a8\u590d\u5236\u5206\u4eab\u5185\u5bb9'); });
-  }
+  return pre + '\u638c\u63e1\u4e86\u4e2d\u4e00\u81f3\u4e2d\u56db\u5168\u90e8 991 \u4e2a\u8bcd\u8bed\uff0c\u8363\u83b7\u300c\u9876\u7ea7\u8bcd\u738b\u300d\ud83d\udc51 \u79f0\u53f7\uff01\n\u767e\u5fb7\u4e2d\u5b66 Bukit View Secondary School';
 }
 
 function updateLevelBadgeCorners(badges) {
@@ -6747,6 +6891,128 @@ Be brave and try — every wrong answer is a learning opportunity. The path to b
 // ══════════════════════════════════════════════════════════════
 let _currentUtterance = null;
 
+// ── POLYPHONIC SUBSTITUTION TABLE ─────────────────────────────
+// Words containing polyphonic characters, sorted longest-first
+// so longer matches are replaced before their substrings.
+const _POLY_MAP = (function() {
+  const entries = [
+    ['明知山有虎，偏向虎山行', 'míng zhī shān yǒu hǔ, piān xiàng hǔ shān xíng'],
+    ['有福同享，有难同当', 'yǒu fú tóng xiǎ ng, yǒu nán tóng dāng'],
+    ['助人为快乐之本', 'zhù rén wéi kuài lè zhī běn'],
+    ['不分青红皂白', 'bù fēn qīng hóng zào bái'],
+    ['兴致勃勃', 'xìng zhì bó bó'],
+    ['言出必行', 'yán chū bì xíng'],
+    ['硬着头皮', 'yìng zhe tóu pí'],
+    ['一噜而散', 'yī hòng ér sàn'],
+    ['腾空而起', 'téng kŏng ér qǐ'],
+    ['敬业乐业', 'jìng yè lè yè'],
+    ['迎刃而解', 'yíng rèn ér jiě'],
+    ['得天独厚', 'dé tiān dú hòu'],
+    ['源远流长', 'yuán yuǎ n liú cháng'],
+    ['鲜为人知', 'xiǎ n wéi rén zhī'],
+    ['慷慨解囊', 'kāng kǎi jiě náng'],
+    ['雪中送炭', 'xuě zhŏng sòng tàn'],
+    ['自鸣得意', 'zì míng dé yì'],
+    ['逆水行舟', 'nì shuǐ xíng zhŏu'],
+    ['啼啼称奇', 'zé zé chēng qí'],
+    ['一无是处', 'yī wú shì chù'],
+    ['恨不得', 'hèn bù dé'],
+    ['不得了', 'bù dé le'],
+    ['薄薄的', 'báo báo de'],
+    ['蛋白质', 'dàn bái zhì'],
+    ['爆发力', 'bào fā lì'],
+    ['直率', 'zhí shuài'],
+    ['得罪', 'dé zuì'],
+    ['健将', 'jiàn jiàng'],
+    ['系列', 'xì liè'],
+    ['瞬间', 'shùn jiān'],
+    ['娱乐', 'yú lè'],
+    ['获得', 'huò dé'],
+    ['降落', 'jiàng luò'],
+    ['打量', 'dǎ liàng'],
+    ['中央', 'zhŏng yāng'],
+    ['銀行', 'yín háng'],
+    ['宿舍', 'sù shè'],
+    ['行驶', 'xíng shǐ'],
+    ['教训', 'jiào xùn'],
+    ['辨识', 'biàn shí'],
+    ['调皮', 'tiáo pí'],
+    ['模糊', 'mó hú'],
+    ['宗教', 'zŏng jiào'],
+    ['空旷', 'kŏng kuàng'],
+    ['沉重', 'chén zhòng'],
+    ['传承', 'chuán chéng'],
+    ['发芽', 'fā yá'],
+    ['给予', 'jǐ yǔ'],
+    ['婉转', 'wǎn zhuǎ n'],
+    ['良好', 'liáng hǎ o'],
+    ['坦率', 'tǎn shuài'],
+    ['分歧', 'fēn qí'],
+    ['调剂', 'tiáo jì'],
+    ['衡量', 'héng liáng'],
+    ['频率', 'pín lü'],
+    ['抒发', 'shū fā'],
+    ['调匀', 'tiáo yún'],
+    ['焉发', 'huàn fā'],
+    ['擅长', 'shàn cháng'],
+    ['裁缝', 'cái féng'],
+    ['恰好', 'qià hǎo'],
+    ['尊重', 'zūn zhòng'],
+    ['传播', 'chuán bŏ'],
+    ['数据', 'shù jù'],
+    ['分析', 'fēn xī'],
+    ['落伍', 'luò wǔ'],
+    ['楷模', 'kǎi mó'],
+    ['谅解', 'liàng jiě'],
+    ['隆重', 'lóng zhòng'],
+    ['教授', 'jiào shòu'],
+    ['割舍', 'gē shě'],
+    ['分忧', 'fēn yŏu'],
+    ['羓解', 'huǎn jiě'],
+    ['质朴', 'zhì piáo'],
+    ['晓得', 'xiǎ o de'],
+    ['兴旺', 'xīng wàng'],
+    ['兴衰', 'xīng shuāi'],
+    ['重逢', 'chóng féng'],
+    ['空隙', 'kòng xì'],
+    ['违背', 'wéi bèi'],
+    ['论坛', 'lún tán'],
+    ['研发', 'yán fā'],
+    ['翁', 'qiào'],
+    ['铺', 'pù'],
+    ['缝', 'fèng'],
+    ['拧', 'níng'],
+    ['磨', 'mó'],
+    ['扎', 'zhā'],
+  ];
+  // Sort longest-first to prevent partial matches
+  entries.sort((a, b) => b[0].length - a[0].length);
+  return entries;
+})();
+
+// Replace polyphonic vocab words in a sentence with their correct pinyin
+function _applyPolyMap(text) {
+  let result = text;
+  for (const [word, pinyin] of _POLY_MAP) {
+    if (result.includes(word)) {
+      result = result.split(word).join(pinyin);
+    }
+  }
+  return result;
+}
+
+// Pick the best available zh voice, with fallbacks for Samsung/Android
+function _getBestZhVoice() {
+  if (!window.speechSynthesis) return null;
+  const voices = window.speechSynthesis.getVoices();
+  const prefs = ['zh-CN', 'zh-TW', 'zh-HK', 'zh'];
+  for (const lang of prefs) {
+    const v = voices.find(v => v.lang === lang || v.lang.startsWith(lang));
+    if (v) return v;
+  }
+  return null; // let browser pick default
+}
+
 function speak(text, btn) {
   if (!window.speechSynthesis) { showToast('此浏览器不支持朗读功能'); return; }
   window.speechSynthesis.cancel();
@@ -6756,7 +7022,14 @@ function speak(text, btn) {
     return;
   }
   const utt = new SpeechSynthesisUtterance(text);
-  utt.lang = 'zh-CN';
+  // Try to assign best available zh voice
+  const voice = _getBestZhVoice();
+  if (voice) {
+    utt.voice = voice;
+    utt.lang = voice.lang;
+  } else {
+    utt.lang = 'zh-CN';
+  }
   utt.rate = 0.85;
   if (btn) btn.classList.add('speaking');
   utt.onend = () => {
@@ -6771,25 +7044,42 @@ function speak(text, btn) {
   window.speechSynthesis.speak(utt);
 }
 
+// Flashcard: speak pinyin directly — always correct, never mispronounced
 function speakWord(event) {
-  const word = document.getElementById('fc-back-word').textContent;
-  if (word) speak(word, event.currentTarget);
+  const word = document.getElementById('fc-back-word').textContent.trim();
+  if (!word) return;
+  const pinyin = PINYIN_DATA[word];
+  // Speak pinyin if available (unambiguous), otherwise fall back to characters
+  speak(pinyin || word, event.currentTarget);
 }
 
 function speakMeaning(event) {
   const meaning = document.getElementById('fc-meaning').textContent;
-  if (meaning) speak(meaning, event.currentTarget);
+  if (meaning) speak(_applyPolyMap(meaning), event.currentTarget);
 }
 
 function speakExample(event) {
   const ex = document.getElementById('fc-example').textContent;
-  const clean = ex.replace(/【|】/g, '');
-  if (clean) speak(clean, event.currentTarget);
+  const clean = ex.replace(/「|」|【|】/g, '');
+  if (clean) speak(_applyPolyMap(clean), event.currentTarget);
 }
 
 function speakCloze(btn) {
-  const text = document.getElementById('cloze-sentence').textContent;
-  if (text) speak(text, btn);
+  // Use innerHTML-derived text: get sentence with blank filled if answered, else skip blank
+  const sentEl = document.getElementById('cloze-sentence');
+  if (!sentEl) return;
+  // Replace the blank span text (＿＿＿ or answered word) cleanly
+  const blankEl = sentEl.querySelector('.cloze-blank');
+  let text;
+  if (blankEl && (blankEl.textContent === '＿＿＿')) {
+    // Not yet answered — read sentence with a natural pause where blank is
+    text = sentEl.textContent.replace(/＿+/g, '、');
+  } else {
+    // Answered — read the full sentence as-is
+    text = sentEl.textContent;
+  }
+  text = text.trim();
+  if (text) speak(_applyPolyMap(text), btn);
 }
 
 // ══════════════════════════════════════════════════════════════
