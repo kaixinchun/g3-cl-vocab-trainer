@@ -45,16 +45,15 @@ html{overflow-x:hidden;}
 
 /* HOME */
 #home-screen{
-  background-image: url('hero_home_mobile.jpg');
+  background-image: url('Vocab_king_mobile_background.jpg');
   background-size:cover;
-  background-position:center;
-  background-attachment:fixed;
+  background-position:center top;
   color:var(--ink);
   overflow-y:auto;
   position:relative;
 }
 @media(min-width:768px){
-  #home-screen{ background-image: url('hero_home_desktop.jpg'); }
+  #home-screen{ background-image: url('Vocab_king_desktop_background.jpg'); background-position:center; }
 }
 #home-screen::before{
   content:'';position:fixed;top:0;left:0;right:0;height:5px;
@@ -370,17 +369,19 @@ html{overflow-x:hidden;}
   #welcome-screen {
     background-image: url('Vocab_king_mobile_background.jpg');
     background-size: cover;
-    background-position: center;
+    background-position: center center;
     align-items: center;
     justify-content: center;
     padding: 1.5rem;
     min-height: 100vh;
     position: relative;
+    overflow: hidden;
   }
   #welcome-screen::before {
     content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
     height: 5px;
     background: linear-gradient(90deg,
       #5FAD2A 0%, #5FAD2A 33%,
@@ -824,7 +825,6 @@ html{overflow-x:hidden;}
         justify-content: center;
         align-items: center;
     }
-    #home-screen { background-image: url('hero_home_desktop.jpg'); background-attachment: fixed; }
 }
 
   /* ── ACHIEVEMENTS BUTTON ─────────────────────────────────── */
