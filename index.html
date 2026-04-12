@@ -903,7 +903,11 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   .ach-unit-label { font-size:.68rem; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-mute); font-family:var(--font-ui); }
   .ach-unit-seal { background:#1a2a5e; color:#e8c800; font-size:.65rem; font-family:var(--font-ui); font-weight:700; border-radius:12px; padding:3px 10px; letter-spacing:.04em; }
   .ach-badge { display:flex; flex-direction:column; align-items:center; gap:6px; }
-  .ach-badge svg { display:block; }
+  .ach-badge-img-wrap { position:relative; width:64px; height:64px; flex-shrink:0; }
+  .ach-badge-img-wrap img { width:64px; height:64px; border-radius:50%; display:block; }
+  .ach-badge-img-wrap.earned img { box-shadow:0 0 0 2.5px rgba(200,168,0,.5), 0 2px 8px rgba(0,0,0,.18); }
+  .ach-badge-img-wrap.locked img { filter:grayscale(1) opacity(.32); }
+  .ach-badge-lock-icon { position:absolute; bottom:0; right:0; width:22px; height:22px; background:var(--paper-2); border:1px solid var(--paper-3); border-radius:50%; display:flex; align-items:center; justify-content:center; }
   .ach-badge-lbl { font-size:.68rem; font-family:var(--font-ui); text-align:center; line-height:1.35; }
   .ach-badge.type-sks .ach-badge-lbl { color:#275010; font-weight:600; }
   .ach-badge.type-hx  .ach-badge-lbl { color:#7A4F00; font-weight:600; }
@@ -6700,105 +6704,30 @@ function updateAchievementsScreen() {
     track.innerHTML = `<div style="height:100%;border-radius:4px;width:${levelPct}%;background:linear-gradient(90deg,var(--green-mid),var(--gold));transition:width .5s;"></div>`;
     card.appendChild(track);
 
-    // Circular metallic badge grid — grouped by unit
+    // Badge grid — grouped by unit, using real badge images
     if (prevLevelComplete) {
-      // SVG defs (gradients/filters) injected once into the page if not present
-      if (!document.getElementById('ach-svg-defs')) {
-        const defs = document.createElementNS('http://www.w3.org/2000/svg','svg');
-        defs.id = 'ach-svg-defs';
-        defs.setAttribute('width','0'); defs.setAttribute('height','0');
-        defs.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden;';
-        defs.innerHTML = `<defs>
-          <radialGradient id="bg-sks" cx="38%" cy="30%" r="65%">
-            <stop offset="0%" stop-color="#d8f5a8"/>
-            <stop offset="55%" stop-color="#7ec832"/>
-            <stop offset="100%" stop-color="#3a7a10"/>
-          </radialGradient>
-          <radialGradient id="bg-hx" cx="38%" cy="30%" r="65%">
-            <stop offset="0%" stop-color="#fff5aa"/>
-            <stop offset="55%" stop-color="#e8b800"/>
-            <stop offset="100%" stop-color="#8a5e00"/>
-          </radialGradient>
-          <radialGradient id="bg-gf" cx="38%" cy="30%" r="65%">
-            <stop offset="0%" stop-color="#b0d8ff"/>
-            <stop offset="55%" stop-color="#3a8ae0"/>
-            <stop offset="100%" stop-color="#0a3d90"/>
-          </radialGradient>
-          <radialGradient id="bg-lock" cx="38%" cy="30%" r="65%">
-            <stop offset="0%" stop-color="#e8e8e8"/>
-            <stop offset="100%" stop-color="#b0b0b0"/>
-          </radialGradient>
-          <radialGradient id="shine" cx="35%" cy="25%" r="48%">
-            <stop offset="0%" stop-color="rgba(255,255,255,.55)"/>
-            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
-          </radialGradient>
-          <linearGradient id="star-gold" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#ffe84a"/>
-            <stop offset="100%" stop-color="#c87800"/>
-          </linearGradient>
-          <filter id="badge-shadow" x="-15%" y="-15%" width="130%" height="130%">
-            <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="rgba(0,0,0,.28)"/>
-          </filter>
-        </defs>`;
-        document.body.appendChild(defs);
-      }
+      // Map component type → badge image filename
+      const BADGE_IMG = {
+        'sks': 'badge_shkj.png',  // 生活空间 — green house coin
+        'hx':  'badge_hx.png',   // 核心 — gold star coin
+        'gf':  'badge_gg.png'    // 巩固 — silver diamond coin
+      };
 
-      function makeBadgeSVG(type, earned) {
-        const bgId = earned ? 'bg-' + type : 'bg-lock';
-        const NS = 'http://www.w3.org/2000/svg';
-        const svg = document.createElementNS(NS, 'svg');
-        svg.setAttribute('width','64'); svg.setAttribute('height','64');
-        svg.setAttribute('viewBox','0 0 68 68');
-        // circle
-        const circle = document.createElementNS(NS, 'circle');
-        circle.setAttribute('cx','34'); circle.setAttribute('cy','34'); circle.setAttribute('r','32');
-        circle.setAttribute('fill', 'url(#' + bgId + ')');
-        circle.setAttribute('filter','url(#badge-shadow)');
-        svg.appendChild(circle);
-        // inner ring highlight
-        const ring = document.createElementNS(NS, 'circle');
-        ring.setAttribute('cx','34'); ring.setAttribute('cy','34'); ring.setAttribute('r','29');
-        ring.setAttribute('fill','none');
-        ring.setAttribute('stroke','rgba(255,255,255,.32)'); ring.setAttribute('stroke-width','1');
-        svg.appendChild(ring);
-        if (earned) {
-          // star path (5-point, centred at 34,32)
-          const star = document.createElementNS(NS, 'path');
-          star.setAttribute('d','M34 13 L37.8 25 L50 25 L40.2 32.5 L44 44.5 L34 37 L24 44.5 L27.8 32.5 L18 25 L30.2 25 Z');
-          star.setAttribute('fill','url(#star-gold)');
-          star.setAttribute('stroke','rgba(255,255,255,.4)'); star.setAttribute('stroke-width','0.6');
-          star.setAttribute('stroke-linejoin','round');
-          svg.appendChild(star);
-        } else {
-          // ghost star
-          const ghost = document.createElementNS(NS, 'path');
-          ghost.setAttribute('d','M34 13 L37.8 25 L50 25 L40.2 32.5 L44 44.5 L34 37 L24 44.5 L27.8 32.5 L18 25 L30.2 25 Z');
-          ghost.setAttribute('fill','rgba(180,180,180,.35)');
-          svg.appendChild(ghost);
-          // padlock body
-          const lockBody = document.createElementNS(NS, 'rect');
-          lockBody.setAttribute('x','27'); lockBody.setAttribute('y','35');
-          lockBody.setAttribute('width','14'); lockBody.setAttribute('height','11');
-          lockBody.setAttribute('rx','2.5'); lockBody.setAttribute('fill','#888');
-          svg.appendChild(lockBody);
-          // padlock shackle
-          const shackle = document.createElementNS(NS, 'path');
-          shackle.setAttribute('d','M30 35 v-4.5 a4 4 0 0 1 8 0 v4.5');
-          shackle.setAttribute('fill','none'); shackle.setAttribute('stroke','#888');
-          shackle.setAttribute('stroke-width','2.5'); shackle.setAttribute('stroke-linecap','round');
-          svg.appendChild(shackle);
-          // keyhole dot
-          const dot = document.createElementNS(NS, 'circle');
-          dot.setAttribute('cx','34'); dot.setAttribute('cy','41');
-          dot.setAttribute('r','2'); dot.setAttribute('fill','#bbb');
-          svg.appendChild(dot);
+      function makeBadgeImg(typeKey, earned) {
+        const wrap = document.createElement('div');
+        wrap.className = 'ach-badge-img-wrap ' + (earned ? 'earned' : 'locked');
+        const img = document.createElement('img');
+        img.src = BADGE_IMG[typeKey];
+        img.alt = typeKey;
+        img.width = 64; img.height = 64;
+        wrap.appendChild(img);
+        if (!earned) {
+          const lockIcon = document.createElement('div');
+          lockIcon.className = 'ach-badge-lock-icon';
+          lockIcon.innerHTML = '<svg width="11" height="13" viewBox="0 0 10 12" fill="none"><rect x="1.5" y="5" width="7" height="6" rx="1.5" fill="#888"/><path d="M3 5V3.5a2 2 0 014 0V5" stroke="#888" stroke-width="1.3" stroke-linecap="round" fill="none"/><circle cx="5" cy="8" r="1" fill="#bbb"/></svg>';
+          wrap.appendChild(lockIcon);
         }
-        // shine overlay
-        const shine = document.createElementNS(NS, 'circle');
-        shine.setAttribute('cx','34'); shine.setAttribute('cy','34'); shine.setAttribute('r','32');
-        shine.setAttribute('fill','url(#shine)');
-        svg.appendChild(shine);
-        return svg;
+        return wrap;
       }
 
       const typeMap  = { '生活空间':'sks', '核心':'hx', '巩固':'gf' };
@@ -6836,7 +6765,7 @@ function updateAchievementsScreen() {
           const typeKey = typeMap[compType];
           const badge = document.createElement('div');
           badge.className = 'ach-badge type-' + typeKey + (earned ? '' : ' locked');
-          badge.appendChild(makeBadgeSVG(typeKey, earned));
+          badge.appendChild(makeBadgeImg(typeKey, earned));
           const lblEl = document.createElement('div');
           lblEl.className = 'ach-badge-lbl';
           lblEl.textContent = compType;
