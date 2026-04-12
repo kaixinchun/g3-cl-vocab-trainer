@@ -897,15 +897,34 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     margin-bottom: 10px;
   }
   .ach-level-card.locked { opacity: .45; }
-  .ach-badge-row { display:flex; gap:5px; flex-wrap:wrap; margin-top:8px; }
-  .ach-badge {
-    display:flex; align-items:center; gap:4px;
-    border-radius:20px; padding:4px 10px;
-    font-size:.75rem; font-family:var(--font-ui); border:0.5px solid;
+  .ach-badge-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px 6px; margin-top:10px; }
+  .ach-unit-divider { grid-column:1/-1; border:none; border-top:0.5px solid var(--paper-3); margin:2px 0; }
+  .ach-unit-row { grid-column:1/-1; display:flex; align-items:center; justify-content:space-between; margin-bottom:2px; }
+  .ach-unit-label { font-size:.68rem; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-mute); font-family:var(--font-ui); }
+  .ach-unit-seal { background:#1a2a5e; color:#e8c800; font-size:.65rem; font-family:var(--font-ui); font-weight:700; border-radius:12px; padding:2px 9px; letter-spacing:.04em; }
+  .ach-badge { display:flex; flex-direction:column; align-items:center; gap:5px; }
+  .ach-badge-circle {
+    width:60px; height:60px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    position:relative; flex-shrink:0;
+    font-size:1.4rem; border:2px solid;
   }
-  .ach-badge.earned { background:#FFF8E1; border-color:var(--gold); color:#7B5A00; }
-  .ach-badge.not-earned { background:var(--paper-2); border-color:var(--paper-3); color:var(--ink-mute); opacity:.55; }
-  .ach-badge.unit-badge { background:#EEF6FF; border-color:var(--blue); color:#0D3A7B; }
+  .ach-badge-circle .ach-lock {
+    position:absolute; bottom:-3px; right:-3px;
+    width:18px; height:18px; border-radius:50%;
+    background:var(--paper-3); border:1px solid var(--paper-2);
+    display:flex; align-items:center; justify-content:center;
+    font-size:.6rem; line-height:1;
+  }
+  .ach-badge-lbl { font-size:.65rem; font-family:var(--font-ui); text-align:center; line-height:1.35; color:var(--ink-mute); }
+  .ach-badge.type-sks .ach-badge-circle { background:#E8F5D0; border-color:#5FAD2A; }
+  .ach-badge.type-sks .ach-badge-lbl    { color:#275010; font-weight:600; }
+  .ach-badge.type-hx  .ach-badge-circle { background:#FFF8CC; border-color:#C49A00; }
+  .ach-badge.type-hx  .ach-badge-lbl    { color:#7A4F00; font-weight:600; }
+  .ach-badge.type-gf  .ach-badge-circle { background:#EEF6FF; border-color:#2878C8; }
+  .ach-badge.type-gf  .ach-badge-lbl    { color:#0C3A6E; font-weight:600; }
+  .ach-badge.locked .ach-badge-circle { background:var(--paper-2); border-color:var(--paper-3); filter:grayscale(1); opacity:.5; }
+  .ach-badge.locked .ach-badge-lbl    { color:var(--ink-mute); font-weight:400; }
 
   /* ── GUIDE SCREEN ────────────────────────────────────────── */
   .guide-section {
@@ -6697,27 +6716,59 @@ function updateAchievementsScreen() {
     track.innerHTML = `<div style="height:100%;border-radius:4px;width:${levelPct}%;background:linear-gradient(90deg,var(--green-mid),var(--gold));transition:width .5s;"></div>`;
     card.appendChild(track);
 
-    // Badge chips (show up to 8, collapsed)
+    // Circular coloured badge grid — grouped by unit
     if (prevLevelComplete) {
       const badgeRow = document.createElement('div');
       badgeRow.className = 'ach-badge-row';
-      Object.keys(units).forEach(uk => {
-        const earned = badges[level]?.[uk]?.component;
-        const chip = document.createElement('div');
-        chip.className = 'ach-badge ' + (earned ? 'earned' : 'not-earned');
-        chip.textContent = (earned ? '⭐ ' : '○ ') + uk;
-        badgeRow.appendChild(chip);
-      });
-      // Unit-level badges
       const unitNums = [...new Set(Object.keys(units).map(k => k.match(/单元\S+/)?.[0]))].filter(Boolean);
-      unitNums.forEach(un => {
-        const earned = badges[level]?.[un + '_unit'];
-        if (earned) {
-          const chip = document.createElement('div');
-          chip.className = 'ach-badge unit-badge';
-          chip.textContent = '🎖️ ' + un + ' 全部';
-          badgeRow.appendChild(chip);
+      const typeMap = { '生活空间': 'sks', '核心': 'hx', '巩固': 'gf' };
+      const typeEmoji = { sks: '⭐', hx: '⭐', gf: '⭐' };
+      unitNums.forEach((un, idx) => {
+        // Divider between units (not before first)
+        if (idx > 0) {
+          const div = document.createElement('hr');
+          div.className = 'ach-unit-divider';
+          badgeRow.appendChild(div);
         }
+        // Unit row: label + seal (seal only if all 3 components earned)
+        const unitKeys = Object.keys(units).filter(k => k.startsWith(un));
+        const allThreeEarned = unitKeys.every(uk => badges[level]?.[uk]?.component);
+        const unitRowEl = document.createElement('div');
+        unitRowEl.className = 'ach-unit-row';
+        const lbl = document.createElement('span');
+        lbl.className = 'ach-unit-label';
+        lbl.textContent = un;
+        unitRowEl.appendChild(lbl);
+        if (allThreeEarned) {
+          const seal = document.createElement('span');
+          seal.className = 'ach-unit-seal';
+          seal.textContent = '全部完成 ✓';
+          unitRowEl.appendChild(seal);
+        }
+        badgeRow.appendChild(unitRowEl);
+        // Three component badges
+        ['生活空间','核心','巩固'].forEach(compType => {
+          const uk = un + ' ' + compType;
+          const earned = badges[level]?.[uk]?.component;
+          const typeKey = typeMap[compType];
+          const badge = document.createElement('div');
+          badge.className = 'ach-badge type-' + typeKey + (earned ? '' : ' locked');
+          const circle = document.createElement('div');
+          circle.className = 'ach-badge-circle';
+          circle.textContent = '⭐';
+          if (!earned) {
+            const lock = document.createElement('span');
+            lock.className = 'ach-lock';
+            lock.textContent = '🔒';
+            circle.appendChild(lock);
+          }
+          const lblEl = document.createElement('div');
+          lblEl.className = 'ach-badge-lbl';
+          lblEl.textContent = compType;
+          badge.appendChild(circle);
+          badge.appendChild(lblEl);
+          badgeRow.appendChild(badge);
+        });
       });
       card.appendChild(badgeRow);
     }
@@ -7048,9 +7099,9 @@ function speak(text, btn) {
 function speakWord(event) {
   const word = document.getElementById('fc-back-word').textContent.trim();
   if (!word) return;
-  const pinyin = PINYIN_DATA[word];
-  // Speak pinyin if available (unambiguous), otherwise fall back to characters
-  speak(pinyin || word, event.currentTarget);
+  // Always speak Chinese characters — passing pinyin to TTS causes Android/Chrome
+  // to read it as English phonetics instead of toned Mandarin.
+  speak(_applyPolyMap(word), event.currentTarget);
 }
 
 function speakMeaning(event) {
