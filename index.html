@@ -5101,7 +5101,7 @@ function switchMode(mode, force=false) {
 
   if (mode === 'cloze') {
     const cWords = currentWords.filter(w => EXAMPLES[w]);
-    if (cWords.length < 4) {
+    if (cWords.length === 0) {
       showToast('此单元填空题目不足，请尝试其他模式');
       return;
     }
@@ -6595,7 +6595,8 @@ document.getElementById('profile-modal').addEventListener('click', function(e) {
 document.getElementById('feedback-modal').addEventListener('click', function(e) {
   if (e.target === this) closeFeedbackModal();
 });
-document.getElementById('weak-dashboard-overlay').addEventListener('click', function(e) {
+const _wdOverlay = document.getElementById('weak-dashboard-overlay');
+if (_wdOverlay) _wdOverlay.addEventListener('click', function(e) {
   if (e.target === this) closeWeakDashboard();
 });
 document.getElementById('first-guide-modal').addEventListener('click', function(e) {
