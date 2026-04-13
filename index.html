@@ -369,6 +369,36 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes cel-shimmer{to{background-position:200% 0;}}
 
+/* ── DESKTOP CELEBRATION CARDS ─── */
+@media(min-width:768px){
+  #badge-overlay { padding: 2rem; align-items: center; }
+
+  /* T1 landscape: emoji left column, text right column */
+  #cel-t1 { max-width: 600px !important; }
+  #cel-t1-inner { flex-direction: row !important; align-items: stretch; }
+  #cel-t1-inner > div:first-child {
+    width: 160px; flex-shrink: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 2rem 1.2rem; border-right: 1px solid #f0ede5;
+  }
+  #t1-emoji-wrap { font-size: 3.8rem !important; }
+  #cel-t1-inner > div:last-child { flex: 1; padding: 1.6rem 1.6rem 1.2rem; }
+
+  /* T2 landscape: emoji left column, text right column */
+  #cel-t2 { max-width: 640px !important; }
+  #cel-t2-inner { flex-direction: row !important; align-items: stretch; }
+  #cel-t2-inner > div:first-child {
+    width: 160px; flex-shrink: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 2rem 1.2rem; border-right: 1px solid rgba(255,255,255,.1);
+  }
+  #cel-t2-inner > div:last-child { flex: 1; padding: 1.6rem 1.6rem 1.2rem; }
+
+  /* T3 & T4: just wider */
+  #cel-t3 { max-width: 640px !important; }
+  #cel-t4 { max-width: 640px !important; }
+}
+
   /* ── WELCOME SCREEN ──────────────────────────────────── */
   #welcome-screen {
     background-image: url('Vocab_king_mobile_background.png');
@@ -1531,82 +1561,88 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 <!-- CELEBRATION OVERLAY — 4-TIER SYSTEM -->
 <div id="badge-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:300;align-items:center;justify-content:center;padding:1.2rem;overflow-y:auto;">
 
-  <!-- T1: COMPONENT ⭐ -->
+  <!-- T1: COMPONENT ⭐ — landscape on desktop -->
   <div id="cel-t1" style="display:none;background:white;border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.4);width:100%;max-width:340px;color:#1A2A10;">
     <div style="height:6px;background:linear-gradient(90deg,#5FAD2A,#F5C800);"></div>
-    <div style="padding:1.6rem 1.4rem 1rem;text-align:center;">
-      <div style="font-size:3rem;line-height:1;margin-bottom:.6rem;">⭐</div>
-      <div style="font-size:1.2rem;font-family:var(--font-body);color:var(--ink);font-weight:700;margin-bottom:.3rem;">成就解锁！</div>
-      <div id="t1-unit" style="font-size:.72rem;font-family:var(--font-ui);color:#888;letter-spacing:.06em;margin-bottom:.8rem;"></div>
-      <div id="t1-message" style="font-size:.9rem;color:#444;line-height:1.7;font-family:var(--font-body);margin-bottom:.9rem;"></div>
-      <div style="border-top:1px solid #f0ede5;padding:.7rem 0 .3rem;font-size:.6rem;color:#bbb;font-family:var(--font-ui);letter-spacing:.04em;">词王训练营 · 百德中学 Bukit View Secondary · for.edu.sg/g3cl-vocabking</div>
-    </div>
-    <div style="display:flex;gap:.5rem;padding:.8rem 1.4rem 1.2rem;">
-      <button onclick="shareCelebration(1)" style="padding:.75rem 1rem;background:#F5F0E5;color:#555;border:none;border-radius:10px;font-size:.88rem;font-family:var(--font-ui);cursor:pointer;">📤 分享</button>
-      <button onclick="closeBadgeOverlay()" style="flex:1;padding:.75rem;background:#5FAD2A;color:white;border:none;border-radius:10px;font-size:.88rem;font-family:var(--font-body);font-weight:700;cursor:pointer;">继续加油 →</button>
+    <div id="cel-t1-inner" style="display:flex;flex-direction:column;">
+      <!-- Left col (desktop: emoji) / Top (mobile) -->
+      <div style="padding:1.4rem 1.4rem .6rem;text-align:center;">
+        <div id="t1-emoji-wrap" style="font-size:3rem;line-height:1;margin-bottom:.5rem;">⭐</div>
+        <div style="font-size:1.2rem;font-family:var(--font-body);color:var(--ink);font-weight:700;margin-bottom:.3rem;">成就解锁！</div>
+        <div id="t1-unit" style="font-size:.72rem;font-family:var(--font-ui);color:#888;letter-spacing:.06em;margin-bottom:.7rem;"></div>
+        <div id="t1-message" style="font-size:.9rem;color:#444;line-height:1.7;font-family:var(--font-body);margin-bottom:.7rem;"></div>
+        <div style="border-top:1px solid #f0ede5;padding:.6rem 0 .2rem;font-size:.6rem;color:#bbb;font-family:var(--font-ui);letter-spacing:.04em;">词王训练营 · 百德中学 Bukit View Secondary · for.edu.sg/g3cl-vocabking</div>
+      </div>
+      <!-- Buttons (always at bottom) -->
+      <div style="display:flex;gap:.5rem;padding:.7rem 1.4rem 1.1rem;">
+        <button onclick="shareCelebration(1)" style="padding:.75rem 1rem;background:#F5F0E5;color:#555;border:none;border-radius:10px;font-size:.88rem;font-family:var(--font-ui);cursor:pointer;">📤 分享</button>
+        <button onclick="closeBadgeOverlay()" style="flex:1;padding:.75rem;background:#5FAD2A;color:white;border:none;border-radius:10px;font-size:.88rem;font-family:var(--font-body);font-weight:700;cursor:pointer;">继续加油 →</button>
+      </div>
     </div>
   </div>
 
-  <!-- T2: UNIT 🎖️ -->
+  <!-- T2: UNIT 🎖️ — landscape on desktop -->
   <div id="cel-t2" style="display:none;background:linear-gradient(145deg,#0d2d4a,#1a3a6e);border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.5);border:1px solid rgba(245,200,0,.3);width:100%;max-width:360px;">
     <div style="height:5px;background:linear-gradient(90deg,#F5C800,#E8B800,#F5C800);"></div>
-    <div style="padding:1.8rem 1.4rem 1rem;text-align:center;">
-      <div style="font-size:3.5rem;line-height:1;margin-bottom:.7rem;">🎖️</div>
-      <div style="font-size:1.35rem;font-family:var(--font-body);color:#F5C800;font-weight:700;margin-bottom:.25rem;">单元完成！</div>
-      <div id="t2-unit" style="font-size:.7rem;color:rgba(255,255,255,.5);font-family:var(--font-ui);letter-spacing:.08em;margin-bottom:.9rem;"></div>
-      <div id="t2-message" style="font-size:.95rem;color:rgba(255,255,255,.88);line-height:1.75;font-family:var(--font-body);margin-bottom:1rem;"></div>
-      <div id="t2-stats" style="display:flex;gap:.5rem;justify-content:center;margin-bottom:1rem;"></div>
-      <div style="border-top:1px solid rgba(255,255,255,.1);padding:.65rem 1.4rem .3rem;font-size:.6rem;color:rgba(255,255,255,.3);font-family:var(--font-ui);letter-spacing:.04em;">词王训练营 · 百德中学 Bukit View Secondary · for.edu.sg/g3cl-vocabking</div>
-    </div>
-    <div style="display:flex;gap:.5rem;padding:.8rem 1.4rem 1.3rem;">
-      <button onclick="shareCelebration(2)" style="padding:.78rem 1rem;background:rgba(255,255,255,.12);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.2);border-radius:10px;font-size:.85rem;font-family:var(--font-ui);cursor:pointer;">📤 分享</button>
-      <button onclick="closeBadgeOverlay()" style="flex:1;padding:.78rem;background:#F5C800;color:#3D2A00;border:none;border-radius:10px;font-size:.9rem;font-family:var(--font-body);font-weight:700;cursor:pointer;">继续挑战 →</button>
+    <div id="cel-t2-inner" style="display:flex;flex-direction:column;">
+      <div style="padding:1.6rem 1.4rem .8rem;text-align:center;">
+        <div style="font-size:3.5rem;line-height:1;margin-bottom:.6rem;">🎖️</div>
+        <div style="font-size:1.35rem;font-family:var(--font-body);color:#F5C800;font-weight:700;margin-bottom:.2rem;">单元完成！</div>
+        <div id="t2-unit" style="font-size:.7rem;color:rgba(255,255,255,.5);font-family:var(--font-ui);letter-spacing:.08em;margin-bottom:.8rem;"></div>
+        <div id="t2-message" style="font-size:.95rem;color:rgba(255,255,255,.88);line-height:1.75;font-family:var(--font-body);margin-bottom:.8rem;"></div>
+        <div id="t2-stats" style="display:flex;gap:.5rem;justify-content:center;margin-bottom:.8rem;"></div>
+        <div style="border-top:1px solid rgba(255,255,255,.1);padding:.55rem 1.4rem .2rem;font-size:.6rem;color:rgba(255,255,255,.3);font-family:var(--font-ui);letter-spacing:.04em;">词王训练营 · 百德中学 Bukit View Secondary · for.edu.sg/g3cl-vocabking</div>
+      </div>
+      <div style="display:flex;gap:.5rem;padding:.7rem 1.4rem 1.1rem;">
+        <button onclick="shareCelebration(2)" style="padding:.78rem 1rem;background:rgba(255,255,255,.12);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.2);border-radius:10px;font-size:.85rem;font-family:var(--font-ui);cursor:pointer;">📤 分享</button>
+        <button onclick="closeBadgeOverlay()" style="flex:1;padding:.78rem;background:#F5C800;color:#3D2A00;border:none;border-radius:10px;font-size:.9rem;font-family:var(--font-body);font-weight:700;cursor:pointer;">继续挑战 →</button>
+      </div>
     </div>
   </div>
 
-  <!-- T3: LEVEL 🏅 -->
+  <!-- T3: LEVEL 🏅 — wider landscape on desktop -->
   <div id="cel-t3" style="display:none;background:linear-gradient(160deg,#0a1628,#1a0a2e,#0a1628);border-radius:16px;overflow:hidden;box-shadow:0 12px 60px rgba(0,0,0,.6);border:1px solid rgba(245,200,0,.5);width:100%;max-width:380px;position:relative;">
     <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(245,200,0,.08) 0%,transparent 65%);pointer-events:none;"></div>
     <div style="height:5px;background:linear-gradient(90deg,#E8B800,#fff,#F5C800,#fff,#E8B800);background-size:200% 100%;animation:cel-shimmer 2s linear infinite;"></div>
-    <div style="padding:2rem 1.4rem 1rem;text-align:center;position:relative;">
-      <div id="t3-emoji" style="font-size:4rem;line-height:1;margin-bottom:.8rem;"></div>
-      <div style="display:inline-block;background:rgba(245,200,0,.15);border:1px solid rgba(245,200,0,.4);border-radius:20px;padding:.25rem .9rem;font-size:.68rem;font-family:var(--font-ui);color:#F5C800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.9rem;">称号解锁 · RANK UNLOCKED</div>
-      <div id="t3-title" style="font-size:1.6rem;font-family:var(--font-body);color:#F5C800;font-weight:700;margin-bottom:.25rem;text-shadow:0 0 20px rgba(245,200,0,.4);"></div>
-      <div id="t3-subtitle" style="font-size:.78rem;color:rgba(255,255,255,.45);font-family:var(--font-ui);letter-spacing:.06em;margin-bottom:1rem;"></div>
-      <div id="t3-message" style="font-size:1rem;color:rgba(255,255,255,.9);line-height:1.8;font-family:var(--font-body);margin-bottom:.8rem;"></div>
-      <div id="t3-wordcount" style="font-size:.72rem;color:rgba(255,255,255,.35);font-family:var(--font-ui);margin-bottom:1rem;"></div>
-      <div id="t3-share-preview" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:.75rem 1rem;margin:0 0 .8rem;font-size:.7rem;color:rgba(255,255,255,.55);font-family:var(--font-ui);line-height:1.6;text-align:left;"></div>
+    <div style="padding:1.8rem 1.4rem .8rem;text-align:center;position:relative;">
+      <div id="t3-emoji" style="font-size:4rem;line-height:1;margin-bottom:.7rem;"></div>
+      <div style="display:inline-block;background:rgba(245,200,0,.15);border:1px solid rgba(245,200,0,.4);border-radius:20px;padding:.25rem .9rem;font-size:.68rem;font-family:var(--font-ui);color:#F5C800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem;">称号解锁 · RANK UNLOCKED</div>
+      <div id="t3-title" style="font-size:1.6rem;font-family:var(--font-body);color:#F5C800;font-weight:700;margin-bottom:.2rem;text-shadow:0 0 20px rgba(245,200,0,.4);"></div>
+      <div id="t3-subtitle" style="font-size:.78rem;color:rgba(255,255,255,.45);font-family:var(--font-ui);letter-spacing:.06em;margin-bottom:.9rem;"></div>
+      <div id="t3-message" style="font-size:1rem;color:rgba(255,255,255,.9);line-height:1.8;font-family:var(--font-body);margin-bottom:.7rem;"></div>
+      <div id="t3-wordcount" style="font-size:.72rem;color:rgba(255,255,255,.35);font-family:var(--font-ui);margin-bottom:.8rem;"></div>
+      <div id="t3-share-preview" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:.75rem 1rem;margin:0 0 .7rem;font-size:.7rem;color:rgba(255,255,255,.55);font-family:var(--font-ui);line-height:1.6;text-align:left;"></div>
     </div>
-    <div style="display:flex;gap:.5rem;padding:.4rem 1.4rem 1.4rem;">
+    <div style="display:flex;gap:.5rem;padding:.3rem 1.4rem 1.3rem;">
       <button onclick="shareCelebration(3)" style="padding:.82rem 1.1rem;background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.2);border-radius:10px;font-size:.85rem;font-family:var(--font-ui);cursor:pointer;white-space:nowrap;">📤 分享</button>
       <button onclick="closeBadgeOverlay()" id="t3-continue-btn" style="flex:1;padding:.82rem;background:#F5C800;color:#3D2A00;border:none;border-radius:10px;font-size:.9rem;font-family:var(--font-body);font-weight:700;cursor:pointer;"></button>
     </div>
   </div>
 
-  <!-- T4: ULTIMATE 👑 -->
+  <!-- T4: ULTIMATE 👑 — wider landscape on desktop -->
   <div id="cel-t4" style="display:none;background:linear-gradient(160deg,#1a0800,#3D2A00,#1a0800);border-radius:16px;overflow:hidden;box-shadow:0 16px 80px rgba(245,200,0,.25);border:2px solid rgba(245,200,0,.7);width:100%;max-width:380px;">
     <div style="height:6px;background:linear-gradient(90deg,#E8B800,#fff8cc,#F5C800,#fff8cc,#E8B800);background-size:300% 100%;animation:cel-shimmer 1.5s linear infinite;"></div>
-    <div style="padding:2.2rem 1.4rem 1rem;text-align:center;">
-      <div style="font-size:4.5rem;line-height:1;margin-bottom:.8rem;filter:drop-shadow(0 0 16px rgba(245,200,0,.6));">👑</div>
+    <div style="padding:2rem 1.4rem .8rem;text-align:center;">
+      <div style="font-size:4.5rem;line-height:1;margin-bottom:.7rem;filter:drop-shadow(0 0 16px rgba(245,200,0,.6));">👑</div>
       <div style="font-size:1.9rem;font-family:var(--font-body);color:#F5C800;font-weight:700;margin-bottom:.2rem;text-shadow:0 0 30px rgba(245,200,0,.5);">顶级词王</div>
-      <div style="font-size:.8rem;color:rgba(255,220,100,.6);font-family:var(--font-ui);letter-spacing:.08em;margin-bottom:1.1rem;">GRAND VOCAB KING · ALL LEVELS COMPLETE</div>
-      <div style="font-size:1.05rem;color:rgba(255,245,200,.92);line-height:1.85;font-family:var(--font-body);margin-bottom:.5rem;">中一到中四，991 个词语，<br>你一个不漏地全部掌握了。<br>这不是运气——这是意志。</div>
-      <div style="font-size:.95rem;color:rgba(255,245,200,.85);line-height:1.75;font-family:var(--font-body);font-style:italic;margin-bottom:.3rem;">「锲而不舍，金石可镂。」</div>
-      <div style="font-size:.72rem;color:rgba(255,220,100,.45);font-family:var(--font-ui);margin-bottom:1rem;">——《荀子·劝学》</div>
-      <div style="display:flex;gap:.4rem;justify-content:center;margin-bottom:1rem;">
+      <div style="font-size:.8rem;color:rgba(255,220,100,.6);font-family:var(--font-ui);letter-spacing:.08em;margin-bottom:.9rem;">GRAND VOCAB KING · ALL LEVELS COMPLETE</div>
+      <div style="font-size:1.05rem;color:rgba(255,245,200,.92);line-height:1.85;font-family:var(--font-body);margin-bottom:.4rem;">中一到中四，991 个词语，<br>你一个不漏地全部掌握了。<br>这不是运气——这是意志。</div>
+      <div style="font-size:.95rem;color:rgba(255,245,200,.85);line-height:1.75;font-family:var(--font-body);font-style:italic;margin-bottom:.25rem;">「锲而不舍，金石可镂。」</div>
+      <div style="font-size:.72rem;color:rgba(255,220,100,.45);font-family:var(--font-ui);margin-bottom:.8rem;">——《荀子·劝学》</div>
+      <div style="display:flex;gap:.4rem;justify-content:center;margin-bottom:.8rem;">
         <span style="background:rgba(245,200,0,.1);border:1px solid rgba(245,200,0,.25);border-radius:20px;padding:.3rem .75rem;font-size:.68rem;font-family:var(--font-ui);color:rgba(255,220,100,.8);">👑 991 词语</span>
         <span style="background:rgba(245,200,0,.1);border:1px solid rgba(245,200,0,.25);border-radius:20px;padding:.3rem .75rem;font-size:.68rem;font-family:var(--font-ui);color:rgba(255,220,100,.8);">4 年级</span>
         <span style="background:rgba(245,200,0,.1);border:1px solid rgba(245,200,0,.25);border-radius:20px;padding:.3rem .75rem;font-size:.68rem;font-family:var(--font-ui);color:rgba(255,220,100,.8);">全部完成</span>
       </div>
-      <div style="background:rgba(245,200,0,.06);border:1px solid rgba(245,200,0,.2);border-radius:10px;padding:.8rem 1rem;margin:0 0 .8rem;font-size:.72rem;color:rgba(255,245,200,.55);font-family:var(--font-ui);line-height:1.65;text-align:left;">
+      <div style="background:rgba(245,200,0,.06);border:1px solid rgba(245,200,0,.2);border-radius:10px;padding:.75rem 1rem;margin:0 0 .7rem;font-size:.72rem;color:rgba(255,245,200,.55);font-family:var(--font-ui);line-height:1.65;text-align:left;">
         <span style="color:rgba(255,245,200,.95);font-weight:600;">📢 分享文字预览：</span><br>
-        我在词王训练营掌握了中一至中四全部 991 个词语，晋升为【顶级词王】！👑！<br>
+        我在词王训练营掌握了中一至中四全部 991 个词语，晋升为【顶级词王】！👑<br>
         百德中学 Bukit View Secondary School<br>
         词王训练营 · 新加坡中学G3华文<br>
         👉 for.edu.sg/g3cl-vocabking
       </div>
     </div>
-    <div style="display:flex;gap:.5rem;padding:.4rem 1.4rem 1.5rem;">
+    <div style="display:flex;gap:.5rem;padding:.3rem 1.4rem 1.3rem;">
       <button onclick="shareCelebration(4)" style="padding:.85rem 1.1rem;background:rgba(245,200,0,.15);color:#F5C800;border:1px solid rgba(245,200,0,.35);border-radius:10px;font-size:.85rem;font-family:var(--font-ui);cursor:pointer;white-space:nowrap;">📤 分享</button>
       <button onclick="closeBadgeOverlay()" style="flex:1;padding:.85rem;background:linear-gradient(135deg,#F5C800,#E8B800);color:#3D2A00;border:none;border-radius:10px;font-size:.95rem;font-family:var(--font-body);font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(245,200,0,.4);">我是顶级词王！</button>
     </div>
@@ -6330,7 +6366,11 @@ function checkAndAwardBadges() {
     // Component badges (生活空间, 核心, 巩固)
     Object.entries(units).forEach(([unitKey, words]) => {
       if (!badges[level][unitKey]) badges[level][unitKey] = {};
-      const allFCKnown = words.every(w => progress[w]?.fcKnown);
+      const allFCKnown = words.length > 0 && words.every(w => progress[w]?.fcKnown);
+      // Invalidate badge if progress was reset (no longer all fcKnown)
+      if (!allFCKnown && badges[level][unitKey].component) {
+        badges[level][unitKey].component = false;
+      }
       if (allFCKnown && !badges[level][unitKey].component) {
         badges[level][unitKey].component = true;
         newlyEarned.push({
