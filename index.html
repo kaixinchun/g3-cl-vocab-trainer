@@ -7065,32 +7065,48 @@ function _applyPolyMap(text) {
   return result;
 }
 
-// Pick the best available zh voice, with fallbacks for Samsung/Android
-function _getBestZhVoice() {
-  if (!window.speechSynthesis) return null;
-  const voices = window.speechSynthesis.getVoices();
+// ── VOICE CACHE — populated eagerly so Samsung/Android has a voice ready ──────
+// Android/Chrome returns [] from getVoices() on first call; voices arrive
+// asynchronously via the 'voiceschanged' event.  Without this cache the
+// speak() function always falls back to lang-only mode on Samsung, which
+// either produces toneless English-phonetic output (S-series) or total
+// silence (older devices like S9+).
+let _zhVoiceCache = null;
+
+function _loadVoiceCache() {
+  if (!window.speechSynthesis) return;
   const prefs = ['zh-CN', 'zh-TW', 'zh-HK', 'zh'];
+  const voices = window.speechSynthesis.getVoices();
   for (const lang of prefs) {
     const v = voices.find(v => v.lang === lang || v.lang.startsWith(lang));
-    if (v) return v;
+    if (v) { _zhVoiceCache = v; return; }
   }
-  return null; // let browser pick default
+  _zhVoiceCache = null;
 }
 
-function speak(text, btn) {
-  if (!window.speechSynthesis) { showToast('此浏览器不支持朗读功能'); return; }
-  window.speechSynthesis.cancel();
-  if (_currentUtterance && btn) {
-    document.querySelectorAll('.speaker-btn').forEach(b => b.classList.remove('speaking'));
-    _currentUtterance = null;
-    return;
-  }
+// Populate cache now (works on iOS/Pixel where voices are sync)
+_loadVoiceCache();
+
+// Also populate on voiceschanged (required for Android/Chrome/Samsung)
+if (window.speechSynthesis) {
+  window.speechSynthesis.onvoiceschanged = function() {
+    _loadVoiceCache();
+  };
+}
+
+function _getBestZhVoice() {
+  // Return cached voice; if still null try one more live lookup
+  if (_zhVoiceCache) return _zhVoiceCache;
+  _loadVoiceCache();
+  return _zhVoiceCache;
+}
+
+function _doSpeak(text, btn) {
   const utt = new SpeechSynthesisUtterance(text);
-  // Try to assign best available zh voice
   const voice = _getBestZhVoice();
   if (voice) {
     utt.voice = voice;
-    utt.lang = voice.lang;
+    utt.lang  = voice.lang;
   } else {
     utt.lang = 'zh-CN';
   }
@@ -7108,24 +7124,52 @@ function speak(text, btn) {
   window.speechSynthesis.speak(utt);
 }
 
-// Flashcard: speak pinyin directly — always correct, never mispronounced
+function speak(text, btn) {
+  if (!window.speechSynthesis) { showToast('此浏览器不支持朗读功能'); return; }
+
+  // Toggle off if already speaking
+  if (_currentUtterance && btn) {
+    window.speechSynthesis.cancel();
+    document.querySelectorAll('.speaker-btn,.option-speak-btn').forEach(b => b.classList.remove('speaking'));
+    _currentUtterance = null;
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  // Samsung/Android fix: if voice cache is still empty, wait one tick for
+  // voiceschanged to fire, then retry.  This resolves the S9+ silent-button bug.
+  if (!_zhVoiceCache && window.speechSynthesis.getVoices().length === 0) {
+    if (btn) btn.classList.add('speaking');
+    setTimeout(() => {
+      _loadVoiceCache();
+      if (btn) btn.classList.remove('speaking');
+      _doSpeak(text, btn);
+    }, 200);
+    return;
+  }
+
+  _doSpeak(text, btn);
+}
+
+// Flashcard target word — pass raw Chinese characters.
+// Do NOT pass pinyin: if a Chinese voice is loaded it reads hanzi correctly
+// with tones; if no Chinese voice is loaded, pinyin is read as toneless Latin.
 function speakWord(event) {
   const word = document.getElementById('fc-back-word').textContent.trim();
   if (!word) return;
-  // Always speak Chinese characters — passing pinyin to TTS causes Android/Chrome
-  // to read it as English phonetics instead of toned Mandarin.
-  speak(_applyPolyMap(word), event.currentTarget);
+  speak(word, event.currentTarget);
 }
 
 function speakMeaning(event) {
   const meaning = document.getElementById('fc-meaning').textContent;
-  if (meaning) speak(_applyPolyMap(meaning), event.currentTarget);
+  if (meaning) speak(meaning, event.currentTarget);
 }
 
 function speakExample(event) {
   const ex = document.getElementById('fc-example').textContent;
   const clean = ex.replace(/「|」|【|】/g, '');
-  if (clean) speak(_applyPolyMap(clean), event.currentTarget);
+  if (clean) speak(clean, event.currentTarget);
 }
 
 function speakCloze(btn) {
@@ -7143,7 +7187,7 @@ function speakCloze(btn) {
     text = sentEl.textContent;
   }
   text = text.trim();
-  if (text) speak(_applyPolyMap(text), btn);
+  if (text) speak(text, btn);
 }
 
 // ══════════════════════════════════════════════════════════════
