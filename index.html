@@ -455,6 +455,14 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     margin-bottom: 1rem;
   }
   .welcome-input::placeholder { color: var(--ink-mute); }
+  .pw-wrap { position: relative; width: 100%; }
+  .pw-wrap .welcome-input { padding-right: 2.8rem; box-sizing: border-box; }
+  .pw-eye-btn {
+    position: absolute; right: .75rem; top: 50%; transform: translateY(-62%);
+    background: none; border: none; cursor: pointer; padding: .3rem;
+    color: var(--ink-mute); font-size: 1rem; line-height: 1;
+    -webkit-user-select: none; user-select: none;
+  }
   .welcome-input:focus { border-color: var(--green-mid); }
   .welcome-input.error { border-color: var(--red); }
   .welcome-error {
@@ -1228,8 +1236,11 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
         <input class="welcome-input" id="welcome-email-desktop" type="email" placeholder="e.g. name@students.edu.sg"
           autocomplete="email" autocapitalize="none" onkeydown="if(event.key==='Enter') submitLogin('desktop')">
         <label class="welcome-label" style="margin-top:.2rem">密码</label>
-        <input class="welcome-input" id="welcome-pw-desktop" type="password" placeholder="输入密码"
-          autocomplete="current-password" onkeydown="if(event.key==='Enter') submitLogin('desktop')">
+        <div class="pw-wrap">
+          <input class="welcome-input" id="welcome-pw-desktop" type="password" placeholder="输入密码"
+            autocomplete="current-password" onkeydown="if(event.key==='Enter') submitLogin('desktop')">
+          <button type="button" class="pw-eye-btn" onmousedown="_pwReveal('welcome-pw-desktop')" onmouseup="_pwHide('welcome-pw-desktop')" onmouseleave="_pwHide('welcome-pw-desktop')" ontouchstart="event.preventDefault();_pwReveal('welcome-pw-desktop')" ontouchend="_pwHide('welcome-pw-desktop')">👁</button>
+        </div>
         <div class="welcome-error" id="welcome-error-desktop"></div>
         <button class="welcome-btn" onclick="submitLogin('desktop')">登录 →</button>
         <div style="text-align:right;margin-top:-.5rem;margin-bottom:.5rem;">
@@ -1247,8 +1258,11 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
           oninput="onRegEmailInput('desktop')">
         <div id="reg-domain-hint-desktop" style="font-size:.72rem;font-family:var(--font-ui);color:var(--ink-mute);margin:.15rem 0 .3rem;min-height:1.1em;"></div>
         <label class="welcome-label">密码（至少6位）</label>
-        <input class="welcome-input" id="reg-pw-desktop" type="password" placeholder="设置密码（至少6位）"
-          autocomplete="new-password">
+        <div class="pw-wrap">
+          <input class="welcome-input" id="reg-pw-desktop" type="password" placeholder="设置密码（至少6位）"
+            autocomplete="new-password">
+          <button type="button" class="pw-eye-btn" onmousedown="_pwReveal('reg-pw-desktop')" onmouseup="_pwHide('reg-pw-desktop')" onmouseleave="_pwHide('reg-pw-desktop')" ontouchstart="event.preventDefault();_pwReveal('reg-pw-desktop')" ontouchend="_pwHide('reg-pw-desktop')">👁</button>
+        </div>
         <label class="welcome-label" style="margin-top:.2rem">昵称 <span style="font-size:.7rem;color:var(--ink-mute);">（2–8个汉字，可加数字，待老师审核）</span></label>
         <input class="welcome-input" id="reg-nickname-desktop" type="text" placeholder="例：词星88" maxlength="8"
           oninput="onNicknameInput(this)" onkeydown="if(event.key==='Enter') submitRegister('desktop')">
@@ -1311,8 +1325,11 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       <input class="welcome-input" id="welcome-email" type="email" placeholder="e.g. name@students.edu.sg"
         autocomplete="email" autocapitalize="none" onkeydown="if(event.key==='Enter') submitLogin('mobile')">
       <label class="welcome-label" style="margin-top:.2rem">密码</label>
-      <input class="welcome-input" id="welcome-pw" type="password" placeholder="输入密码"
-        autocomplete="current-password" onkeydown="if(event.key==='Enter') submitLogin('mobile')">
+      <div class="pw-wrap">
+        <input class="welcome-input" id="welcome-pw" type="password" placeholder="输入密码"
+          autocomplete="current-password" onkeydown="if(event.key==='Enter') submitLogin('mobile')">
+        <button type="button" class="pw-eye-btn" onmousedown="_pwReveal('welcome-pw')" onmouseup="_pwHide('welcome-pw')" onmouseleave="_pwHide('welcome-pw')" ontouchstart="event.preventDefault();_pwReveal('welcome-pw')" ontouchend="_pwHide('welcome-pw')">👁</button>
+      </div>
       <div class="welcome-error" id="welcome-error"></div>
       <button class="welcome-btn" onclick="submitLogin('mobile')">登录 →</button>
       <div style="text-align:right;margin-top:-.5rem;margin-bottom:.5rem;">
@@ -1329,8 +1346,11 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
         oninput="onRegEmailInput('mobile')">
       <div id="reg-domain-hint-mobile" style="font-size:.72rem;font-family:var(--font-ui);color:var(--ink-mute);margin:.15rem 0 .3rem;min-height:1.1em;"></div>
       <label class="welcome-label">密码（至少6位）</label>
-      <input class="welcome-input" id="reg-pw" type="password" placeholder="设置密码（至少6位）"
-        autocomplete="new-password">
+      <div class="pw-wrap">
+        <input class="welcome-input" id="reg-pw" type="password" placeholder="设置密码（至少6位）"
+          autocomplete="new-password">
+        <button type="button" class="pw-eye-btn" onmousedown="_pwReveal('reg-pw')" onmouseup="_pwHide('reg-pw')" onmouseleave="_pwHide('reg-pw')" ontouchstart="event.preventDefault();_pwReveal('reg-pw')" ontouchend="_pwHide('reg-pw')">👁</button>
+      </div>
       <label class="welcome-label" style="margin-top:.2rem">昵称 <span style="font-size:.7rem;color:var(--ink-mute);">（2–8个汉字，可加数字）</span></label>
       <input class="welcome-input" id="reg-nickname" type="text" placeholder="例：词星88" maxlength="8"
         oninput="onNicknameInput(this)" onkeydown="if(event.key==='Enter') submitRegister('mobile')">
@@ -6580,6 +6600,12 @@ async function submitPasswordReset() {
   }
 }
 
+// ── PASSWORD EYE HOLD-TO-REVEAL ──────────────────────────────
+function _pwReveal(id) { const el=document.getElementById(id); if(el) el.type='text'; }
+function _pwHide(id)   { const el=document.getElementById(id); if(el) el.type='password'; }
+// Legacy click toggle used by reset modal
+function togglePwVisibility(id) { const el=document.getElementById(id); if(el) el.type=el.type==='password'?'text':'password'; }
+
 // ── FORGOT PASSWORD ──────────────────────────────────────────
 async function submitForgotPassword(panel) {
   const suffix = panel === 'desktop' ? '-desktop' : '';
@@ -9015,7 +9041,7 @@ async function loadLeaderboard(tab) {
     entries = entries.filter(e => {
       if (!e.email) return false;
       if (tab === 'school') return e.userType === '百德中学学生';
-      return ['百德中学学生','其他学校学生'].includes(e.userType);
+      return !['华文教师','其他科目教师'].includes(e.userType || '');
     });
 
     // Sort by totalScore descending
@@ -9036,7 +9062,8 @@ async function loadLeaderboard(tab) {
       }
     }
   } catch(e) {
-    content.innerHTML = '<div class="lb-empty">加载失败，请稍后再试。</div>';
+    console.error('Leaderboard:', e);
+    content.innerHTML = '<div class="lb-empty">加载失败：' + e.message + '</div>';
   }
 }
 
