@@ -8903,8 +8903,8 @@ const SCORE_MASTERY_BONUS = 300; // one-time bonus when word fully mastered
 const SPEED_THRESHOLDS = [[10000,50],[20000,30],[30000,15]]; // [ms, pts]
 
 // Per-session attempt tracker (resets each study session)
-let _clozeAttempts = {}; // word → attempt count this session
-let _questionStartTime = 0;
+var _clozeAttempts = {}; // word → attempt count this session
+var _questionStartTime = 0;
 
 // ── Start timer when cloze question is shown ──────────────────
 function _startQuestionTimer() {
@@ -8950,12 +8950,12 @@ function _awardMasteryBonus(word) {
   _addToUserScore(0, SCORE_MASTERY_BONUS);
   _showScoreToast('+' + SCORE_MASTERY_BONUS + ' 🏆 掌握奖励！');
 }
-let _masteryBonusAwarded = {}; // populated on login from Firestore
+var _masteryBonusAwarded = {}; // populated on login from Firestore
 
 // ── Add score to Firestore (debounced) ───────────────────────
-let _pendingScoreDelta = 0;
-let _pendingMasteryDelta = 0;
-let _scoreFlushTimer = null;
+var _pendingScoreDelta = 0;
+var _pendingMasteryDelta = 0;
+var _scoreFlushTimer = null;
 
 function _addToUserScore(points, masteryBonus) {
   _pendingScoreDelta   += points;
@@ -9010,7 +9010,7 @@ function _showScoreToast(msg) {
 }
 
 // ── Leaderboard fetch & render ────────────────────────────────
-let _lbTab = 'school';
+var _lbTab = 'school';
 
 function showLeaderboard() {
   showScreen('leaderboard-screen');
@@ -9030,6 +9030,17 @@ async function loadLeaderboard(tab) {
   if (!content) return;
   content.innerHTML = '<div class="lb-loading">加载中…</div>';
   if (myRankEl) myRankEl.textContent = '';
+
+  // Wait up to 5s for Firebase to be ready
+  let _fbWait = 0;
+  while ((!window._fbFns || !window._fbDb) && _fbWait < 5000) {
+    await new Promise(r => setTimeout(r, 200));
+    _fbWait += 200;
+  }
+  if (!window._fbFns || !window._fbDb) {
+    content.innerHTML = '<div class="lb-empty">Firebase 未就绪，请重新登录后再试。</div>';
+    return;
+  }
 
   try {
     const { collection, getDocs } = window._fbFns;
