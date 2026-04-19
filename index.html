@@ -6536,9 +6536,11 @@ function showWelcomeError(msg, errorId) {
   const oobCode = params.get('oobCode');
 
   if (mode === 'resetPassword' && oobCode) {
-    // Show the modal as soon as Firebase auth is ready
     window._pwResetOobCode = oobCode;
-    window._onFbAuthReady = async function() {
+    // Poll until Firebase SDK is ready (avoids _onFbAuthReady conflict with checkLoginState)
+    const _waitForFb = setInterval(async () => {
+      if (!window._fbFns || !window._fbAuth) return;
+      clearInterval(_waitForFb);
       const modal = document.getElementById('pw-reset-modal');
       if (!modal) return;
       try {
@@ -6547,23 +6549,17 @@ function showWelcomeError(msg, errorId) {
         const label = document.getElementById('pw-reset-email-label');
         if (label) label.textContent = '账号：' + email;
         modal.style.display = 'flex';
-        // Clean URL so oobCode doesn't linger
         window.history.replaceState({}, document.title, window.location.pathname);
       } catch(e) {
-        const modal2 = document.getElementById('pw-reset-modal');
-        if (modal2) {
-          modal2.style.display = 'flex';
-          document.getElementById('pw-reset-error').textContent =
-            '重置链接已失效或已使用，请重新申请。';
-          document.getElementById('pw-reset-new').style.display = 'none';
-          document.getElementById('pw-reset-confirm').style.display = 'none';
-          document.querySelector('#pw-reset-modal button[onclick="submitPasswordReset()"]').textContent = '关闭';
-          document.querySelector('#pw-reset-modal button[onclick="submitPasswordReset()"]').onclick = function() {
-            document.getElementById('pw-reset-modal').style.display = 'none';
-          };
-        }
+        modal.style.display = 'flex';
+        document.getElementById('pw-reset-error').textContent =
+          '重置链接已失效或已使用，请重新申请。';
+        document.getElementById('pw-reset-new').style.display = 'none';
+        document.getElementById('pw-reset-confirm').style.display = 'none';
+        const closeBtn = document.querySelector('#pw-reset-modal button[onclick="submitPasswordReset()"]');
+        if (closeBtn) { closeBtn.textContent = '关闭'; closeBtn.onclick = () => { modal.style.display = 'none'; }; }
       }
-    };
+    }, 100);
   }
 })();
 
