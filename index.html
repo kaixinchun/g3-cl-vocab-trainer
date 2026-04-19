@@ -8561,7 +8561,8 @@ const _wdOverlay = document.getElementById('weak-dashboard-overlay');
 if (_wdOverlay) _wdOverlay.addEventListener('click', function(e) {
   if (e.target === this) closeWeakDashboard();
 });
-document.getElementById('first-guide-modal').addEventListener('click', function(e) {
+const _fgModal = document.getElementById('first-guide-modal');
+if (_fgModal) _fgModal.addEventListener('click', function(e) {
   // don't close on overlay click — user must read and press button
 });
 
