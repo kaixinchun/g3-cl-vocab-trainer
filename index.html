@@ -6184,6 +6184,8 @@ function renderCloze(word) {
   const opts = [word, ...distractors];
   shuffleArray(opts);
 
+  _startQuestionTimer();
+  if (!_clozeAttempts[word]) _clozeAttempts[word] = 0;
   renderOptions('cloze-options', opts, word, (isRight) => {
     const blank = document.getElementById('cloze-blank');
     blank.textContent = isRight ? word : word;
@@ -6193,8 +6195,18 @@ function renderCloze(word) {
     fb.textContent = isRight ? '✓ 正确！' : `✗ 正确答案是：${word}`;
     fb.className = 'cloze-feedback show ' + (isRight ? 'correct' : 'wrong');
     document.getElementById('cloze-next').className = 'next-btn show';
-    if (isRight) { markWordCorrect(word); sessionCorrect++; }
-    else         { markWordWrong(word);   sessionWrong++;   sessionWrongWords.push(word); }
+    if (isRight) {
+      _awardClozePoints(word, true);
+      const wasMastered = isMastered(word);
+      markWordCorrect(word);
+      if (!wasMastered && isMastered(word)) _awardMasteryBonus(word);
+      sessionCorrect++;
+    } else {
+      _clozeAttempts[word] = (_clozeAttempts[word] || 0) + 1;
+      markWordWrong(word);
+      sessionWrong++;
+      sessionWrongWords.push(word);
+    }
   });
 }
 
@@ -8921,19 +8933,23 @@ function _speedBonus(ms) {
 
 // ── Award points for a cloze answer ──────────────────────────
 function _awardClozePoints(word, isRight) {
-  if (!isRight) return; // no points for wrong answers
+  console.log('[SCORE] _awardClozePoints called, isRight=', isRight, 'word=', word);
+  if (!isRight) return;
   const user = window._fbAuth?.currentUser;
-  if (!user) return; // TEMP: emailVerified check disabled for testing
+  console.log('[SCORE] currentUser=', user ? user.email : 'NULL');
+  if (!user) return;
 
   const elapsed = _questionStartTime ? Date.now() - _questionStartTime : 99999;
-  const attempt = (_clozeAttempts[word] || 0) + 1; // this is the successful attempt number
+  const attempt = (_clozeAttempts[word] || 0) + 1;
+  console.log('[SCORE] elapsed=', elapsed, 'attempt=', attempt);
   
   let base = attempt === 1 ? SCORE_CORRECT_1ST : attempt === 2 ? SCORE_CORRECT_2ND : SCORE_CORRECT_3RD;
   let speed = _speedBonus(elapsed);
   let total = base + speed;
+  console.log('[SCORE] base=', base, 'speed=', speed, 'total=', total);
 
   _showScoreToast('+' + total + (speed > 0 ? ' ⚡' : ''));
-  _addToUserScore(total, 0); // mastery bonus added separately in markWordCorrect
+  _addToUserScore(total, 0);
 
   // Reset attempt counter for this word on correct
   _clozeAttempts[word] = 0;
