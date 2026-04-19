@@ -1068,7 +1068,77 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     .self-mark-btns { max-width: 480px; }
   }
 
-</style>
+
+  /* ── LEADERBOARD SCREEN ───────────────────────────────────── */
+  #leaderboard-screen { background: linear-gradient(160deg,#0d2137 0%,#1a3a5c 50%,#0d2137 100%); }
+  .lb-header { text-align:center; padding:1.2rem 1rem .6rem; position:relative; }
+  .lb-title { font-family:var(--font-body); font-size:1.5rem; font-weight:900;
+    color:#F5C800; letter-spacing:.05em; text-shadow:0 2px 8px rgba(0,0,0,.4); }
+  .lb-subtitle { font-size:.75rem; color:rgba(255,255,255,.55); font-family:var(--font-ui); margin-top:.2rem; }
+  .lb-back-btn { position:absolute; left:1rem; top:1.2rem; background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.2); border-radius:20px; color:white;
+    font-size:.82rem; font-family:var(--font-ui); padding:.35rem .85rem; cursor:pointer; }
+  .lb-tabs { display:flex; gap:.5rem; justify-content:center; margin:.4rem 1rem .8rem; }
+  .lb-tab { flex:1; max-width:140px; padding:.5rem; border-radius:20px; border:1.5px solid rgba(255,255,255,.25);
+    font-size:.82rem; font-family:var(--font-ui); font-weight:600; cursor:pointer;
+    transition:all .2s; background:transparent; color:rgba(255,255,255,.6); }
+  .lb-tab.active { background:#F5C800; color:#1a2a0e; border-color:#F5C800; }
+  /* Podium */
+  .lb-podium { display:flex; align-items:flex-end; justify-content:center;
+    gap:.6rem; padding:.5rem 1rem 0; max-width:400px; margin:0 auto; }
+  .podium-slot { display:flex; flex-direction:column; align-items:center; flex:1; }
+  .podium-avatar { width:52px; height:52px; border-radius:50%; display:flex; align-items:center;
+    justify-content:center; font-size:1.4rem; font-family:var(--font-body);
+    border:3px solid rgba(255,255,255,.3); background:rgba(255,255,255,.1);
+    margin-bottom:.3rem; position:relative; }
+  .podium-avatar.rank-1 { width:62px; height:62px; font-size:1.6rem;
+    border-color:#F5C800; box-shadow:0 0 16px rgba(245,200,0,.5); }
+  .podium-avatar.rank-2 { border-color:#C0C0C0; }
+  .podium-avatar.rank-3 { border-color:#CD7F32; }
+  .podium-medal { position:absolute; top:-8px; right:-6px; font-size:.9rem; }
+  .podium-name { font-size:.72rem; font-family:var(--font-ui); font-weight:700;
+    color:white; text-align:center; max-width:80px; overflow:hidden;
+    text-overflow:ellipsis; white-space:nowrap; margin-bottom:.2rem; }
+  .podium-score { font-size:.65rem; color:rgba(255,255,255,.6); font-family:var(--font-ui); margin-bottom:.3rem; }
+  .podium-block { border-radius:8px 8px 0 0; width:100%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.3rem; font-weight:900; color:rgba(255,255,255,.9); font-family:var(--font-body); }
+  .podium-block.rank-1 { height:72px; background:linear-gradient(180deg,#F5C800,#c49900); }
+  .podium-block.rank-2 { height:52px; background:linear-gradient(180deg,#A0A0A0,#707070); }
+  .podium-block.rank-3 { height:38px; background:linear-gradient(180deg,#CD7F32,#9a5e24); }
+  /* List rows 4-10 */
+  .lb-list { max-width:480px; margin:.6rem auto 0; padding:0 .8rem 1.5rem; }
+  .lb-row { display:flex; align-items:center; gap:.7rem; padding:.55rem .8rem;
+    border-radius:var(--r-sm); margin-bottom:.35rem;
+    background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.1); }
+  .lb-row.lb-mine { background:rgba(245,200,0,.15); border-color:rgba(245,200,0,.4); }
+  .lb-rank-num { font-size:.85rem; font-weight:700; color:rgba(255,255,255,.5);
+    font-family:var(--font-ui); width:1.4rem; text-align:center; flex-shrink:0; }
+  .lb-row-name { flex:1; font-size:.85rem; font-family:var(--font-body); color:white;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .lb-row-score { font-size:.82rem; font-weight:700; color:#F5C800; font-family:var(--font-ui); }
+  .lb-row-mastery { font-size:.68rem; color:rgba(255,255,255,.45); font-family:var(--font-ui); margin-left:.3rem; }
+  .lb-my-rank { text-align:center; padding:.6rem; font-size:.78rem;
+    color:rgba(255,255,255,.55); font-family:var(--font-ui); }
+  .lb-empty { text-align:center; padding:2rem 1rem; color:rgba(255,255,255,.4);
+    font-family:var(--font-ui); font-size:.85rem; }
+  .lb-loading { text-align:center; padding:2rem; color:rgba(255,255,255,.5);
+    font-family:var(--font-ui); font-size:.85rem; }
+  /* Score toast */
+  .score-toast { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0);
+    background:rgba(0,0,0,.85); color:#F5C800; border-radius:16px; padding:.6rem 1.4rem;
+    font-size:1.3rem; font-family:var(--font-body); font-weight:900;
+    pointer-events:none; z-index:9999; transition:transform .15s, opacity .3s;
+    white-space:nowrap; }
+  .score-toast.show { transform:translate(-50%,-50%) scale(1); }
+  .score-toast.hide { opacity:0; }
+  @keyframes podiumRise { from { transform:scaleY(0); opacity:0; } to { transform:scaleY(1); opacity:1; } }
+  .podium-block { transform-origin:bottom; animation:podiumRise .4s ease-out both; }
+  .podium-slot:nth-child(1) .podium-block { animation-delay:.1s; }
+  .podium-slot:nth-child(2) .podium-block { animation-delay:0s; }
+  .podium-slot:nth-child(3) .podium-block { animation-delay:.2s; }
+
+  </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <!-- Firebase SDK -->
 <script type="module">
@@ -1091,11 +1161,15 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   const db   = getFirestore(app);
 
   // ── Expose to global scope for non-module JS ──────────────
-  // NOTE: Update Firestore rules to allow dashboard user read-all:
+  // NOTE: Firestore rules needed:
   // match /users/{uid} {
   //   allow read: if request.auth != null &&
   //     (request.auth.uid == uid ||
   //      request.auth.token.email == 'kai_xin_chun@moe.edu.sg');
+  //   allow write: if request.auth != null && request.auth.uid == uid;
+  // }
+  // match /scores/{uid} {
+  //   allow read: if request.auth != null;   // all logged-in users can read leaderboard
   //   allow write: if request.auth != null && request.auth.uid == uid;
   // }
   window._fbAuth = auth;
@@ -1366,6 +1440,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   <!-- Action buttons row -->
   <div style="display:flex;gap:.5rem;padding:0 1.2rem .5rem;max-width:520px;margin:0 auto;width:100%;">
     <button onclick="showScreen('achievements-screen');updateAchievementsScreen()" style="flex:2;padding:.75rem;background:rgba(245,200,0,.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#7B5A00;border:1px solid rgba(255,255,255,.5);border-radius:var(--r-sm);font-size:.92rem;font-family:var(--font-body);font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;">🏅 我的成就</button>
+    <button onclick="showLeaderboard()" style="flex:2;padding:.75rem;background:rgba(26,82,118,.75);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:white;border:1px solid rgba(255,255,255,.4);border-radius:var(--r-sm);font-size:.92rem;font-family:var(--font-body);font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;">🏆 排行榜</button>
     <button onclick="showScreen('guide-screen');renderGuide()" style="flex:1;padding:.75rem;background:rgba(255,255,255,.45);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:var(--blue);border:1px solid rgba(255,255,255,.6);border-radius:var(--r-sm);font-size:.88rem;font-family:var(--font-body);cursor:pointer;">🧭 使用指南</button>
   </div>
   <div class="save-restore-row" id="dashboard-btn-row" style="display:none;">
@@ -8680,6 +8755,240 @@ document.addEventListener('DOMContentLoaded', () => {
   if (overlay) overlay.addEventListener('click', e => { if (e.target === overlay) closeDashboard(); });
 });
 
+
+// ══════════════════════════════════════════════════════════════
+// LEADERBOARD & SCORING SYSTEM
+// ══════════════════════════════════════════════════════════════
+
+// ── Scoring constants ─────────────────────────────────────────
+const SCORE_CORRECT_1ST  = 200;  // correct on first attempt
+const SCORE_CORRECT_2ND  = 100;  // correct on second attempt
+const SCORE_CORRECT_3RD  = 50;   // correct on 3rd+ attempt
+const SCORE_MASTERY_BONUS = 300; // one-time bonus when word fully mastered
+const SPEED_THRESHOLDS = [[10000,50],[20000,30],[30000,15]]; // [ms, pts]
+
+// Per-session attempt tracker (resets each study session)
+let _clozeAttempts = {}; // word → attempt count this session
+let _questionStartTime = 0;
+
+// ── Start timer when cloze question is shown ──────────────────
+function _startQuestionTimer() {
+  _questionStartTime = Date.now();
+}
+
+// ── Calculate speed bonus ─────────────────────────────────────
+function _speedBonus(ms) {
+  for (const [threshold, pts] of SPEED_THRESHOLDS) {
+    if (ms <= threshold) return pts;
+  }
+  return 0;
+}
+
+// ── Award points for a cloze answer ──────────────────────────
+function _awardClozePoints(word, isRight) {
+  if (!isRight) return; // no points for wrong answers
+  const user = window._fbAuth?.currentUser;
+  if (!user || !user.emailVerified) return; // unverified = no leaderboard points
+
+  const elapsed = _questionStartTime ? Date.now() - _questionStartTime : 99999;
+  const attempt = (_clozeAttempts[word] || 0) + 1; // this is the successful attempt number
+  
+  let base = attempt === 1 ? SCORE_CORRECT_1ST : attempt === 2 ? SCORE_CORRECT_2ND : SCORE_CORRECT_3RD;
+  let speed = _speedBonus(elapsed);
+  let total = base + speed;
+
+  _showScoreToast('+' + total + (speed > 0 ? ' ⚡' : ''));
+  _addToUserScore(total, 0); // mastery bonus added separately in markWordCorrect
+
+  // Reset attempt counter for this word on correct
+  _clozeAttempts[word] = 0;
+}
+
+// ── Award mastery bonus (called when word becomes fully mastered) ──
+function _awardMasteryBonus(word) {
+  const user = window._fbAuth?.currentUser;
+  if (!user || !user.emailVerified) return;
+  // Only award if not already awarded (check scoreMasteredWords in Firestore)
+  const awarded = _masteryBonusAwarded[word];
+  if (awarded) return;
+  _masteryBonusAwarded[word] = true;
+  _addToUserScore(0, SCORE_MASTERY_BONUS);
+  _showScoreToast('+' + SCORE_MASTERY_BONUS + ' 🏆 掌握奖励！');
+}
+let _masteryBonusAwarded = {}; // populated on login from Firestore
+
+// ── Add score to Firestore (debounced) ───────────────────────
+let _pendingScoreDelta = 0;
+let _pendingMasteryDelta = 0;
+let _scoreFlushTimer = null;
+
+function _addToUserScore(points, masteryBonus) {
+  _pendingScoreDelta   += points;
+  _pendingMasteryDelta += masteryBonus;
+  clearTimeout(_scoreFlushTimer);
+  _scoreFlushTimer = setTimeout(_flushScore, 3000);
+}
+
+async function _flushScore() {
+  if (_pendingScoreDelta === 0 && _pendingMasteryDelta === 0) return;
+  const user = window._fbAuth?.currentUser;
+  if (!user) return;
+  const pts = _pendingScoreDelta;
+  const mpts = _pendingMasteryDelta;
+  _pendingScoreDelta = 0;
+  _pendingMasteryDelta = 0;
+  try {
+    const { doc, getDoc, setDoc, updateDoc, serverTimestamp } = window._fbFns;
+    const ref = doc(window._fbDb, 'scores', user.uid);
+    const snap = await getDoc(ref);
+    const existing = snap.exists() ? snap.data() : null;
+    const newScore   = (existing?.score || 0) + pts;
+    const newMastery = (existing?.masteryScore || 0) + mpts;
+    const totalScore = newScore + newMastery;
+    await setDoc(ref, {
+      uid:          user.uid,
+      email:        user.email,
+      score:        newScore,
+      masteryScore: newMastery,
+      totalScore:   totalScore,
+      school:       localStorage.getItem('cl_vocab_school') || '',
+      userType:     localStorage.getItem('cl_vocab_user_type') || '',
+      nickname:     localStorage.getItem('cl_vocab_user_nickname') || '',
+      nicknameApproved: localStorage.getItem('cl_vocab_nickname_approved') === '1',
+      masteryAwarded: _masteryBonusAwarded,
+      updatedAt:    serverTimestamp()
+    });
+  } catch(e) { console.warn('Score flush failed:', e); }
+}
+
+// ── Score toast flash ─────────────────────────────────────────
+function _showScoreToast(msg) {
+  const el = document.getElementById('score-toast');
+  if (!el) return;
+  clearTimeout(_toastTimer);
+  el.textContent = msg;
+  el.className = 'score-toast show';
+  _toastTimer = setTimeout(() => {
+    el.className = 'score-toast show hide';
+    setTimeout(() => { el.className = 'score-toast'; }, 350);
+  }, 900);
+}
+
+// ── Leaderboard fetch & render ────────────────────────────────
+let _lbTab = 'school';
+
+function showLeaderboard() {
+  showScreen('leaderboard-screen');
+  loadLeaderboard(_lbTab);
+}
+
+function switchLbTab(tab) {
+  _lbTab = tab;
+  document.getElementById('lb-tab-school').className = 'lb-tab' + (tab === 'school' ? ' active' : '');
+  document.getElementById('lb-tab-global').className = 'lb-tab' + (tab === 'global' ? ' active' : '');
+  loadLeaderboard(tab);
+}
+
+async function loadLeaderboard(tab) {
+  const content = document.getElementById('lb-content');
+  const myRankEl = document.getElementById('lb-my-rank');
+  if (!content) return;
+  content.innerHTML = '<div class="lb-loading">加载中…</div>';
+  if (myRankEl) myRankEl.textContent = '';
+
+  try {
+    const { collection, getDocs } = window._fbFns;
+    const snap = await getDocs(collection(window._fbDb, 'scores'));
+    let entries = [];
+    snap.forEach(d => entries.push(d.data()));
+
+    // Filter: verified users only; school tab = BVSS only
+    entries = entries.filter(e => {
+      if (!e.email) return false;
+      if (tab === 'school') return e.userType === '百德中学学生';
+      return ['百德中学学生','其他学校学生'].includes(e.userType);
+    });
+
+    // Sort by totalScore descending
+    entries.sort((a, b) => (b.totalScore || 0) - (a.totalScore || 0));
+
+    const myEmail = getUserEmail();
+    const myIdx   = entries.findIndex(e => e.email === myEmail);
+
+    renderLeaderboard(entries.slice(0, 10), myEmail, content);
+
+    if (myRankEl) {
+      if (myIdx === -1) {
+        myRankEl.textContent = '你还没有进入前10名，继续加油！';
+      } else if (myIdx >= 10) {
+        myRankEl.textContent = `你目前的排名：第 ${myIdx + 1} 名`;
+      } else {
+        myRankEl.textContent = '';
+      }
+    }
+  } catch(e) {
+    content.innerHTML = '<div class="lb-empty">加载失败，请稍后再试。</div>';
+  }
+}
+
+function _displayName(entry) {
+  if (entry.nicknameApproved && entry.nickname) return entry.nickname;
+  // Mask email: show first 3 chars + ***
+  const local = (entry.email || '').split('@')[0];
+  return local.slice(0, 3) + '***';
+}
+
+function renderLeaderboard(top10, myEmail, container) {
+  if (!top10.length) {
+    container.innerHTML = '<div class="lb-empty">暂无数据，快来成为第一名！🚀</div>';
+    return;
+  }
+
+  // Podium: positions 2nd, 1st, 3rd (visual order)
+  const p = [top10[1], top10[0], top10[2]]; // [silver, gold, bronze]
+  const medals = ['🥈','🥇','🥉'];
+  const rankClass = ['rank-2','rank-1','rank-3'];
+  const podiumHeights = ['52px','72px','38px'];
+
+  let podiumHtml = '<div class="lb-podium">';
+  p.forEach((entry, vi) => {
+    if (!entry) { podiumHtml += '<div class="podium-slot"></div>'; return; }
+    const initial = _displayName(entry).charAt(0).toUpperCase();
+    const isMe = entry.email === myEmail;
+    podiumHtml += `
+      <div class="podium-slot">
+        <div class="podium-avatar ${rankClass[vi]}" style="${isMe ? 'border-color:#F5C800;' : ''}">
+          ${initial}
+          <span class="podium-medal">${medals[vi]}</span>
+        </div>
+        <div class="podium-name" style="${isMe ? 'color:#F5C800;' : ''}">${_displayName(entry)}</div>
+        <div class="podium-score">${(entry.totalScore||0).toLocaleString()} 分</div>
+        <div class="podium-block ${rankClass[vi]}">${vi === 1 ? '1' : vi === 0 ? '2' : '3'}</div>
+      </div>`;
+  });
+  podiumHtml += '</div>';
+
+  // List rows 4–10
+  let listHtml = '<div class="lb-list">';
+  for (let i = 3; i < top10.length; i++) {
+    const e = top10[i];
+    const isMe = e.email === myEmail;
+    listHtml += `
+      <div class="lb-row${isMe ? ' lb-mine' : ''}">
+        <div class="lb-rank-num">${i + 1}</div>
+        <div class="lb-row-name">${_displayName(e)}</div>
+        <div style="display:flex;align-items:center;">
+          <div class="lb-row-score">${(e.totalScore||0).toLocaleString()}</div>
+          <div class="lb-row-mastery">分</div>
+        </div>
+      </div>`;
+  }
+  listHtml += '</div>';
+
+  container.innerHTML = podiumHtml + listHtml;
+}
+
+
 </script>
 
 <!-- FIRST LOGIN GUIDE MODAL -->
@@ -8760,6 +9069,29 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 </div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     LEADERBOARD SCREEN
+══════════════════════════════════════════════════════════════ -->
+<div id="leaderboard-screen" class="screen">
+  <div class="lb-header">
+    <button class="lb-back-btn" onclick="showScreen('home-screen')">‹ 返回</button>
+    <div class="lb-title">🏆 词王排行榜</div>
+    <div class="lb-subtitle">每次掌握词语即时更新</div>
+  </div>
+  <div class="lb-tabs">
+    <button class="lb-tab active" id="lb-tab-school" onclick="switchLbTab('school')">🏫 百德中学</button>
+    <button class="lb-tab" id="lb-tab-global" onclick="switchLbTab('global')">🌏 全球</button>
+  </div>
+  <div id="lb-content">
+    <div class="lb-loading">加载中…</div>
+  </div>
+  <div id="lb-my-rank" class="lb-my-rank"></div>
+</div>
+
+<!-- Score flash toast -->
+<div id="score-toast" class="score-toast"></div>
 
 </body>
 </html>
