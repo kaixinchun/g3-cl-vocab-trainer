@@ -1143,7 +1143,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as fbSignOut, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as fbSignOut, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -1181,6 +1181,8 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     onAuthStateChanged,
     sendEmailVerification,
     sendPasswordResetEmail,
+    verifyPasswordResetCode,
+    confirmPasswordReset,
     doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, getDocs
   };
 
@@ -6526,6 +6528,68 @@ function showWelcomeError(msg, errorId) {
   setTimeout(() => { if (errEl) errEl.classList.remove('show'); }, 3500);
 }
 
+
+// ── PASSWORD RESET HANDLER (Firebase email link) ──────────────
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const mode   = params.get('mode');
+  const oobCode = params.get('oobCode');
+
+  if (mode === 'resetPassword' && oobCode) {
+    // Show the modal as soon as Firebase auth is ready
+    window._pwResetOobCode = oobCode;
+    window._onFbAuthReady = async function() {
+      const modal = document.getElementById('pw-reset-modal');
+      if (!modal) return;
+      try {
+        const { verifyPasswordResetCode } = window._fbFns;
+        const email = await verifyPasswordResetCode(window._fbAuth, oobCode);
+        const label = document.getElementById('pw-reset-email-label');
+        if (label) label.textContent = '账号：' + email;
+        modal.style.display = 'flex';
+        // Clean URL so oobCode doesn't linger
+        window.history.replaceState({}, document.title, window.location.pathname);
+      } catch(e) {
+        const modal2 = document.getElementById('pw-reset-modal');
+        if (modal2) {
+          modal2.style.display = 'flex';
+          document.getElementById('pw-reset-error').textContent =
+            '重置链接已失效或已使用，请重新申请。';
+          document.getElementById('pw-reset-new').style.display = 'none';
+          document.getElementById('pw-reset-confirm').style.display = 'none';
+          document.querySelector('#pw-reset-modal button[onclick="submitPasswordReset()"]').textContent = '关闭';
+          document.querySelector('#pw-reset-modal button[onclick="submitPasswordReset()"]').onclick = function() {
+            document.getElementById('pw-reset-modal').style.display = 'none';
+          };
+        }
+      }
+    };
+  }
+})();
+
+async function submitPasswordReset() {
+  const pw1 = document.getElementById('pw-reset-new')?.value || '';
+  const pw2 = document.getElementById('pw-reset-confirm')?.value || '';
+  const errEl = document.getElementById('pw-reset-error');
+  if (pw1.length < 6) { errEl.textContent = '密码至少需要6位'; return; }
+  if (pw1 !== pw2)    { errEl.textContent = '两次输入的密码不一致'; return; }
+  const oobCode = window._pwResetOobCode;
+  if (!oobCode) { errEl.textContent = '重置代码丢失，请重新申请。'; return; }
+  try {
+    const { confirmPasswordReset } = window._fbFns;
+    await confirmPasswordReset(window._fbAuth, oobCode, pw1);
+    document.getElementById('pw-reset-modal').style.display = 'none';
+    showToast('✅ 密码已重置，请使用新密码登录。');
+  } catch(e) {
+    const msgs = {
+      'auth/expired-action-code': '重置链接已过期，请重新申请。',
+      'auth/invalid-action-code': '重置链接已失效或已使用，请重新申请。',
+      'auth/weak-password':       '密码太简单，请设置至少6位。',
+    };
+    errEl.textContent = msgs[e.code] || '重置失败：' + e.message;
+  }
+}
+
 // ── FORGOT PASSWORD ──────────────────────────────────────────
 async function submitForgotPassword(panel) {
   const suffix = panel === 'desktop' ? '-desktop' : '';
@@ -9139,6 +9203,44 @@ function renderLeaderboard(top10, myEmail, container) {
 
 <!-- Score flash toast -->
 <div id="score-toast" class="score-toast"></div>
+
+
+<!-- ── PASSWORD RESET MODAL (handles Firebase email link) ─── -->
+<div id="pw-reset-modal" style="display:none;position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(4px);
+  display:none;align-items:center;justify-content:center;">
+  <div style="background:white;border-radius:16px;padding:1.8rem 1.5rem;
+    max-width:360px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.3);">
+    <div style="font-size:1.1rem;font-family:var(--font-body);font-weight:700;
+      color:var(--ink);margin-bottom:.3rem;">🔐 重置密码</div>
+    <div id="pw-reset-email-label" style="font-size:.78rem;color:var(--ink-mute);
+      font-family:var(--font-ui);margin-bottom:1rem;"></div>
+    <div style="position:relative;">
+      <input id="pw-reset-new" type="password" placeholder="输入新密码（至少6位）"
+        style="width:100%;padding:.85rem 2.8rem .85rem 1rem;border:1.5px solid var(--paper-3);
+        border-radius:var(--r-sm);font-size:.95rem;font-family:sans-serif;outline:none;
+        box-sizing:border-box;margin-bottom:.7rem;">
+      <button type="button" onclick="togglePwVisibility('pw-reset-new',this)"
+        style="position:absolute;right:.75rem;top:.85rem;background:none;border:none;
+        cursor:pointer;font-size:1.1rem;color:var(--ink-mute);">👁</button>
+    </div>
+    <div style="position:relative;">
+      <input id="pw-reset-confirm" type="password" placeholder="再次输入新密码"
+        style="width:100%;padding:.85rem 2.8rem .85rem 1rem;border:1.5px solid var(--paper-3);
+        border-radius:var(--r-sm);font-size:.95rem;font-family:sans-serif;outline:none;
+        box-sizing:border-box;margin-bottom:.7rem;">
+      <button type="button" onclick="togglePwVisibility('pw-reset-confirm',this)"
+        style="position:absolute;right:.75rem;top:.85rem;background:none;border:none;
+        cursor:pointer;font-size:1.1rem;color:var(--ink-mute);">👁</button>
+    </div>
+    <div id="pw-reset-error" style="font-size:.78rem;color:var(--red);font-family:var(--font-ui);
+      min-height:1.2em;margin-bottom:.6rem;"></div>
+    <button onclick="submitPasswordReset()"
+      style="width:100%;padding:.85rem;background:var(--hero-green);color:white;
+      border:none;border-radius:var(--r-sm);font-size:1rem;font-family:var(--font-body);
+      font-weight:700;cursor:pointer;">确认重置密码</button>
+  </div>
+</div>
 
 </body>
 </html>
