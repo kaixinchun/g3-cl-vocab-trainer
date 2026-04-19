@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>词王训练营 · 百德中学</title>
+<title>词王淬炼坊 · 百德中学</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
@@ -12,7 +12,7 @@
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="词王训练营">
+  <meta name="apple-mobile-web-app-title" content="词王淬炼坊">
   <link rel="apple-touch-icon" href="icon192.png">
   <meta name="theme-color" content="#4A9A20">
 <style>
@@ -467,6 +467,16 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     display: none;
   }
   .welcome-error.show { display: block; }
+  /* ── AUTH TABS ── */
+  .auth-tab {
+    flex:1; padding:.45rem .5rem; border-radius:var(--r-sm);
+    border:1.5px solid var(--paper-3); background:var(--paper-2);
+    font-size:.82rem; font-family:var(--font-ui); font-weight:600;
+    color:var(--ink-mute); cursor:pointer; transition:all var(--t);
+  }
+  .auth-tab-active {
+    background:var(--hero-green); color:white; border-color:var(--hero-green);
+  }
   .welcome-btn {
     width: 100%;
     padding: .9rem;
@@ -1040,6 +1050,43 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as fbSignOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDbQ4gCmhkmtnspyByPLUxIcBFhSHYb1QQ",
+    authDomain: "g3-vocab-king.firebaseapp.com",
+    projectId: "g3-vocab-king",
+    storageBucket: "g3-vocab-king.firebasestorage.app",
+    messagingSenderId: "1089413692588",
+    appId: "1:1089413692588:web:d14e74b6123d0231aa7309",
+    measurementId: "G-Y0W1YE7N2C"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  // ── Expose to global scope for non-module JS ──────────────
+  window._fbAuth = auth;
+  window._fbDb   = db;
+  window._fbFns  = {
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    fbSignOut,
+    onAuthStateChanged,
+    doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, getDocs
+  };
+
+  // ── Auth state observer ───────────────────────────────────
+  onAuthStateChanged(auth, user => {
+    window._fbUser = user || null;
+    if (window._onFbAuthReady) window._onFbAuthReady(user);
+  });
+</script>
 </head>
 <body>
 
@@ -1052,7 +1099,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     <div class="ws-left">
       <div class="ws-left-top">
         <div class="ws-crown">👑</div>
-        <div class="ws-title">词王训练营</div>
+        <div class="ws-title">词王淬炼坊</div>
         <div class="ws-sub">新加坡中学 G3 华文<br>中一至中四课文词语总复习</div>
       </div>
       <div class="ws-features">
@@ -1064,13 +1111,89 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       <div class="ws-credit">百德中学 · Bukit View Secondary School<br>郑凯欣老师 · Mdm Chun Kai Xin &nbsp;© 2026</div>
     </div>
     <div class="ws-right">
-      <div class="ws-heading">开始学习</div>
-      <div class="ws-sub2">输入你的电邮地址即可开始，进度自动保存。</div>
+      <!-- Tab toggle: Login / Register -->
+      <div style="display:flex;gap:.4rem;margin-bottom:1rem;">
+        <button id="tab-login-desktop" class="auth-tab auth-tab-active" onclick="switchAuthTab('login','desktop')">登录</button>
+        <button id="tab-register-desktop" class="auth-tab" onclick="switchAuthTab('register','desktop')">注册新账号</button>
+      </div>
+      <div id="ws-login-desktop">
+        <div class="ws-heading" style="margin-bottom:.3rem;">欢迎回来</div>
+        <div class="ws-sub2">输入电邮和密码登录。</div>
+        <label class="welcome-label">电邮地址</label>
+        <input class="welcome-input" id="welcome-email-desktop" type="email" placeholder="e.g. name@students.edu.sg"
+          autocomplete="email" autocapitalize="none" onkeydown="if(event.key==='Enter') submitLogin('desktop')">
+        <label class="welcome-label" style="margin-top:.2rem">密码</label>
+        <input class="welcome-input" id="welcome-pw-desktop" type="password" placeholder="输入密码"
+          autocomplete="current-password" onkeydown="if(event.key==='Enter') submitLogin('desktop')">
+        <div class="welcome-error" id="welcome-error-desktop"></div>
+        <button class="welcome-btn" onclick="submitLogin('desktop')">登录 →</button>
+        <div class="welcome-note" style="margin-top:.5rem">没有账号？点击上方「注册新账号」。</div>
+      </div>
+      <div id="ws-register-desktop" style="display:none;">
+        <div class="ws-heading" style="margin-bottom:.3rem;">注册新账号</div>
+        <div class="ws-sub2">首次使用？填写以下资料创建账号。</div>
+        <label class="welcome-label">电邮地址</label>
+        <input class="welcome-input" id="reg-email-desktop" type="email" placeholder="e.g. name@students.edu.sg"
+          autocomplete="email" autocapitalize="none">
+        <label class="welcome-label" style="margin-top:.2rem">密码（至少6位）</label>
+        <input class="welcome-input" id="reg-pw-desktop" type="password" placeholder="设置密码（至少6位）"
+          autocomplete="new-password">
+        <label class="welcome-label" style="margin-top:.2rem">昵称（待老师审核后显示）</label>
+        <input class="welcome-input" id="reg-nickname-desktop" type="text" placeholder="例：小明同学" maxlength="20"
+          onkeydown="if(event.key==='Enter') submitRegister('desktop')">
+        <label class="welcome-label" style="margin-top:.2rem">你的身份</label>
+        <select class="welcome-select" id="welcome-usertype-desktop">
+          <option value="">── 请选择 ──</option>
+          <option value="百德中学学生">百德中学学生 (Bukit View Sec Student)</option>
+          <option value="其他学校学生">其他学校学生 (Student from Another School)</option>
+          <option value="家长">家长 (Parent)</option>
+          <option value="教师">教师 (Teacher)</option>
+          <option value="公众人士">公众人士 (General Public)</option>
+        </select>
+        <div class="welcome-error" id="welcome-reg-error-desktop"></div>
+        <button class="welcome-btn" onclick="submitRegister('desktop')">注册并开始学习 →</button>
+        <div class="welcome-note" style="margin-top:.5rem">昵称须经老师审核后才会正式显示。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="welcome-card">
+    <div class="welcome-logo">👑</div>
+    <div class="welcome-title">词王淬炼坊</div>
+    <div class="welcome-sub">
+      新加坡中学G3华文<br>
+      中一至中四课文词语总复习
+    </div>
+    <!-- Tab toggle -->
+    <div style="display:flex;gap:.4rem;margin-bottom:.8rem;">
+      <button id="tab-login-mobile" class="auth-tab auth-tab-active" onclick="switchAuthTab('login','mobile')">登录</button>
+      <button id="tab-register-mobile" class="auth-tab" onclick="switchAuthTab('register','mobile')">注册新账号</button>
+    </div>
+    <!-- LOGIN panel -->
+    <div id="ws-login-mobile">
       <label class="welcome-label">电邮地址</label>
-      <input class="welcome-input" id="welcome-email-desktop" type="email" placeholder="e.g. name@students.edu.sg"
-        autocomplete="email" autocapitalize="none" onkeydown="if(event.key==='Enter') submitWelcome()">
+      <input class="welcome-input" id="welcome-email" type="email" placeholder="e.g. name@students.edu.sg"
+        autocomplete="email" autocapitalize="none" onkeydown="if(event.key==='Enter') submitLogin('mobile')">
+      <label class="welcome-label" style="margin-top:.2rem">密码</label>
+      <input class="welcome-input" id="welcome-pw" type="password" placeholder="输入密码"
+        autocomplete="current-password" onkeydown="if(event.key==='Enter') submitLogin('mobile')">
+      <div class="welcome-error" id="welcome-error"></div>
+      <button class="welcome-btn" onclick="submitLogin('mobile')">登录 →</button>
+      <div class="welcome-note">没有账号？点击上方「注册新账号」。</div>
+    </div>
+    <!-- REGISTER panel -->
+    <div id="ws-register-mobile" style="display:none;">
+      <label class="welcome-label">电邮地址</label>
+      <input class="welcome-input" id="reg-email" type="email" placeholder="e.g. name@students.edu.sg"
+        autocomplete="email" autocapitalize="none">
+      <label class="welcome-label" style="margin-top:.2rem">密码（至少6位）</label>
+      <input class="welcome-input" id="reg-pw" type="password" placeholder="设置密码（至少6位）"
+        autocomplete="new-password">
+      <label class="welcome-label" style="margin-top:.2rem">昵称（待老师审核后显示）</label>
+      <input class="welcome-input" id="reg-nickname" type="text" placeholder="例：小明同学" maxlength="20"
+        onkeydown="if(event.key==='Enter') submitRegister('mobile')">
       <label class="welcome-label" style="margin-top:.2rem">你的身份</label>
-      <select class="welcome-select" id="welcome-usertype-desktop">
+      <select class="welcome-select" id="welcome-usertype">
         <option value="">── 请选择 ──</option>
         <option value="百德中学学生">百德中学学生 (Bukit View Sec Student)</option>
         <option value="其他学校学生">其他学校学生 (Student from Another School)</option>
@@ -1078,47 +1201,9 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
         <option value="教师">教师 (Teacher)</option>
         <option value="公众人士">公众人士 (General Public)</option>
       </select>
-      <div class="welcome-error" id="welcome-error-desktop"></div>
-      <button class="welcome-btn" onclick="submitWelcome()">开始学习 →</button>
-      <div class="welcome-note" style="margin-top:.5rem">
-        你的信息只用于保存学习进展与统计使用情况。<br>
-        首次填写后无需再次登录。<br>
-        如需更改身份，可在主页进行修改。
-      </div>
-    </div>
-  </div>
-
-  <div class="welcome-card">
-    <div class="welcome-logo">👑</div>
-    <div class="welcome-title">词王训练营</div>
-    <div class="welcome-sub">
-      新加坡中学G3华文<br>
-      中一至中四课文词语总复习
-    </div>
-    <label class="welcome-label">请输入你的电邮地址</label>
-    <input
-      class="welcome-input"
-      id="welcome-email"
-      type="email"
-      placeholder="e.g. name@students.edu.sg"
-      autocomplete="email"
-      autocapitalize="none"
-      onkeydown="if(event.key==='Enter') submitWelcome()"
-    >
-    <label class="welcome-label" style="margin-top:.2rem">请选择你的身份</label>
-    <select class="welcome-select" id="welcome-usertype">
-      <option value="">── 请选择 ──</option>
-      <option value="百德中学学生">百德中学学生 (Bukit View Sec Student)</option>
-      <option value="其他学校学生">其他学校学生 (Student from Another School)</option>
-      <option value="家长">家长 (Parent)</option>
-      <option value="教师">教师 (Teacher)</option>
-      <option value="公众人士">公众人士 (General Public)</option>
-    </select>
-    <div class="welcome-error" id="welcome-error"></div>
-    <button class="welcome-btn" onclick="submitWelcome()">开始学习 →</button>
-    <div class="welcome-note">
-      你的信息只用于保存学习进展与统计使用情况。<br>首次填写后无需再次登录。<br>
-      如需更改身份，可在主页进行修改。
+      <div class="welcome-error" id="welcome-reg-error"></div>
+      <button class="welcome-btn" onclick="submitRegister('mobile')">注册并开始学习 →</button>
+      <div class="welcome-note">昵称须经老师审核后才会正式显示。</div>
     </div>
     <div class="welcome-credit-school">
       百德中学 · Bukit View Secondary School
@@ -1133,7 +1218,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 <!-- HOME -->
 <div id="home-screen" class="screen">
   <div class="home-header">
-    <div class="home-title">词王训练营</div>
+    <div class="home-title">词王淬炼坊</div>
     <div class="home-subtitle">
       新加坡中学G3华文 · 中一至中四词语总复习
     </div>
@@ -1146,7 +1231,10 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 
   <!-- User identity pill — email | badge | 修改身份 | 退出 -->
   <div class="user-pill" style="max-width:520px;">
-    <span class="user-email" id="user-email-display"></span>
+    <div style="display:flex;flex-direction:column;gap:.1rem;">
+      <span class="user-email" id="user-email-display"></span>
+      <span id="user-nickname-display" style="display:none;font-size:.78rem;font-family:var(--font-ui);font-weight:600;"></span>
+    </div>
     <div style="display:flex;align-items:center;gap:.4rem;">
       <span class="user-type-badge" id="user-type-badge"></span>
       <button class="profile-btn" onclick="showProfileModal()">✏️ 修改身份</button>
@@ -1219,7 +1307,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   <!-- Usage counter — bottom of home screen -->
   <div style="padding:.5rem 1.2rem 1.5rem;max-width:960px;margin:0 auto;width:100%;">
     <div class="stats-counter-card" id="stats-counter-card">
-      <div style="font-size:.72rem;color:#1a2a5e;font-family:var(--font-ui);font-weight:600;text-align:center;margin-bottom:.6rem;letter-spacing:.03em;">🤝 词王训练营学习伙伴</div>
+      <div style="font-size:.72rem;color:#1a2a5e;font-family:var(--font-ui);font-weight:600;text-align:center;margin-bottom:.6rem;letter-spacing:.03em;">🤝 词王淬炼坊学习伙伴</div>
       <div style="display:flex;justify-content:space-around;align-items:center;">
         <div class="counter-item">
           <div class="counter-num" id="counter-bukit">—</div>
@@ -1481,7 +1569,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   <div style="background:var(--blue);padding:14px 16px;display:flex;align-items:center;gap:10px;">
     <button class="back-btn" style="color:white;" onclick="showScreen('home-screen')">‹</button>
     <div style="font-size:1.15rem;color:white;font-family:var(--font-body);">我的成就</div>
-    <div style="margin-left:auto;font-size:.75rem;color:rgba(255,255,255,.6);font-family:var(--font-ui);">词王训练营</div>
+    <div style="margin-left:auto;font-size:.75rem;color:rgba(255,255,255,.6);font-family:var(--font-ui);">词王淬炼坊</div>
   </div>
 
   <!-- RANK HERO -->
@@ -1544,7 +1632,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       <div style="font-size:1.4rem;font-family:var(--font-body);color:var(--ink);font-weight:700;margin-bottom:.25rem;">成就解锁！</div>
       <div id="t1-unit" style="font-size:.78rem;font-family:var(--font-ui);color:#888;letter-spacing:.06em;margin-bottom:1rem;"></div>
       <div id="t1-message" style="font-size:.95rem;color:#444;line-height:1.75;font-family:var(--font-body);margin-bottom:1.2rem;max-width:380px;margin-left:auto;margin-right:auto;"></div>
-      <div style="border-top:1px solid #f0ede5;padding:.65rem 0 0;font-size:.58rem;color:#ccc;font-family:var(--font-ui);letter-spacing:.04em;">词王训练营 · 百德中学 Bukit View Secondary · for.edu.sg/g3cl-vocabking</div>
+      <div style="border-top:1px solid #f0ede5;padding:.65rem 0 0;font-size:.58rem;color:#ccc;font-family:var(--font-ui);letter-spacing:.04em;">词王淬炼坊 · 百德中学 Bukit View Secondary · for.edu.sg/g3cl-vocabking</div>
     </div>
     <!-- Compact action row -->
     <div style="display:flex;gap:.6rem;padding:.8rem 1.6rem 1.4rem;align-items:center;">
@@ -1562,7 +1650,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       <div id="t2-unit" style="font-size:.78rem;color:rgba(255,255,255,.5);font-family:var(--font-ui);letter-spacing:.08em;margin-bottom:1rem;"></div>
       <div id="t2-message" style="font-size:.98rem;color:rgba(255,255,255,.88);line-height:1.8;font-family:var(--font-body);margin-bottom:1rem;max-width:400px;margin-left:auto;margin-right:auto;"></div>
       <div id="t2-stats" style="display:flex;gap:.5rem;justify-content:center;margin-bottom:1rem;"></div>
-      <div style="border-top:1px solid rgba(255,255,255,.1);padding:.6rem 0 0;font-size:.58rem;color:rgba(255,255,255,.25);font-family:var(--font-ui);letter-spacing:.04em;">词王训练营 · 百德中学 Bukit View Secondary · for.edu.sg/g3cl-vocabking</div>
+      <div style="border-top:1px solid rgba(255,255,255,.1);padding:.6rem 0 0;font-size:.58rem;color:rgba(255,255,255,.25);font-family:var(--font-ui);letter-spacing:.04em;">词王淬炼坊 · 百德中学 Bukit View Secondary · for.edu.sg/g3cl-vocabking</div>
     </div>
     <div style="display:flex;gap:.6rem;padding:.8rem 1.6rem 1.4rem;align-items:center;">
       <button onclick="shareCelebration(2)" style="padding:.55rem .9rem;background:rgba(255,255,255,.12);color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.2);border-radius:8px;font-size:.8rem;font-family:var(--font-ui);cursor:pointer;white-space:nowrap;">📤 分享</button>
@@ -1606,8 +1694,8 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       </div>
       <div style="background:rgba(245,200,0,.06);border:1px solid rgba(245,200,0,.2);border-radius:10px;padding:.75rem 1rem;margin:0 auto .8rem;max-width:440px;font-size:.72rem;color:rgba(255,245,200,.55);font-family:var(--font-ui);line-height:1.65;text-align:left;">
         <span style="color:rgba(255,245,200,.95);font-weight:600;">📢 分享文字预览：</span><br>
-        我在词王训练营掌握了中一至中四全部 991 个词语，晋升为【顶级词王】！👑<br>
-        百德中学 Bukit View Secondary School · 词王训练营<br>
+        我在词王淬炼坊掌握了中一至中四全部 991 个词语，晋升为【顶级词王】！👑<br>
+        百德中学 Bukit View Secondary School · 词王淬炼坊<br>
         👉 for.edu.sg/g3cl-vocabking
       </div>
     </div>
@@ -6255,49 +6343,183 @@ function getUserType() {
 function isTeacher() { return TEACHER_TYPES.includes(getUserType()); }
 function isStudent() { return STUDENT_TYPES.includes(getUserType()); }
 
-// ── WELCOME SCREEN LOGIC ─────────────────────────────────────
-function submitWelcome() {
-  // Read from desktop split panel if visible, otherwise mobile card
-  const desktopVisible = window.innerWidth >= 768;
-  const emailInput = document.getElementById(desktopVisible ? 'welcome-email-desktop' : 'welcome-email');
-  const typeInput  = document.getElementById(desktopVisible ? 'welcome-usertype-desktop' : 'welcome-usertype');
-  const email    = (emailInput ? emailInput.value : '').trim().toLowerCase();
-  const userType = (typeInput  ? typeInput.value  : '').trim();
-
-  if (!email) { showWelcomeError('请输入你的电邮地址'); return; }
-  if (!email.includes('@') || !email.includes('.')) {
-    showWelcomeError('请输入有效的电邮地址'); return;
+// ── AUTH TAB SWITCHER ─────────────────────────────────────────
+function switchAuthTab(tab, panel) {
+  const isDesktop = panel === 'desktop';
+  const suffix    = isDesktop ? '-desktop' : '-mobile';
+  const loginEl   = document.getElementById('ws-login-' + panel);
+  const regEl     = document.getElementById('ws-register-' + panel);
+  const tabLogin  = document.getElementById('tab-login' + suffix);
+  const tabReg    = document.getElementById('tab-register' + suffix);
+  if (!loginEl || !regEl) return;
+  if (tab === 'login') {
+    loginEl.style.display = '';  regEl.style.display = 'none';
+    tabLogin.classList.add('auth-tab-active');
+    tabReg.classList.remove('auth-tab-active');
+  } else {
+    loginEl.style.display = 'none'; regEl.style.display = '';
+    tabReg.classList.add('auth-tab-active');
+    tabLogin.classList.remove('auth-tab-active');
   }
-  if (!userType) { showWelcomeError('请选择你的身份'); return; }
-
-  saveUserIdentity(email, userType);
-  reportRegistration(email, userType);
-  launchApp(email, userType);
 }
 
-function saveUserIdentity(email, userType) {
+// ── SHOW WELCOME ERROR ────────────────────────────────────────
+function showWelcomeError(msg, errorId) {
+  const errEl = document.getElementById(errorId || 'welcome-error');
+  if (errEl) { errEl.textContent = msg; errEl.classList.add('show'); }
+  setTimeout(() => { if (errEl) errEl.classList.remove('show'); }, 3500);
+}
+
+// ── FIREBASE LOGIN ────────────────────────────────────────────
+async function submitLogin(panel) {
+  const suffix = panel === 'desktop' ? '-desktop' : '';
+  const email = (document.getElementById('welcome-email' + suffix)?.value || '').trim().toLowerCase();
+  const pw    = (document.getElementById('welcome-pw' + suffix)?.value || '').trim();
+  const errId = 'welcome-error' + suffix;
+
+  if (!email) { showWelcomeError('请输入电邮地址', errId); return; }
+  if (!pw)    { showWelcomeError('请输入密码', errId); return; }
+
+  const btn = document.querySelector(`#ws-login-${panel} .welcome-btn`);
+  if (btn) { btn.disabled = true; btn.textContent = '登录中…'; }
+
+  try {
+    const { signInWithEmailAndPassword } = window._fbFns;
+    const cred = await signInWithEmailAndPassword(window._fbAuth, email, pw);
+    await _onFirebaseLogin(cred.user);
+  } catch(e) {
+    const msg = _fbErrorMsg(e.code);
+    showWelcomeError(msg, errId);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '登录 →'; }
+  }
+}
+
+// ── FIREBASE REGISTER ─────────────────────────────────────────
+async function submitRegister(panel) {
+  const suffix = panel === 'desktop' ? '-desktop' : '';
+  const email    = (document.getElementById('reg-email' + suffix)?.value || '').trim().toLowerCase();
+  const pw       = (document.getElementById('reg-pw' + suffix)?.value || '').trim();
+  const nickname = (document.getElementById('reg-nickname' + suffix)?.value || '').trim();
+  const userType = (document.getElementById('welcome-usertype' + suffix)?.value || '').trim();
+  const errId    = 'welcome-reg-error' + suffix;
+
+  if (!email)    { showWelcomeError('请输入电邮地址', errId); return; }
+  if (!email.includes('@')) { showWelcomeError('请输入有效的电邮地址', errId); return; }
+  if (pw.length < 6)        { showWelcomeError('密码至少需要6位', errId); return; }
+  if (!nickname) { showWelcomeError('请输入昵称', errId); return; }
+  if (!userType) { showWelcomeError('请选择你的身份', errId); return; }
+
+  const btn = document.querySelector(`#ws-register-${panel} .welcome-btn`);
+  if (btn) { btn.disabled = true; btn.textContent = '注册中…'; }
+
+  try {
+    const { createUserWithEmailAndPassword, doc, setDoc, serverTimestamp } = window._fbFns;
+    const cred = await createUserWithEmailAndPassword(window._fbAuth, email, pw);
+    const uid  = cred.user.uid;
+
+    // Create Firestore user doc
+    await setDoc(doc(window._fbDb, 'users', uid), {
+      email,
+      nickname,
+      nicknameApproved: false,
+      nicknameRejected: false,
+      userType,
+      createdAt:  serverTimestamp(),
+      lastSeen:   serverTimestamp(),
+      progress:   {}
+    });
+
+    await _onFirebaseLogin(cred.user, { nickname, userType });
+  } catch(e) {
+    const msg = _fbErrorMsg(e.code);
+    showWelcomeError(msg, errId);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '注册并开始学习 →'; }
+  }
+}
+
+// ── AFTER FIREBASE LOGIN: load Firestore doc, sync, launch ───
+async function _onFirebaseLogin(user, fallback) {
+  const { doc, getDoc, updateDoc, serverTimestamp } = window._fbFns;
+  const uid = user.uid;
+  let   userDoc = null;
+
+  try {
+    const snap = await getDoc(doc(window._fbDb, 'users', uid));
+    if (snap.exists()) {
+      userDoc = snap.data();
+      // Update lastSeen
+      updateDoc(doc(window._fbDb, 'users', uid), { lastSeen: serverTimestamp() }).catch(() => {});
+    }
+  } catch(e) { console.warn('Firestore read failed, using local data', e); }
+
+  const email    = user.email;
+  const userType = userDoc?.userType || fallback?.userType || '公众人士';
+  const nickname = userDoc?.nickname || fallback?.nickname || '';
+  const nicknameApproved = userDoc?.nicknameApproved || false;
+
+  // Merge Firestore progress into local (Firestore wins if newer)
+  if (userDoc?.progress && Object.keys(userDoc.progress).length > 0) {
+    try {
+      const local = JSON.parse(localStorage.getItem('cl_vocab_progress_v2') || '{}');
+      const remote = userDoc.progress;
+      // Simple merge: take whichever lastSeen is more recent per word
+      const merged = { ...local };
+      Object.entries(remote).forEach(([w, rp]) => {
+        const lp = local[w];
+        if (!lp || (rp.lastSeen || 0) > (lp.lastSeen || 0)) merged[w] = rp;
+      });
+      progress = merged;
+      saveProgress();
+    } catch(e) {}
+  }
+
+  saveUserIdentity(email, userType, nickname, nicknameApproved);
+  reportLogin(email, userType);
+  launchApp(email, userType, nickname, nicknameApproved);
+}
+
+// ── FIREBASE ERROR MESSAGES ───────────────────────────────────
+function _fbErrorMsg(code) {
+  const map = {
+    'auth/user-not-found':       '找不到此电邮账号，请先注册。',
+    'auth/wrong-password':       '密码错误，请重试。',
+    'auth/invalid-credential':   '电邮或密码错误，请重试。',
+    'auth/email-already-in-use': '此电邮已注册，请直接登录。',
+    'auth/weak-password':        '密码太简单，请设置至少6位密码。',
+    'auth/invalid-email':        '电邮地址格式不正确。',
+    'auth/too-many-requests':    '尝试次数过多，请稍后再试。',
+    'auth/network-request-failed': '网络错误，请检查连接后重试。',
+  };
+  return map[code] || '登录失败，请重试。（' + code + '）';
+}
+
+// ── SAVE USER IDENTITY (extended with nickname) ───────────────
+function saveUserIdentity(email, userType, nickname, nicknameApproved) {
   try {
     localStorage.setItem(USER_KEY, email);
     localStorage.setItem(USER_TYPE_KEY, userType);
+    localStorage.setItem('cl_vocab_user_nickname', nickname || '');
+    localStorage.setItem('cl_vocab_nickname_approved', nicknameApproved ? '1' : '0');
     sessionStorage.setItem(USER_KEY, email);
     sessionStorage.setItem(USER_TYPE_KEY, userType);
+    sessionStorage.setItem('cl_vocab_user_nickname', nickname || '');
   } catch(e) {}
   idbSet(USER_KEY, email).catch(() => {});
   idbSet(USER_TYPE_KEY, userType).catch(() => {});
 }
 
-function showWelcomeError(msg) {
-  const desktopVisible = window.innerWidth >= 768;
-  const suffix = desktopVisible ? '-desktop' : '';
-  const errEl = document.getElementById('welcome-error' + suffix);
-  const emailInput = document.getElementById('welcome-email' + suffix);
-  if (errEl) { errEl.textContent = msg; errEl.classList.add('show'); }
-  if (emailInput) emailInput.classList.add('error');
-  setTimeout(() => {
-    if (errEl) errEl.classList.remove('show');
-    if (emailInput) emailInput.classList.remove('error');
-  }, 3000);
+function getUserNickname() {
+  return sessionStorage.getItem('cl_vocab_user_nickname') ||
+         localStorage.getItem('cl_vocab_user_nickname') || '';
 }
+function isNicknameApproved() {
+  return localStorage.getItem('cl_vocab_nickname_approved') === '1';
+}
+
+// Legacy stub — kept so old calls don't break
+function submitWelcome() { submitLogin(window.innerWidth >= 768 ? 'desktop' : 'mobile'); }
 
 function setBadge(userType) {
   const badge = document.getElementById('user-type-badge');
@@ -6310,21 +6532,35 @@ function setBadge(userType) {
 }
 
 // ── LAUNCH APP AFTER LOGIN ────────────────────────────────────
-function launchApp(email, userType) {
+function launchApp(email, userType, nickname, nicknameApproved) {
   const emailDisplay = document.getElementById('user-email-display');
   if (emailDisplay) emailDisplay.textContent = email;
 
-  setBadge(userType);
+  // Show nickname in home pill
+  const nickEl = document.getElementById('user-nickname-display');
+  if (nickEl) {
+    if (nickname) {
+      nickEl.style.display = 'inline';
+      if (nicknameApproved) {
+        nickEl.textContent = '👤 ' + nickname;
+        nickEl.style.color = 'var(--green)';
+      } else {
+        nickEl.textContent = '👤 ' + nickname + '（待审核）';
+        nickEl.style.color = 'var(--amber)';
+      }
+    } else {
+      nickEl.style.display = 'none';
+    }
+  }
 
-  // Show feedback FAB on study screens
+  setBadge(userType);
   updateFeedbackFab();
 
   showScreen('home-screen');
-  // Guard with Promise.resolve() in case loadProgress() sync version is still in place
   Promise.resolve(loadProgress()).then(() => {
     fetchSheetData();
     fetchUsageStats();
-    setTimeout(maybeShowFirstGuide, 600); // slight delay so home screen renders first
+    setTimeout(maybeShowFirstGuide, 600);
   });
 }
 
@@ -6334,11 +6570,17 @@ function signOut() {
   try {
     localStorage.removeItem(USER_KEY);
     localStorage.removeItem(USER_TYPE_KEY);
+    localStorage.removeItem('cl_vocab_user_nickname');
+    localStorage.removeItem('cl_vocab_nickname_approved');
     sessionStorage.removeItem(USER_KEY);
     sessionStorage.removeItem(USER_TYPE_KEY);
+    sessionStorage.removeItem('cl_vocab_user_nickname');
   } catch(e) {}
   idbSet(USER_KEY, null).catch(() => {});
   idbSet(USER_TYPE_KEY, null).catch(() => {});
+  if (window._fbAuth) {
+    window._fbFns.fbSignOut(window._fbAuth).catch(() => {});
+  }
   showScreen('welcome-screen');
 }
 
@@ -6379,8 +6621,21 @@ function saveProfileEdit() {
 
 // ── CHECK LOGIN ON STARTUP ────────────────────────────────────
 async function checkLoginState() {
-  // Timeout fallback: if IndexedDB hangs (can happen on GitHub Pages /
-  // restricted browsers / first visit), don't block indefinitely.
+  // Wait for Firebase auth to initialise (max 3s), then check
+  const user = await new Promise(resolve => {
+    const timeout = setTimeout(() => resolve(null), 3000);
+    window._onFbAuthReady = (u) => { clearTimeout(timeout); resolve(u); };
+    // If Firebase already resolved before this ran
+    if (window._fbUser !== undefined) { clearTimeout(timeout); resolve(window._fbUser || null); }
+  });
+
+  if (user) {
+    // Firebase user is signed in — load Firestore doc and launch
+    await _onFirebaseLogin(user);
+    return;
+  }
+
+  // No Firebase user — fall back to localStorage (migration path for existing students)
   const idbWithTimeout = (key) =>
     Promise.race([
       idbGet(key).catch(() => null),
@@ -6394,6 +6649,7 @@ async function checkLoginState() {
   if (!userType) userType = await idbWithTimeout(USER_TYPE_KEY);
 
   if (email && userType) {
+    // Legacy session — launch app locally, prompt to set password next visit
     try {
       sessionStorage.setItem(USER_KEY, email);
       sessionStorage.setItem(USER_TYPE_KEY, userType);
@@ -6401,7 +6657,9 @@ async function checkLoginState() {
       localStorage.setItem(USER_TYPE_KEY, userType);
     } catch(e) {}
     reportLogin(email, userType);
-    launchApp(email, userType);
+    const nickname = getUserNickname();
+    const approved = isNicknameApproved();
+    launchApp(email, userType, nickname, approved);
   } else {
     showScreen('welcome-screen');
   }
@@ -6520,7 +6778,7 @@ async function idbGet(key) {
   } catch(e) { return null; }
 }
 
-// ── OVERRIDE saveProgress to use IndexedDB + localStorage ─────
+// ── OVERRIDE saveProgress to use IndexedDB + localStorage + Firestore ─────
 const _origSave = saveProgress;
 saveProgress = function() {
   // localStorage (best-effort, works on ChromeOS)
@@ -6535,7 +6793,27 @@ saveProgress = function() {
   // IndexedDB (most persistent — survives Safari 7-day ITP when installed as PWA)
   idbSet('progress', progress).catch(() => {});
   idbSet('sessionHistory', sessionHistory).catch(() => {});
+  // Firestore sync (debounced — don't write on every keystroke)
+  _scheduleFbSync();
 };
+
+// ── FIRESTORE PROGRESS SYNC (debounced 5s) ────────────────────
+let _fbSyncTimer = null;
+function _scheduleFbSync() {
+  clearTimeout(_fbSyncTimer);
+  _fbSyncTimer = setTimeout(_syncProgressToFirestore, 5000);
+}
+async function _syncProgressToFirestore() {
+  try {
+    const user = window._fbUser;
+    if (!user) return;
+    const { doc, updateDoc, serverTimestamp } = window._fbFns;
+    await updateDoc(doc(window._fbDb, 'users', user.uid), {
+      progress: progress,
+      lastSeen: serverTimestamp()
+    });
+  } catch(e) { console.warn('Firestore sync failed:', e); }
+}
 
 // ── OVERRIDE loadProgress to check IndexedDB first ────────────
 const _origLoad = loadProgress;
@@ -7232,7 +7510,7 @@ function renderGuide() {
     },
     {
       icon: '🎮',
-      title: zh ? '欢迎来到词王训练营！' : 'Welcome to Vocabulary Boot Camp!',
+      title: zh ? '欢迎来到词王淬炼坊！' : 'Welcome to Vocabulary Boot Camp!',
       body: zh
         ? '你的词王之路从这里开始！完成四个年级的词语学习，从词语学徒一步步晋升，最终晋升为顶级词王！👑'
         : 'Your journey to becoming a Vocabulary King starts here! Master vocabulary across four levels and rise from Apprentice all the way to the ultimate title of Grand Vocab King 👑.'
