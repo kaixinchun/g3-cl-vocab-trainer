@@ -206,7 +206,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 /* FLASHCARD */
 #flashcard-mode{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;gap:.8rem;}
 .card-counter{font-size:.72rem;color:var(--ink-mute);font-family:sans-serif;text-align:center;}
-.flashcard{width:100%;max-width:380px;min-height:200px;background:white;border-radius:var(--r);box-shadow:var(--shadow-md);border:1px solid var(--paper-3);cursor:pointer;position:relative;transition:box-shadow var(--t);}
+.flashcard{width:100%;max-width:380px;min-height:240px;background:white;border-radius:var(--r);box-shadow:var(--shadow-md);border:1px solid var(--paper-3);cursor:pointer;position:relative;transition:box-shadow var(--t);}
 .flashcard:hover{box-shadow:var(--shadow-lg);}
 .card-face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.4rem;border-radius:var(--r);transition:opacity .18s ease;}
 .card-back{opacity:0;}
@@ -216,12 +216,13 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 .card-tap-hint{position:absolute;bottom:.7rem;font-size:.62rem;color:var(--ink-mute);font-family:sans-serif;opacity:.7;}
 .word-display{
   font-family:var(--font-display);
-  font-size:clamp(2.8rem,9vw,3.8rem);
+  font-size:clamp(1.8rem,7vw,3.2rem);
   color:var(--ink);
   text-align:center;
-  line-height:1.2;
-  letter-spacing:.05em;
+  line-height:1.3;
+  letter-spacing:.04em;
   font-weight:700;
+  word-break:keep-all;
 }
 .word-context{font-size:.8rem;color:var(--ink-mute);font-family:var(--font-ui);margin-top:.35rem;}
 .def-word{
@@ -780,6 +781,19 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   }
   .study-nav-pill-right:hover { background: rgba(184,140,0,1); }
   .study-nav-pill.show   { display: flex; }
+  /* Desktop: stack pills vertically on left side, away from content */
+  @media(min-width:700px) {
+    .study-nav-pill {
+      bottom: auto;
+      left: .8rem !important;
+      transform: none !important;
+      right: auto !important;
+      min-width: 6rem;
+    }
+    .study-nav-pill-left   { top: calc(50% - 4.5rem); }
+    .study-nav-pill-center { top: 50%; }
+    .study-nav-pill-right  { top: calc(50% + 4.5rem); }
+  }
 
   /* ── FEEDBACK BUTTON (floating) ─────────────────────────── */
   .feedback-fab {
@@ -1024,7 +1038,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   .units-list { background: var(--blue-soft); padding:.7rem; max-width:960px; margin:0 auto; }
   @media(min-width:700px) {
     .units-list { padding: 1rem 1.2rem; }
-    .unit-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; align-items: start; }
+    .unit-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; align-items: stretch; }
     .unit-group-label { grid-column: 1 / -1; }
   }
   .unit-group-label {
@@ -1065,7 +1079,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 
   /* ── STUDY SCREEN improvements ───────────────────────────── */
   .study-header { background: white; }
-  .flashcard { min-height: 260px; }
+  .flashcard { min-height: 300px; }
   .mcq-word { font-family: var(--font-display); }
   .cloze-sentence { font-size: 1.05rem; font-family: var(--font-ui); line-height: 2; }
 
@@ -1074,6 +1088,16 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   @media(min-width:600px) {
     .flashcard { max-width: 480px; }
     .self-mark-btns { max-width: 480px; }
+    /* 2×2 Kahoot-style grid for cloze options on desktop */
+    #cloze-options.mcq-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .5rem;
+    }
+    #cloze-options .mcq-option {
+      min-height: 72px;
+      align-items: center;
+    }
   }
 
 
@@ -8910,11 +8934,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // ══════════════════════════════════════════════════════════════
 
 // ── Scoring constants ─────────────────────────────────────────
-const SCORE_CORRECT_1ST  = 200;  // correct on first attempt
-const SCORE_CORRECT_2ND  = 100;  // correct on second attempt
-const SCORE_CORRECT_3RD  = 50;   // correct on 3rd+ attempt
-const SCORE_MASTERY_BONUS = 300; // one-time bonus when word fully mastered
-const SPEED_THRESHOLDS = [[10000,50],[20000,30],[30000,15]]; // [ms, pts]
+const SCORE_CORRECT_1ST  = 10;  // correct on first attempt
+const SCORE_CORRECT_2ND  = 5;   // correct on second attempt
+const SCORE_CORRECT_3RD  = 2;   // correct on 3rd+ attempt
+const SCORE_MASTERY_BONUS = 20; // one-time bonus when word fully mastered
+const SPEED_THRESHOLDS = [[10000,5],[20000,3],[30000,1]]; // [ms, pts]
 
 // Per-session attempt tracker (resets each study session)
 var _clozeAttempts = {}; // word → attempt count this session
@@ -8935,20 +8959,16 @@ function _speedBonus(ms) {
 
 // ── Award points for a cloze answer ──────────────────────────
 function _awardClozePoints(word, isRight) {
-  console.log('[SCORE] _awardClozePoints called, isRight=', isRight, 'word=', word);
   if (!isRight) return;
   const user = window._fbAuth?.currentUser;
-  console.log('[SCORE] currentUser=', user ? user.email : 'NULL');
   if (!user) return;
 
   const elapsed = _questionStartTime ? Date.now() - _questionStartTime : 99999;
   const attempt = (_clozeAttempts[word] || 0) + 1;
-  console.log('[SCORE] elapsed=', elapsed, 'attempt=', attempt);
   
   let base = attempt === 1 ? SCORE_CORRECT_1ST : attempt === 2 ? SCORE_CORRECT_2ND : SCORE_CORRECT_3RD;
   let speed = _speedBonus(elapsed);
   let total = base + speed;
-  console.log('[SCORE] base=', base, 'speed=', speed, 'total=', total);
 
   _showScoreToast('+' + total + (speed > 0 ? ' ⚡' : ''));
   _addToUserScore(total, 0);
@@ -9091,7 +9111,6 @@ async function loadLeaderboard(tab) {
       }
     }
   } catch(e) {
-    console.error('Leaderboard:', e);
     content.innerHTML = '<div class="lb-empty">加载失败：' + e.message + '</div>';
   }
 }
