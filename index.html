@@ -6609,7 +6609,7 @@ function showWelcomeError(msg, errorId) {
         if (window._fbAuth.currentUser) await window._fbAuth.currentUser.reload();
         document.getElementById('email-verify-icon').textContent = '✅';
         document.getElementById('email-verify-title').textContent = '电邮验证成功！';
-        document.getElementById('email-verify-msg').textContent = '你的账号已通过验证，进度将计入排行榜。';
+        document.getElementById('email-verify-msg').textContent = '你的账号已通过验证。';
         // Hide the verification banner if visible
         const banner = document.getElementById('email-verif-banner');
         if (banner) banner.style.display = 'none';
@@ -9015,7 +9015,7 @@ function _awardClozePoints(word, isRight) {
 // ── Award mastery bonus (called when word becomes fully mastered) ──
 function _awardMasteryBonus(word) {
   const user = window._fbAuth?.currentUser;
-  if (!user) return; // TEMP: emailVerified check disabled for testing
+  if (!user) return;
   // Only award if not already awarded (check scoreMasteredWords in Firestore)
   const awarded = _masteryBonusAwarded[word];
   if (awarded) return;
@@ -9121,9 +9121,9 @@ async function loadLeaderboard(tab) {
     let entries = [];
     snap.forEach(d => entries.push(d.data()));
 
-    // Filter: verified users only; school tab = BVSS only
+    // Filter: approved-nickname users only on leaderboard
     entries = entries.filter(e => {
-      if (!e.email) return false;
+      if (!e.email || !e.nicknameApproved) return false;
       if (tab === 'school') return e.userType === '百德中学学生';
       return !['华文教师','其他科目教师'].includes(e.userType || '');
     });
