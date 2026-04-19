@@ -274,7 +274,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 .cloze-wrap{flex:1;display:flex;flex-direction:column;padding:.9rem;gap:.7rem;max-width:480px;margin:0 auto;width:100%;overflow-y:auto;padding-bottom:4.5rem;}
 .cloze-card{background:white;border:1px solid var(--paper-3);border-radius:var(--r);padding:1.3rem 1.1rem;box-shadow:var(--shadow-sm);}
 .cloze-label{font-size:.65rem;font-family:sans-serif;color:var(--ink-mute);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.6rem;}
-.cloze-sentence{font-size:1rem;color:var(--ink);font-family:var(--font-ui);line-height:1.9;word-break:break-all;}
+.cloze-sentence{font-size:1rem;color:var(--ink);font-family:var(--font-body);line-height:1.9;word-break:break-all;}
 .cloze-blank{display:inline-block;min-width:64px;text-align:center;margin:0 .15em;padding:0 .25em;color:var(--ink);font-weight:bold;transition:color var(--t);}
 .cloze-blank.correct{color:var(--green);}
 .cloze-blank.wrong{color:var(--red);}
@@ -418,12 +418,13 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     margin-bottom: .15rem;
   }
   .welcome-title {
-    font-size: 3.2rem;
+    font-size: clamp(2rem, 8vw, 3.2rem);
     font-family: var(--font-display);
     font-weight: 700;
     color: #3A6A10;
-    letter-spacing: .08em;
+    letter-spacing: .06em;
     margin-bottom: .3rem;
+    white-space: nowrap;
   }
   .welcome-sub {
     font-size: .82rem;
@@ -921,7 +922,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   }
   .ws-left-top { width: 100%; }
   .ws-crown { font-size: 3.2rem; line-height: 1; margin-bottom: .2rem; filter: drop-shadow(0 2px 6px rgba(0,0,0,.15)); }
-  .ws-title { font-family: var(--font-display); font-size: 3rem; font-weight: 900; color: #1a2a5e; letter-spacing: .06em; line-height: 1.05; margin-bottom: .4rem; }
+  .ws-title { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; color: #1a2a5e; letter-spacing: .06em; line-height: 1.05; margin-bottom: .4rem; white-space: nowrap; }
   .ws-sub { font-size: .82rem; color: #2D6A4F; font-family: var(--font-ui); letter-spacing: .05em; line-height: 1.6; }
   .ws-features { width: 100%; display: flex; flex-direction: column; gap: .55rem; margin: 1.4rem 0; }
   .ws-feature { display: flex; align-items: flex-start; gap: .65rem; }
@@ -1081,7 +1082,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   .study-header { background: white; }
   .flashcard { min-height: 300px; }
   .mcq-word { font-family: var(--font-display); }
-  .cloze-sentence { font-size: 1.05rem; font-family: var(--font-ui); line-height: 2; }
+  .cloze-sentence { font-size: 1.05rem; font-family: var(--font-body); line-height: 2; }
 
   /* ── RESPONSIVE MAX-WIDTH ────────────────────────────────── */
   .mcq-wrap, .cloze-wrap { max-width: 560px; }
@@ -1175,8 +1176,8 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as fbSignOut, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset, applyActionCode } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as fbSignOut, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset, applyActionCode, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDbQ4gCmhkmtnspyByPLUxIcBFhSHYb1QQ",
@@ -1216,7 +1217,8 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     verifyPasswordResetCode,
     confirmPasswordReset,
     applyActionCode,
-    doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, getDocs
+    deleteUser,
+    doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, collection, getDocs
   };
 
   // ── Auth state observer ───────────────────────────────────
@@ -1738,6 +1740,9 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     </div>
     <div id="teacher-badge-reset" style="display:none;text-align:center;padding:.5rem 0 .2rem;border-top:1px solid #f0ede5;margin-top:.5rem;">
       <button onclick="resetBadges()" style="background:none;border:none;font-size:.68rem;color:#bbb;cursor:pointer;font-family:var(--font-ui);text-decoration:underline;">🔧 重置成就徽章（测试用）</button>
+    </div>
+    <div style="text-align:center;padding:.6rem 0 .2rem;border-top:1px solid #f0ede5;margin-top:.5rem;">
+      <button onclick="deleteAccount()" style="background:none;border:none;font-size:.72rem;color:#c0392b;cursor:pointer;font-family:var(--font-ui);text-decoration:underline;">🗑 删除我的账号</button>
     </div>
   </div>
 </div>
@@ -5909,10 +5914,16 @@ function renderUnitsList(level) {
       if (unmastered.length > 0) {
         const targetBtn = document.createElement('button');
         targetBtn.className = 'unit-target-btn';
-        targetBtn.innerHTML = `🎯 练习 ${unmastered.length} 个未掌握`;
+        // Determine the right mode: skip to cloze if all flashcards done
+        const needFC    = unmastered.filter(w => !progress[w]?.fcKnown);
+        const needCloze = unmastered.filter(w => progress[w]?.fcKnown && !progress[w]?.clozeOk);
+        const smartMode = needFC.length === 0 && needCloze.length > 0 ? 'cloze' : 'flashcard';
+        targetBtn.innerHTML = `🎯 练习 ${unmastered.length} 个未掌握词语`;
         targetBtn.onclick = (e) => {
           e.stopPropagation();
-          startStudy(level, key, unmastered, true);
+          const wordsToStudy = smartMode === 'cloze' ? needCloze : unmastered;
+          currentMode = smartMode;
+          startStudy(level, key, wordsToStudy, true);
         };
         grp.appendChild(btn);
         grp.appendChild(targetBtn);
@@ -7260,6 +7271,40 @@ function showProfileModal() {
 
 function closeProfileModal() {
   document.getElementById('profile-modal').classList.remove('show');
+}
+
+// ── DELETE ACCOUNT ────────────────────────────────────────────
+async function deleteAccount() {
+  if (!confirm('确定要删除账号吗？\n\n你的所有学习进度和分数将永久消失，无法恢复。')) return;
+  const user = window._fbAuth?.currentUser;
+  if (!user) { showToast('未登录，无法删除账号'); return; }
+  try {
+    const { deleteUser: _del, doc: _d, deleteDoc: _dd } = window._fbFns;
+    // Delete Firestore documents
+    try {
+      const { doc, deleteDoc } = window._fbFns;
+      await deleteDoc(doc(window._fbDb, 'users', user.uid));
+      await deleteDoc(doc(window._fbDb, 'scores', user.uid));
+    } catch(_) {}
+    // Clear local storage
+    try {
+      ['cl_vocab_progress_v2','cl_vocab_user_email','cl_vocab_user_type',
+       'cl_vocab_user_nickname','cl_vocab_nickname_approved'].forEach(k => {
+        localStorage.removeItem(k);
+        sessionStorage.removeItem(k);
+      });
+    } catch(_) {}
+    // Delete Firebase Auth account
+    await window._fbFns.deleteUser(user);
+    showToast('账号已删除。');
+    showScreen('welcome-screen');
+  } catch(e) {
+    if (e.code === 'auth/requires-recent-login') {
+      showToast('请先退出登录后重新登录，再删除账号。');
+    } else {
+      showToast('删除失败：' + (e.message || '请稍后再试'));
+    }
+  }
 }
 
 // Legacy stub — profile no longer editable via this modal
