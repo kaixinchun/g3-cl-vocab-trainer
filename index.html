@@ -477,6 +477,22 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   .auth-tab-active {
     background:var(--hero-green); color:white; border-color:var(--hero-green);
   }
+  /* ── SCHOOL SEARCH DROPDOWN ── */
+  .school-search-wrap { position:relative; }
+  .school-dropdown {
+    display:none; position:absolute; top:100%; left:0; right:0; z-index:200;
+    background:white; border:1.5px solid var(--paper-3); border-top:none;
+    border-radius:0 0 var(--r-sm) var(--r-sm);
+    max-height:180px; overflow-y:auto;
+    box-shadow:var(--shadow-md);
+  }
+  .school-dropdown.open { display:block; }
+  .school-dropdown-item {
+    padding:.55rem .9rem; font-size:.82rem; font-family:var(--font-body);
+    cursor:pointer; border-bottom:1px solid var(--paper-2); line-height:1.35;
+  }
+  .school-dropdown-item:hover, .school-dropdown-item.active { background:var(--green-soft); }
+  .school-dropdown-item .school-en { font-size:.7rem; color:var(--ink-mute); font-family:var(--font-ui); }
   .welcome-btn {
     width: 100%;
     padding: .9rem;
@@ -584,9 +600,13 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   .user-signout:hover { background: rgba(255,255,255,.7); }
   /* per-identity badge colours */
   .user-type-badge { font-size: .72rem; border-radius: 10px; padding: .15rem .65rem; font-family: sans-serif; font-weight: 600; border: 1px solid; }
-  .user-type-badge.badge-教师    { background:#1a2a5e; color:white; border-color:#1a2a5e; }
+  .user-type-badge.badge-华文教师    { background:#1a2a5e; color:white; border-color:#1a2a5e; }
+  .user-type-badge.badge-其他科目教师 { background:#2c5282; color:white; border-color:#2c5282; }
+  .user-type-badge.badge-其他机构    { background:#553c9a; color:white; border-color:#553c9a; }
   .user-type-badge.badge-百德中学学生 { background:#2D6A4F; color:white; border-color:#2D6A4F; }
   .user-type-badge.badge-其他学校学生 { background:#6CBFA0; color:#0a3d2e; border-color:#6CBFA0; }
+  /* Legacy badges for existing users */
+  .user-type-badge.badge-教师    { background:#1a2a5e; color:white; border-color:#1a2a5e; }
   .user-type-badge.badge-家长    { background:#7B4F00; color:white; border-color:#7B4F00; }
   .user-type-badge.badge-公众人士 { background:#555; color:white; border-color:#555; }
 
@@ -1071,6 +1091,13 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   const db   = getFirestore(app);
 
   // ── Expose to global scope for non-module JS ──────────────
+  // NOTE: Update Firestore rules to allow dashboard user read-all:
+  // match /users/{uid} {
+  //   allow read: if request.auth != null &&
+  //     (request.auth.uid == uid ||
+  //      request.auth.token.email == 'kai_xin_chun@moe.edu.sg');
+  //   allow write: if request.auth != null && request.auth.uid == uid;
+  // }
   window._fbAuth = auth;
   window._fbDb   = db;
   window._fbFns  = {
@@ -1131,28 +1158,56 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       </div>
       <div id="ws-register-desktop" style="display:none;">
         <div class="ws-heading" style="margin-bottom:.3rem;">注册新账号</div>
-        <div class="ws-sub2">首次使用？填写以下资料创建账号。</div>
-        <label class="welcome-label">电邮地址</label>
-        <input class="welcome-input" id="reg-email-desktop" type="email" placeholder="e.g. name@students.edu.sg"
-          autocomplete="email" autocapitalize="none">
-        <label class="welcome-label" style="margin-top:.2rem">密码（至少6位）</label>
+        <div class="ws-sub2">请使用MOE iCON电邮地址注册。</div>
+        <label class="welcome-label">MOE iCON 电邮地址</label>
+        <input class="welcome-input" id="reg-email-desktop" type="email"
+          placeholder="@students.edu.sg 或 @moe.edu.sg"
+          autocomplete="email" autocapitalize="none"
+          oninput="onRegEmailInput('desktop')">
+        <div id="reg-domain-hint-desktop" style="font-size:.72rem;font-family:var(--font-ui);color:var(--ink-mute);margin:.15rem 0 .3rem;min-height:1.1em;"></div>
+        <label class="welcome-label">密码（至少6位）</label>
         <input class="welcome-input" id="reg-pw-desktop" type="password" placeholder="设置密码（至少6位）"
           autocomplete="new-password">
-        <label class="welcome-label" style="margin-top:.2rem">昵称（待老师审核后显示）</label>
-        <input class="welcome-input" id="reg-nickname-desktop" type="text" placeholder="例：小明同学" maxlength="20"
-          onkeydown="if(event.key==='Enter') submitRegister('desktop')">
-        <label class="welcome-label" style="margin-top:.2rem">你的身份</label>
-        <select class="welcome-select" id="welcome-usertype-desktop">
-          <option value="">── 请选择 ──</option>
-          <option value="百德中学学生">百德中学学生 (Bukit View Sec Student)</option>
-          <option value="其他学校学生">其他学校学生 (Student from Another School)</option>
-          <option value="家长">家长 (Parent)</option>
-          <option value="教师">教师 (Teacher)</option>
-          <option value="公众人士">公众人士 (General Public)</option>
-        </select>
+        <label class="welcome-label" style="margin-top:.2rem">昵称 <span style="font-size:.7rem;color:var(--ink-mute);">（2–8个汉字，可加数字，待老师审核）</span></label>
+        <input class="welcome-input" id="reg-nickname-desktop" type="text" placeholder="例：词星88" maxlength="8"
+          oninput="onNicknameInput(this)" onkeydown="if(event.key==='Enter') submitRegister('desktop')">
+        <!-- Student fields (shown for @students.edu.sg) -->
+        <div id="reg-student-fields-desktop" style="display:none;">
+          <label class="welcome-label" style="margin-top:.2rem">你的学校</label>
+          <div class="school-search-wrap">
+            <input class="welcome-input school-search-input" id="reg-school-search-desktop"
+              type="text" placeholder="输入学校名称搜索…" autocomplete="off"
+              oninput="filterSchools('desktop')" onfocus="showSchoolDropdown('desktop')" onblur="hideSchoolDropdown('desktop')">
+            <div class="school-dropdown" id="reg-school-dropdown-desktop"></div>
+            <input type="hidden" id="reg-school-desktop">
+          </div>
+        </div>
+        <!-- Teacher fields (shown for @moe.edu.sg) -->
+        <div id="reg-teacher-fields-desktop" style="display:none;">
+          <label class="welcome-label" style="margin-top:.2rem">你的学校 / 机构</label>
+          <div class="school-search-wrap">
+            <input class="welcome-input school-search-input" id="reg-tschool-search-desktop"
+              type="text" placeholder="输入学校或机构名称搜索…" autocomplete="off"
+              oninput="filterSchools('desktop','teacher')" onfocus="showSchoolDropdown('desktop','teacher')" onblur="hideSchoolDropdown('desktop','teacher')">
+            <div class="school-dropdown" id="reg-tschool-dropdown-desktop"></div>
+            <input type="hidden" id="reg-tschool-desktop">
+          </div>
+          <label class="welcome-label" style="margin-top:.2rem">科目</label>
+          <select class="welcome-select" id="reg-tsubject-desktop">
+            <option value="">── 请选择 ──</option>
+            <option value="华文教师">华文教师 (Chinese Language Teacher)</option>
+            <option value="其他科目教师">其他科目教师 (Other Subject Teacher)</option>
+          </select>
+        </div>
+        <!-- Other domain fields -->
+        <div id="reg-other-fields-desktop" style="display:none;">
+          <label class="welcome-label" style="margin-top:.2rem">你的机构</label>
+          <input class="welcome-input" id="reg-org-desktop" type="text" placeholder="例：NIE、SCCL、南洋理工大学">
+          <div style="font-size:.72rem;color:var(--amber);font-family:var(--font-ui);margin-top:.2rem;">你的账号将待审核后方可使用。</div>
+        </div>
         <div class="welcome-error" id="welcome-reg-error-desktop"></div>
         <button class="welcome-btn" onclick="submitRegister('desktop')">注册并开始学习 →</button>
-        <div class="welcome-note" style="margin-top:.5rem">昵称须经老师审核后才会正式显示。</div>
+        <div class="welcome-note" style="margin-top:.5rem">昵称须经老师审核后才会正式显示。仅限MOE iCON电邮注册。</div>
       </div>
     </div>
   </div>
@@ -1183,27 +1238,55 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     </div>
     <!-- REGISTER panel -->
     <div id="ws-register-mobile" style="display:none;">
-      <label class="welcome-label">电邮地址</label>
-      <input class="welcome-input" id="reg-email" type="email" placeholder="e.g. name@students.edu.sg"
-        autocomplete="email" autocapitalize="none">
-      <label class="welcome-label" style="margin-top:.2rem">密码（至少6位）</label>
+      <label class="welcome-label">MOE iCON 电邮地址</label>
+      <input class="welcome-input" id="reg-email" type="email"
+        placeholder="@students.edu.sg 或 @moe.edu.sg"
+        autocomplete="email" autocapitalize="none"
+        oninput="onRegEmailInput('mobile')">
+      <div id="reg-domain-hint-mobile" style="font-size:.72rem;font-family:var(--font-ui);color:var(--ink-mute);margin:.15rem 0 .3rem;min-height:1.1em;"></div>
+      <label class="welcome-label">密码（至少6位）</label>
       <input class="welcome-input" id="reg-pw" type="password" placeholder="设置密码（至少6位）"
         autocomplete="new-password">
-      <label class="welcome-label" style="margin-top:.2rem">昵称（待老师审核后显示）</label>
-      <input class="welcome-input" id="reg-nickname" type="text" placeholder="例：小明同学" maxlength="20"
-        onkeydown="if(event.key==='Enter') submitRegister('mobile')">
-      <label class="welcome-label" style="margin-top:.2rem">你的身份</label>
-      <select class="welcome-select" id="welcome-usertype">
-        <option value="">── 请选择 ──</option>
-        <option value="百德中学学生">百德中学学生 (Bukit View Sec Student)</option>
-        <option value="其他学校学生">其他学校学生 (Student from Another School)</option>
-        <option value="家长">家长 (Parent)</option>
-        <option value="教师">教师 (Teacher)</option>
-        <option value="公众人士">公众人士 (General Public)</option>
-      </select>
+      <label class="welcome-label" style="margin-top:.2rem">昵称 <span style="font-size:.7rem;color:var(--ink-mute);">（2–8个汉字，可加数字）</span></label>
+      <input class="welcome-input" id="reg-nickname" type="text" placeholder="例：词星88" maxlength="8"
+        oninput="onNicknameInput(this)" onkeydown="if(event.key==='Enter') submitRegister('mobile')">
+      <!-- Student fields -->
+      <div id="reg-student-fields-mobile" style="display:none;">
+        <label class="welcome-label" style="margin-top:.2rem">你的学校</label>
+        <div class="school-search-wrap">
+          <input class="welcome-input school-search-input" id="reg-school-search-mobile"
+            type="text" placeholder="输入学校名称搜索…" autocomplete="off"
+            oninput="filterSchools('mobile')" onfocus="showSchoolDropdown('mobile')" onblur="hideSchoolDropdown('mobile')">
+          <div class="school-dropdown" id="reg-school-dropdown-mobile"></div>
+          <input type="hidden" id="reg-school-mobile">
+        </div>
+      </div>
+      <!-- Teacher fields -->
+      <div id="reg-teacher-fields-mobile" style="display:none;">
+        <label class="welcome-label" style="margin-top:.2rem">你的学校 / 机构</label>
+        <div class="school-search-wrap">
+          <input class="welcome-input school-search-input" id="reg-tschool-search-mobile"
+            type="text" placeholder="输入学校或机构名称搜索…" autocomplete="off"
+            oninput="filterSchools('mobile','teacher')" onfocus="showSchoolDropdown('mobile','teacher')" onblur="hideSchoolDropdown('mobile','teacher')">
+          <div class="school-dropdown" id="reg-tschool-dropdown-mobile"></div>
+          <input type="hidden" id="reg-tschool-mobile">
+        </div>
+        <label class="welcome-label" style="margin-top:.2rem">科目</label>
+        <select class="welcome-select" id="reg-tsubject-mobile">
+          <option value="">── 请选择 ──</option>
+          <option value="华文教师">华文教师 (Chinese Language Teacher)</option>
+          <option value="其他科目教师">其他科目教师 (Other Subject Teacher)</option>
+        </select>
+      </div>
+      <!-- Other domain fields -->
+      <div id="reg-other-fields-mobile" style="display:none;">
+        <label class="welcome-label" style="margin-top:.2rem">你的机构</label>
+        <input class="welcome-input" id="reg-org-mobile" type="text" placeholder="例：NIE、SCCL、南洋理工大学">
+        <div style="font-size:.72rem;color:var(--amber);font-family:var(--font-ui);margin-top:.2rem;">你的账号将待审核后方可使用。</div>
+      </div>
       <div class="welcome-error" id="welcome-reg-error"></div>
       <button class="welcome-btn" onclick="submitRegister('mobile')">注册并开始学习 →</button>
-      <div class="welcome-note">昵称须经老师审核后才会正式显示。</div>
+      <div class="welcome-note">昵称须经老师审核后才会正式显示。仅限MOE iCON电邮注册。</div>
     </div>
     <div class="welcome-credit-school">
       百德中学 · Bukit View Secondary School
@@ -1285,9 +1368,8 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     <button onclick="showScreen('achievements-screen');updateAchievementsScreen()" style="flex:2;padding:.75rem;background:rgba(245,200,0,.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#7B5A00;border:1px solid rgba(255,255,255,.5);border-radius:var(--r-sm);font-size:.92rem;font-family:var(--font-body);font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;">🏅 我的成就</button>
     <button onclick="showScreen('guide-screen');renderGuide()" style="flex:1;padding:.75rem;background:rgba(255,255,255,.45);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:var(--blue);border:1px solid rgba(255,255,255,.6);border-radius:var(--r-sm);font-size:.88rem;font-family:var(--font-body);cursor:pointer;">🧭 使用指南</button>
   </div>
-  <div class="save-restore-row">
-    <button class="save-btn" onclick="showSaveModal()">💾 保存进度</button>
-    <button class="restore-btn" onclick="showRestoreModal()">🔄 恢复进度</button>
+  <div class="save-restore-row" id="dashboard-btn-row" style="display:none;">
+    <button class="save-btn" onclick="showDashboard()" style="background:rgba(26,42,94,.75);color:white;border-color:rgba(26,42,94,.4);">📋 教师管理面板</button>
   </div>
 
   <button class="weak-btn" id="weak-words-btn" onclick="startWeakWords()" style="display:none">
@@ -1519,19 +1601,10 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 <!-- PROFILE EDIT MODAL -->
 <div class="modal-overlay" id="profile-modal">
   <div class="modal">
-    <div class="modal-title">✏️ 修改身份</div>
-    <div class="modal-sub">请重新选择你的身份类型。</div>
-    <select class="welcome-select" id="profile-usertype" style="background:var(--paper-2);border-color:var(--paper-3);color:var(--ink);margin-bottom:.8rem;">
-      <option value="">── 请选择 ──</option>
-      <option value="百德中学学生">百德中学学生 (Bukit View Sec Student)</option>
-      <option value="其他学校学生">其他学校学生 (Student from Another School)</option>
-      <option value="家长">家长 (Parent)</option>
-      <option value="教师">教师 (Teacher)</option>
-      <option value="公众人士">公众人士 (General Public)</option>
-    </select>
+    <div class="modal-title">✏️ 个人资料</div>
+    <div class="modal-sub" id="profile-info-display" style="font-size:.82rem;color:var(--ink-mute);font-family:var(--font-ui);margin-bottom:.8rem;line-height:1.6;"></div>
     <div class="modal-actions">
-      <button class="modal-btn modal-btn-primary" onclick="saveProfileEdit()">保存</button>
-      <button class="modal-btn modal-btn-secondary" onclick="closeProfileModal()">取消</button>
+      <button class="modal-btn modal-btn-secondary" onclick="closeProfileModal()">关闭</button>
     </div>
     <div id="teacher-badge-reset" style="display:none;text-align:center;padding:.5rem 0 .2rem;border-top:1px solid #f0ede5;margin-top:.5rem;">
       <button onclick="resetBadges()" style="background:none;border:none;font-size:.68rem;color:#bbb;cursor:pointer;font-family:var(--font-ui);text-decoration:underline;">🔧 重置成就徽章（测试用）</button>
@@ -6333,7 +6406,7 @@ const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyjzetUGrwPmGz4dbl
 const USER_KEY      = 'cl_vocab_user_email';
 const USER_TYPE_KEY = 'cl_vocab_user_type';
 
-const TEACHER_TYPES = ['教师'];
+const TEACHER_TYPES = ['华文教师', '其他科目教师', '其他机构'];
 const STUDENT_TYPES = ['百德中学学生', '其他学校学生'];
 
 function getUserType() {
@@ -6395,20 +6468,308 @@ async function submitLogin(panel) {
   }
 }
 
-// ── FIREBASE REGISTER ─────────────────────────────────────────
+// ── TEACHER WHITELIST ─────────────────────────────────────────
+const DASHBOARD_WHITELIST = ['kai_xin_chun@moe.edu.sg'];
+function isDashboardUser() { return DASHBOARD_WHITELIST.includes(getUserEmail()); }
+
+// ── SCHOOL LIST ───────────────────────────────────────────────
+const SCHOOL_LIST = [
+  // West zone schools first (BVSS at top for student dropdown)
+  {en:'Bukit View Secondary School',zh:'百德中学'},
+  {en:'Boon Lay Secondary School',zh:'文礼中学'},
+  {en:'Bukit Batok Secondary School',zh:'武吉巴督中学'},
+  {en:'Chua Chu Kang Secondary School',zh:'蔡厝港中学'},
+  {en:'Clementi Town Secondary School',zh:'锦文中学'},
+  {en:'Dunearn Secondary School',zh:'德能中学'},
+  {en:'Fuhua Secondary School',zh:'辅华中学'},
+  {en:'Hillgrove Secondary School',zh:'育林中学'},
+  {en:'Jurong Secondary School',zh:'裕廊中学'},
+  {en:'Jurong West Secondary School',zh:'裕廊西中学'},
+  {en:'Kent Ridge Secondary School',zh:'岗丽中学'},
+  {en:'Nan Hua High School',zh:'南华中学'},
+  {en:'New Town Secondary School',zh:'光伟中学'},
+  {en:'Pei Hwa Secondary School',zh:'培华中学'},
+  {en:'West Spring Secondary School',zh:'伟源中学'},
+  {en:'Westwood Secondary School',zh:'维林中学'},
+  {en:'Yuan Ching Secondary School',zh:'耘青中学'},
+  {en:'Yuhua Secondary School',zh:'裕华中学'},
+  {en:'Zhenghua Secondary School',zh:'正华中学'},
+  {en:'School of Science and Technology',zh:'新加坡科技中学'},
+  // All other MOE secondary schools
+  {en:'Admiralty Secondary School',zh:'美雅中学'},
+  {en:'Ahmad Ibrahim Secondary School',zh:'伊布拉欣中学'},
+  {en:'Anderson Secondary School',zh:'安德逊中学'},
+  {en:'Anglican High School',zh:'圣公会中学'},
+  {en:'Anglo-Chinese School (Barker Road)',zh:'英华学校（芭克路）'},
+  {en:'Anglo-Chinese School (Independent)',zh:'英华学校（自主）'},
+  {en:'Ang Mo Kio Secondary School',zh:'宏茂桥中学'},
+  {en:'Assumption English School',zh:'圣升英校'},
+  {en:'Bartley Secondary School',zh:'巴特利中学'},
+  {en:'Beatty Secondary School',zh:'培德中学'},
+  {en:'Bedok Green Secondary School',zh:'育青中学'},
+  {en:'Bedok South Secondary School',zh:'勿洛南中学'},
+  {en:'Bedok View Secondary School',zh:'务德中学'},
+  {en:'Bendemeer Secondary School',zh:'明智中学'},
+  {en:'Bowen Secondary School',zh:'博文中学'},
+  {en:'Broadrick Secondary School',zh:'务立中学'},
+  {en:'Bukit Merah Secondary School',zh:'红山中学'},
+  {en:'Bukit Panjang Government High School',zh:'武吉班让政府中学'},
+  {en:'Canberra Secondary School',zh:'康培中学'},
+  {en:'Catholic High School',zh:'公教中学'},
+  {en:'Cedar Girls\' Secondary School',zh:'四德女中'},
+  {en:'Changkat Changi Secondary School',zh:'尚育中学'},
+  {en:'CHIJ Katong Convent (Secondary)',zh:'加东修道院女校'},
+  {en:'CHIJ Secondary (Toa Payoh)',zh:'圣婴女子中学（大巴窑）'},
+  {en:'CHIJ St. Joseph\'s Convent',zh:'圣婴女校'},
+  {en:'CHIJ St. Nicholas Girls\' School',zh:'圣尼各拉女校'},
+  {en:'CHIJ St. Theresa\'s Convent',zh:'圣婴德兰女校'},
+  {en:'Christ Church Secondary School',zh:'基督堂中学'},
+  {en:'Chung Cheng High School (Main)',zh:'中正中学（总校）'},
+  {en:'Chung Cheng High School (Yishun)',zh:'中正中学（义顺）'},
+  {en:'Commonwealth Secondary School',zh:'立才中学'},
+  {en:'Compassvale Secondary School',zh:'康柏中学'},
+  {en:'Crescent Girls\' School',zh:'克信女子中学'},
+  {en:'Damai Secondary School',zh:'达迈中学'},
+  {en:'Deyi Secondary School',zh:'德义中学'},
+  {en:'Dunman High School',zh:'德明政府中学'},
+  {en:'Dunman Secondary School',zh:'德明中学'},
+  {en:'East Spring Secondary School',zh:'东源中学'},
+  {en:'Edgefield Secondary School',zh:'育德中学'},
+  {en:'Evergreen Secondary School',zh:'长荣中学'},
+  {en:'Fairfield Methodist Secondary School',zh:'花菲卫理中学'},
+  {en:'Fuchun Secondary School',zh:'福春中学'},
+  {en:'Gan Eng Seng School',zh:'颜永成学校'},
+  {en:'Geylang Methodist School (Secondary)',zh:'芽笼美以美中学'},
+  {en:'Greendale Secondary School',zh:'绿苑中学'},
+  {en:'Greenridge Secondary School',zh:'群立中学'},
+  {en:'Guangyang Secondary School',zh:'光洋中学'},
+  {en:'Hai Sing Catholic School',zh:'海星天主教中学'},
+  {en:'Holy Innocents\' High School',zh:'圣婴中学'},
+  {en:'Hougang Secondary School',zh:'后港中学'},
+  {en:'Hua Yi Secondary School',zh:'华义中学'},
+  {en:'Hwa Chong Institution',zh:'华侨中学'},
+  {en:'Junyuan Secondary School',zh:'俊源中学'},
+  {en:'Jurongville Secondary School',zh:'裕廊景中学'},
+  {en:'Juying Secondary School',zh:'聚英中学'},
+  {en:'Kranji Secondary School',zh:'科兰芝中学'},
+  {en:'Kuo Chuan Presbyterian Secondary School',zh:'国专长老会中学'},
+  {en:'Loyang View Secondary School',zh:'洛阳景中学'},
+  {en:'Manjusri Secondary School',zh:'文殊中学'},
+  {en:'Maris Stella High School',zh:'新加坡海星中学'},
+  {en:'Marsiling Secondary School',zh:'士林中学'},
+  {en:'Mayflower Secondary School',zh:'美华中学'},
+  {en:'Meridian Secondary School',zh:'美廉中学'},
+  {en:'Methodist Girls\' School (Secondary)',zh:'循道卫理女子中学'},
+  {en:'Montfort Secondary School',zh:'蒙福中学'},
+  {en:'Nan Chiau High School',zh:'南侨中学'},
+  {en:'Nanyang Girls\' High School',zh:'南洋女子中学'},
+  {en:'National Junior College',zh:'国家初级学院'},
+  {en:'Naval Base Secondary School',zh:'军港中学'},
+  {en:'Ngee Ann Secondary School',zh:'义安中学'},
+  {en:'North Vista Secondary School',zh:'德新中学'},
+  {en:'Northbrooks Secondary School',zh:'思源中学'},
+  {en:'Northland Secondary School',zh:'德景中学'},
+  {en:'NUS High School of Mathematics and Science',zh:'国大附属数理中学'},
+  {en:'Orchid Park Secondary School',zh:'兰景中学'},
+  {en:'Outram Secondary School',zh:'欧南中学'},
+  {en:'Pasir Ris Crest Secondary School',zh:'励志中学'},
+  {en:'Pasir Ris Secondary School',zh:'思励中学'},
+  {en:'Paya Lebar Methodist Girls\' School (Secondary)',zh:'巴耶利峇美以美女子中学'},
+  {en:'Peicai Secondary School',zh:'培才中学'},
+  {en:'Peirce Secondary School',zh:'培雅中学'},
+  {en:'Presbyterian High School',zh:'长老会中学'},
+  {en:'Punggol Secondary School',zh:'培道中学'},
+  {en:'Queenstown Secondary School',zh:'女皇镇中学'},
+  {en:'Queensway Secondary School',zh:'女皇道中学'},
+  {en:'Raffles Girls\' School (Secondary)',zh:'莱佛士女中'},
+  {en:'Raffles Institution',zh:'莱佛士书院'},
+  {en:'Regent Secondary School',zh:'励正中学'},
+  {en:'Riverside Secondary School',zh:'立德中学'},
+  {en:'River Valley High School',zh:'立化中学'},
+  {en:'Sembawang Secondary School',zh:'胜宝旺中学'},
+  {en:'Sengkang Secondary School',zh:'盛港中学'},
+  {en:'Serangoon Garden Secondary School',zh:'实勤中学'},
+  {en:'Serangoon Secondary School',zh:'实仁中学'},
+  {en:'Singapore Chinese Girls\' School',zh:'新加坡女子中学'},
+  {en:'Springfield Secondary School',zh:'泉原中学'},
+  {en:'St. Andrew\'s Secondary School',zh:'圣安德烈中学'},
+  {en:'St. Anthony\'s Canossian Secondary School',zh:'圣安东尼女校'},
+  {en:'St. Gabriel\'s Secondary School',zh:'圣加俾尔中学'},
+  {en:'St. Hilda\'s Secondary School',zh:'圣希尔达中学'},
+  {en:'St. Joseph\'s Institution',zh:'圣若瑟书院'},
+  {en:'St. Margaret\'s Secondary School',zh:'圣玛格烈中学'},
+  {en:'St. Patrick\'s School',zh:'圣伯特理中学'},
+  {en:'Swiss Cottage Secondary School',zh:'瑞士村中学'},
+  {en:'Tampines Secondary School',zh:'淡滨尼中学'},
+  {en:'Tanglin Secondary School',zh:'东林中学'},
+  {en:'Tanjong Katong Girls\' School',zh:'丹绒加东女校'},
+  {en:'Tanjong Katong Secondary School',zh:'丹绒加东中学'},
+  {en:'Temasek Secondary School',zh:'淡马锡中学'},
+  {en:'Unity Secondary School',zh:'联合中学'},
+  {en:'Victoria School',zh:'维多利亚中学'},
+  {en:'Whitley Secondary School',zh:'惠厉中学'},
+  {en:'Woodgrove Secondary School',zh:'林景中学'},
+  {en:'Woodlands Ring Secondary School',zh:'辅廉中学'},
+  {en:'Woodlands Secondary School',zh:'兀兰中学'},
+  {en:'Xinmin Secondary School',zh:'新民中学'},
+  {en:'Yio Chu Kang Secondary School',zh:'杨厝港中学'},
+  {en:'Yishun Secondary School',zh:'义顺中学'},
+  {en:'Yishun Town Secondary School',zh:'义顺镇中学'},
+  {en:'Yusof Ishak Secondary School',zh:'尤素夫依萨中学'},
+  {en:'Yuying Secondary School',zh:'育英中学'},
+  {en:'Zhonghua Secondary School',zh:'中华中学'},
+  // Non-school MOE organisations for teacher dropdown
+  {en:'MOE HQ / ETD / DXD / CLD',zh:'教育部总部'},
+  {en:'NIE - National Institute of Education',zh:'国立教育学院'},
+  {en:'SCCL - Singapore Centre for Chinese Language',zh:'新加坡华文教研中心'},
+  {en:'CPCLL - Committee to Promote Chinese Language Learning',zh:'推广华文学习委员会'},
+  {en:'NTU - Nanyang Technological University',zh:'南洋理工大学'},
+  {en:'NUS - National University of Singapore',zh:'新加坡国立大学'},
+  {en:'SUSS - Singapore University of Social Sciences',zh:'新加坡社科大学'},
+];
+
+// Student dropdown: BVSS only (can expand later)
+const STUDENT_SCHOOLS = [SCHOOL_LIST[0]]; // Bukit View only
+
+// ── EMAIL DOMAIN DETECTION ────────────────────────────────────
+function getEmailDomain(email) {
+  const parts = (email || '').split('@');
+  return parts.length === 2 ? parts[1].toLowerCase() : '';
+}
+function classifyEmail(email) {
+  const domain = getEmailDomain(email);
+  if (domain === 'students.edu.sg') return 'student';
+  if (domain === 'moe.edu.sg') return 'teacher';
+  if (domain) return 'other';
+  return '';
+}
+
+function onRegEmailInput(panel) {
+  const suffix = panel === 'desktop' ? '-desktop' : '';
+  const email = (document.getElementById('reg-email' + suffix)?.value || '').toLowerCase();
+  const cls = classifyEmail(email);
+  const hint = document.getElementById('reg-domain-hint-' + panel);
+  const studentEl = document.getElementById('reg-student-fields-' + panel);
+  const teacherEl = document.getElementById('reg-teacher-fields-' + panel);
+  const otherEl   = document.getElementById('reg-other-fields-' + panel);
+  if (hint) {
+    if (cls === 'student') { hint.textContent = '✅ 学生账号'; hint.style.color = 'var(--green)'; }
+    else if (cls === 'teacher') { hint.textContent = '✅ 教师账号'; hint.style.color = 'var(--hero-blue)'; }
+    else if (cls === 'other' && email.includes('@')) { hint.textContent = '⚠️ 非MOE iCON电邮，账号须待审核'; hint.style.color = 'var(--amber)'; }
+    else { hint.textContent = ''; }
+  }
+  if (studentEl) studentEl.style.display = cls === 'student' ? '' : 'none';
+  if (teacherEl) teacherEl.style.display = cls === 'teacher' ? '' : 'none';
+  if (otherEl)   otherEl.style.display   = cls === 'other' && email.includes('@') ? '' : 'none';
+}
+
+// ── NICKNAME VALIDATION ───────────────────────────────────────
+function onNicknameInput(input) {
+  // Remove any character that's not Chinese or digit
+  input.value = input.value.replace(/[^\u4e00-\u9fa5\d]/g, '');
+}
+function validateNickname(nn) {
+  if (!nn) return '请输入昵称';
+  if (nn.length < 2) return '昵称至少需要2个字符';
+  if (nn.length > 8) return '昵称不能超过8个字符';
+  if (!/[\u4e00-\u9fa5]/.test(nn)) return '昵称必须包含至少一个汉字';
+  if (/[^\u4e00-\u9fa5\d]/.test(nn)) return '昵称只能包含汉字和数字';
+  return null;
+}
+
+// ── SCHOOL SEARCH DROPDOWN ────────────────────────────────────
+let _schoolBlurTimer = {};
+function filterSchools(panel, type) {
+  const isTeacherType = type === 'teacher';
+  const searchId = isTeacherType ? 'reg-tschool-search-' + panel : 'reg-school-search-' + panel;
+  const dropId   = isTeacherType ? 'reg-tschool-dropdown-' + panel : 'reg-school-dropdown-' + panel;
+  const query = (document.getElementById(searchId)?.value || '').toLowerCase();
+  const list = isTeacherType ? SCHOOL_LIST : STUDENT_SCHOOLS;
+  const filtered = query
+    ? list.filter(s => s.en.toLowerCase().includes(query) || s.zh.includes(query))
+    : list;
+  renderSchoolDropdown(dropId, filtered, panel, isTeacherType);
+}
+function renderSchoolDropdown(dropId, items, panel, isTeacherType) {
+  const drop = document.getElementById(dropId);
+  if (!drop) return;
+  drop.innerHTML = '';
+  if (!items.length) {
+    drop.innerHTML = '<div class="school-dropdown-item" style="color:var(--ink-mute);">无匹配结果</div>';
+  } else {
+    items.slice(0, 30).forEach(s => {
+      const div = document.createElement('div');
+      div.className = 'school-dropdown-item';
+      div.innerHTML = s.zh + '<div class="school-en">' + s.en + '</div>';
+      div.onmousedown = () => selectSchool(s, panel, isTeacherType);
+      drop.appendChild(div);
+    });
+  }
+  drop.classList.add('open');
+}
+function selectSchool(school, panel, isTeacherType) {
+  const searchId = isTeacherType ? 'reg-tschool-search-' + panel : 'reg-school-search-' + panel;
+  const hiddenId = isTeacherType ? 'reg-tschool-' + panel : 'reg-school-' + panel;
+  const dropId   = isTeacherType ? 'reg-tschool-dropdown-' + panel : 'reg-school-dropdown-' + panel;
+  const searchEl = document.getElementById(searchId);
+  const hiddenEl = document.getElementById(hiddenId);
+  const drop     = document.getElementById(dropId);
+  if (searchEl) searchEl.value = school.zh + ' ' + school.en;
+  if (hiddenEl) hiddenEl.value = school.zh;
+  if (drop) drop.classList.remove('open');
+}
+function showSchoolDropdown(panel, type) {
+  clearTimeout(_schoolBlurTimer[panel + (type||'')]);
+  filterSchools(panel, type);
+}
+function hideSchoolDropdown(panel, type) {
+  _schoolBlurTimer[panel + (type||'')] = setTimeout(() => {
+    const isTeacherType = type === 'teacher';
+    const dropId = isTeacherType ? 'reg-tschool-dropdown-' + panel : 'reg-school-dropdown-' + panel;
+    const drop = document.getElementById(dropId);
+    if (drop) drop.classList.remove('open');
+  }, 200);
+}
+
+// ── FIREBASE REGISTER (new version) ──────────────────────────
 async function submitRegister(panel) {
   const suffix = panel === 'desktop' ? '-desktop' : '';
   const email    = (document.getElementById('reg-email' + suffix)?.value || '').trim().toLowerCase();
   const pw       = (document.getElementById('reg-pw' + suffix)?.value || '').trim();
   const nickname = (document.getElementById('reg-nickname' + suffix)?.value || '').trim();
-  const userType = (document.getElementById('welcome-usertype' + suffix)?.value || '').trim();
   const errId    = 'welcome-reg-error' + suffix;
+  const cls      = classifyEmail(email);
 
-  if (!email)    { showWelcomeError('请输入电邮地址', errId); return; }
+  // Email validation
+  if (!email) { showWelcomeError('请输入电邮地址', errId); return; }
   if (!email.includes('@')) { showWelcomeError('请输入有效的电邮地址', errId); return; }
-  if (pw.length < 6)        { showWelcomeError('密码至少需要6位', errId); return; }
-  if (!nickname) { showWelcomeError('请输入昵称', errId); return; }
-  if (!userType) { showWelcomeError('请选择你的身份', errId); return; }
+
+  // Nickname validation
+  const nickErr = validateNickname(nickname);
+  if (nickErr) { showWelcomeError(nickErr, errId); return; }
+
+  if (pw.length < 6) { showWelcomeError('密码至少需要6位', errId); return; }
+
+  // Build userType and school from domain
+  let userType = '', school = '', subject = '', org = '', needsApproval = false;
+
+  if (cls === 'student') {
+    school = document.getElementById('reg-school-' + panel)?.value || '';
+    if (!school) { showWelcomeError('请选择你的学校', errId); return; }
+    userType = school === '百德中学' ? '百德中学学生' : '其他学校学生';
+  } else if (cls === 'teacher') {
+    school  = document.getElementById('reg-tschool-' + panel)?.value || '';
+    subject = document.getElementById('reg-tsubject-' + suffix)?.value || '';
+    if (!school) { showWelcomeError('请选择你的学校或机构', errId); return; }
+    if (!subject) { showWelcomeError('请选择你的科目', errId); return; }
+    userType = subject;
+  } else {
+    // Other domain — require org, flag for approval
+    org = (document.getElementById('reg-org-' + panel)?.value || '').trim();
+    if (!org) { showWelcomeError('请输入你的机构', errId); return; }
+    userType = '其他机构';
+    needsApproval = true;
+  }
 
   const btn = document.querySelector(`#ws-register-${panel} .welcome-btn`);
   if (btn) { btn.disabled = true; btn.textContent = '注册中…'; }
@@ -6418,13 +6779,16 @@ async function submitRegister(panel) {
     const cred = await createUserWithEmailAndPassword(window._fbAuth, email, pw);
     const uid  = cred.user.uid;
 
-    // Create Firestore user doc
     await setDoc(doc(window._fbDb, 'users', uid), {
       email,
       nickname,
       nicknameApproved: false,
       nicknameRejected: false,
+      nicknameRejectionReason: '',
       userType,
+      school: school || org,
+      subject: subject || '',
+      accountApproved: !needsApproval,
       createdAt:  serverTimestamp(),
       lastSeen:   serverTimestamp(),
       progress:   {}
@@ -6458,13 +6822,14 @@ async function _onFirebaseLogin(user, fallback) {
   const userType = userDoc?.userType || fallback?.userType || '公众人士';
   const nickname = userDoc?.nickname || fallback?.nickname || '';
   const nicknameApproved = userDoc?.nicknameApproved || false;
+  const nicknameRejected = userDoc?.nicknameRejected || false;
+  const rejReason = userDoc?.nicknameRejectionReason || '';
 
   // Merge Firestore progress into local (Firestore wins if newer)
   if (userDoc?.progress && Object.keys(userDoc.progress).length > 0) {
     try {
       const local = JSON.parse(localStorage.getItem('cl_vocab_progress_v2') || '{}');
       const remote = userDoc.progress;
-      // Simple merge: take whichever lastSeen is more recent per word
       const merged = { ...local };
       Object.entries(remote).forEach(([w, rp]) => {
         const lp = local[w];
@@ -6478,6 +6843,13 @@ async function _onFirebaseLogin(user, fallback) {
   saveUserIdentity(email, userType, nickname, nicknameApproved);
   reportLogin(email, userType);
   launchApp(email, userType, nickname, nicknameApproved);
+
+  // Notify student if nickname was rejected
+  if (nicknameRejected && !nicknameApproved) {
+    setTimeout(() => {
+      showToast('⚠️ 昵称「' + nickname + '」已被拒绝：' + rejReason + '。请联系老师。');
+    }, 1500);
+  }
 }
 
 // ── FIREBASE ERROR MESSAGES ───────────────────────────────────
@@ -6553,6 +6925,10 @@ function launchApp(email, userType, nickname, nicknameApproved) {
     }
   }
 
+  // Show dashboard button only for whitelisted users
+  const dashRow = document.getElementById('dashboard-btn-row');
+  if (dashRow) dashRow.style.display = isDashboardUser() ? '' : 'none';
+
   setBadge(userType);
   updateFeedbackFab();
 
@@ -6593,31 +6969,28 @@ function getUserEmail() {
 // ── PROFILE EDIT ─────────────────────────────────────────────
 function showProfileModal() {
   const modal = document.getElementById('profile-modal');
-  const sel   = document.getElementById('profile-usertype');
-  if (sel) sel.value = getUserType();
+  const info  = document.getElementById('profile-info-display');
+  const email = getUserEmail();
+  const userType = getUserType();
+  const nickname = getUserNickname();
+  const approved = isNicknameApproved();
+  if (info) {
+    info.innerHTML =
+      '电邮：' + email + '<br>' +
+      '身份：' + (userType || '—') + '<br>' +
+      '昵称：' + (nickname ? (nickname + (approved ? ' ✅' : ' ⏳待审核')) : '未设置');
+  }
   if (modal) modal.classList.add('show');
   const resetRow = document.getElementById('teacher-badge-reset');
-  if (resetRow) resetRow.style.display = isTeacher() ? 'block' : 'none';
+  if (resetRow) resetRow.style.display = isDashboardUser() ? 'block' : 'none';
 }
 
 function closeProfileModal() {
   document.getElementById('profile-modal').classList.remove('show');
 }
 
-function saveProfileEdit() {
-  const sel      = document.getElementById('profile-usertype');
-  const userType = sel ? sel.value : '';
-  if (!userType) { showToast('请选择身份'); return; }
-  const email = getUserEmail();
-  saveUserIdentity(email, userType);
-  // Update badge + banner
-  const badge = document.getElementById('user-type-badge');
-  if (badge) badge.textContent = userType;
-  // Report the change to GAS
-  reportLogin(email, normaliseUserType(userType));
-  closeProfileModal();
-  showToast('✓ 身份已更新');
-}
+// Legacy stub — profile no longer editable via this modal
+function saveProfileEdit() { closeProfileModal(); }
 
 // ── CHECK LOGIN ON STARTUP ────────────────────────────────────
 async function checkLoginState() {
@@ -7557,26 +7930,10 @@ Complete a full level to earn a rank title:
     },
     {
       icon: '💾',
-      title: zh ? '如何保存进度' : 'Saving Your Progress',
+      title: zh ? '进度自动备份到云端' : 'Progress auto-backed up to cloud',
       body: zh
-        ? `你的学习进度会自动保存在当前设备上。
-
-换设备时：
-1. 在当前设备上，点击主页的「保存进度」，复制进度码。
-2. 在新设备上，打开同一网址，登录后点击「恢复进度」，粘贴进度码。
-
-最可靠的方式：每次使用同一个电邮地址，再配合进度码作备份。
-
-注意：清除浏览器数据或Safari历史记录会删除本地进度。建议定期保存进度码到备忘录。`
-        : `Your progress is automatically saved on your current device.
-
-Switching devices:
-1. On your current device, tap Save Progress on the home screen and copy the code.
-2. On the new device, open the same URL, log in, tap Restore Progress, and paste the code.
-
-Most reliable approach: always use the same email address, and keep a progress code as backup.
-
-Warning: Clearing browser data or Safari history will delete local progress. Save your code to Notes regularly.`
+        ? `登录后，你的学习进度会自动同步到云端。\n\n换设备时，只需用同一电邮和密码登录，进度即可自动恢复。\n\n无需手动保存进度码。`
+        : `Your progress is automatically synced to the cloud when you are logged in.\n\nSwitching devices? Just log in with the same email and password — your progress will be restored automatically.`
     },
     {
       icon: '📱',
@@ -8086,10 +8443,10 @@ function renderFirstGuide() {
     },
     {
       icon: '💾',
-      title: zh ? '保存进度很重要！' : 'Save your progress!',
+      title: zh ? '进度自动备份到云端' : 'Progress backed up to cloud',
       body: zh
-        ? `进度自动保存在本设备。换设备时：\n主页 → 保存进度 → 复制进度码\n新设备 → 恢复进度 → 粘贴进度码\n\n建议定期把进度码存入备忘录。`
-        : `Progress is auto-saved on this device. Switching devices:\nHome → Save Progress → copy code\nNew device → Restore Progress → paste code\n\nSave your code to Notes regularly.`
+        ? `登录后，你的进度会自动同步到云端。换设备时，用同一电邮和密码登录即可恢复。无需手动保存进度码。`
+        : `Your progress is automatically synced to the cloud. Switch devices by logging in with the same email and password.`
     },
     {
       icon: '📢',
@@ -8147,7 +8504,181 @@ document.addEventListener('DOMContentLoaded', () => {
   checkLoginState();
 });
 
-</script>
+// ══════════════════════════════════════════════════════════════
+// TEACHER DASHBOARD
+// ══════════════════════════════════════════════════════════════
+let _dashTab = 'nicknames';
+
+function showDashboard() {
+  if (!isDashboardUser()) return;
+  document.getElementById('dashboard-modal').classList.add('show');
+  loadDashboardTab('nicknames');
+}
+function closeDashboard() {
+  document.getElementById('dashboard-modal').classList.remove('show');
+}
+function switchDashTab(tab) {
+  _dashTab = tab;
+  const tabs = ['nicknames','students'];
+  tabs.forEach(t => {
+    const btn = document.getElementById('dash-tab-' + t);
+    if (!btn) return;
+    btn.style.background = t === tab ? 'var(--hero-green)' : 'var(--paper-2)';
+    btn.style.color = t === tab ? 'white' : 'var(--ink-mute)';
+  });
+  loadDashboardTab(tab);
+}
+async function loadDashboardTab(tab) {
+  const content = document.getElementById('dashboard-content');
+  if (!content) return;
+  content.innerHTML = '<div id="dash-loading" style="text-align:center;padding:2rem;color:var(--ink-mute);font-family:var(--font-ui);font-size:.85rem;">加载中…</div>';
+  try {
+    const { collection, getDocs } = window._fbFns;
+    const snap = await getDocs(collection(window._fbDb, 'users'));
+    const users = [];
+    snap.forEach(d => users.push({ id: d.id, ...d.data() }));
+    if (tab === 'nicknames') renderNicknameQueue(users, content);
+    else renderStudentProgress(users, content);
+  } catch(e) {
+    content.innerHTML = '<div style="padding:1.5rem;color:var(--red);font-family:var(--font-ui);font-size:.85rem;">加载失败：' + e.message + '</div>';
+  }
+}
+
+function renderNicknameQueue(users, container) {
+  const pending = users.filter(u => u.nickname && !u.nicknameApproved && !u.nicknameRejected);
+  const rejected = users.filter(u => u.nickname && u.nicknameRejected);
+  let html = '';
+
+  if (!pending.length && !rejected.length) {
+    html = '<div style="padding:1.5rem;text-align:center;color:var(--ink-mute);font-family:var(--font-ui);">✅ 暂无待审核昵称</div>';
+    container.innerHTML = html; return;
+  }
+
+  if (pending.length) {
+    html += '<div style="font-size:.7rem;font-family:var(--font-ui);color:var(--ink-mute);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem;">待审核 (' + pending.length + ')</div>';
+    pending.forEach(u => {
+      html += _nickCard(u, false);
+    });
+  }
+  if (rejected.length) {
+    html += '<div style="font-size:.7rem;font-family:var(--font-ui);color:var(--ink-mute);letter-spacing:.08em;text-transform:uppercase;margin:.8rem 0 .6rem;">已拒绝 (' + rejected.length + ')</div>';
+    rejected.forEach(u => html += _nickCard(u, true));
+  }
+  container.innerHTML = html;
+}
+
+function _nickCard(u, isRejected) {
+  const date = u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString('zh-SG') : '—';
+  const rejReasons = ['内容不当','名人姓名','无意义','冒充身份','重复昵称','其他'];
+  const reasonOpts = rejReasons.map(r => `<option value="${r}">${r}</option>`).join('');
+  return `<div id="nick-card-${u.id}" style="background:var(--paper-2);border:1px solid var(--paper-3);border-radius:var(--r-sm);padding:.8rem .9rem;margin-bottom:.6rem;">
+    <div style="display:flex;align-items:flex-start;gap:.6rem;">
+      <div style="flex:1;">
+        <div style="font-size:1rem;font-family:var(--font-body);font-weight:700;color:var(--ink);">👤 ${u.nickname || '—'}</div>
+        <div style="font-size:.72rem;font-family:var(--font-ui);color:var(--ink-mute);margin-top:.2rem;">${u.email}</div>
+        <div style="font-size:.72rem;font-family:var(--font-ui);color:var(--ink-mute);">${u.userType || ''}${u.school ? ' · ' + u.school : ''} · ${date}</div>
+        ${isRejected ? `<div style="font-size:.7rem;color:var(--red);margin-top:.2rem;">拒绝原因：${u.nicknameRejectionReason || '—'}</div>` : ''}
+      </div>
+      ${!isRejected ? `
+      <div style="display:flex;flex-direction:column;gap:.35rem;align-items:flex-end;">
+        <button onclick="approveNickname('${u.id}')" style="background:var(--hero-green);color:white;border:none;border-radius:var(--r-sm);padding:.35rem .8rem;font-size:.78rem;font-family:var(--font-ui);font-weight:600;cursor:pointer;">✅ 批准</button>
+        <div style="display:flex;gap:.3rem;align-items:center;">
+          <select id="rej-reason-${u.id}" style="font-size:.7rem;border:1px solid var(--paper-3);border-radius:6px;padding:.2rem .3rem;font-family:var(--font-ui);">${reasonOpts}</select>
+          <button onclick="rejectNickname('${u.id}')" style="background:var(--red);color:white;border:none;border-radius:var(--r-sm);padding:.35rem .65rem;font-size:.78rem;font-family:var(--font-ui);font-weight:600;cursor:pointer;">❌ 拒绝</button>
+        </div>
+      </div>` : `
+      <button onclick="approveNickname('${u.id}')" style="background:var(--hero-green);color:white;border:none;border-radius:var(--r-sm);padding:.35rem .8rem;font-size:.78rem;font-family:var(--font-ui);font-weight:600;cursor:pointer;align-self:flex-start;">↩️ 重新批准</button>`}
+    </div>
+  </div>`;
+}
+
+async function approveNickname(uid) {
+  try {
+    const { doc, updateDoc } = window._fbFns;
+    await updateDoc(doc(window._fbDb, 'users', uid), {
+      nicknameApproved: true, nicknameRejected: false, nicknameRejectionReason: ''
+    });
+    const card = document.getElementById('nick-card-' + uid);
+    if (card) { card.style.opacity = '.4'; card.style.pointerEvents = 'none'; }
+    showToast('✅ 昵称已批准');
+    setTimeout(() => loadDashboardTab('nicknames'), 800);
+  } catch(e) { showToast('操作失败：' + e.message); }
+}
+
+async function rejectNickname(uid) {
+  const reason = document.getElementById('rej-reason-' + uid)?.value || '其他';
+  try {
+    const { doc, updateDoc } = window._fbFns;
+    await updateDoc(doc(window._fbDb, 'users', uid), {
+      nicknameApproved: false, nicknameRejected: true, nicknameRejectionReason: reason
+    });
+    const card = document.getElementById('nick-card-' + uid);
+    if (card) { card.style.opacity = '.4'; card.style.pointerEvents = 'none'; }
+    showToast('❌ 昵称已拒绝');
+    setTimeout(() => loadDashboardTab('nicknames'), 800);
+  } catch(e) { showToast('操作失败：' + e.message); }
+}
+
+function renderStudentProgress(users, container) {
+  const students = users
+    .filter(u => STUDENT_TYPES.includes(u.userType))
+    .sort((a, b) => {
+      const aM = Object.values(a.progress || {}).filter(p => p.fcKnown && p.clozeOk).length;
+      const bM = Object.values(b.progress || {}).filter(p => p.fcKnown && p.clozeOk).length;
+      return bM - aM;
+    });
+
+  if (!students.length) {
+    container.innerHTML = '<div style="padding:1.5rem;text-align:center;color:var(--ink-mute);font-family:var(--font-ui);">暂无学生数据</div>';
+    return;
+  }
+
+  const totalWords = Object.values(VOCAB).flatMap(u => Object.values(u).flat()).length;
+
+  let html = `<div style="font-size:.7rem;font-family:var(--font-ui);color:var(--ink-mute);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem;">学生人数：${students.length}</div>
+  <div style="overflow-x:auto;">
+  <table style="width:100%;border-collapse:collapse;font-size:.78rem;font-family:var(--font-ui);">
+    <thead>
+      <tr style="background:var(--paper-3);text-align:left;">
+        <th style="padding:.45rem .6rem;">昵称</th>
+        <th style="padding:.45rem .6rem;">电邮</th>
+        <th style="padding:.45rem .6rem;">学校</th>
+        <th style="padding:.45rem .6rem;text-align:center;">已掌握</th>
+        <th style="padding:.45rem .6rem;text-align:center;">进度</th>
+        <th style="padding:.45rem .6rem;">最近活跃</th>
+      </tr>
+    </thead>
+    <tbody>`;
+
+  students.forEach((u, i) => {
+    const mastered = Object.values(u.progress || {}).filter(p => p.fcKnown && p.clozeOk).length;
+    const pct = Math.round(mastered / totalWords * 100);
+    const lastSeen = u.lastSeen?.toDate ? u.lastSeen.toDate().toLocaleDateString('zh-SG') : '—';
+    const nick = u.nicknameApproved ? (u.nickname || '—') : (u.nickname ? u.nickname + '⏳' : '—');
+    const bg = i % 2 === 0 ? 'white' : 'var(--paper-2)';
+    html += `<tr style="background:${bg};border-bottom:1px solid var(--paper-3);">
+      <td style="padding:.4rem .6rem;font-family:var(--font-body);">${nick}</td>
+      <td style="padding:.4rem .6rem;color:var(--ink-mute);font-size:.7rem;">${u.email}</td>
+      <td style="padding:.4rem .6rem;color:var(--ink-mute);">${u.school || '—'}</td>
+      <td style="padding:.4rem .6rem;text-align:center;font-weight:700;color:var(--green);">${mastered}</td>
+      <td style="padding:.4rem .6rem;text-align:center;">
+        <div style="background:var(--paper-3);border-radius:4px;height:8px;width:60px;overflow:hidden;display:inline-block;">
+          <div style="background:var(--hero-green);height:100%;width:${pct}%;"></div>
+        </div>
+        <span style="margin-left:.3rem;color:var(--ink-mute);">${pct}%</span>
+      </td>
+      <td style="padding:.4rem .6rem;color:var(--ink-mute);">${lastSeen}</td>
+    </tr>`;
+  });
+
+  html += '</tbody></table></div>';
+  container.innerHTML = html;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const overlay = document.getElementById('dashboard-modal');
+  if (overlay) overlay.addEventListener('click', e => { if (e.target === overlay) closeDashboard(); });
+});
 
 <!-- FIRST LOGIN GUIDE MODAL -->
 <div class="modal-overlay" id="first-guide-modal" style="z-index:250;">
@@ -8205,6 +8736,25 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
 
       <div style="font-size:.66rem;font-family:var(--font-ui);color:var(--ink-mute);text-align:center;margin-top:.2rem;">两项都完成后，词语状态将变为「已掌握」✅</div>
+    </div>
+  </div>
+</div>
+
+<!-- TEACHER DASHBOARD MODAL -->
+<div class="modal-overlay" id="dashboard-modal" style="z-index:300;">
+  <div class="modal" style="max-width:540px;padding:0;overflow:hidden;max-height:90vh;display:flex;flex-direction:column;">
+    <div style="background:#1a2a5e;padding:1rem 1.2rem;display:flex;align-items:center;gap:.6rem;flex-shrink:0;">
+      <div style="font-size:1.05rem;color:white;font-family:var(--font-body);flex:1;">📋 教师管理面板</div>
+      <button onclick="closeDashboard()" style="background:rgba(255,255,255,.2);border:none;border-radius:50%;width:26px;height:26px;color:white;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+    </div>
+    <!-- Tabs -->
+    <div style="display:flex;border-bottom:1.5px solid var(--paper-3);flex-shrink:0;">
+      <button id="dash-tab-nicknames" onclick="switchDashTab('nicknames')" style="flex:1;padding:.65rem;font-size:.82rem;font-family:var(--font-ui);font-weight:600;border:none;background:var(--hero-green);color:white;cursor:pointer;">昵称审核</button>
+      <button id="dash-tab-students" onclick="switchDashTab('students')" style="flex:1;padding:.65rem;font-size:.82rem;font-family:var(--font-ui);font-weight:600;border:none;background:var(--paper-2);color:var(--ink-mute);cursor:pointer;">学生进度</button>
+    </div>
+    <!-- Content -->
+    <div id="dashboard-content" style="overflow-y:auto;flex:1;padding:1rem 1.2rem;">
+      <div id="dash-loading" style="text-align:center;padding:2rem;color:var(--ink-mute);font-family:var(--font-ui);font-size:.85rem;">加载中…</div>
     </div>
   </div>
 </div>
