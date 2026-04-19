@@ -6181,7 +6181,8 @@ function renderCloze(word) {
   shuffleArray(byLen); shuffleArray(others); shuffleArray(relaxed);
   const distractors = [...new Set([...byLen, ...others, ...relaxed])].slice(0, 3);
 
-  const opts = [word, ...distractors];
+  const opts = [word, ...distractors].filter(Boolean);
+  if (opts.length < 2) { currentIdx++; renderQuestion(); return; }
   shuffleArray(opts);
 
   _startQuestionTimer();
