@@ -6900,19 +6900,34 @@ async function _onFirebaseLogin(user, fallback) {
   const nicknameRejected = userDoc?.nicknameRejected || false;
   const rejReason = userDoc?.nicknameRejectionReason || '';
 
+  // Clear local progress if a DIFFERENT user is logging in (prevents cross-account bleed)
+  try {
+    const _storedUser = localStorage.getItem('cl_vocab_user_email');
+    if (_storedUser && _storedUser !== email) {
+      localStorage.removeItem('cl_vocab_progress_v2');
+      sessionStorage.removeItem('cl_vocab_progress_v2');
+    }
+  } catch(_) {}
+
   // Merge Firestore progress into local (Firestore wins if newer)
   if (userDoc?.progress && Object.keys(userDoc.progress).length > 0) {
     try {
       const local = JSON.parse(localStorage.getItem('cl_vocab_progress_v2') || '{}');
       const remote = userDoc.progress;
-      const merged = { ...local };
-      Object.entries(remote).forEach(([w, rp]) => {
-        const lp = local[w];
-        if (!lp || (rp.lastSeen || 0) > (lp.lastSeen || 0)) merged[w] = rp;
+      const merged = {};
+      // Start from remote, then overlay newer local entries
+      Object.assign(merged, remote);
+      Object.entries(local).forEach(([w, lp]) => {
+        const rp = remote[w];
+        if (!rp || (lp.lastSeen || 0) > (rp.lastSeen || 0)) merged[w] = lp;
       });
       progress = merged;
       saveProgress();
     } catch(e) {}
+  } else {
+    // No Firestore progress for this user — start fresh (don't inherit local from another user)
+    progress = {};
+    saveProgress();
   }
 
   saveUserIdentity(email, userType, nickname, nicknameApproved);
@@ -8695,8 +8710,9 @@ async function rejectNickname(uid) {
 }
 
 function renderStudentProgress(users, container) {
+  const NON_TEACHER = [...STUDENT_TYPES, '其他机构', '公众人士'];
   const students = users
-    .filter(u => STUDENT_TYPES.includes(u.userType))
+    .filter(u => NON_TEACHER.includes(u.userType) || !TEACHER_TYPES.includes(u.userType))
     .sort((a, b) => {
       const aM = Object.values(a.progress || {}).filter(p => p.fcKnown && p.clozeOk).length;
       const bM = Object.values(b.progress || {}).filter(p => p.fcKnown && p.clozeOk).length;
@@ -9082,7 +9098,7 @@ function renderLeaderboard(top10, myEmail, container) {
   </div>
   <div class="lb-tabs">
     <button class="lb-tab active" id="lb-tab-school" onclick="switchLbTab('school')">🏫 百德中学</button>
-    <button class="lb-tab" id="lb-tab-global" onclick="switchLbTab('global')">🌏 全球</button>
+    <button class="lb-tab" id="lb-tab-global" onclick="switchLbTab('global')">🇸🇬 全岛榜</button>
   </div>
   <div id="lb-content">
     <div class="lb-loading">加载中…</div>
