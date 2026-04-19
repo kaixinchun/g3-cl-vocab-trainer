@@ -1175,7 +1175,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as fbSignOut, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as fbSignOut, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset, applyActionCode } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -1215,6 +1215,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     sendPasswordResetEmail,
     verifyPasswordResetCode,
     confirmPasswordReset,
+    applyActionCode,
     doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, getDocs
   };
 
@@ -6592,6 +6593,40 @@ function showWelcomeError(msg, errorId) {
   const mode   = params.get('mode');
   const oobCode = params.get('oobCode');
 
+  if (mode === 'verifyEmail' && oobCode) {
+    // Show verification modal and apply the action code
+    const _waitForFbVerify = setInterval(async () => {
+      if (!window._fbFns || !window._fbAuth) return;
+      clearInterval(_waitForFbVerify);
+      const modal = document.getElementById('email-verify-modal');
+      if (!modal) return;
+      modal.style.display = 'flex';
+      window.history.replaceState({}, document.title, window.location.pathname);
+      try {
+        const { applyActionCode } = window._fbFns;
+        await applyActionCode(window._fbAuth, oobCode);
+        // Reload user to get updated emailVerified status
+        if (window._fbAuth.currentUser) await window._fbAuth.currentUser.reload();
+        document.getElementById('email-verify-icon').textContent = '✅';
+        document.getElementById('email-verify-title').textContent = '电邮验证成功！';
+        document.getElementById('email-verify-msg').textContent = '你的账号已通过验证，进度将计入排行榜。';
+        // Hide the verification banner if visible
+        const banner = document.getElementById('email-verif-banner');
+        if (banner) banner.style.display = 'none';
+      } catch(e) {
+        const msgs = {
+          'auth/expired-action-code': '验证链接已过期，请重新发送验证邮件。',
+          'auth/invalid-action-code': '验证链接已失效或已使用。',
+          'auth/user-disabled':       '此账号已被停用。',
+        };
+        document.getElementById('email-verify-icon').textContent = '❌';
+        document.getElementById('email-verify-title').textContent = '验证失败';
+        document.getElementById('email-verify-msg').textContent = msgs[e.code] || '请重新申请验证邮件。';
+      }
+      document.getElementById('email-verify-btn').style.display = 'block';
+    }, 100);
+  }
+
   if (mode === 'resetPassword' && oobCode) {
     window._pwResetOobCode = oobCode;
     // Poll until Firebase SDK is ready (avoids _onFbAuthReady conflict with checkLoginState)
@@ -9312,6 +9347,25 @@ function renderLeaderboard(top10, myEmail, container) {
       style="width:100%;padding:.85rem;background:var(--hero-green);color:white;
       border:none;border-radius:var(--r-sm);font-size:1rem;font-family:var(--font-body);
       font-weight:700;cursor:pointer;">确认重置密码</button>
+  </div>
+</div>
+
+
+<!-- ── EMAIL VERIFICATION MODAL (handles Firebase email link) ─── -->
+<div id="email-verify-modal" style="display:none;position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(4px);
+  align-items:center;justify-content:center;">
+  <div style="background:white;border-radius:16px;padding:1.8rem 1.5rem;
+    max-width:360px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.3);text-align:center;">
+    <div id="email-verify-icon" style="font-size:2.5rem;margin-bottom:.6rem;">⏳</div>
+    <div id="email-verify-title" style="font-size:1.1rem;font-family:var(--font-body);
+      font-weight:700;color:var(--ink);margin-bottom:.5rem;">正在验证电邮…</div>
+    <div id="email-verify-msg" style="font-size:.82rem;color:var(--ink-mute);
+      font-family:var(--font-ui);line-height:1.6;margin-bottom:1rem;"></div>
+    <button id="email-verify-btn" onclick="document.getElementById('email-verify-modal').style.display='none'"
+      style="display:none;width:100%;padding:.85rem;background:var(--hero-green);color:white;
+      border:none;border-radius:var(--r-sm);font-size:1rem;font-family:var(--font-body);
+      font-weight:700;cursor:pointer;">开始学习 →</button>
   </div>
 </div>
 
