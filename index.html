@@ -6578,8 +6578,11 @@ async function submitPasswordReset() {
   try {
     const { confirmPasswordReset } = window._fbFns;
     await confirmPasswordReset(window._fbAuth, oobCode, pw1);
+    // Sign out any stale session from the reset flow
+    try { await window._fbFns.fbSignOut(window._fbAuth); } catch(_) {}
     document.getElementById('pw-reset-modal').style.display = 'none';
-    showToast('✅ 密码已重置，请使用新密码登录。');
+    showScreen('welcome-screen');
+    showToast('✅ 密码已重置！请使用新密码登录。');
   } catch(e) {
     const msgs = {
       'auth/expired-action-code': '重置链接已过期，请重新申请。',
@@ -7179,6 +7182,14 @@ function saveProfileEdit() { closeProfileModal(); }
 
 // ── CHECK LOGIN ON STARTUP ────────────────────────────────────
 async function checkLoginState() {
+  // If this is a password reset link, skip auto-login entirely
+  // Let the reset modal handle it; user will log in manually after
+  const _urlParams = new URLSearchParams(window.location.search);
+  if (_urlParams.get('mode') === 'resetPassword') {
+    showScreen('welcome-screen');
+    return;
+  }
+
   // Wait for Firebase auth to initialise (max 3s), then check
   const user = await new Promise(resolve => {
     const timeout = setTimeout(() => resolve(null), 3000);
