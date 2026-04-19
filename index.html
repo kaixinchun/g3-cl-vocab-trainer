@@ -8923,7 +8923,7 @@ function _speedBonus(ms) {
 function _awardClozePoints(word, isRight) {
   if (!isRight) return; // no points for wrong answers
   const user = window._fbAuth?.currentUser;
-  if (!user || !user.emailVerified) return; // unverified = no leaderboard points
+  if (!user) return; // TEMP: emailVerified check disabled for testing
 
   const elapsed = _questionStartTime ? Date.now() - _questionStartTime : 99999;
   const attempt = (_clozeAttempts[word] || 0) + 1; // this is the successful attempt number
@@ -8942,7 +8942,7 @@ function _awardClozePoints(word, isRight) {
 // ── Award mastery bonus (called when word becomes fully mastered) ──
 function _awardMasteryBonus(word) {
   const user = window._fbAuth?.currentUser;
-  if (!user || !user.emailVerified) return;
+  if (!user) return; // TEMP: emailVerified check disabled for testing
   // Only award if not already awarded (check scoreMasteredWords in Firestore)
   const awarded = _masteryBonusAwarded[word];
   if (awarded) return;
