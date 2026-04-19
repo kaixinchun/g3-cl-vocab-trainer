@@ -1143,7 +1143,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as fbSignOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as fbSignOut, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -1179,6 +1179,8 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     signInWithEmailAndPassword,
     fbSignOut,
     onAuthStateChanged,
+    sendEmailVerification,
+    sendPasswordResetEmail,
     doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, getDocs
   };
 
@@ -1228,7 +1230,10 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
           autocomplete="current-password" onkeydown="if(event.key==='Enter') submitLogin('desktop')">
         <div class="welcome-error" id="welcome-error-desktop"></div>
         <button class="welcome-btn" onclick="submitLogin('desktop')">登录 →</button>
-        <div class="welcome-note" style="margin-top:.5rem">没有账号？点击上方「注册新账号」。</div>
+        <div style="text-align:right;margin-top:-.5rem;margin-bottom:.5rem;">
+          <button type="button" onclick="submitForgotPassword('desktop')" style="background:none;border:none;color:var(--hero-blue);font-size:.75rem;font-family:var(--font-ui);cursor:pointer;text-decoration:underline;padding:0;">忘记密码？</button>
+        </div>
+        <div class="welcome-note" style="margin-top:.3rem">没有账号？点击上方「注册新账号」。</div>
       </div>
       <div id="ws-register-desktop" style="display:none;">
         <div class="ws-heading" style="margin-bottom:.3rem;">注册新账号</div>
@@ -1308,6 +1313,9 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
         autocomplete="current-password" onkeydown="if(event.key==='Enter') submitLogin('mobile')">
       <div class="welcome-error" id="welcome-error"></div>
       <button class="welcome-btn" onclick="submitLogin('mobile')">登录 →</button>
+      <div style="text-align:right;margin-top:-.5rem;margin-bottom:.5rem;">
+        <button type="button" onclick="submitForgotPassword('mobile')" style="background:none;border:none;color:var(--hero-blue);font-size:.75rem;font-family:var(--font-ui);cursor:pointer;text-decoration:underline;padding:0;">忘记密码？</button>
+      </div>
       <div class="welcome-note">没有账号？点击上方「注册新账号」。</div>
     </div>
     <!-- REGISTER panel -->
@@ -6516,6 +6524,29 @@ function showWelcomeError(msg, errorId) {
   const errEl = document.getElementById(errorId || 'welcome-error');
   if (errEl) { errEl.textContent = msg; errEl.classList.add('show'); }
   setTimeout(() => { if (errEl) errEl.classList.remove('show'); }, 3500);
+}
+
+// ── FORGOT PASSWORD ──────────────────────────────────────────
+async function submitForgotPassword(panel) {
+  const suffix = panel === 'desktop' ? '-desktop' : '';
+  const email = (document.getElementById('welcome-email' + suffix)?.value || '').trim().toLowerCase();
+  const errId = 'welcome-error' + suffix;
+  if (!email || !email.includes('@')) {
+    showWelcomeError('请先输入你的电邮地址，再点击「忘记密码」。', errId);
+    return;
+  }
+  try {
+    await window._fbFns.sendPasswordResetEmail(window._fbAuth, email);
+    showWelcomeError('✅ 重置密码邮件已发送，请查收收件箱（包括垃圾邮件）。', errId);
+    document.getElementById('welcome-error' + suffix).style.color = 'var(--green)';
+  } catch(e) {
+    const msgs = {
+      'auth/user-not-found': '找不到此电邮账号，请先注册。',
+      'auth/invalid-email':  '电邮地址格式不正确。',
+      'auth/too-many-requests': '请求过多，请稍后再试。',
+    };
+    showWelcomeError(msgs[e.code] || '发送失败，请稍后再试。', errId);
+  }
 }
 
 // ── FIREBASE LOGIN ────────────────────────────────────────────
