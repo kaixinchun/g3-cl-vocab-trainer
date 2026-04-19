@@ -6538,27 +6538,18 @@ function showWelcomeError(msg, errorId) {
   if (mode === 'resetPassword' && oobCode) {
     window._pwResetOobCode = oobCode;
     // Poll until Firebase SDK is ready (avoids _onFbAuthReady conflict with checkLoginState)
-    const _waitForFb = setInterval(async () => {
+    // Show modal immediately — don't pre-verify oobCode as it can consume the token
+    const _waitForFb = setInterval(() => {
       if (!window._fbFns || !window._fbAuth) return;
       clearInterval(_waitForFb);
       const modal = document.getElementById('pw-reset-modal');
       if (!modal) return;
-      try {
-        const { verifyPasswordResetCode } = window._fbFns;
-        const email = await verifyPasswordResetCode(window._fbAuth, oobCode);
-        const label = document.getElementById('pw-reset-email-label');
-        if (label) label.textContent = '账号：' + email;
-        modal.style.display = 'flex';
-        window.history.replaceState({}, document.title, window.location.pathname);
-      } catch(e) {
-        modal.style.display = 'flex';
-        document.getElementById('pw-reset-error').textContent =
-          '重置链接已失效或已使用，请重新申请。';
-        document.getElementById('pw-reset-new').style.display = 'none';
-        document.getElementById('pw-reset-confirm').style.display = 'none';
-        const closeBtn = document.querySelector('#pw-reset-modal button[onclick="submitPasswordReset()"]');
-        if (closeBtn) { closeBtn.textContent = '关闭'; closeBtn.onclick = () => { modal.style.display = 'none'; }; }
-      }
+      // Show email from URL params if available (Firebase sometimes passes it)
+      const emailParam = new URLSearchParams(window.location.search).get('email');
+      const label = document.getElementById('pw-reset-email-label');
+      if (label && emailParam) label.textContent = '账号：' + decodeURIComponent(emailParam);
+      modal.style.display = 'flex';
+      window.history.replaceState({}, document.title, window.location.pathname);
     }, 100);
   }
 })();
