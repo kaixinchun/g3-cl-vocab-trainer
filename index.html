@@ -8481,12 +8481,23 @@ let _zhVoiceCache = null;
 
 function _loadVoiceCache() {
   if (!window.speechSynthesis) return;
-  const prefs = ['zh-CN', 'zh-TW', 'zh-HK', 'zh'];
   const voices = window.speechSynthesis.getVoices();
-  for (const lang of prefs) {
+
+  // Pass 1: strict lang match (iOS, Pixel, Samsung)
+  const langPrefs = ['zh-CN', 'zh-TW', 'zh-HK', 'zh'];
+  for (const lang of langPrefs) {
     const v = voices.find(v => v.lang === lang || v.lang.startsWith(lang));
     if (v) { _zhVoiceCache = v; return; }
   }
+
+  // Pass 2: name-based match for Chromebook/ChromeOS
+  // Some ChromeOS voices have lang='' but name contains Chinese keywords
+  const nameKeywords = ['普通话', '中文', 'Chinese', 'Mandarin'];
+  for (const kw of nameKeywords) {
+    const v = voices.find(v => v.name && v.name.includes(kw));
+    if (v) { _zhVoiceCache = v; return; }
+  }
+
   _zhVoiceCache = null;
 }
 
@@ -8512,9 +8523,14 @@ function _doSpeak(text, btn) {
   const voice = _getBestZhVoice();
   if (voice) {
     utt.voice = voice;
-    utt.lang  = voice.lang;
+    utt.lang  = voice.lang || 'zh-CN';
   } else {
     utt.lang = 'zh-CN';
+    // Warn once per session if no Chinese voice found (common on managed Chromebooks)
+    if (!window._warnedNoZhVoice) {
+      window._warnedNoZhVoice = true;
+      setTimeout(() => showToast('⚠️ 未找到中文语音，请在设备语言设置中安装普通话语音包'), 300);
+    }
   }
   utt.rate = 0.85;
   if (btn) btn.classList.add('speaking');
