@@ -266,6 +266,18 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 .mcq-feedback.show{display:block;}
 .mcq-feedback.correct{background:var(--green-soft);color:var(--green);}
 .mcq-feedback.wrong{background:var(--red-soft);color:var(--red);}
+
+/* ── Question navigation bar ───────────────────────────── */
+.q-nav-bar{display:flex;align-items:center;justify-content:space-between;gap:.4rem;padding:.35rem .5rem;background:var(--paper-2);border-radius:var(--r-sm);margin-bottom:.4rem;flex-shrink:0;}
+.q-nav-btn{background:var(--paper-3);border:none;border-radius:var(--r-sm);padding:.32rem .7rem;font-size:.8rem;font-family:var(--font-ui);font-weight:600;cursor:pointer;color:var(--ink);transition:background .15s;}
+.q-nav-btn:disabled{opacity:.35;cursor:default;}
+.q-nav-btn:not(:disabled):hover{background:var(--paper-4,#d0d4de);}
+.q-nav-counter{font-size:.82rem;font-family:var(--font-ui);font-weight:700;color:var(--ink);letter-spacing:.03em;}
+.q-nav-counter .q-nav-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin:0 1.5px;vertical-align:middle;background:var(--paper-3);}
+.q-nav-counter .q-nav-dot.done-right{background:var(--green);}
+.q-nav-counter .q-nav-dot.done-wrong{background:#e05252;}
+.q-nav-counter .q-nav-dot.current{background:var(--blue);box-shadow:0 0 0 2px rgba(66,133,244,.35);}
+
 .next-btn{padding:.78rem;background:var(--ink);color:white;border:none;border-radius:var(--r-sm);font-size:.88rem;cursor:pointer;font-family:inherit;transition:all var(--t);display:none;width:100%;font-weight:600;}
 .next-btn.show{display:block;}
 .next-btn:hover{background:var(--ink-soft);transform:translateY(-1px);}
@@ -1592,6 +1604,11 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 
   <!-- Flashcard -->
   <div id="flashcard-mode" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.6rem 1rem 4.5rem;gap:.7rem;overflow-y:auto;">
+    <div class="q-nav-bar" id="fc-nav">
+      <button class="q-nav-btn" id="fc-prev" onclick="prevQuestion()">◀ 上一题</button>
+      <span class="q-nav-counter" id="fc-counter-label">1 / 20</span>
+      <button class="q-nav-btn" id="fc-next-nav" onclick="goNextQuestion()">下一题 ▶</button>
+    </div>
     <div class="card-counter" id="fc-counter">1 / 20</div>
     <div class="flashcard" id="flashcard" onclick="flipCard()">
       <div class="card-face card-front">
@@ -1623,6 +1640,11 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 
   <!-- MCQ: Chinese meaning -->
   <div class="mcq-wrap" id="definition-mode" style="display:none">
+    <div class="q-nav-bar" id="def-m-nav">
+      <button class="q-nav-btn" id="def-m-prev" onclick="prevQuestion()">◀ 上一题</button>
+      <span class="q-nav-counter" id="def-m-counter-label">1 / 20</span>
+      <button class="q-nav-btn" id="def-m-next-nav" onclick="goNextQuestion()">下一题 ▶</button>
+    </div>
     <div class="mcq-question-card">
       <div class="mcq-prompt-label">这个词语是什么意思？</div>
       <div class="mcq-word" id="def-word"></div>
@@ -1638,6 +1660,11 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 
   <!-- Cloze: sentence + MCQ options -->
   <div class="cloze-wrap" id="cloze-mode" style="display:none">
+    <div class="q-nav-bar" id="cloze-m-nav">
+      <button class="q-nav-btn" id="cloze-m-prev" onclick="prevQuestion()">◀ 上一题</button>
+      <span class="q-nav-counter" id="cloze-m-counter-label">1 / 20</span>
+      <button class="q-nav-btn" id="cloze-m-next-nav" onclick="goNextQuestion()">下一题 ▶</button>
+    </div>
     <div class="cloze-card">
       <div class="cloze-label">选出最适当的的词语填入空格</div>
       <div class="cloze-sentence" id="cloze-sentence"></div>
@@ -1652,6 +1679,11 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 
   <!-- English translation MCQ -->
   <div class="mcq-wrap" id="english-mode" style="display:none">
+    <div class="q-nav-bar" id="eng-m-nav">
+      <button class="q-nav-btn" id="eng-m-prev" onclick="prevQuestion()">◀ 上一题</button>
+      <span class="q-nav-counter" id="eng-m-counter-label">1 / 20</span>
+      <button class="q-nav-btn" id="eng-m-next-nav" onclick="goNextQuestion()">下一题 ▶</button>
+    </div>
     <div class="mcq-question-card">
       <div class="eng-badge">🇬🇧 English Translation</div>
       <div class="mcq-prompt-label">Which is the correct English meaning?</div>
@@ -6123,11 +6155,80 @@ function renderQuestion() {
   const pct = Math.round(currentIdx / currentWords.length * 100);
   document.getElementById('study-progress-fill').style.width = pct + '%';
 
+  _updateNavBars();
+
   const word = currentWords[currentIdx];
   if      (currentMode === 'flashcard') renderFlashcard(word);
   else if (currentMode === 'definition')       renderDefinition(word);
   else if (currentMode === 'cloze')     renderCloze(word);
   else if (currentMode === 'english')   renderEnglish(word);
+}
+
+function _updateNavBars() {
+  const total = currentWords.length;
+  const idx   = currentIdx;
+  // Counter label e.g. "3 / 20"
+  const label = (idx + 1) + ' / ' + total;
+  ['fc','def-m','cloze-m','eng-m'].forEach(p => {
+    const lbl  = document.getElementById(p + '-counter-label');
+    const prev = document.getElementById(p + '-prev');
+    const next = document.getElementById(p + '-next-nav');
+    if (lbl)  lbl.textContent = label;
+    if (prev) prev.disabled = (idx === 0);
+    if (next) next.disabled = (idx >= total - 1);
+  });
+  // Also sync fc-counter (existing element shown on card)
+  const fcCtr = document.getElementById('fc-counter');
+  if (fcCtr) fcCtr.textContent = label;
+}
+
+function prevQuestion() {
+  if (currentIdx <= 0) return;
+  currentIdx--;
+  _renderQuestionReview();
+}
+
+function goNextQuestion() {
+  if (currentIdx >= currentWords.length - 1) return;
+  currentIdx++;
+  // If going forward to an unanswered question, render fresh
+  // If already answered, show review
+  if (sessionAnswers[currentIdx]) {
+    _renderQuestionReview();
+  } else {
+    renderQuestion();
+  }
+}
+
+function _renderQuestionReview() {
+  // Show an already-answered question in read-only state
+  const ans = sessionAnswers[currentIdx];
+  const word = currentWords[currentIdx];
+  const pct = Math.round(currentIdx / currentWords.length * 100);
+  document.getElementById('study-progress-fill').style.width = pct + '%';
+  _updateNavBars();
+
+  if (currentMode === 'flashcard') {
+    renderFlashcard(word);
+    // Auto-flip to show the answer, with result colour hint
+    setTimeout(() => {
+      document.getElementById('flashcard').classList.add('flipped');
+      document.getElementById('self-mark-btns').style.display = 'flex';
+      document.getElementById('fc-hint').style.display = 'none';
+      isFlipped = true;
+      if (ans) {
+        const fc = document.getElementById('flashcard');
+        fc.style.boxShadow = ans.correct ? '0 0 0 3px var(--green)' : '0 0 0 3px #e05252';
+        setTimeout(() => { fc.style.boxShadow = ''; }, 800);
+      }
+    }, 80);
+  } else if (currentMode === 'definition') {
+    renderDefinition(word, ans);
+  } else if (currentMode === 'cloze') {
+    renderCloze(word, ans);
+  } else if (currentMode === 'english') {
+    renderEnglish(word, ans);
+  }
 }
 
 // ── FLASHCARD ─────────────────────────────────────────────
@@ -6162,6 +6263,8 @@ function flipCard() {
 
 function markWord(known) {
   const word = currentWords[currentIdx];
+  // Record answer for back-navigation
+  sessionAnswers[currentIdx] = { correct: known, answer: word };
   if (known) {
     markWordKnownFlashcard(word);
     sessionCorrect++;
@@ -6183,7 +6286,7 @@ function markWord(known) {
 }
 
 // ── MCQ: Chinese meaning ──────────────────────────────────
-function renderDefinition(word) {
+function renderDefinition(word, reviewAns) {
   document.getElementById('def-word').textContent    = word;
   document.getElementById('def-context').textContent = getUnitContext(word);
   document.getElementById('def-feedback').className  = 'mcq-feedback';
@@ -6193,13 +6296,14 @@ function renderDefinition(word) {
   const opts = buildMCQOptions(word, correct, DEFS, currentLevel);
 
   renderOptions('def-options', opts, correct, (isRight) => {
+    sessionAnswers[currentIdx] = { correct: isRight, chosen: isRight ? correct : null, answer: correct };
     const fb = document.getElementById('def-feedback');
     fb.textContent = isRight ? '✓ 正确！' : `✗ 正确答案是：${correct}`;
     fb.className = 'mcq-feedback show ' + (isRight ? 'correct' : 'wrong');
     document.getElementById('def-next').className = 'next-btn show';
     if (isRight) { markWordCorrect(word); sessionCorrect++; }
     else         { markWordWrong(word);   sessionWrong++;   sessionWrongWords.push(word); }
-  });
+  }, reviewAns);
 }
 
 // ── CLOZE: sentence + MCQ options ────────────────────────
@@ -6267,7 +6371,7 @@ function renderCloze(word) {
 }
 
 // ── ENGLISH translation MCQ ───────────────────────────────
-function renderEnglish(word) {
+function renderEnglish(word, reviewAns) {
   document.getElementById('eng-word').textContent    = word;
   document.getElementById('eng-context').textContent = getUnitContext(word);
   document.getElementById('eng-feedback').className  = 'mcq-feedback';
@@ -6283,17 +6387,18 @@ function renderEnglish(word) {
   shuffleArray(opts);
 
   renderOptions('eng-options', opts, correct, (isRight) => {
+    sessionAnswers[currentIdx] = { correct: isRight, chosen: isRight ? correct : null, answer: correct };
     const fb = document.getElementById('eng-feedback');
     fb.textContent = isRight ? '✓ Correct!' : `✗ Answer: ${correct}`;
     fb.className = 'mcq-feedback show ' + (isRight ? 'correct' : 'wrong');
     document.getElementById('eng-next').className = 'next-btn show';
     if (isRight) { markWordCorrect(word); sessionCorrect++; }
     else         { markWordWrong(word);   sessionWrong++;   sessionWrongWords.push(word); }
-  });
+  }, reviewAns);
 }
 
 // ── SHARED OPTION RENDERER ────────────────────────────────
-function renderOptions(containerId, opts, correct, onSelect) {
+function renderOptions(containerId, opts, correct, onSelect, reviewAns) {
   const letters = ['A','B','C','D'];
   const container = document.getElementById(containerId);
   const isEnglish = (containerId === 'eng-options');
@@ -6303,29 +6408,44 @@ function renderOptions(containerId, opts, correct, onSelect) {
     btn.className = 'mcq-option';
     const speakerHtml = isEnglish ? '' : `<button class="option-speak-btn" onclick="event.stopPropagation();speak('${opt.replace(/'/g,"\\'").replace(/"/g,'&quot;')}',this)" title="朗读" style="background:none;border:none;cursor:pointer;font-size:.85rem;padding:0 .2rem;flex-shrink:0;">🔊</button>`;
     btn.innerHTML = `<span class="option-letter">${letters[i]||''}</span><span style="flex:1">${opt}</span>${speakerHtml}`;
-    btn.onclick = () => {
-      container.querySelectorAll('.mcq-option').forEach(b => b.disabled = true);
-      const isRight = (opt === correct);
-      btn.classList.add(isRight ? 'correct' : 'wrong');
-      if (!isRight) {
-        container.querySelectorAll('.mcq-option').forEach(b => {
-          if (b.querySelector('span:nth-child(2)').textContent === correct)
-            b.classList.add('reveal-correct');
-        });
-      }
-      // ── SFX ──
-      if (isRight) {
-        SFX.correct();
-        _sfxStreak = (_sfxStreak || 0) + 1;
-        if (_sfxStreak === 3) SFX.streak();
-      } else {
-        SFX.wrong();
-        _sfxStreak = 0;
-      }
-      onSelect(isRight);
-    };
+    if (reviewAns) {
+      btn.disabled = true;
+      if (opt === correct) btn.classList.add('reveal-correct');
+    } else {
+      btn.onclick = () => {
+        container.querySelectorAll('.mcq-option').forEach(b => b.disabled = true);
+        const isRight = (opt === correct);
+        btn.classList.add(isRight ? 'correct' : 'wrong');
+        if (!isRight) {
+          container.querySelectorAll('.mcq-option').forEach(b => {
+            if (b.querySelector('span:nth-child(2)').textContent === correct)
+              b.classList.add('reveal-correct');
+          });
+        }
+        if (isRight) {
+          SFX.correct();
+          _sfxStreak = (_sfxStreak || 0) + 1;
+          if (_sfxStreak === 3) SFX.streak();
+        } else {
+          SFX.wrong();
+          _sfxStreak = 0;
+        }
+        onSelect(isRight);
+      };
+    }
     container.appendChild(btn);
   });
+  if (reviewAns) {
+    const fbId  = containerId.replace('-options','-feedback');
+    const nextId = containerId.replace('-options','-next');
+    const fb  = document.getElementById(fbId);
+    const nxt = document.getElementById(nextId);
+    if (fb) {
+      fb.textContent = reviewAns.correct ? '✓ 已答对' : `✗ 正确答案是：${correct}`;
+      fb.className = 'mcq-feedback show ' + (reviewAns.correct ? 'correct' : 'wrong');
+    }
+    if (nxt) nxt.className = 'next-btn show';
+  }
 }
 
 // ── DISTRACTOR BUILDER ────────────────────────────────────
@@ -6412,7 +6532,7 @@ function getUnitContext(word) {
   return '';
 }
 
-function nextQuestion() { currentIdx++; renderQuestion(); }
+function nextQuestion() { currentIdx++; if(currentIdx < currentWords.length && sessionAnswers[currentIdx]) { _renderQuestionReview(); } else { renderQuestion(); } }
 
 // ══ RESULTS ════════════════════════════════════════════════
 function showResults() {
@@ -6502,7 +6622,7 @@ function retryWeak() {
   const unique = [...new Set(sessionWrongWords)];
   if (!unique.length) return;
   currentWords = unique;
-  currentIdx = 0; sessionCorrect = 0; sessionWrong = 0; sessionWrongWords = [];
+  currentIdx = 0; sessionCorrect = 0; sessionWrong = 0; sessionWrongWords = []; sessionAnswers = [];
   switchMode(currentMode, true);
   showScreen('study-screen');
 }
@@ -6516,7 +6636,7 @@ function retryAll() {
   pool = pool.slice(0, 20);
   shuffleArray(pool);
   currentWords = pool;
-  currentIdx = 0; sessionCorrect = 0; sessionWrong = 0; sessionWrongWords = [];
+  currentIdx = 0; sessionCorrect = 0; sessionWrong = 0; sessionWrongWords = []; sessionAnswers = [];
   switchMode(currentMode, true);
   showScreen('study-screen');
 }
@@ -9216,11 +9336,12 @@ async function loadLeaderboard(tab) {
     let entries = [];
     snap.forEach(d => entries.push(d.data()));
 
-    // Filter: approved-nickname users only on leaderboard
+    // Filter for leaderboard display
     entries = entries.filter(e => {
-      if (!e.email || !e.nicknameApproved) return false;
+      if (!e.email) return false;
       if (tab === 'school') return e.userType === '百德中学学生';
-      return !['华文教师','其他科目教师'].includes(e.userType || '');
+      // Global tab: include everyone (students, teachers, public)
+      return true;
     });
 
     // Sort by totalScore descending
@@ -9239,10 +9360,11 @@ async function loadLeaderboard(tab) {
     renderLeaderboard(entries.slice(0, 10), myEmail, content);
 
     if (myRankEl) {
-      if (myIdx === -1) {
-        myRankEl.textContent = '你还没有进入前10名，继续加油！';
-      } else if (myIdx >= 10) {
-        myRankEl.textContent = `你目前的排名：第 ${myIdx + 1} 名`;
+      const hasEntry = entries.some(e => e.email === myEmail);
+      if (!hasEntry) {
+        myRankEl.textContent = '练习后即可上榜！加油💪';
+      } else if (myIdx === -1 || myIdx >= 10) {
+        myRankEl.textContent = myIdx === -1 ? '继续加油，冲击前10！🔥' : `你目前的排名：第 ${myIdx + 1} 名`;
       } else {
         myRankEl.textContent = '';
       }
