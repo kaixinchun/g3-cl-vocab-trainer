@@ -8558,6 +8558,9 @@ function speak(text, btn) {
     return;
   }
 
+  // Chrome/Chromebook: cancel() + speak() in the same tick silently drops the
+  // utterance. Always defer speak() via setTimeout so the cancel has time to
+  // flush before the new utterance is queued.
   window.speechSynthesis.cancel();
 
   // Samsung/Android fix: if voice cache is still empty, wait one tick for
@@ -8572,7 +8575,8 @@ function speak(text, btn) {
     return;
   }
 
-  _doSpeak(text, btn);
+  // Defer by one tick — fixes Chrome/Chromebook silent-drop bug
+  setTimeout(() => _doSpeak(text, btn), 50);
 }
 
 // Flashcard target word — pass raw Chinese characters.
