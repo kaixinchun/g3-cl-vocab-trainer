@@ -1158,6 +1158,13 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   .lb-loading { text-align:center; padding:2rem; color:rgba(255,255,255,.5);
     font-family:var(--font-ui); font-size:.85rem; }
   /* Score toast */
+  /* ── SOUND TOGGLE ── */
+  .sfx-btn { background:rgba(255,255,255,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,.55);border-radius:50%;width:32px;height:32px;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.95rem;
+    flex-shrink:0;transition:all .15s; }
+  .sfx-btn:hover { background:rgba(255,255,255,.7); }
+
   .score-toast { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0);
     background:rgba(0,0,0,.85); color:#F5C800; border-radius:16px; padding:.6rem 1.4rem;
     font-size:1.3rem; font-family:var(--font-body); font-weight:900;
@@ -1451,6 +1458,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     </div>
     <div style="display:flex;align-items:center;gap:.4rem;">
       <span class="user-type-badge" id="user-type-badge"></span>
+      <button class="sfx-btn" id="sfx-toggle-btn" onclick="toggleSfx()" title="声音开关">🔊</button>
       <button class="profile-btn" onclick="showProfileModal()">✏️ 修改身份</button>
       <button class="user-signout" onclick="signOut()">退出</button>
     </div>
@@ -5760,6 +5768,11 @@ function showScreen(id) {
   const target = document.getElementById(id);
   if (target) target.classList.add('active');
   window.scrollTo(0, 0);
+  // Ambient chime — once per session on first home visit
+  if (id === 'home-screen' && !window._sfxAmbientPlayed) {
+    window._sfxAmbientPlayed = true;
+    setTimeout(() => SFX.ambient(), 500);
+  }
   const fab = document.getElementById('feedback-fab');
   if (fab) {
     // Only show on results-screen; study-screen uses the pill button instead
@@ -6151,12 +6164,17 @@ function markWord(known) {
   if (known) {
     markWordKnownFlashcard(word);
     sessionCorrect++;
+    SFX.correct();
+    _sfxStreak = (_sfxStreak || 0) + 1;
+    if (_sfxStreak === 3) SFX.streak();
     const alreadyMastered = isMastered(word);
     showToast(alreadyMastered ? '👑 已掌握！' : '✓ 继续完成填空挑战可达到已掌握！');
   } else {
     markWordUnknownFlashcard(word);
     sessionWrong++;
     sessionWrongWords.push(word);
+    SFX.wrong();
+    _sfxStreak = 0;
     showToast('继续练习，你会掌握的！');
   }
   currentIdx++;
@@ -6293,6 +6311,15 @@ function renderOptions(containerId, opts, correct, onSelect) {
           if (b.querySelector('span:nth-child(2)').textContent === correct)
             b.classList.add('reveal-correct');
         });
+      }
+      // ── SFX ──
+      if (isRight) {
+        SFX.correct();
+        _sfxStreak = (_sfxStreak || 0) + 1;
+        if (_sfxStreak === 3) SFX.streak();
+      } else {
+        SFX.wrong();
+        _sfxStreak = 0;
       }
       onSelect(isRight);
     };
@@ -9066,6 +9093,7 @@ function _awardMasteryBonus(word) {
   if (awarded) return;
   _masteryBonusAwarded[word] = true;
   _addToUserScore(0, SCORE_MASTERY_BONUS);
+  SFX.complete();
   _showScoreToast('+' + SCORE_MASTERY_BONUS + ' 🏆 掌握奖励！');
 }
 var _masteryBonusAwarded = {}; // populated on login from Firestore
@@ -9116,6 +9144,7 @@ async function _flushScore() {
 
 // ── Score toast flash ─────────────────────────────────────────
 function _showScoreToast(msg) {
+  SFX.coin();
   const el = document.getElementById('score-toast');
   if (!el) return;
   clearTimeout(_toastTimer);
@@ -9179,6 +9208,13 @@ async function loadLeaderboard(tab) {
     const myEmail = getUserEmail();
     const myIdx   = entries.findIndex(e => e.email === myEmail);
 
+    // Rank-up SFX: fire if rank improved since last check
+    if (myIdx !== -1) {
+      const prevRank = window._sfxPrevRank;
+      if (prevRank !== undefined && myIdx < prevRank) SFX.levelUp();
+      window._sfxPrevRank = myIdx;
+    }
+
     renderLeaderboard(entries.slice(0, 10), myEmail, content);
 
     if (myRankEl) {
@@ -9217,8 +9253,8 @@ function renderLeaderboard(top10, myEmail, container) {
   let podiumHtml = '<div class="lb-podium">';
   p.forEach((entry, vi) => {
     if (!entry) { podiumHtml += '<div class="podium-slot"></div>'; return; }
-    const initial = _displayName(entry).charAt(0).toUpperCase();
     const isMe = entry.email === myEmail;
+    const initial = _displayName(entry).charAt(0).toUpperCase();
     podiumHtml += `
       <div class="podium-slot">
         <div class="podium-avatar ${rankClass[vi]}" style="${isMe ? 'border-color:#F5C800;' : ''}">
@@ -9252,6 +9288,128 @@ function renderLeaderboard(top10, myEmail, container) {
   container.innerHTML = podiumHtml + listHtml;
 }
 
+// ══════════════════════════════════════════════════════════════
+// SOUND EFFECTS ENGINE  (Web Audio API — zero external files)
+// ══════════════════════════════════════════════════════════════
+var _sfxStreak = 0;   // consecutive correct answers this session
+
+const SFX = (() => {
+  let _ctx = null;
+  let _on  = (localStorage.getItem('cl_sound_on') !== '0'); // default ON
+
+  function _ac() {
+    if (!_ctx) _ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (_ctx.state === 'suspended') _ctx.resume();
+    return _ctx;
+  }
+
+  function _tone(freq, type, vol, dur, delayStart) {
+    try {
+      const ac = _ac();
+      const osc  = ac.createOscillator();
+      const gain = ac.createGain();
+      osc.connect(gain); gain.connect(ac.destination);
+      osc.type = type;
+      const t0 = ac.currentTime + (delayStart || 0);
+      osc.frequency.setValueAtTime(freq, t0);
+      gain.gain.setValueAtTime(vol, t0);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      osc.start(t0); osc.stop(t0 + dur);
+    } catch(e) {}
+  }
+
+  function _noise(vol, dur) {
+    try {
+      const ac  = _ac();
+      const buf = ac.createBuffer(1, Math.ceil(ac.sampleRate * dur), ac.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+      const src  = ac.createBufferSource();
+      src.buffer = buf;
+      const gain = ac.createGain();
+      const filt = ac.createBiquadFilter();
+      filt.type = 'lowpass'; filt.frequency.value = 200;
+      src.connect(filt); filt.connect(gain); gain.connect(ac.destination);
+      gain.gain.setValueAtTime(vol, ac.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + dur);
+      src.start(); src.stop(ac.currentTime + dur);
+    } catch(e) {}
+  }
+
+  return {
+    isOn()  { return _on; },
+
+    toggle() {
+      _on = !_on;
+      localStorage.setItem('cl_sound_on', _on ? '1' : '0');
+      const btn = document.getElementById('sfx-toggle-btn');
+      if (btn) btn.textContent = _on ? '🔊' : '🔇';
+      if (_on) setTimeout(() => this.correct(), 60);
+      return _on;
+    },
+
+    // Correct answer — bright rising ding
+    correct() {
+      if (!_on) return;
+      _tone(880,  'sine', 0.18, 0.12, 0);
+      _tone(1320, 'sine', 0.12, 0.10, 0.07);
+    },
+
+    // Wrong answer — very subtle low thud (non-punishing)
+    wrong() {
+      if (!_on) return;
+      _noise(0.06, 0.12);
+    },
+
+    // Streak 3-in-a-row — escalating fanfare
+    streak() {
+      if (!_on) return;
+      _tone(523,  'sine', 0.14, 0.09, 0);
+      _tone(659,  'sine', 0.14, 0.09, 0.10);
+      _tone(784,  'sine', 0.18, 0.12, 0.20);
+      _tone(1047, 'sine', 0.15, 0.18, 0.32);
+    },
+
+    // Exercise / mastery complete — celebratory jingle
+    complete() {
+      if (!_on) return;
+      [[523,.09],[659,.09],[784,.09],[1047,.09],[1319,.18]]
+        .forEach(([f,d], i) => _tone(f, 'sine', 0.16, d, i * 0.10));
+    },
+
+    // XP coin collect — quick bright tick
+    coin() {
+      if (!_on) return;
+      _tone(1047, 'sine', 0.10, 0.06, 0);
+      _tone(1319, 'sine', 0.08, 0.05, 0.06);
+    },
+
+    // Leaderboard rank-up — ascending tones
+    levelUp() {
+      if (!_on) return;
+      [[392,.07],[494,.07],[587,.07],[784,.12],[988,.20]]
+        .forEach(([f,d], i) => _tone(f, 'triangle', 0.15, d, i * 0.08));
+    },
+
+    // App open / home load — soft warm ambient chime (once per session)
+    ambient() {
+      if (!_on) return;
+      _tone(523, 'sine', 0.07, 0.40, 0);
+      _tone(659, 'sine', 0.05, 0.40, 0.18);
+      _tone(784, 'sine', 0.04, 0.40, 0.36);
+    },
+  };
+})();
+
+function toggleSfx() {
+  SFX.toggle();
+}
+
+// Sync button label on page load
+(function _sfxInitBtn() {
+  const btn = document.getElementById('sfx-toggle-btn');
+  if (btn) btn.textContent = SFX.isOn() ? '🔊' : '🔇';
+})();
 
 </script>
 
