@@ -206,12 +206,12 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 /* FLASHCARD */
 #flashcard-mode{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;gap:.8rem;}
 .card-counter{font-size:.72rem;color:var(--ink-mute);font-family:sans-serif;text-align:center;}
-.flashcard{width:100%;max-width:380px;min-height:240px;background:white;border-radius:var(--r);box-shadow:var(--shadow-md);border:1px solid var(--paper-3);cursor:pointer;position:relative;transition:box-shadow var(--t);}
+.flashcard{width:100%;max-width:380px;min-height:200px;background:white;border-radius:var(--r);box-shadow:var(--shadow-md);border:1px solid var(--paper-3);cursor:pointer;position:relative;transition:box-shadow var(--t);overflow:hidden;}
 .flashcard:hover{box-shadow:var(--shadow-lg);}
-.card-face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.4rem;border-radius:var(--r);transition:opacity .18s ease;}
-.card-back{opacity:0;}
-.flashcard.flipped .card-front{opacity:0;pointer-events:none;}
-.flashcard.flipped .card-back{opacity:1;}
+.card-face{width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.4rem;border-radius:var(--r);transition:opacity .18s ease;}
+.card-back{display:none;}
+.flashcard.flipped .card-front{display:none;}
+.flashcard.flipped .card-back{display:flex;}
 .card-tag{position:absolute;top:.7rem;right:.8rem;font-size:.6rem;font-family:sans-serif;color:var(--ink-mute);letter-spacing:.08em;text-transform:uppercase;}
 .card-tap-hint{position:absolute;bottom:.7rem;font-size:.62rem;color:var(--ink-mute);font-family:sans-serif;opacity:.7;}
 .word-display{
@@ -1605,9 +1605,9 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   <!-- Flashcard -->
   <div id="flashcard-mode" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.6rem 1rem 4.5rem;gap:.7rem;overflow-y:auto;">
     <div class="q-nav-bar" id="fc-nav">
-      <button class="q-nav-btn" id="fc-prev" onclick="prevQuestion()">◀ 上一题</button>
+      <button class="q-nav-btn" id="fc-prev" onclick="prevQuestion()">◀ 回顾</button>
       <span class="q-nav-counter" id="fc-counter-label">1 / 20</span>
-      <button class="q-nav-btn" id="fc-next-nav" onclick="goNextQuestion()">下一题 ▶</button>
+      <button class="q-nav-btn" id="fc-next-nav" onclick="goNextQuestion()">跳过 ▶</button>
     </div>
     <div class="card-counter" id="fc-counter">1 / 20</div>
     <div class="flashcard" id="flashcard" onclick="flipCard()">
@@ -1641,9 +1641,9 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   <!-- MCQ: Chinese meaning -->
   <div class="mcq-wrap" id="definition-mode" style="display:none">
     <div class="q-nav-bar" id="def-m-nav">
-      <button class="q-nav-btn" id="def-m-prev" onclick="prevQuestion()">◀ 上一题</button>
+      <button class="q-nav-btn" id="def-m-prev" onclick="prevQuestion()">◀ 回顾</button>
       <span class="q-nav-counter" id="def-m-counter-label">1 / 20</span>
-      <button class="q-nav-btn" id="def-m-next-nav" onclick="goNextQuestion()">下一题 ▶</button>
+      <button class="q-nav-btn" id="def-m-next-nav" onclick="goNextQuestion()">跳过 ▶</button>
     </div>
     <div class="mcq-question-card">
       <div class="mcq-prompt-label">这个词语是什么意思？</div>
@@ -1661,9 +1661,9 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   <!-- Cloze: sentence + MCQ options -->
   <div class="cloze-wrap" id="cloze-mode" style="display:none">
     <div class="q-nav-bar" id="cloze-m-nav">
-      <button class="q-nav-btn" id="cloze-m-prev" onclick="prevQuestion()">◀ 上一题</button>
+      <button class="q-nav-btn" id="cloze-m-prev" onclick="prevQuestion()">◀ 回顾</button>
       <span class="q-nav-counter" id="cloze-m-counter-label">1 / 20</span>
-      <button class="q-nav-btn" id="cloze-m-next-nav" onclick="goNextQuestion()">下一题 ▶</button>
+      <button class="q-nav-btn" id="cloze-m-next-nav" onclick="goNextQuestion()">跳过 ▶</button>
     </div>
     <div class="cloze-card">
       <div class="cloze-label">选出最适当的的词语填入空格</div>
@@ -1680,9 +1680,9 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   <!-- English translation MCQ -->
   <div class="mcq-wrap" id="english-mode" style="display:none">
     <div class="q-nav-bar" id="eng-m-nav">
-      <button class="q-nav-btn" id="eng-m-prev" onclick="prevQuestion()">◀ 上一题</button>
+      <button class="q-nav-btn" id="eng-m-prev" onclick="prevQuestion()">◀ 回顾</button>
       <span class="q-nav-counter" id="eng-m-counter-label">1 / 20</span>
-      <button class="q-nav-btn" id="eng-m-next-nav" onclick="goNextQuestion()">下一题 ▶</button>
+      <button class="q-nav-btn" id="eng-m-next-nav" onclick="goNextQuestion()">跳过 ▶</button>
     </div>
     <div class="mcq-question-card">
       <div class="eng-badge">🇬🇧 English Translation</div>
@@ -6151,6 +6151,7 @@ function switchMode(mode, force=false) {
 }
 
 function renderQuestion() {
+  if (_autoAdvTimer) { clearTimeout(_autoAdvTimer); _autoAdvTimer = null; }
   if (currentIdx >= currentWords.length) { showResults(); return; }
   const pct = Math.round(currentIdx / currentWords.length * 100);
   document.getElementById('study-progress-fill').style.width = pct + '%';
@@ -6303,6 +6304,7 @@ function renderDefinition(word, reviewAns) {
     document.getElementById('def-next').className = 'next-btn show';
     if (isRight) { markWordCorrect(word); sessionCorrect++; }
     else         { markWordWrong(word);   sessionWrong++;   sessionWrongWords.push(word); }
+    _autoAdvTimer = setTimeout(nextQuestion, isRight ? 900 : 1400);
   }, reviewAns);
 }
 
@@ -6367,6 +6369,7 @@ function renderCloze(word) {
       sessionWrong++;
       sessionWrongWords.push(word);
     }
+    _autoAdvTimer = setTimeout(nextQuestion, isRight ? 900 : 1400);
   });
 }
 
@@ -6394,6 +6397,7 @@ function renderEnglish(word, reviewAns) {
     document.getElementById('eng-next').className = 'next-btn show';
     if (isRight) { markWordCorrect(word); sessionCorrect++; }
     else         { markWordWrong(word);   sessionWrong++;   sessionWrongWords.push(word); }
+    _autoAdvTimer = setTimeout(nextQuestion, isRight ? 900 : 1400);
   }, reviewAns);
 }
 
@@ -6532,7 +6536,15 @@ function getUnitContext(word) {
   return '';
 }
 
-function nextQuestion() { currentIdx++; if(currentIdx < currentWords.length && sessionAnswers[currentIdx]) { _renderQuestionReview(); } else { renderQuestion(); } }
+function nextQuestion() {
+  if (_autoAdvTimer) { clearTimeout(_autoAdvTimer); _autoAdvTimer = null; }
+  currentIdx++;
+  if (currentIdx < currentWords.length && sessionAnswers[currentIdx]) {
+    _renderQuestionReview();
+  } else {
+    renderQuestion();
+  }
+}
 
 // ══ RESULTS ════════════════════════════════════════════════
 function showResults() {
@@ -9241,6 +9253,7 @@ var _masteryBonusAwarded = {}; // populated on login from Firestore
 
 // ── Add score to Firestore (debounced) ───────────────────────
 var _pendingScoreDelta = 0;
+var _autoAdvTimer = null;
 var _pendingMasteryDelta = 0;
 var _scoreFlushTimer = null;
 
