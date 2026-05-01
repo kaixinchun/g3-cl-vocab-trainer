@@ -1757,7 +1757,23 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   <div class="modal">
     <div class="modal-title">✏️ 个人资料</div>
     <div class="modal-sub" id="profile-info-display" style="font-size:.82rem;color:var(--ink-mute);font-family:var(--font-ui);margin-bottom:.8rem;line-height:1.6;"></div>
-    <div class="modal-actions">
+    <!-- Nickname edit section -->
+    <div id="profile-nick-section" style="border-top:1px solid #f0ede5;padding-top:.75rem;margin-top:.1rem;">
+      <div id="profile-nick-view" style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;">
+        <span id="profile-nick-label" style="font-size:.82rem;font-family:var(--font-ui);color:var(--ink-mute);"></span>
+        <button onclick="showNicknameEdit()" style="background:var(--blue-soft);color:var(--blue);border:1px solid rgba(40,120,200,.2);border-radius:var(--r-sm);padding:.3rem .7rem;font-size:.75rem;font-family:var(--font-ui);font-weight:600;cursor:pointer;">修改昵称</button>
+      </div>
+      <div id="profile-nick-edit" style="display:none;margin-top:.5rem;">
+        <input id="profile-nick-input" class="welcome-input" type="text" placeholder="输入新昵称（2–8个汉字）" maxlength="8"
+          oninput="onNicknameInput(this)" style="margin-bottom:.4rem;font-size:.88rem;">
+        <div id="profile-nick-error" style="font-size:.72rem;color:var(--red);font-family:var(--font-ui);min-height:1.1em;margin-bottom:.35rem;"></div>
+        <div style="display:flex;gap:.5rem;">
+          <button onclick="submitNicknameChange()" style="flex:1;background:var(--hero-green);color:white;border:none;border-radius:var(--r-sm);padding:.45rem;font-size:.82rem;font-family:var(--font-ui);font-weight:600;cursor:pointer;">提交审核</button>
+          <button onclick="hideNicknameEdit()" style="background:var(--paper-2);color:var(--ink-mute);border:1px solid var(--paper-3);border-radius:var(--r-sm);padding:.45rem .8rem;font-size:.82rem;font-family:var(--font-ui);cursor:pointer;">取消</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions" style="margin-top:.6rem;">
       <button class="modal-btn modal-btn-secondary" onclick="closeProfileModal()">关闭</button>
     </div>
     <div id="teacher-badge-reset" style="display:none;text-align:center;padding:.5rem 0 .2rem;border-top:1px solid #f0ede5;margin-top:.5rem;">
@@ -7078,12 +7094,29 @@ function onNicknameInput(input) {
   // Remove any character that's not Chinese or digit
   input.value = input.value.replace(/[^\u4e00-\u9fa5\d]/g, '');
 }
+
+// Blocked substrings — names/terms that must not appear in nicknames
+const NICKNAME_BLOCKLIST = [
+  // Notorious historical/political figures
+  '希特勒','墨索里尼','斯大林','波尔布特','弗朗哥','萨达姆','本拉登',
+  '爱泼斯坦','马多夫','卡扎菲','伊迪阿明','齐奥塞斯库',
+  // Sensitive political figures (SG context)
+  '习近平','普京','拜登','特朗普','金正恩','李显龙','黄循财',
+  // Profanity / insults (common Chinese)
+  '傻逼','操你','妈的','他妈','王八','混蛋','臭逼','狗屎','废物','贱人',
+  // Impersonation risk
+  '老师','管理员','系统','官方','客服',
+];
+
 function validateNickname(nn) {
   if (!nn) return '请输入昵称';
   if (nn.length < 2) return '昵称至少需要2个字符';
   if (nn.length > 8) return '昵称不能超过8个字符';
   if (!/[\u4e00-\u9fa5]/.test(nn)) return '昵称必须包含至少一个汉字';
   if (/[^\u4e00-\u9fa5\d]/.test(nn)) return '昵称只能包含汉字和数字';
+  for (const blocked of NICKNAME_BLOCKLIST) {
+    if (nn.includes(blocked)) return '此昵称不符合使用规范，请重新输入';
+  }
   return null;
 }
 
@@ -7402,12 +7435,80 @@ function showProfileModal() {
   if (info) {
     info.innerHTML =
       '电邮：' + email + '<br>' +
-      '身份：' + (userType || '—') + '<br>' +
-      '昵称：' + (nickname ? (nickname + (approved ? ' ✅' : ' ⏳待审核')) : '未设置');
+      '身份：' + (userType || '—');
   }
+  // Populate nickname label in edit section
+  const nickLabel = document.getElementById('profile-nick-label');
+  if (nickLabel) {
+    if (nickname) {
+      const status = approved ? ' ✅' : ' ⏳待审核';
+      nickLabel.innerHTML = '昵称：<strong style="color:var(--ink);">' + nickname + '</strong>' + status;
+    } else {
+      nickLabel.textContent = '昵称：未设置';
+    }
+  }
+  hideNicknameEdit();
   if (modal) modal.classList.add('show');
   const resetRow = document.getElementById('teacher-badge-reset');
   if (resetRow) resetRow.style.display = isDashboardUser() ? 'block' : 'none';
+}
+
+function showNicknameEdit() {
+  document.getElementById('profile-nick-edit').style.display = '';
+  document.getElementById('profile-nick-view').style.display = 'none';
+  document.getElementById('profile-nick-input').value = '';
+  document.getElementById('profile-nick-error').textContent = '';
+  setTimeout(() => document.getElementById('profile-nick-input').focus(), 50);
+}
+
+function hideNicknameEdit() {
+  const editEl = document.getElementById('profile-nick-edit');
+  const viewEl = document.getElementById('profile-nick-view');
+  if (editEl) editEl.style.display = 'none';
+  if (viewEl) viewEl.style.display = 'flex';
+}
+
+async function submitNicknameChange() {
+  const input = document.getElementById('profile-nick-input');
+  const errEl = document.getElementById('profile-nick-error');
+  const nn = (input?.value || '').trim();
+  const err = validateNickname(nn);
+  if (err) { errEl.textContent = err; return; }
+
+  const user = window._fbAuth?.currentUser;
+  if (!user) { errEl.textContent = '未登录，请重新登录后再试'; return; }
+
+  const btn = document.querySelector('#profile-nick-edit button');
+  if (btn) { btn.disabled = true; btn.textContent = '提交中…'; }
+
+  try {
+    const { doc, updateDoc } = window._fbFns;
+    await updateDoc(doc(window._fbDb, 'users', user.uid), {
+      nickname: nn,
+      nicknameApproved: false,
+      nicknameRejected: false,
+      nicknameRejectionReason: ''
+    });
+    // Update localStorage so home pill reflects new pending nickname
+    localStorage.setItem('cl_vocab_user_nickname', nn);
+    localStorage.setItem('cl_vocab_nickname_approved', '0');
+    sessionStorage.setItem('cl_vocab_user_nickname', nn);
+    // Refresh home pill
+    const nickEl = document.getElementById('user-nickname-display');
+    if (nickEl) {
+      nickEl.style.display = 'inline';
+      nickEl.textContent = '👤 ' + nn + '（待审核）';
+      nickEl.style.color = 'var(--amber)';
+    }
+    showToast('✅ 新昵称已提交，等待老师审核');
+    closeProfileModal();
+    // Nudge badge update
+    _updatePendingNickBadge();
+  } catch(e) {
+    errEl.textContent = '提交失败：' + e.message;
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '提交审核'; }
+  }
 }
 
 function closeProfileModal() {
