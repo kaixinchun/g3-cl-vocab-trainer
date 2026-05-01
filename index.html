@@ -1517,7 +1517,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     <button onclick="showScreen('guide-screen');renderGuide()" style="flex:1;padding:.75rem;background:rgba(255,255,255,.45);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:var(--blue);border:1px solid rgba(255,255,255,.6);border-radius:var(--r-sm);font-size:.88rem;font-family:var(--font-body);cursor:pointer;">🧭 使用指南</button>
   </div>
   <div class="save-restore-row" id="dashboard-btn-row" style="display:none;">
-    <button class="save-btn" onclick="showDashboard()" style="background:rgba(26,42,94,.75);color:white;border-color:rgba(26,42,94,.4);">📋 教师管理面板</button>
+    <button class="save-btn" onclick="showDashboard()" style="background:rgba(26,42,94,.75);color:white;border-color:rgba(26,42,94,.4);position:relative;">📋 教师管理面板<span id="pending-nick-badge" style="display:none;position:absolute;top:-6px;right:-6px;background:var(--red);color:white;border-radius:50%;width:18px;height:18px;font-size:.65rem;font-family:var(--font-ui);font-weight:700;display:none;align-items:center;justify-content:center;line-height:1;"></span></button>
   </div>
 
   <button class="weak-btn" id="weak-words-btn" onclick="startWeakWords()" style="display:none">
@@ -7564,6 +7564,28 @@ async function fetchUsageStats() {
       if (pub) pub.textContent = data.publicUsers         ?? '—';
     }
   } catch(e) { console.warn('Stats fetch failed:', e); }
+  // For dashboard users: check pending nickname count
+  if (isDashboardUser()) _updatePendingNickBadge();
+}
+
+async function _updatePendingNickBadge() {
+  try {
+    const { collection, getDocs } = window._fbFns;
+    const snap = await getDocs(collection(window._fbDb, 'users'));
+    let count = 0;
+    snap.forEach(d => {
+      const u = d.data();
+      if (u.nickname && !u.nicknameApproved && !u.nicknameRejected) count++;
+    });
+    const badge = document.getElementById('pending-nick-badge');
+    if (!badge) return;
+    if (count > 0) {
+      badge.textContent = count;
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  } catch(e) {}
 }
 
 // ── SUPPRESS OLD reportToSheets (no longer logging scores) ───
@@ -9033,33 +9055,40 @@ async function loadDashboardTab(tab) {
 }
 
 function renderNicknameQueue(users, container) {
-  const pending = users.filter(u => u.nickname && !u.nicknameApproved && !u.nicknameRejected);
+  const pending  = users.filter(u => u.nickname && !u.nicknameApproved && !u.nicknameRejected);
   const rejected = users.filter(u => u.nickname && u.nicknameRejected);
+  const approved = users.filter(u => u.nickname && u.nicknameApproved);
   let html = '';
 
-  if (!pending.length && !rejected.length) {
+  if (!pending.length && !rejected.length && !approved.length) {
     html = '<div style="padding:1.5rem;text-align:center;color:var(--ink-mute);font-family:var(--font-ui);">✅ 暂无待审核昵称</div>';
     container.innerHTML = html; return;
   }
 
   if (pending.length) {
-    html += '<div style="font-size:.7rem;font-family:var(--font-ui);color:var(--ink-mute);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem;">待审核 (' + pending.length + ')</div>';
-    pending.forEach(u => {
-      html += _nickCard(u, false);
-    });
+    html += '<div style="font-size:.7rem;font-family:var(--font-ui);color:var(--amber);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem;">⏳ 待审核 (' + pending.length + ')</div>';
+    pending.forEach(u => { html += _nickCard(u, 'pending'); });
   }
   if (rejected.length) {
     html += '<div style="font-size:.7rem;font-family:var(--font-ui);color:var(--ink-mute);letter-spacing:.08em;text-transform:uppercase;margin:.8rem 0 .6rem;">已拒绝 (' + rejected.length + ')</div>';
-    rejected.forEach(u => html += _nickCard(u, true));
+    rejected.forEach(u => html += _nickCard(u, 'rejected'));
+  }
+  if (approved.length) {
+    html += '<div style="font-size:.7rem;font-family:var(--font-ui);color:var(--ink-mute);letter-spacing:.08em;text-transform:uppercase;margin:.8rem 0 .6rem;">已批准 (' + approved.length + ')</div>';
+    approved.forEach(u => html += _nickCard(u, 'approved'));
   }
   container.innerHTML = html;
 }
 
-function _nickCard(u, isRejected) {
+function _nickCard(u, state) {
+  const isRejected = state === 'rejected';
+  const isApproved = state === 'approved';
   const date = u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString('zh-SG') : '—';
   const rejReasons = ['内容不当','名人姓名','无意义','冒充身份','重复昵称','其他'];
   const reasonOpts = rejReasons.map(r => `<option value="${r}">${r}</option>`).join('');
-  return `<div id="nick-card-${u.id}" style="background:var(--paper-2);border:1px solid var(--paper-3);border-radius:var(--r-sm);padding:.8rem .9rem;margin-bottom:.6rem;">
+  const borderColor = isApproved ? 'rgba(74,154,32,.3)' : 'var(--paper-3)';
+  const bgColor = isApproved ? 'rgba(232,245,208,.5)' : 'var(--paper-2)';
+  return `<div id="nick-card-${u.id}" style="background:${bgColor};border:1px solid ${borderColor};border-radius:var(--r-sm);padding:.8rem .9rem;margin-bottom:.6rem;">
     <div style="display:flex;align-items:flex-start;gap:.6rem;">
       <div style="flex:1;">
         <div style="font-size:1rem;font-family:var(--font-body);font-weight:700;color:var(--ink);">👤 ${u.nickname || '—'}</div>
@@ -9067,28 +9096,61 @@ function _nickCard(u, isRejected) {
         <div style="font-size:.72rem;font-family:var(--font-ui);color:var(--ink-mute);">${u.userType || ''}${u.school ? ' · ' + u.school : ''} · ${date}</div>
         ${isRejected ? `<div style="font-size:.7rem;color:var(--red);margin-top:.2rem;">拒绝原因：${u.nicknameRejectionReason || '—'}</div>` : ''}
       </div>
-      ${!isRejected ? `
+      ${isApproved ? `
+      <button onclick="revokeNickname('${u.id}')" style="background:var(--red-soft);color:var(--red);border:1px solid rgba(192,57,43,.25);border-radius:var(--r-sm);padding:.35rem .75rem;font-size:.75rem;font-family:var(--font-ui);font-weight:600;cursor:pointer;align-self:flex-start;">撤销批准</button>
+      ` : isRejected ? `
+      <button onclick="approveNickname('${u.id}')" style="background:var(--hero-green);color:white;border:none;border-radius:var(--r-sm);padding:.35rem .8rem;font-size:.78rem;font-family:var(--font-ui);font-weight:600;cursor:pointer;align-self:flex-start;">↩️ 重新批准</button>
+      ` : `
       <div style="display:flex;flex-direction:column;gap:.35rem;align-items:flex-end;">
         <button onclick="approveNickname('${u.id}')" style="background:var(--hero-green);color:white;border:none;border-radius:var(--r-sm);padding:.35rem .8rem;font-size:.78rem;font-family:var(--font-ui);font-weight:600;cursor:pointer;">✅ 批准</button>
         <div style="display:flex;gap:.3rem;align-items:center;">
           <select id="rej-reason-${u.id}" style="font-size:.7rem;border:1px solid var(--paper-3);border-radius:6px;padding:.2rem .3rem;font-family:var(--font-ui);">${reasonOpts}</select>
           <button onclick="rejectNickname('${u.id}')" style="background:var(--red);color:white;border:none;border-radius:var(--r-sm);padding:.35rem .65rem;font-size:.78rem;font-family:var(--font-ui);font-weight:600;cursor:pointer;">❌ 拒绝</button>
         </div>
-      </div>` : `
-      <button onclick="approveNickname('${u.id}')" style="background:var(--hero-green);color:white;border:none;border-radius:var(--r-sm);padding:.35rem .8rem;font-size:.78rem;font-family:var(--font-ui);font-weight:600;cursor:pointer;align-self:flex-start;">↩️ 重新批准</button>`}
+      </div>`}
     </div>
   </div>`;
 }
 
 async function approveNickname(uid) {
   try {
-    const { doc, updateDoc } = window._fbFns;
+    const { doc, updateDoc, getDoc } = window._fbFns;
+    // Get nickname from users doc
+    const userSnap = await getDoc(doc(window._fbDb, 'users', uid));
+    const nickname = userSnap.exists() ? (userSnap.data().nickname || '') : '';
+    // Update users doc
     await updateDoc(doc(window._fbDb, 'users', uid), {
       nicknameApproved: true, nicknameRejected: false, nicknameRejectionReason: ''
     });
+    // Sync to scores doc so leaderboard shows nickname immediately
+    try {
+      await updateDoc(doc(window._fbDb, 'scores', uid), {
+        nickname: nickname, nicknameApproved: true
+      });
+    } catch(_) {} // scores doc may not exist yet if student hasn't practiced
     const card = document.getElementById('nick-card-' + uid);
     if (card) { card.style.opacity = '.4'; card.style.pointerEvents = 'none'; }
     showToast('✅ 昵称已批准');
+    setTimeout(() => loadDashboardTab('nicknames'), 800);
+  } catch(e) { showToast('操作失败：' + e.message); }
+}
+
+async function revokeNickname(uid) {
+  if (!confirm('确定要撤销此昵称的批准吗？该用户在排行榜上将显示为遮蔽电邮。')) return;
+  try {
+    const { doc, updateDoc } = window._fbFns;
+    await updateDoc(doc(window._fbDb, 'users', uid), {
+      nicknameApproved: false, nicknameRejected: true, nicknameRejectionReason: '已撤销批准'
+    });
+    // Sync revocation to scores doc
+    try {
+      await updateDoc(doc(window._fbDb, 'scores', uid), {
+        nicknameApproved: false
+      });
+    } catch(_) {}
+    const card = document.getElementById('nick-card-' + uid);
+    if (card) { card.style.opacity = '.4'; card.style.pointerEvents = 'none'; }
+    showToast('↩️ 批准已撤销');
     setTimeout(() => loadDashboardTab('nicknames'), 800);
   } catch(e) { showToast('操作失败：' + e.message); }
 }
@@ -9100,6 +9162,12 @@ async function rejectNickname(uid) {
     await updateDoc(doc(window._fbDb, 'users', uid), {
       nicknameApproved: false, nicknameRejected: true, nicknameRejectionReason: reason
     });
+    // Sync to scores doc
+    try {
+      await updateDoc(doc(window._fbDb, 'scores', uid), {
+        nicknameApproved: false
+      });
+    } catch(_) {}
     const card = document.getElementById('nick-card-' + uid);
     if (card) { card.style.opacity = '.4'; card.style.pointerEvents = 'none'; }
     showToast('❌ 昵称已拒绝');
