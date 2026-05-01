@@ -5678,6 +5678,7 @@ let currentMode  = 'flashcard';
 let sessionCorrect = 0;
 let sessionWrong   = 0;
 let sessionWrongWords = [];
+let sessionAnswers   = [];
 let isFlipped = false;
 
 // ══ PERSISTENCE ════════════════════════════════════════════
@@ -6237,6 +6238,7 @@ function flipCard() {
     document.getElementById('fc-front').style.display = 'none';
     document.getElementById('fc-back').style.display = 'flex';
     document.getElementById('fc-hint').style.display = 'none';
+    document.getElementById('self-mark-btns').style.display = 'flex';
     isFlipped = true;
   }
 }
