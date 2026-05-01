@@ -210,8 +210,6 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 .flashcard:hover{box-shadow:var(--shadow-lg);}
 .card-face{width:100%;display:flex;flex-direction:column;align-items:center;padding:1rem 1.4rem 1.2rem;transition:opacity .18s ease;}
 .card-back{display:none;}
-.flashcard.flipped .card-front{display:none;}
-.flashcard.flipped .card-back{display:flex;}
 .card-tag{align-self:flex-end;font-size:.6rem;font-family:sans-serif;color:var(--ink-mute);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem;}
 .card-tap-hint{font-size:.62rem;color:var(--ink-mute);font-family:sans-serif;opacity:.7;margin-top:.8rem;}
 .word-display{
@@ -1604,23 +1602,23 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   <button id="study-feedback-btn" onclick="showFeedbackModal()" class="study-nav-pill study-nav-pill-right">💬 提供反馈</button>
 
   <!-- Flashcard -->
-  <div id="flashcard-mode" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.6rem 1rem 4.5rem;gap:.7rem;overflow-y:auto;">
+  <div id="flashcard-mode" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:.8rem 1rem 5rem;gap:.7rem;overflow-y:auto;">
     <div class="q-nav-bar" id="fc-nav">
       <button class="q-nav-btn" id="fc-prev" onclick="prevQuestion()">◀ 回顾</button>
       <span class="q-nav-counter" id="fc-counter-label">1 / 20</span>
       <button class="q-nav-btn" id="fc-next-nav" onclick="goNextQuestion()">跳过 ▶</button>
     </div>
     <div class="card-counter" id="fc-counter">1 / 20</div>
-    <div class="flashcard" id="flashcard" onclick="flipCard()">
-      <div class="card-face card-front">
-        <span class="card-tag">词语</span>
+    <div class="flashcard" id="flashcard" onclick="flipCard()" style="width:100%;max-width:380px;">
+      <div class="card-face card-front" style="min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.2rem 1.4rem 1rem;position:relative;">
+        <span class="card-tag" style="position:absolute;top:.7rem;right:.8rem;">词语</span>
         <div class="word-display" id="fc-word"></div>
         <div class="word-context" id="fc-context"></div>
-        <div class="card-tap-hint">点击翻转 ▾</div>
+        <div class="card-tap-hint" style="position:absolute;bottom:.7rem;">点击翻转 ▾</div>
       </div>
-      <div class="card-face card-back">
-        <span class="card-tag">释义</span>
-        <div class="def-word" id="fc-back-word"></div>
+      <div class="card-face card-back" style="display:none;flex-direction:column;align-items:center;padding:1rem 1.4rem 1.2rem;position:relative;" id="card-back-face">
+        <span class="card-tag" style="position:absolute;top:.7rem;right:.8rem;">释义</span>
+        <div class="def-word" id="fc-back-word" style="margin-top:.3rem;"></div>
         <div class="pinyin-line" id="fc-pinyin"></div>
         <div class="speaker-row">
           <button class="speaker-btn" onclick="speakWord(event)" title="朗读词语">🔊 词语</button>
@@ -1630,11 +1628,11 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
         <div class="def-meaning" id="fc-meaning"></div>
         <div class="def-english" id="fc-english"></div>
         <div class="def-example" id="fc-example"></div>
+        <div id="self-mark-btns" style="display:none;width:100%;gap:.6rem;margin-top:.9rem;padding-top:.8rem;border-top:1px solid var(--paper-3);">
+          <button class="mark-btn mark-unknown" onclick="event.stopPropagation();markWord(false)">✗ 还不认识</button>
+          <button class="mark-btn mark-known" onclick="event.stopPropagation();markWord(true)">✓ 认识了</button>
+        </div>
       </div>
-    </div>
-    <div class="self-mark-btns" id="self-mark-btns" style="display:none">
-      <button class="mark-btn mark-unknown" onclick="markWord(false)">✗ 还不认识</button>
-      <button class="mark-btn mark-known" onclick="markWord(true)">✓ 认识了</button>
     </div>
     <div class="flip-hint" id="fc-hint">先想想这个词的意思，再翻开查看</div>
   </div>
@@ -6213,7 +6211,7 @@ function _renderQuestionReview() {
     renderFlashcard(word);
     // Auto-flip to show the answer, with result colour hint
     setTimeout(() => {
-      document.getElementById('flashcard').classList.add('flipped');
+      document.getElementById('card-back-face').style.display = 'flex';
       document.getElementById('self-mark-btns').style.display = 'flex';
       document.getElementById('fc-hint').style.display = 'none';
       isFlipped = true;
@@ -6234,7 +6232,8 @@ function _renderQuestionReview() {
 
 // ── FLASHCARD ─────────────────────────────────────────────
 function renderFlashcard(word) {
-  document.getElementById('flashcard').classList.remove('flipped');
+  document.getElementById('card-back-face').style.display = 'none';
+  document.getElementById('self-mark-btns').style.display = 'none';
   isFlipped = false;
   document.getElementById('fc-counter').textContent = `${currentIdx+1} / ${currentWords.length}`;
   document.getElementById('fc-word').textContent      = word;
@@ -6255,7 +6254,7 @@ function renderFlashcard(word) {
 
 function flipCard() {
   if (!isFlipped) {
-    document.getElementById('flashcard').classList.add('flipped');
+    document.getElementById('card-back-face').style.display = 'flex';
     document.getElementById('self-mark-btns').style.display = 'flex';
     document.getElementById('fc-hint').style.display = 'none';
     isFlipped = true;
