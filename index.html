@@ -208,8 +208,6 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 .card-counter{font-size:.72rem;color:var(--ink-mute);font-family:sans-serif;text-align:center;}
 .flashcard{width:100%;max-width:380px;background:white;border-radius:var(--r);box-shadow:var(--shadow-md);border:1px solid var(--paper-3);cursor:pointer;transition:box-shadow var(--t);}
 .flashcard:hover{box-shadow:var(--shadow-lg);}
-.card-face{width:100%;display:flex;flex-direction:column;align-items:center;padding:1rem 1.4rem 1.2rem;transition:opacity .18s ease;}
-.card-back{display:none;}
 .card-tag{align-self:flex-end;font-size:.6rem;font-family:sans-serif;color:var(--ink-mute);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem;}
 .card-tap-hint{font-size:.62rem;color:var(--ink-mute);font-family:sans-serif;opacity:.7;margin-top:.8rem;}
 .word-display{
@@ -235,7 +233,6 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 .def-meaning{font-size:1rem;color:var(--ink-soft);line-height:1.6;max-width:300px;text-align:center;font-family:var(--font-body);}
 .def-english{font-size:.82rem;color:var(--ink-mute);margin-top:.25rem;max-width:300px;text-align:center;font-family:var(--font-ui);letter-spacing:.01em;}
 .def-example{font-size:.88rem;color:var(--ink-mute);margin-top:.5rem;font-style:italic;line-height:1.6;max-width:300px;text-align:center;font-family:var(--font-body);}
-.card-front{min-height:160px;justify-content:center;}
 .self-mark-btns{display:flex;gap:.6rem;width:100%;max-width:380px;}
 .mark-btn{flex:1;padding:1rem;border:none;border-radius:var(--r-sm);font-size:1rem;cursor:pointer;font-family:var(--font-body);transition:all var(--t);display:flex;align-items:center;justify-content:center;gap:.3rem;font-weight:600;min-height:52px;}
 .mark-known{background:var(--green-soft);color:var(--green);}
@@ -1602,48 +1599,42 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   <button id="study-feedback-btn" onclick="showFeedbackModal()" class="study-nav-pill study-nav-pill-right">💬 提供反馈</button>
 
   <!-- Flashcard -->
-  <div id="flashcard-mode" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:.8rem 1rem 5rem;gap:.7rem;overflow-y:auto;">
-    <div class="q-nav-bar" id="fc-nav">
-      <button class="q-nav-btn" id="fc-prev" onclick="prevQuestion()">◀ 回顾</button>
-      <span class="q-nav-counter" id="fc-counter-label">1 / 20</span>
-      <button class="q-nav-btn" id="fc-next-nav" onclick="goNextQuestion()">跳过 ▶</button>
-    </div>
+  <div id="flashcard-mode" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:1rem 1rem 5rem;gap:.6rem;overflow-y:auto;">
     <div class="card-counter" id="fc-counter">1 / 20</div>
-    <div class="flashcard" id="flashcard" onclick="flipCard()" style="width:100%;max-width:380px;">
-      <div class="card-face card-front" style="min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.2rem 1.4rem 1rem;position:relative;">
-        <span class="card-tag" style="position:absolute;top:.7rem;right:.8rem;">词语</span>
-        <div class="word-display" id="fc-word"></div>
-        <div class="word-context" id="fc-context"></div>
-        <div class="card-tap-hint" style="position:absolute;bottom:.7rem;">点击翻转 ▾</div>
+
+    <!-- FRONT FACE -->
+    <div id="fc-front" style="width:100%;max-width:380px;background:white;border-radius:var(--r);box-shadow:var(--shadow-md);border:1px solid var(--paper-3);cursor:pointer;min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.4rem;position:relative;" onclick="flipCard()">
+      <span style="position:absolute;top:.7rem;right:.8rem;font-size:.6rem;font-family:sans-serif;color:var(--ink-mute);letter-spacing:.08em;text-transform:uppercase;">词语</span>
+      <div class="word-display" id="fc-word"></div>
+      <div class="word-context" id="fc-context"></div>
+      <div style="position:absolute;bottom:.7rem;font-size:.62rem;color:var(--ink-mute);font-family:sans-serif;opacity:.7;">点击翻转 ▾</div>
+    </div>
+
+    <!-- BACK FACE -->
+    <div id="fc-back" style="display:none;width:100%;max-width:380px;background:white;border-radius:var(--r);box-shadow:var(--shadow-md);border:1px solid var(--paper-3);padding:1rem 1.4rem 1.2rem;flex-direction:column;align-items:center;position:relative;">
+      <span style="position:absolute;top:.7rem;right:.8rem;font-size:.6rem;font-family:sans-serif;color:var(--ink-mute);letter-spacing:.08em;text-transform:uppercase;">释义</span>
+      <div class="def-word" id="fc-back-word" style="margin-top:.5rem;"></div>
+      <div class="pinyin-line" id="fc-pinyin"></div>
+      <div class="speaker-row">
+        <button class="speaker-btn" onclick="speakWord(event)">🔊 词语</button>
+        <button class="speaker-btn" onclick="speakMeaning(event)">🔊 释义</button>
+        <button class="speaker-btn" onclick="speakExample(event)">🔊 例句</button>
       </div>
-      <div class="card-face card-back" style="display:none;flex-direction:column;align-items:center;padding:1rem 1.4rem 1.2rem;position:relative;" id="card-back-face">
-        <span class="card-tag" style="position:absolute;top:.7rem;right:.8rem;">释义</span>
-        <div class="def-word" id="fc-back-word" style="margin-top:.3rem;"></div>
-        <div class="pinyin-line" id="fc-pinyin"></div>
-        <div class="speaker-row">
-          <button class="speaker-btn" onclick="speakWord(event)" title="朗读词语">🔊 词语</button>
-          <button class="speaker-btn" onclick="speakMeaning(event)" title="朗读释义">🔊 释义</button>
-          <button class="speaker-btn" onclick="speakExample(event)" title="朗读例句">🔊 例句</button>
-        </div>
-        <div class="def-meaning" id="fc-meaning"></div>
-        <div class="def-english" id="fc-english"></div>
-        <div class="def-example" id="fc-example"></div>
-        <div id="self-mark-btns" style="display:none;width:100%;gap:.6rem;margin-top:.9rem;padding-top:.8rem;border-top:1px solid var(--paper-3);">
-          <button class="mark-btn mark-unknown" onclick="event.stopPropagation();markWord(false)">✗ 还不认识</button>
-          <button class="mark-btn mark-known" onclick="event.stopPropagation();markWord(true)">✓ 认识了</button>
-        </div>
+      <div class="def-meaning" id="fc-meaning"></div>
+      <div class="def-english" id="fc-english"></div>
+      <div class="def-example" id="fc-example"></div>
+      <div style="width:100%;border-top:1px solid var(--paper-3);margin-top:.9rem;padding-top:.8rem;display:flex;gap:.6rem;">
+        <button class="mark-btn mark-unknown" onclick="markWord(false)">✗ 还不认识</button>
+        <button class="mark-btn mark-known" onclick="markWord(true)">✓ 认识了</button>
       </div>
     </div>
+
     <div class="flip-hint" id="fc-hint">先想想这个词的意思，再翻开查看</div>
   </div>
 
   <!-- MCQ: Chinese meaning -->
   <div class="mcq-wrap" id="definition-mode" style="display:none">
-    <div class="q-nav-bar" id="def-m-nav">
-      <button class="q-nav-btn" id="def-m-prev" onclick="prevQuestion()">◀ 回顾</button>
-      <span class="q-nav-counter" id="def-m-counter-label">1 / 20</span>
-      <button class="q-nav-btn" id="def-m-next-nav" onclick="goNextQuestion()">跳过 ▶</button>
-    </div>
+    <div class="q-nav-counter" id="def-m-counter-label" style="text-align:center;font-size:.78rem;font-family:sans-serif;color:var(--ink-mute);padding:.2rem 0;">1 / 20</div>
     <div class="mcq-question-card">
       <div class="mcq-prompt-label">这个词语是什么意思？</div>
       <div class="mcq-word" id="def-word"></div>
@@ -1659,11 +1650,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 
   <!-- Cloze: sentence + MCQ options -->
   <div class="cloze-wrap" id="cloze-mode" style="display:none">
-    <div class="q-nav-bar" id="cloze-m-nav">
-      <button class="q-nav-btn" id="cloze-m-prev" onclick="prevQuestion()">◀ 回顾</button>
-      <span class="q-nav-counter" id="cloze-m-counter-label">1 / 20</span>
-      <button class="q-nav-btn" id="cloze-m-next-nav" onclick="goNextQuestion()">跳过 ▶</button>
-    </div>
+    <div class="q-nav-counter" id="cloze-m-counter-label" style="text-align:center;font-size:.78rem;font-family:sans-serif;color:var(--ink-mute);padding:.2rem 0;">1 / 20</div>
     <div class="cloze-card">
       <div class="cloze-label">选出最适当的的词语填入空格</div>
       <div class="cloze-sentence" id="cloze-sentence"></div>
@@ -1678,11 +1665,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 
   <!-- English translation MCQ -->
   <div class="mcq-wrap" id="english-mode" style="display:none">
-    <div class="q-nav-bar" id="eng-m-nav">
-      <button class="q-nav-btn" id="eng-m-prev" onclick="prevQuestion()">◀ 回顾</button>
-      <span class="q-nav-counter" id="eng-m-counter-label">1 / 20</span>
-      <button class="q-nav-btn" id="eng-m-next-nav" onclick="goNextQuestion()">跳过 ▶</button>
-    </div>
+    <div class="q-nav-counter" id="eng-m-counter-label" style="text-align:center;font-size:.78rem;font-family:sans-serif;color:var(--ink-mute);padding:.2rem 0;">1 / 20</div>
     <div class="mcq-question-card">
       <div class="eng-badge">🇬🇧 English Translation</div>
       <div class="mcq-prompt-label">Which is the correct English meaning?</div>
@@ -6167,17 +6150,13 @@ function renderQuestion() {
 function _updateNavBars() {
   const total = currentWords.length;
   const idx   = currentIdx;
-  // Counter label e.g. "3 / 20"
   const label = (idx + 1) + ' / ' + total;
+  // Update all counter labels
   ['fc','def-m','cloze-m','eng-m'].forEach(p => {
-    const lbl  = document.getElementById(p + '-counter-label');
-    const prev = document.getElementById(p + '-prev');
-    const next = document.getElementById(p + '-next-nav');
-    if (lbl)  lbl.textContent = label;
-    if (prev) prev.disabled = (idx === 0);
-    if (next) next.disabled = false; // 跳过 always active — goes to results at end
+    const lbl = document.getElementById(p + '-counter-label');
+    if (lbl) lbl.textContent = label;
   });
-  // Also sync fc-counter (existing element shown on card)
+  // fc-counter is the main flashcard counter
   const fcCtr = document.getElementById('fc-counter');
   if (fcCtr) fcCtr.textContent = label;
 }
@@ -6211,8 +6190,8 @@ function _renderQuestionReview() {
     renderFlashcard(word);
     // Auto-flip to show the answer, with result colour hint
     setTimeout(() => {
-      document.getElementById('card-back-face').style.display = 'flex';
-      document.getElementById('self-mark-btns').style.display = 'flex';
+      document.getElementById('fc-front').style.display = 'none';
+      document.getElementById('fc-back').style.display = 'flex';
       document.getElementById('fc-hint').style.display = 'none';
       isFlipped = true;
       if (ans) {
@@ -6232,8 +6211,9 @@ function _renderQuestionReview() {
 
 // ── FLASHCARD ─────────────────────────────────────────────
 function renderFlashcard(word) {
-  document.getElementById('card-back-face').style.display = 'none';
-  document.getElementById('self-mark-btns').style.display = 'none';
+  document.getElementById('fc-front').style.display = 'flex';
+  document.getElementById('fc-back').style.display = 'none';
+  document.getElementById('fc-hint').style.display = 'block';
   isFlipped = false;
   document.getElementById('fc-counter').textContent = `${currentIdx+1} / ${currentWords.length}`;
   document.getElementById('fc-word').textContent      = word;
@@ -6254,8 +6234,8 @@ function renderFlashcard(word) {
 
 function flipCard() {
   if (!isFlipped) {
-    document.getElementById('card-back-face').style.display = 'flex';
-    document.getElementById('self-mark-btns').style.display = 'flex';
+    document.getElementById('fc-front').style.display = 'none';
+    document.getElementById('fc-back').style.display = 'flex';
     document.getElementById('fc-hint').style.display = 'none';
     isFlipped = true;
   }
