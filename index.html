@@ -204,16 +204,16 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 .study-progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:2px;transition:width .3s ease;}
 
 /* FLASHCARD */
-#flashcard-mode{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;gap:.8rem;}
+#flashcard-mode{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:1rem 1rem 5rem;gap:.7rem;overflow-y:auto;}
 .card-counter{font-size:.72rem;color:var(--ink-mute);font-family:sans-serif;text-align:center;}
-.flashcard{width:100%;max-width:380px;min-height:200px;background:white;border-radius:var(--r);box-shadow:var(--shadow-md);border:1px solid var(--paper-3);cursor:pointer;position:relative;transition:box-shadow var(--t);overflow:hidden;}
+.flashcard{width:100%;max-width:380px;background:white;border-radius:var(--r);box-shadow:var(--shadow-md);border:1px solid var(--paper-3);cursor:pointer;transition:box-shadow var(--t);}
 .flashcard:hover{box-shadow:var(--shadow-lg);}
-.card-face{width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.4rem;border-radius:var(--r);transition:opacity .18s ease;}
+.card-face{width:100%;display:flex;flex-direction:column;align-items:center;padding:1rem 1.4rem 1.2rem;transition:opacity .18s ease;}
 .card-back{display:none;}
 .flashcard.flipped .card-front{display:none;}
 .flashcard.flipped .card-back{display:flex;}
-.card-tag{position:absolute;top:.7rem;right:.8rem;font-size:.6rem;font-family:sans-serif;color:var(--ink-mute);letter-spacing:.08em;text-transform:uppercase;}
-.card-tap-hint{position:absolute;bottom:.7rem;font-size:.62rem;color:var(--ink-mute);font-family:sans-serif;opacity:.7;}
+.card-tag{align-self:flex-end;font-size:.6rem;font-family:sans-serif;color:var(--ink-mute);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem;}
+.card-tap-hint{font-size:.62rem;color:var(--ink-mute);font-family:sans-serif;opacity:.7;margin-top:.8rem;}
 .word-display{
   font-family:var(--font-display);
   font-size:clamp(1.8rem,7vw,3.2rem);
@@ -224,7 +224,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   font-weight:700;
   word-break:keep-all;
 }
-.word-context{font-size:.8rem;color:var(--ink-mute);font-family:var(--font-ui);margin-top:.35rem;}
+.word-context{font-size:.8rem;color:var(--ink-mute);font-family:var(--font-ui);margin-top:.35rem;margin-bottom:.5rem;}
 .def-word{
   font-family:var(--font-display);
   font-size:clamp(2rem,6vw,2.8rem);
@@ -237,6 +237,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 .def-meaning{font-size:1rem;color:var(--ink-soft);line-height:1.6;max-width:300px;text-align:center;font-family:var(--font-body);}
 .def-english{font-size:.82rem;color:var(--ink-mute);margin-top:.25rem;max-width:300px;text-align:center;font-family:var(--font-ui);letter-spacing:.01em;}
 .def-example{font-size:.88rem;color:var(--ink-mute);margin-top:.5rem;font-style:italic;line-height:1.6;max-width:300px;text-align:center;font-family:var(--font-body);}
+.card-front{min-height:160px;justify-content:center;}
 .self-mark-btns{display:flex;gap:.6rem;width:100%;max-width:380px;}
 .mark-btn{flex:1;padding:1rem;border:none;border-radius:var(--r-sm);font-size:1rem;cursor:pointer;font-family:var(--font-body);transition:all var(--t);display:flex;align-items:center;justify-content:center;gap:.3rem;font-weight:600;min-height:52px;}
 .mark-known{background:var(--green-soft);color:var(--green);}
@@ -6176,7 +6177,7 @@ function _updateNavBars() {
     const next = document.getElementById(p + '-next-nav');
     if (lbl)  lbl.textContent = label;
     if (prev) prev.disabled = (idx === 0);
-    if (next) next.disabled = (idx >= total - 1);
+    if (next) next.disabled = false; // 跳过 always active — goes to results at end
   });
   // Also sync fc-counter (existing element shown on card)
   const fcCtr = document.getElementById('fc-counter');
@@ -6190,10 +6191,9 @@ function prevQuestion() {
 }
 
 function goNextQuestion() {
-  if (currentIdx >= currentWords.length - 1) return;
+  if (_autoAdvTimer) { clearTimeout(_autoAdvTimer); _autoAdvTimer = null; }
   currentIdx++;
-  // If going forward to an unanswered question, render fresh
-  // If already answered, show review
+  if (currentIdx >= currentWords.length) { showResults(); return; }
   if (sessionAnswers[currentIdx]) {
     _renderQuestionReview();
   } else {
