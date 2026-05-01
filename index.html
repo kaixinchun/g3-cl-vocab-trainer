@@ -1623,7 +1623,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       <div class="def-meaning" id="fc-meaning"></div>
       <div class="def-english" id="fc-english"></div>
       <div class="def-example" id="fc-example"></div>
-      <div style="width:100%;border-top:1px solid var(--paper-3);margin-top:.9rem;padding-top:.8rem;display:flex;gap:.6rem;">
+      <div id="self-mark-btns" class="self-mark-btns" style="width:100%;border-top:1px solid var(--paper-3);margin-top:.9rem;padding-top:.8rem;display:flex;gap:.6rem;">
         <button class="mark-btn mark-unknown" onclick="markWord(false)">✗ 还不认识</button>
         <button class="mark-btn mark-known" onclick="markWord(true)">✓ 认识了</button>
       </div>
@@ -6195,7 +6195,7 @@ function _renderQuestionReview() {
       document.getElementById('fc-hint').style.display = 'none';
       isFlipped = true;
       if (ans) {
-        const fc = document.getElementById('flashcard');
+        const fc = document.getElementById('flashcard-mode');
         fc.style.boxShadow = ans.correct ? '0 0 0 3px var(--green)' : '0 0 0 3px #e05252';
         setTimeout(() => { fc.style.boxShadow = ''; }, 800);
       }
