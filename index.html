@@ -114,6 +114,13 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 .levels-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;padding:0 1.2rem 1rem;max-width:520px;margin:0 auto;width:100%;}
 @media(min-width:700px){
   .levels-grid{grid-template-columns:repeat(4,1fr);max-width:960px;}
+  .home-top-row{display:flex;flex-direction:row;align-items:stretch;gap:.6rem;max-width:960px;margin:0 auto;padding:0 1.2rem;width:100%;box-sizing:border-box;}
+  .home-top-row .progress-wrap{flex:1;padding:0;max-width:none;margin:0;}
+  .home-top-row .home-action-row{flex-direction:column;max-width:160px;padding:0 0 .5rem;margin:0;width:auto;}
+  .home-top-row .home-action-row button{flex:none !important;}
+  .progress-wrap{max-width:960px;}
+  .home-action-row{max-width:960px;flex-direction:row;}
+  .home-action-row .nav-btn-guide{font-size:.88rem;}
 }
 .level-card{
   background:rgba(255,255,255,.45);
@@ -980,50 +987,78 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   .ach-badge.locked   .ach-badge-lbl { color:var(--ink-mute); font-weight:400; }
 
   /* ── GUIDE SCREEN ────────────────────────────────────────── */
-  .guide-section {
+  /* ── GUIDE ACCORDION ──────────────────────────────────── */
+  .guide-acc-item {
     background: white;
     border-radius: var(--r-sm);
     border: 0.5px solid var(--paper-3);
-    padding: 1rem 1.1rem;
-    margin-bottom: .9rem;
+    margin-bottom: .55rem;
+    overflow: hidden;
   }
-  .guide-section-title {
-    font-size: 1rem;
-    color: var(--hero-green);
-    font-family: var(--font-body);
-    font-weight: 700;
-    margin-bottom: .5rem;
-    display: flex;
-    align-items: center;
-    gap: .4rem;
+  .guide-acc-trigger {
+    width: 100%; background: none; border: none; cursor: pointer;
+    display: flex; align-items: center; gap: .7rem;
+    padding: .85rem 1rem; text-align: left;
+    font-family: var(--font-body); font-size: .95rem; font-weight: 700;
+    color: var(--ink);
   }
-  .guide-body {
-    font-size: .9rem;
-    color: var(--ink-soft);
-    font-family: var(--font-body);
-    line-height: 1.7;
+  .guide-acc-trigger:hover { background: var(--paper); }
+  .guide-acc-icon { font-size: 1.15rem; flex-shrink: 0; }
+  .guide-acc-chevron { margin-left: auto; font-size: .75rem; color: var(--ink-mute); transition: transform .2s; }
+  .guide-acc-item.open .guide-acc-chevron { transform: rotate(180deg); }
+  .guide-acc-body {
+    display: none; padding: 0 1rem 1rem;
+    font-family: var(--font-body); font-size: .88rem;
+    color: var(--ink-soft); line-height: 1.75;
   }
-  .guide-state-row {
-    display: flex;
-    align-items: flex-start;
-    gap: .7rem;
-    padding: .5rem 0;
-    border-bottom: 0.5px solid var(--paper-2);
+  .guide-acc-item.open .guide-acc-body { display: block; }
+  .guide-mode-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-top: .5rem;
   }
-  .guide-state-row:last-child { border-bottom: none; }
-  .guide-state-badge {
-    font-size: .72rem;
-    font-family: var(--font-ui);
-    border-radius: 8px;
-    padding: .2rem .6rem;
-    font-weight: 600;
-    white-space: nowrap;
-    flex-shrink: 0;
-    margin-top: .1rem;
+  .guide-mode-card {
+    background: var(--paper); border-radius: var(--r-sm);
+    border: 0.5px solid var(--paper-3); padding: .6rem .75rem;
   }
+  .guide-mode-name { font-weight: 700; font-size: .85rem; color: var(--ink); margin-bottom: .2rem; }
+  .guide-mode-desc { font-size: .78rem; color: var(--ink-mute); line-height: 1.5; }
+  .guide-mode-tag { display:inline-block; font-size:.65rem; font-weight:700; border-radius:6px; padding:.1rem .45rem; margin-top:.3rem; }
+  .guide-mode-tag.req { background:var(--green-soft); color:var(--green); }
+  .guide-mode-tag.opt { background:var(--paper-2); color:var(--ink-mute); }
+  .guide-state-visual {
+    display: flex; flex-direction: column; gap: .5rem; margin-top: .5rem;
+  }
+  .guide-sv-row {
+    display: flex; align-items: flex-start; gap: .7rem; padding: .55rem .75rem;
+    border-radius: var(--r-sm); background: var(--paper);
+  }
+  .guide-sv-badge {
+    font-size: .72rem; font-family: var(--font-ui); border-radius: 8px;
+    padding: .2rem .6rem; font-weight: 600; white-space: nowrap; flex-shrink: 0; margin-top:.1rem;
+  }
+  .guide-sv-desc { font-size: .82rem; color: var(--ink-soft); line-height: 1.5; }
   .gs-mastered { background:var(--green-soft); color:var(--green); }
   .gs-learning  { background:var(--amber-soft); color:var(--amber); }
   .gs-unstarted { background:var(--paper-2); color:var(--ink-mute); }
+  .guide-rank-flow {
+    display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; margin-top: .5rem;
+  }
+  .guide-rank-pill {
+    background: var(--paper); border: 0.5px solid var(--paper-3); border-radius: 20px;
+    padding: .3rem .75rem; font-size: .8rem; font-weight: 600; color: var(--ink);
+    white-space: nowrap;
+  }
+  .guide-rank-arrow { color: var(--ink-mute); font-size: .85rem; }
+  .guide-device-list { display:flex; flex-direction:column; gap:.4rem; margin-top:.5rem; }
+  .guide-device-row { display:flex; gap:.6rem; align-items:flex-start; }
+  .guide-device-name { font-weight:700; font-size:.82rem; color:var(--ink); min-width:70px; flex-shrink:0; }
+  .guide-device-step { font-size:.82rem; color:var(--ink-soft); line-height:1.5; }
+  /* guide-section/body kept for first-guide (onboarding) compatibility */
+  .guide-section { background:white; border-radius:var(--r-sm); border:0.5px solid var(--paper-3); padding:1rem 1.1rem; margin-bottom:.9rem; }
+  .guide-section-title { font-size:1rem; color:var(--hero-green); font-family:var(--font-body); font-weight:700; margin-bottom:.5rem; display:flex; align-items:center; gap:.4rem; }
+  .guide-body { font-size:.9rem; color:var(--ink-soft); font-family:var(--font-body); line-height:1.7; }
+  .guide-state-row { display:flex; align-items:flex-start; gap:.7rem; padding:.5rem 0; border-bottom:0.5px solid var(--paper-2); }
+  .guide-state-row:last-child { border-bottom:none; }
+  .guide-state-badge { font-size:.72rem; font-family:var(--font-ui); border-radius:8px; padding:.2rem .6rem; font-weight:600; white-space:nowrap; flex-shrink:0; margin-top:.1rem; }
 
   /* ── LEVEL SCREEN — light palette ───────────────────────── */
   #level-screen { background:var(--blue-soft); overflow-y:auto; }
@@ -1474,6 +1509,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   <!-- Usage counter — moved below levels grid -->
 
 
+  <div class="home-top-row">
   <div class="progress-wrap">
     <div class="overview-card">
       <h3>总体进度</h3>
@@ -1484,7 +1520,6 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       </div>
       <div class="global-bar"><div class="global-bar-fill" id="global-bar-fill" style="width:0%"></div></div>
       <div class="global-bar-label" id="global-bar-label">0% 已掌握</div>
-      <div style="font-size:.62rem;color:var(--ink-mute);font-family:var(--font-ui);margin-top:.4rem;text-align:center;line-height:1.5;">本应用的词语库包含教材生字词表及课文重点词语，老师会持续更新，以求完善。<br>已掌握词语不受影响，请放心学习！</div>
     </div>
   </div>
 
@@ -1511,11 +1546,12 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   </div>
   <!-- Save / Restore row -->
   <!-- Action buttons row -->
-  <div style="display:flex;gap:.5rem;padding:0 1.2rem .5rem;max-width:520px;margin:0 auto;width:100%;">
+  <div class="home-action-row" style="display:flex;gap:.5rem;padding:0 1.2rem .5rem;max-width:520px;margin:0 auto;width:100%;">
     <button onclick="showScreen('achievements-screen');updateAchievementsScreen()" style="flex:2;padding:.75rem;background:rgba(245,200,0,.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#7B5A00;border:1px solid rgba(255,255,255,.5);border-radius:var(--r-sm);font-size:.92rem;font-family:var(--font-body);font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;">🏅 我的成就</button>
     <button onclick="showLeaderboard()" style="flex:2;padding:.75rem;background:rgba(26,82,118,.75);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:white;border:1px solid rgba(255,255,255,.4);border-radius:var(--r-sm);font-size:.92rem;font-family:var(--font-body);font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;">🏆 排行榜</button>
     <button onclick="showScreen('guide-screen');renderGuide()" style="flex:1;padding:.75rem;background:rgba(255,255,255,.45);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:var(--blue);border:1px solid rgba(255,255,255,.6);border-radius:var(--r-sm);font-size:.88rem;font-family:var(--font-body);cursor:pointer;">🧭 使用指南</button>
   </div>
+  </div><!-- /.home-top-row -->
   <div class="save-restore-row" id="dashboard-btn-row" style="display:none;">
     <button class="save-btn" onclick="showDashboard()" style="background:rgba(26,42,94,.75);color:white;border-color:rgba(26,42,94,.4);position:relative;">📋 教师管理面板<span id="pending-nick-badge" style="display:none;position:absolute;top:-6px;right:-6px;background:var(--red);color:white;border-radius:50%;width:18px;height:18px;font-size:.65rem;font-family:var(--font-ui);font-weight:700;display:none;align-items:center;justify-content:center;line-height:1;"></span></button>
   </div>
@@ -8465,134 +8501,144 @@ function toggleGuideLang() {
 
 function renderGuide() {
   const zh = _guideLang === 'zh';
-  const sections = [
-    {
-      icon: '📢',
-      title: zh ? '词语会定期更新' : 'Word list updated periodically',
-      body: zh
-        ? '本应用的词语库包含教材生字词表及课文重点词语，老师会持续更新，以求完善。<br>已掌握词语不受影响，请放心学习！'
-        : 'The word bank includes MOE syllabus vocab and key words from the 课文 texts. New words may be added over time. Your mastered words are always preserved.'
-    },
-    {
-      icon: '🎮',
-      title: zh ? '欢迎来到词王淬炼坊！' : 'Welcome to Vocabulary Boot Camp!',
-      body: zh
-        ? '你的词王之路从这里开始！完成四个年级的词语学习，从词语学徒一步步晋升，最终晋升为顶级词王！👑'
-        : 'Your journey to becoming a Vocabulary King starts here! Master vocabulary across four levels and rise from Apprentice all the way to the ultimate title of Grand Vocab King 👑.'
-    },
-    {
-      icon: '📊',
-      title: zh ? '词语掌握状态' : 'Mastery States',
-      body: null,
-      states: [
-        { cls: 'gs-unstarted', label: zh?'未开始':'Not started', desc: zh?'还没有练习过这个词语。':'You have not practised this word yet.' },
-        { cls: 'gs-learning',  label: zh?'学习中':'In progress',  desc: zh?'已经开始学习，但尚未同时完成词语闪卡和填空挑战。华文解释和英文翻译不计入掌握状态。':'You have started, but have not yet completed both Flashcard and Fill-in Challenge. Definition and English tabs do not count toward mastery.' },
-        { cls: 'gs-mastered',  label: zh?'已掌握':'Mastered',     desc: zh?'已在词语闪卡标记「认识了」，并在填空挑战中答对。如果填空挑战答错，状态会退回学习中。':'Marked 认识了 on flashcard AND answered correctly in Fill-in Challenge. Getting Fill-in wrong will demote the word back to 学习中.' },
-      ]
-    },
-    {
-      icon: '📝',
-      title: zh ? '四种练习模式' : 'Four Practice Modes',
-      body: zh
-        ? `词语闪卡：翻转卡片，自己判断是否认识。
-填空挑战：在句子中选出正确词语填入空格——这是最难的模式，完成后才算已掌握。
-华文解释：选出正确的中文释义。
-英文翻译：选出正确的英文翻译。
-
-注意：华文解释和英文翻译不影响掌握状态。`
-        : `Flashcard: Flip the card and judge if you know the word.
-Fill-in Challenge: Select the correct word to fill the blank in a sentence — the hardest mode, and required for mastery.
-Definition: Choose the correct Chinese definition.
-English: Choose the correct English translation.
-
-Note: Definition and English modes do not affect mastery status.`
-    },
-    {
-      icon: '🏅',
-      title: zh ? '成就与称号' : 'Badges & Ranks',
-      body: zh
-        ? `每完成一个课文类别（生活空间/核心/巩固/文化站）的全部词语，获得⭐成就章。
-完成整个单元（三个类别）获得🎖️单元章。
-完成整个年级获得年级称号：
-🌱 词语学徒（中一）→ 🎯 词语能手（中二）→ 🏅 词语达人（中三）→ 🏆 词语宗师（中四）→ 👑 顶级词王（全部完成）`
-        : `Complete all words in a component (生活空间/核心/巩固/文化站) to earn a ⭐ badge.
-Complete all three components of a unit to earn a 🎖️ unit badge.
-Complete a full level to earn a rank title:
-🌱 Apprentice (Sec 1) → 🎯 Expert (Sec 2) → 🏅 Master (Sec 3) → 🏆 Grand Master (Sec 4) → 👑 Grand Vocab King (All levels)`
-    },
-    {
-      icon: '💾',
-      title: zh ? '进度自动备份到云端' : 'Progress auto-backed up to cloud',
-      body: zh
-        ? `登录后，你的学习进度会自动同步到云端。\n\n换设备时，只需用同一电邮和密码登录，进度即可自动恢复。\n\n无需手动保存进度码。`
-        : `Your progress is automatically synced to the cloud when you are logged in.\n\nSwitching devices? Just log in with the same email and password — your progress will be restored automatically.`
-    },
-    {
-      icon: '📱',
-      title: zh ? '不同设备的使用方式' : 'Using on Different Devices',
-      body: zh
-        ? `iPhone/iPad（Safari）：点击分享→「添加到主屏幕」，即可像App一样使用。
-Android（Chrome）：点击右上角菜单→「添加到主屏幕」。
-Chromebook：Chrome地址栏右侧会出现安装图标，点击安装。
-Windows电脑：直接在Chrome或Edge浏览器中打开使用，无需安装。
-
-注意：本应用需要网络连接才能使用。`
-        : `iPhone/iPad (Safari): Tap Share → Add to Home Screen to use it like an app.
-Android (Chrome): Tap the menu → Add to Home Screen.
-Chromebook: Click the install icon in the address bar.
-Windows: Open directly in Chrome or Edge — no installation needed.
-
-Note: This app requires an internet connection.`
-    },
-    {
-      icon: '💬',
-      title: zh ? '发现错误？告诉我们！' : 'Found an Error? Let Us Know!',
-      body: zh
-        ? '在练习过程中，点击屏幕右下角的「💬 反馈」按钮，描述问题（如：答案有误、例句不通顺等）。你的反馈会帮助改善这个学习工具！'
-        : 'During practice, tap the 💬 Feedback button at the bottom right of the screen, and describe the issue (e.g. wrong answer, unnatural example sentence). Your feedback helps improve this tool!'
-    },
-    {
-      icon: '🌟',
-      title: zh ? '学习这件事，你来做主！' : 'Own Your Learning!',
-      body: zh
-        ? `这个应用是为了支持你的自主学习而设计的。老师无法看到你的答题情况，只知道你有在使用这个工具。
-
-勇于尝试，不要怕出错——每一次答错都是学习的机会。词王之路不是一蹴而就的，持之以恒才是关键！加油！💪`
-        : `This app is designed to support your independent learning. Your teacher cannot see your individual answers — only that you are using the tool.
-
-Be brave and try — every wrong answer is a learning opportunity. The path to becoming a Vocabulary King takes time and persistence. Keep going! 💪`
-    },
-  ];
-
   const container = document.getElementById('guide-content');
   container.innerHTML = '';
 
-  sections.forEach(s => {
-    const sec = document.createElement('div');
-    sec.className = 'guide-section';
+  const items = [
+    {
+      icon: '🎮',
+      title: zh ? '词王淬炼坊是什么？' : 'What is 词王淬炼坊?',
+      html: zh
+        ? `<p>练习中一至中四所有华文词语，从<strong>词语学徒</strong>一步步晋升，最终成为<strong>顶级词王</strong>！👑</p>
+           <p>完成四个年级，掌握超过1000个词语。</p>`
+        : `<p>Practise all G3 Chinese vocab from Sec 1 to 4. Rise from <strong>Apprentice</strong> to <strong>Grand Vocab King</strong>! 👑</p>`
+    },
+    {
+      icon: '📊',
+      title: zh ? '每个词语的掌握状态' : 'Mastery states explained',
+      html: (() => {
+        const states = [
+          { cls:'gs-unstarted', label: zh?'未开始':'Not started',
+            desc: zh?'还没练习过这个词语。':'You have not practised this word yet.' },
+          { cls:'gs-learning',  label: zh?'学习中':'In progress',
+            desc: zh?'已开始，但还未同时完成闪卡＋填空。':'Started, but not yet completed both flashcard + fill-in.' },
+          { cls:'gs-mastered',  label: zh?'已掌握':'Mastered',
+            desc: zh?'闪卡标记「认识了」✓  填空答对 ✓  如填空答错，退回「学习中」。':'Flashcard marked 认识了 ✓ AND fill-in correct ✓. Wrong fill-in → back to 学习中.' },
+        ];
+        return '<div class="guide-state-visual">' +
+          states.map(s =>
+            `<div class="guide-sv-row"><span class="guide-sv-badge ${s.cls}">${s.label}</span><span class="guide-sv-desc">${s.desc}</span></div>`
+          ).join('') + '</div>';
+      })()
+    },
+    {
+      icon: '📝',
+      title: zh ? '四种练习模式' : 'Four practice modes',
+      html: (() => {
+        const modes = [
+          { name: zh?'词语闪卡':'Flashcard',
+            desc: zh?'翻转卡片，自己判断是否认识。':'Flip the card, judge if you know it.',
+            tag: zh?'必修①':'Required ①', req: true },
+          { name: zh?'填空挑战':'Fill-in',
+            desc: zh?'在句子中选出正确词语——最难！完成后才算已掌握。':'Pick the right word to fill the blank — hardest mode. Required for mastery.',
+            tag: zh?'必修②':'Required ②', req: true },
+          { name: zh?'华文解释':'Definition',
+            desc: zh?'选出正确的中文释义。':'Choose the correct Chinese definition.',
+            tag: zh?'选做':'Optional', req: false },
+          { name: zh?'英文翻译':'English',
+            desc: zh?'选出正确的英文翻译。':'Choose the correct English translation.',
+            tag: zh?'选做':'Optional', req: false },
+        ];
+        return '<div class="guide-mode-grid">' +
+          modes.map(m =>
+            `<div class="guide-mode-card"><div class="guide-mode-name">${m.name}</div><div class="guide-mode-desc">${m.desc}</div><span class="guide-mode-tag ${m.req?'req':'opt'}">${m.tag}</span></div>`
+          ).join('') + '</div>' +
+          `<p style="margin-top:.6rem;font-size:.78rem;color:var(--ink-mute);">${zh?'注意：华文解释和英文翻译不影响掌握状态。':'Definition and English modes do not affect mastery status.'}</p>`;
+      })()
+    },
+    {
+      icon: '🏅',
+      title: zh ? '成就与年级称号' : 'Badges & rank titles',
+      html: (() => {
+        const ranks = [
+          { emoji:'🌱', name: zh?'词语学徒':'Apprentice',   level: zh?'中一':'Sec 1' },
+          { emoji:'🎯', name: zh?'词语能手':'Expert',       level: zh?'中二':'Sec 2' },
+          { emoji:'🏅', name: zh?'词语达人':'Master',       level: zh?'中三':'Sec 3' },
+          { emoji:'🏆', name: zh?'词语宗师':'Grand Master', level: zh?'中四':'Sec 4' },
+          { emoji:'👑', name: zh?'顶级词王':'Grand Vocab King', level: zh?'全部':'All' },
+        ];
+        const intro = zh
+          ? '<p>完成每个课文类别获得⭐成就章；完成整个单元获得🎖️单元章。完成整个年级解锁年级称号：</p>'
+          : '<p>Complete a component → ⭐ badge. Complete a full unit → 🎖️ unit badge. Complete a level → unlock rank title:</p>';
+        const flow = '<div class="guide-rank-flow">' +
+          ranks.map((r, i) =>
+            `<span class="guide-rank-pill">${r.emoji} ${r.name}</span>${i<ranks.length-1?'<span class="guide-rank-arrow">→</span>':''}`
+          ).join('') + '</div>';
+        return intro + flow;
+      })()
+    },
+    {
+      icon: '💾',
+      title: zh ? '进度自动备份' : 'Progress auto-saved',
+      html: zh
+        ? `<p>登录后，进度自动同步到云端。换设备时，用同一电邮和密码登录即可恢复——无需手动保存。</p>`
+        : `<p>Progress syncs to the cloud automatically. Log in with the same email and password on any device to restore it — no manual saving needed.</p>`
+    },
+    {
+      icon: '📱',
+      title: zh ? '怎样把它变成App？' : 'Install as an app',
+      html: (() => {
+        const devices = [
+          { name:'iPhone / iPad', step: zh?'Safari → 分享 → 「添加到主屏幕」':'Safari → Share → "Add to Home Screen"' },
+          { name:'Android',       step: zh?'Chrome → 右上角菜单 → 「添加到主屏幕」':'Chrome → menu → "Add to Home Screen"' },
+          { name:'Chromebook',    step: zh?'Chrome地址栏右侧 → 安装图标':'Install icon in Chrome address bar' },
+          { name:'Windows',       step: zh?'直接用Chrome或Edge打开，无需安装。':'Open in Chrome or Edge — no install needed.' },
+        ];
+        return '<div class="guide-device-list">' +
+          devices.map(d =>
+            `<div class="guide-device-row"><span class="guide-device-name">${d.name}</span><span class="guide-device-step">${d.step}</span></div>`
+          ).join('') + '</div>' +
+          `<p style="margin-top:.6rem;font-size:.78rem;color:var(--ink-mute);">${zh?'⚠️ 本应用需要网络连接。':'⚠️ Internet connection required.'}</p>`;
+      })()
+    },
+    {
+      icon: '💬',
+      title: zh ? '发现错误？告诉我们！' : 'Found an error? Tell us!',
+      html: zh
+        ? `<p>练习时，点击右下角的「💬 反馈」按钮，描述问题（如：答案有误、例句不通顺等）。谢谢你帮忙改善这个工具！</p>`
+        : `<p>During practice, tap the 💬 Feedback button at the bottom-right. Describe the issue (wrong answer, unnatural example sentence, etc.). Thanks for helping improve the tool!</p>`
+    },
+    {
+      icon: '🌟',
+      title: zh ? '学习这件事，你来做主！' : 'Own your learning!',
+      html: zh
+        ? `<p>这个应用是为了支持你的自主学习而设计的。老师无法看到你的答题情况。</p>
+           <p>不要怕答错——每一次出错都是学习的机会。持之以恒，你一定能成为词王！💪</p>`
+        : `<p>This app supports your independent learning. Your teacher cannot see your individual answers.</p>
+           <p>Don't fear mistakes — every wrong answer is a learning opportunity. Keep going! 💪</p>`
+    },
+  ];
 
-    const titleEl = document.createElement('div');
-    titleEl.className = 'guide-section-title';
-    titleEl.textContent = s.icon + ' ' + s.title;
-    sec.appendChild(titleEl);
-
-    if (s.states) {
-      s.states.forEach(st => {
-        const row = document.createElement('div');
-        row.className = 'guide-state-row';
-        row.innerHTML = `<span class="guide-state-badge ${st.cls}">${st.label}</span><span class="guide-body">${st.desc}</span>`;
-        sec.appendChild(row);
-      });
-    } else if (s.body) {
-      const bodyEl = document.createElement('div');
-      bodyEl.className = 'guide-body';
-      bodyEl.style.whiteSpace = 'pre-line';
-      bodyEl.textContent = s.body;
-      sec.appendChild(bodyEl);
-    }
-
-    container.appendChild(sec);
+  items.forEach((item, idx) => {
+    const el = document.createElement('div');
+    el.className = 'guide-acc-item';
+    el.innerHTML = `
+      <button class="guide-acc-trigger" onclick="toggleGuideAcc(this.parentElement)">
+        <span class="guide-acc-icon">${item.icon}</span>
+        <span>${item.title}</span>
+        <span class="guide-acc-chevron">▼</span>
+      </button>
+      <div class="guide-acc-body">${item.html}</div>`;
+    container.appendChild(el);
   });
+
+  // Open the first item by default
+  const first = container.querySelector('.guide-acc-item');
+  if (first) first.classList.add('open');
+}
+
+function toggleGuideAcc(el) {
+  el.classList.toggle('open');
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -9061,13 +9107,7 @@ function renderFirstGuide() {
         ? `登录后，你的进度会自动同步到云端。换设备时，用同一电邮和密码登录即可恢复。无需手动保存进度码。`
         : `Your progress is automatically synced to the cloud. Switch devices by logging in with the same email and password.`
     },
-    {
-      icon: '📢',
-      title: zh ? '词语会定期更新' : 'Word list updated periodically',
-      body: zh
-        ? '本应用的词语库包含教材生字词表及课文重点词语，老师会持续更新，以求完善。<br>已掌握词语不受影响，请放心学习！'
-        : 'The word bank includes vocabulary from the MOE syllabus list and key words found in the 课文 texts. New words may be added as the teacher reviews each text. Your mastered words are not affected.'
-    },
+
   ];
 
   const container = document.getElementById('first-guide-content');
@@ -9756,6 +9796,32 @@ function renderLeaderboard(top10, myEmail, container) {
 // SOUND EFFECTS ENGINE  (Web Audio API — zero external files)
 // ══════════════════════════════════════════════════════════════
 var _sfxStreak = 0;   // consecutive correct answers this session
+
+// iOS requires AudioContext to be created/resumed inside a synchronous
+// user-gesture handler. We unlock it on the very first touch so that
+// sounds triggered asynchronously (after answer evaluation) can play.
+(function _unlockAudioOnFirstGesture() {
+  function _unlock() {
+    if (window._sfxCtxUnlocked) return;
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      // Play a zero-length silent buffer to fully unlock on iOS
+      const buf = ctx.createBuffer(1, 1, 22050);
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.connect(ctx.destination);
+      src.start(0);
+      src.onended = () => { ctx.close(); };
+      window._sfxCtxUnlocked = true;
+    } catch(e) {}
+    document.removeEventListener('touchstart', _unlock, true);
+    document.removeEventListener('touchend',   _unlock, true);
+    document.removeEventListener('click',      _unlock, true);
+  }
+  document.addEventListener('touchstart', _unlock, true);
+  document.addEventListener('touchend',   _unlock, true);
+  document.addEventListener('click',      _unlock, true);
+})();
 
 const SFX = (() => {
   let _ctx = null;
