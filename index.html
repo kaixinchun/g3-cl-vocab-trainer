@@ -1081,9 +1081,14 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   /* Issue 5: desktop 3-column grid for unit buttons */
   .units-list { background: var(--blue-soft); padding:.7rem; max-width:960px; margin:0 auto; }
   @media(min-width:700px) {
-    .units-list { padding: 1rem 1.2rem; }
-    .unit-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; align-items: stretch; }
-    .unit-group-label { grid-column: 1 / -1; }
+    .units-list { padding: .6rem 1rem; }
+    .unit-group { display: grid; grid-template-columns: repeat(4, 1fr); gap: .4rem; align-items: stretch; margin-bottom:.5rem; }
+    .unit-group-label { grid-column: 1 / -1; margin-bottom:.1rem; }
+    .unit-btn { padding: .55rem .7rem; margin-bottom:0; }
+    .unit-btn-name { font-size:.82rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .unit-btn-sub { font-size:.66rem; }
+    .unit-mastery-bar { width: 36px; }
+    .unit-comp-title { display:block; font-size:.65rem; color:var(--ink-mute); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-left:0; margin-top:.05rem; }
   }
   .unit-group-label {
     font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
@@ -5981,7 +5986,7 @@ function renderUnitsList(level) {
       btn.innerHTML = `
         <div class="unit-dot ${dot}"></div>
         <div class="unit-btn-info">
-          <div class="unit-btn-name">${key}${compTitle ? `<span class="unit-comp-title"> ${compTitle}</span>` : ''}</div>
+          <div class="unit-btn-name">${compType || key}${compTitle ? `<span class="unit-comp-title">${compTitle}</span>` : ''}</div>
           <div style="display:flex;align-items:center;gap:.3rem;flex-wrap:wrap;margin-top:.15rem;">
             <span class="unit-btn-sub" style="margin:0;">${words.length} 词语 · ${mastered} 已掌握${bestStr ? ' · ' + bestStr : ''}</span>
             ${unmasteredChip}${notStartedChip}
