@@ -6275,6 +6275,7 @@ function markWord(known) {
     markWordUnknownFlashcard(word);
     sessionWrong++;
     sessionWrongWords.push(word);
+    _trackWordError(word);
     SFX.wrong();
     _sfxStreak = 0;
     showToast('继续练习，你会掌握的！');
@@ -6300,7 +6301,7 @@ function renderDefinition(word, reviewAns) {
     fb.className = 'mcq-feedback show ' + (isRight ? 'correct' : 'wrong');
     document.getElementById('def-next').className = 'next-btn show';
     if (isRight) { markWordCorrect(word); sessionCorrect++; }
-    else         { markWordWrong(word);   sessionWrong++;   sessionWrongWords.push(word); }
+    else         { markWordWrong(word);   sessionWrong++;   sessionWrongWords.push(word); _trackWordError(word); }
     _autoAdvTimer = setTimeout(nextQuestion, isRight ? 900 : 1400);
   }, reviewAns);
 }
@@ -6365,6 +6366,7 @@ function renderCloze(word) {
       markWordWrong(word);
       sessionWrong++;
       sessionWrongWords.push(word);
+      _trackWordError(word);
     }
     _autoAdvTimer = setTimeout(nextQuestion, isRight ? 900 : 1400);
   });
@@ -6393,7 +6395,7 @@ function renderEnglish(word, reviewAns) {
     fb.className = 'mcq-feedback show ' + (isRight ? 'correct' : 'wrong');
     document.getElementById('eng-next').className = 'next-btn show';
     if (isRight) { markWordCorrect(word); sessionCorrect++; }
-    else         { markWordWrong(word);   sessionWrong++;   sessionWrongWords.push(word); }
+    else         { markWordWrong(word);   sessionWrong++;   sessionWrongWords.push(word); _trackWordError(word); }
     _autoAdvTimer = setTimeout(nextQuestion, isRight ? 900 : 1400);
   }, reviewAns);
 }
@@ -9130,7 +9132,7 @@ function closeDashboard() {
 }
 function switchDashTab(tab) {
   _dashTab = tab;
-  const tabs = ['nicknames','students'];
+  const tabs = ['nicknames','students','errors','export'];
   tabs.forEach(t => {
     const btn = document.getElementById('dash-tab-' + t);
     if (!btn) return;
@@ -9149,7 +9151,9 @@ async function loadDashboardTab(tab) {
     const users = [];
     snap.forEach(d => users.push({ id: d.id, ...d.data() }));
     if (tab === 'nicknames') renderNicknameQueue(users, content);
-    else renderStudentProgress(users, content);
+    else if (tab === 'students') renderStudentProgress(users, content);
+    else if (tab === 'errors')  { renderWordErrors(content); return; }
+    else if (tab === 'export')  { renderExportTab(users, content); return; }
   } catch(e) {
     content.innerHTML = '<div style="padding:1.5rem;color:var(--red);font-family:var(--font-ui);font-size:.85rem;">加载失败：' + e.message + '</div>';
   }
@@ -9293,17 +9297,44 @@ function renderStudentProgress(users, container) {
 
   const totalWords = Object.values(VOCAB).flatMap(u => Object.values(u).flat()).length;
 
-  let html = `<div style="font-size:.7rem;font-family:var(--font-ui);color:var(--ink-mute);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem;">学生人数：${students.length}</div>
+  // Summary stats
+  const totalMastered = students.reduce((s, u) => s + Object.values(u.progress || {}).filter(p => p.fcKnown && p.clozeOk).length, 0);
+  const avgMastered = students.length ? Math.round(totalMastered / students.length) : 0;
+  const totalMins = students.reduce((s, u) => s + Math.round((u.totalSessionSeconds || 0) / 60), 0);
+  const avgMins = students.length ? Math.round(totalMins / students.length) : 0;
+  const sevenDaysAgo = Date.now() - 7 * 24 * 3600 * 1000;
+  const activeCount = students.filter(u => u.lastSeen?.toDate && u.lastSeen.toDate().getTime() > sevenDaysAgo).length;
+
+  let html = `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1rem;">
+    <div style="background:var(--paper-2);border-radius:var(--r-sm);padding:.6rem .8rem;">
+      <div style="font-size:.65rem;font-family:var(--font-ui);color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;">学生总数</div>
+      <div style="font-size:1.3rem;font-weight:700;font-family:var(--font-body);color:var(--ink);">${students.length}</div>
+    </div>
+    <div style="background:var(--paper-2);border-radius:var(--r-sm);padding:.6rem .8rem;">
+      <div style="font-size:.65rem;font-family:var(--font-ui);color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;">近7天活跃</div>
+      <div style="font-size:1.3rem;font-weight:700;font-family:var(--font-body);color:var(--hero-green);">${activeCount}</div>
+    </div>
+    <div style="background:var(--paper-2);border-radius:var(--r-sm);padding:.6rem .8rem;">
+      <div style="font-size:.65rem;font-family:var(--font-ui);color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;">平均掌握词数</div>
+      <div style="font-size:1.3rem;font-weight:700;font-family:var(--font-body);color:var(--ink);">${avgMastered}</div>
+    </div>
+    <div style="background:var(--paper-2);border-radius:var(--r-sm);padding:.6rem .8rem;">
+      <div style="font-size:.65rem;font-family:var(--font-ui);color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;">平均学习时长</div>
+      <div style="font-size:1.3rem;font-weight:700;font-family:var(--font-body);color:var(--ink);">${avgMins >= 60 ? (avgMins/60).toFixed(1)+'h' : avgMins+'m'}</div>
+    </div>
+  </div>
   <div style="overflow-x:auto;">
   <table style="width:100%;border-collapse:collapse;font-size:.78rem;font-family:var(--font-ui);">
     <thead>
       <tr style="background:var(--paper-3);text-align:left;">
         <th style="padding:.45rem .6rem;">昵称</th>
         <th style="padding:.45rem .6rem;">电邮</th>
-        <th style="padding:.45rem .6rem;">学校</th>
         <th style="padding:.45rem .6rem;text-align:center;">已掌握</th>
         <th style="padding:.45rem .6rem;text-align:center;">进度</th>
+        <th style="padding:.45rem .6rem;text-align:center;">学习时长</th>
+        <th style="padding:.45rem .6rem;text-align:center;">登录次数</th>
         <th style="padding:.45rem .6rem;">最近活跃</th>
+        <th style="padding:.45rem .6rem;text-align:center;">状态</th>
       </tr>
     </thead>
     <tbody>`;
@@ -9311,26 +9342,153 @@ function renderStudentProgress(users, container) {
   students.forEach((u, i) => {
     const mastered = Object.values(u.progress || {}).filter(p => p.fcKnown && p.clozeOk).length;
     const pct = Math.round(mastered / totalWords * 100);
-    const lastSeen = u.lastSeen?.toDate ? u.lastSeen.toDate().toLocaleDateString('zh-SG') : '—';
+    const lastSeenDate = u.lastSeen?.toDate ? u.lastSeen.toDate() : null;
+    const lastSeen = lastSeenDate ? lastSeenDate.toLocaleDateString('zh-SG') : '—';
+    const daysSince = lastSeenDate ? Math.floor((Date.now() - lastSeenDate.getTime()) / 86400000) : 999;
+    const statusBadge = daysSince <= 2 ? `<span style="background:rgba(74,154,32,.15);color:var(--green);border-radius:4px;padding:.1rem .4rem;font-size:.68rem;">活跃</span>`
+      : daysSince <= 7 ? `<span style="background:rgba(230,170,0,.15);color:var(--amber);border-radius:4px;padding:.1rem .4rem;font-size:.68rem;">低频</span>`
+      : `<span style="background:rgba(192,57,43,.12);color:var(--red);border-radius:4px;padding:.1rem .4rem;font-size:.68rem;">沉睡</span>`;
     const nick = u.nicknameApproved ? (u.nickname || '—') : (u.nickname ? u.nickname + '⏳' : '—');
-    const bg = i % 2 === 0 ? 'white' : 'var(--paper-2)';
+    const mins = Math.round((u.totalSessionSeconds || 0) / 60);
+    const timeStr = mins >= 60 ? Math.floor(mins/60) + 'h ' + (mins%60) + 'm' : (mins > 0 ? mins + 'm' : '—');
+    const loginCount = u.loginCount || '—';
+    const bg = i % 2 === 0 ? 'transparent' : 'var(--paper-2)';
     html += `<tr style="background:${bg};border-bottom:1px solid var(--paper-3);">
       <td style="padding:.4rem .6rem;font-family:var(--font-body);">${nick}</td>
       <td style="padding:.4rem .6rem;color:var(--ink-mute);font-size:.7rem;">${u.email}</td>
-      <td style="padding:.4rem .6rem;color:var(--ink-mute);">${u.school || '—'}</td>
       <td style="padding:.4rem .6rem;text-align:center;font-weight:700;color:var(--green);">${mastered}</td>
       <td style="padding:.4rem .6rem;text-align:center;">
-        <div style="background:var(--paper-3);border-radius:4px;height:8px;width:60px;overflow:hidden;display:inline-block;">
+        <div style="background:var(--paper-3);border-radius:4px;height:8px;width:52px;overflow:hidden;display:inline-block;vertical-align:middle;">
           <div style="background:var(--hero-green);height:100%;width:${pct}%;"></div>
         </div>
         <span style="margin-left:.3rem;color:var(--ink-mute);">${pct}%</span>
       </td>
+      <td style="padding:.4rem .6rem;text-align:center;color:var(--ink-mute);">${timeStr}</td>
+      <td style="padding:.4rem .6rem;text-align:center;color:var(--ink-mute);">${loginCount}</td>
       <td style="padding:.4rem .6rem;color:var(--ink-mute);">${lastSeen}</td>
+      <td style="padding:.4rem .6rem;text-align:center;">${statusBadge}</td>
     </tr>`;
   });
 
   html += '</tbody></table></div>';
   container.innerHTML = html;
+}
+
+// ── WORD ERROR ANALYSIS TAB ──────────────────────────────────
+async function renderWordErrors(container) {
+  container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--ink-mute);font-family:var(--font-ui);font-size:.85rem;">加载中…</div>';
+  try {
+    const { collection, getDocs } = window._fbFns;
+    const snap = await getDocs(collection(window._fbDb, 'wordErrors'));
+    const errors = [];
+    snap.forEach(d => errors.push(d.data()));
+    errors.sort((a, b) => (b.count || 0) - (a.count || 0));
+    const top = errors.slice(0, 30);
+    if (!top.length) {
+      container.innerHTML = '<div style="padding:1.5rem;text-align:center;color:var(--ink-mute);font-family:var(--font-ui);">暂无错误数据 — 学生练习后即可显示</div>';
+      return;
+    }
+    const maxCount = top[0].count || 1;
+    let html = '<div style="font-size:.7rem;font-family:var(--font-ui);color:var(--ink-mute);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.8rem;">常见错误词语 Top ' + top.length + '（全班累计答错次数）</div>';
+    html += '<div style="display:flex;flex-direction:column;gap:.35rem;">';
+    top.forEach((e, i) => {
+      const pct = Math.round((e.count / maxCount) * 100);
+      const word = e.word || '—';
+      const unit = getUnitContext(word);
+      const barColor = pct >= 70 ? 'var(--red)' : pct >= 40 ? 'var(--amber)' : 'var(--hero-green)';
+      html += `<div style="display:flex;align-items:center;gap:.6rem;">
+        <div style="width:1.2rem;text-align:right;font-size:.7rem;color:var(--ink-mute);flex-shrink:0;">${i+1}</div>
+        <div style="font-family:var(--font-body);font-size:.95rem;width:3.2rem;flex-shrink:0;">${word}</div>
+        <div style="flex:1;background:var(--paper-3);border-radius:3px;height:10px;overflow:hidden;">
+          <div style="background:${barColor};height:100%;width:${pct}%;border-radius:3px;transition:width .3s;"></div>
+        </div>
+        <div style="font-size:.75rem;font-weight:700;color:var(--ink);width:2.2rem;text-align:right;flex-shrink:0;">${e.count}</div>
+        <div style="font-size:.65rem;color:var(--ink-mute);width:4rem;flex-shrink:0;text-align:right;">${unit}</div>
+      </div>`;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+  } catch(e) {
+    container.innerHTML = '<div style="padding:1.5rem;color:var(--red);font-family:var(--font-ui);font-size:.85rem;">加载失败：' + e.message + '</div>';
+  }
+}
+
+// ── EXPORT TAB ────────────────────────────────────────────────
+function renderExportTab(users, container) {
+  const NON_TEACHER = [...STUDENT_TYPES, '其他机构', '公众人士'];
+  const students = users.filter(u => NON_TEACHER.includes(u.userType) || !TEACHER_TYPES.includes(u.userType));
+  const totalWords = Object.values(VOCAB).flatMap(u => Object.values(u).flat()).length;
+
+  container.innerHTML = `<div style="font-family:var(--font-ui);font-size:.85rem;">
+    <div style="background:var(--paper-2);border-radius:var(--r-sm);padding:.8rem 1rem;margin-bottom:1rem;color:var(--ink-mute);font-size:.78rem;line-height:1.5;">
+      将当前学生进度快照导出到 Google Sheets。导出内容不含班级或年级资料。每次导出会覆盖上次的快照。
+    </div>
+    <div style="margin-bottom:1rem;">
+      <div style="font-size:.7rem;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem;">即将导出 ${students.length} 名学生的以下数据：</div>
+      <ul style="font-size:.82rem;color:var(--ink);padding-left:1.2rem;line-height:1.8;margin:0;">
+        <li>昵称（如已批准）</li>
+        <li>已掌握词语数 / 总词数</li>
+        <li>累计学习时长（分钟）</li>
+        <li>登录次数</li>
+        <li>XP 总分</li>
+        <li>最近活跃日期</li>
+        <li>快照时间</li>
+      </ul>
+    </div>
+    <button onclick="_doExportSnapshot()" style="background:var(--hero-green);color:white;border:none;border-radius:var(--r-sm);padding:.65rem 1.4rem;font-size:.88rem;font-family:var(--font-ui);font-weight:700;cursor:pointer;width:100%;">📤 导出快照到 Google Sheets</button>
+    <div id="export-status" style="margin-top:.8rem;font-size:.8rem;color:var(--ink-mute);text-align:center;min-height:1.2rem;"></div>
+  </div>`;
+}
+
+async function _doExportSnapshot() {
+  const btn = document.querySelector('[onclick="_doExportSnapshot()"]');
+  const status = document.getElementById('export-status');
+  if (btn) { btn.disabled = true; btn.textContent = '导出中…'; }
+  if (status) status.textContent = '';
+
+  try {
+    const { collection, getDocs } = window._fbFns;
+    const [userSnap, scoreSnap] = await Promise.all([
+      getDocs(collection(window._fbDb, 'users')),
+      getDocs(collection(window._fbDb, 'scores'))
+    ]);
+
+    const scoreMap = {};
+    scoreSnap.forEach(d => { scoreMap[d.id] = d.data(); });
+
+    const NON_TEACHER = [...STUDENT_TYPES, '其他机构', '公众人士'];
+    const totalWords = Object.values(VOCAB).flatMap(u => Object.values(u).flat()).length;
+    const rows = [];
+    userSnap.forEach(d => {
+      const u = d.data();
+      if (!NON_TEACHER.includes(u.userType) && TEACHER_TYPES.includes(u.userType)) return;
+      const mastered = Object.values(u.progress || {}).filter(p => p.fcKnown && p.clozeOk).length;
+      const mins = Math.round((u.totalSessionSeconds || 0) / 60);
+      const sc = scoreMap[d.id] || {};
+      const lastSeen = u.lastSeen?.toDate ? u.lastSeen.toDate().toLocaleDateString('zh-SG') : '—';
+      const nick = u.nicknameApproved ? (u.nickname || '') : '';
+      rows.push({
+        nickname: nick,
+        mastered,
+        totalWords,
+        sessionMins: mins,
+        loginCount: u.loginCount || 0,
+        totalScore: sc.totalScore || 0,
+        lastSeen,
+      });
+    });
+
+    const res = await gasPost({ action: 'progressSnapshot', rows });
+    if (res && res.ok) {
+      if (status) status.textContent = '✅ 成功导出 ' + rows.length + ' 名学生的进度快照！';
+    } else {
+      if (status) status.textContent = '❌ 导出失败：' + (res?.error || '未知错误');
+    }
+  } catch(e) {
+    if (status) status.textContent = '❌ 导出失败：' + e.message;
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '📤 导出快照到 Google Sheets'; }
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -9788,8 +9946,10 @@ function toggleSfx() {
     </div>
     <!-- Tabs -->
     <div style="display:flex;border-bottom:1.5px solid var(--paper-3);flex-shrink:0;">
-      <button id="dash-tab-nicknames" onclick="switchDashTab('nicknames')" style="flex:1;padding:.65rem;font-size:.82rem;font-family:var(--font-ui);font-weight:600;border:none;background:var(--hero-green);color:white;cursor:pointer;">昵称审核</button>
-      <button id="dash-tab-students" onclick="switchDashTab('students')" style="flex:1;padding:.65rem;font-size:.82rem;font-family:var(--font-ui);font-weight:600;border:none;background:var(--paper-2);color:var(--ink-mute);cursor:pointer;">学生进度</button>
+      <button id="dash-tab-nicknames" onclick="switchDashTab('nicknames')" style="flex:1;padding:.55rem .3rem;font-size:.75rem;font-family:var(--font-ui);font-weight:600;border:none;background:var(--hero-green);color:white;cursor:pointer;">昵称审核</button>
+      <button id="dash-tab-students" onclick="switchDashTab('students')" style="flex:1;padding:.55rem .3rem;font-size:.75rem;font-family:var(--font-ui);font-weight:600;border:none;background:var(--paper-2);color:var(--ink-mute);cursor:pointer;">学生进度</button>
+      <button id="dash-tab-errors" onclick="switchDashTab('errors')" style="flex:1;padding:.55rem .3rem;font-size:.75rem;font-family:var(--font-ui);font-weight:600;border:none;background:var(--paper-2);color:var(--ink-mute);cursor:pointer;">学习规律</button>
+      <button id="dash-tab-export" onclick="switchDashTab('export')" style="flex:1;padding:.55rem .3rem;font-size:.75rem;font-family:var(--font-ui);font-weight:600;border:none;background:var(--paper-2);color:var(--ink-mute);cursor:pointer;">导出</button>
     </div>
     <!-- Content -->
     <div id="dashboard-content" style="overflow-y:auto;flex:1;padding:1rem 1.2rem;">
