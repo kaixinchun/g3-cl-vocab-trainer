@@ -1,0 +1,1796 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>词王淬炼坊 · Vocab King: The Forge · 教学设计之旅</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Cinzel:wght@700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<style>
+:root {
+  --gold: #E8B800;
+  --teal: #6CBFA0;
+  --navy: #1a2a5e;
+  --deep: #0d1a3e;
+  --amber: #f0a500;
+}
+/* Desktop: lift background and text for calibrated monitors */
+@media (min-width: 768px) {
+  :root {
+    --deep: #111f4a;
+  }
+  body { color: #f0f0f0; font-size: 19px; }
+  .bubble.user { background: rgba(232,184,0,.18); }
+  .bubble.ai { background: rgba(108,191,160,.14); }
+  .dc { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12); }
+  .ph .phh { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12); }
+  .kat-card { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12); }
+  .rat-card { background: rgba(255,255,255,.07); }
+  .spacing-intro { background: linear-gradient(135deg, rgba(108,191,160,.12), rgba(232,184,0,.07)); }
+  .acc-cat.green .acc-cat-header { background: rgba(108,191,160,.13); }
+  .acc-cat.amber .acc-cat-header { background: rgba(232,184,0,.12); }
+  .sls-card { background: rgba(26,42,94,.75); }
+  .inst, .dcb, .fd, .ft, .qtx { color: rgba(255,255,255,.82); }
+  .pteaser { color: rgba(255,255,255,.55); }
+  .fc.amber { background: rgba(232,184,0,.1); }
+  .fc.grn { background: rgba(108,191,160,.09); }
+  .section-origin { background: linear-gradient(180deg, #111f4a 0%, #15276a 60%, #111f4a 100%); }
+  .section-pedagogy { background: linear-gradient(180deg, #111f4a 0%, #162550 50%, #111f4a 100%); }
+  .section-timeline { background: linear-gradient(180deg, #111f4a 0%, #142048 50%, #111f4a 100%); }
+  .section-potential { background: linear-gradient(180deg, #111f4a 0%, #152256 50%, #111f4a 100%); }
+  .section-closing { background: linear-gradient(180deg, #111f4a 0%, #1a2a6e 50%, #111f4a 100%); }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Noto Sans SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background: var(--deep);
+  color: #eee;
+  overflow-x: hidden;
+  font-size: 18px;
+  line-height: 1.75;
+}
+.section-origin { background: linear-gradient(180deg, #0a1628 0%, #0d1a3e 60%, #0a1628 100%); }
+.section-pedagogy { background: linear-gradient(180deg, #0a1628 0%, #101e3a 50%, #0a1628 100%); }
+.section-timeline { background: linear-gradient(180deg, #0a1628 0%, #0d1832 50%, #0a1628 100%); }
+.section-potential { background: linear-gradient(180deg, #0a1628 0%, #0e1e3a 50%, #0a1628 100%); }
+.section-closing { background: linear-gradient(180deg, #0a1628 0%, #12224d 50%, #0a1628 100%); }
+
+/* ── LANG BAR ── */
+.lang-bar {
+  position: fixed; top: .9rem; right: .9rem; z-index: 100;
+  display: flex; gap: .35rem;
+  background: rgba(13,26,62,.9); backdrop-filter: blur(8px);
+  border: 1px solid rgba(232,184,0,.22); border-radius: 20px; padding: .3rem;
+}
+.lb {
+  font-size: .78rem; letter-spacing: .06em;
+  padding: .32rem .9rem; border-radius: 14px; border: none;
+  cursor: pointer; background: transparent; color: rgba(255,255,255,.45);
+  transition: all .2s; font-family: inherit;
+}
+.lb.on { background: var(--gold); color: var(--deep); font-weight: 700; }
+
+/* ── LANG VISIBILITY ── */
+/* Defaults: zh visible, en hidden */
+span.zh { display: inline; }
+span.en { display: none; }
+div.zh, p.zh { display: block; }
+div.en, p.en { display: none; }
+/* Bilingual: both visible */
+body.bi span.zh { display: block; }
+body.bi span.en { display: block; color: rgba(255,255,255,.42); font-size: .9em; margin-top: .4rem; font-style: italic; }
+body.bi div.zh, body.bi p.zh { display: block; }
+body.bi div.en, body.bi p.en { display: block; color: rgba(255,255,255,.42); font-size: .88em; margin-top: .4rem; font-style: italic; }
+/* English only: hide zh, show en */
+body.en span.zh { display: none !important; }
+body.en span.en { display: inline !important; color: inherit; font-size: inherit; font-style: normal; margin-top: 0; }
+body.en div.zh, body.en p.zh { display: none !important; }
+body.en div.en, body.en p.en { display: block !important; color: inherit; font-size: inherit; font-style: normal; margin-top: 0; }
+
+/* ── HERO ── */
+.hero {
+  position: relative; min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 3rem 2rem; overflow: hidden;
+}
+.hbg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(26,42,94,.92), transparent 70%),
+    radial-gradient(ellipse 60% 80% at 80% 100%, rgba(108,191,160,.1), transparent 60%),
+    radial-gradient(ellipse 50% 60% at 20% 80%, rgba(232,184,0,.07), transparent 60%),
+    linear-gradient(160deg, #0d1a3e, #12224d 40%, #0a1628);
+}
+.ring {
+  position: absolute; border-radius: 50%;
+  border: 1px solid rgba(232,184,0,.06);
+  animation: ring 8s ease-in-out infinite;
+}
+.ring:nth-child(1) { width: 300px; height: 300px; top: 8%; left: -6%; animation-delay: 0s; }
+.ring:nth-child(2) { width: 500px; height: 500px; top: 48%; right: -10%; animation-delay: 2s; }
+.ring:nth-child(3) { width: 200px; height: 200px; bottom: 18%; left: 28%; animation-delay: 4s; }
+@keyframes ring { 0%,100%{opacity:.3;transform:scale(1)} 50%{opacity:.65;transform:scale(1.05)} }
+
+.hc { position: relative; z-index: 2; max-width: 840px; }
+.eyebrow {
+  font-family: 'Cinzel', 'Georgia', serif;
+  font-size: .72rem; letter-spacing: .35em; color: var(--teal);
+  text-transform: uppercase; margin-bottom: 1.4rem;
+  opacity: 0; animation: fu .8s .2s forwards;
+}
+.htitle {
+  font-family: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+  font-size: clamp(3.5rem, 10vw, 7rem);
+  font-weight: 900; color: var(--gold); line-height: 1; margin-bottom: .5rem;
+  text-shadow: 0 0 60px rgba(232,184,0,.28);
+  opacity: 0; animation: fu .8s .4s forwards;
+}
+.hsub {
+  font-size: clamp(1rem, 2.5vw, 1.25rem); color: rgba(255,255,255,.52);
+  letter-spacing: .07em; margin-bottom: .35rem; line-height: 1.6;
+  opacity: 0; animation: fu .8s .55s forwards;
+}
+.hattrib {
+  font-size: 1rem; color: rgba(255,255,255,.35);
+  margin-bottom: 1.8rem; letter-spacing: .05em;
+  opacity: 0; animation: fu .8s .68s forwards;
+}
+.stats {
+  display: flex; gap: 2.5rem; justify-content: center; flex-wrap: wrap;
+  margin-bottom: 2rem; opacity: 0; animation: fu .8s .78s forwards;
+}
+.st { text-align: center; }
+.sn {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 2.6rem; font-weight: 700; color: var(--gold);
+  display: block; line-height: 1;
+}
+.sl { font-size: .7rem; color: rgba(255,255,255,.32); letter-spacing: .12em; margin-top: .3rem; }
+.sc {
+  opacity: 0; animation: fu .8s 1.0s forwards;
+  color: rgba(255,255,255,.45); font-size: .8rem; letter-spacing: .25em;
+  display: flex; flex-direction: column; align-items: center; gap: .6rem;
+}
+.sa {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.sa-chevron {
+  width: 22px; height: 22px; border-right: 2px solid rgba(232,184,0,.7);
+  border-bottom: 2px solid rgba(232,184,0,.7);
+  transform: rotate(45deg);
+  animation: bounce-down 1.5s ease-in-out infinite;
+}
+.sa-chevron:nth-child(2) { animation-delay: .2s; opacity: .6; }
+.sa-chevron:nth-child(3) { animation-delay: .4s; opacity: .3; }
+@keyframes bounce-down {
+  0%,100%{ transform: rotate(45deg) translateY(0); opacity: 0.9; }
+  50%{ transform: rotate(45deg) translateY(5px); opacity: 0.4; }
+}
+@keyframes drip { 0%,100%{opacity:.55;transform:scaleY(1)} 50%{opacity:1;transform:scaleY(1.3)} }
+@keyframes fu { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+
+/* English mode - DT hex sub-labels (Chinese) - minor limitation: SVG text not hideable via CSS */
+/* English mode hero font scaling */
+body.en .htitle { font-size: clamp(3rem, 8vw, 6rem); }
+body.en .hsub { font-size: .82rem; letter-spacing:.03em; }
+body.en .hattrib { font-size: .75rem; }
+body.en .eyebrow { font-size: .55rem; letter-spacing: .2em; }
+body.en .sl { font-size: .58rem; }
+/* Bilingual mode - tighten English lines */
+body.bi .hsub span.en { font-size: .78rem; letter-spacing:.02em; }
+body.bi .sh span.en { font-size: clamp(.95rem, 2.5vw, 1.5rem); }
+body.bi .hattrib span.en { font-size: .72rem; }
+
+/* ── SECTIONS ── */
+.sw { max-width: 880px; margin: 0 auto; padding: 4rem 1.6rem; }
+.sl2 {
+  font-family: 'Cinzel', 'Georgia', serif;
+  font-size: .82rem; letter-spacing: .3em; color: var(--teal);
+  text-transform: uppercase; text-align: center; margin-bottom: .75rem;
+}
+.sh {
+  font-family: 'Noto Serif SC', 'Songti SC', serif;
+  font-size: clamp(1.25rem, 3.5vw, 2.2rem); font-weight: 700;
+  text-align: center; color: rgba(255,255,255,.92); margin-bottom: .6rem; line-height: 1.4;
+}
+.sh-sub {
+  text-align: center; font-size: 1rem; color: rgba(255,255,255,.38);
+  margin-bottom: 2.8rem; line-height: 1.6;
+}
+.sep { height: 1px; background: linear-gradient(to right, transparent, rgba(232,184,0,.18), transparent); max-width: 880px; margin: 0 auto; }
+
+/* ── ORIGIN ── */
+.origin-wrap { max-width: 680px; margin: 0 auto; }
+
+/* Chat scene */
+.chat-scene {
+  background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08);
+  border-radius: 16px; padding: 2rem 1.8rem; margin-bottom: 1.8rem;
+}
+.chat-label {
+  font-size: .65rem; letter-spacing: .2em; color: rgba(255,255,255,.25);
+  text-transform: uppercase; text-align: center; margin-bottom: 1.6rem;
+}
+.bubble-row {
+  display: flex; margin-bottom: 1.2rem; width: 100%;
+}
+.bubble-row.user {
+  justify-content: flex-end;
+}
+.bubble-row.ai {
+  justify-content: flex-start;
+}
+.bubble-row.user > div { max-width: 80%; }
+.bubble-row.ai > div { max-width: 80%; }
+.bubble {
+  padding: 1rem 1.3rem; border-radius: 18px;
+  font-size: .95rem; line-height: 1.8; width: 100%;
+}
+.bubble.user {
+  background: #2f3b52;
+  color: rgba(255,255,255,.92);
+  border-bottom-right-radius: 4px;
+}
+.bubble.ai {
+  background: #1e2a3a;
+  border: 1px solid rgba(255,255,255,.08);
+  color: rgba(255,255,255,.82);
+  border-bottom-left-radius: 4px;
+}
+.bubble-sender {
+  font-size: .68rem; color: rgba(255,255,255,.32); margin-bottom: .35rem;
+  letter-spacing: .08em;
+}
+.bubble-row.user .bubble-sender { text-align: right; }
+
+/* Typing indicator */
+.typing-indicator {
+  display: none; align-items: center; gap: .3rem;
+  padding: .9rem 1.2rem; margin-left: 0; margin-bottom: .8rem;
+  background: rgba(108,191,160,.09); border: 1px solid rgba(108,191,160,.22);
+  border-radius: 16px; border-bottom-left-radius: 4px;
+  width: fit-content;
+}
+.typing-indicator.visible { display: flex; }
+.dot-pulse {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(108,191,160,.7);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+.dot-pulse:nth-child(2) { animation-delay: .2s; }
+.dot-pulse:nth-child(3) { animation-delay: .4s; }
+@keyframes pulse {
+  0%, 60%, 100% { transform: scale(1); opacity: .5; }
+  30% { transform: scale(1.3); opacity: 1; }
+}
+.ai-response { opacity: 0; transition: opacity .5s; }
+.ai-response.visible { opacity: 1; }
+
+/* Quote block */
+.origin-quote {
+  text-align: center; margin-top: 1.8rem;
+}
+.quote-chinese {
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(1.3rem, 3.5vw, 1.8rem); font-weight: 700;
+  color: var(--gold); line-height: 1.6; margin-bottom: .4rem;
+}
+.quote-source {
+  font-size: .7rem; color: rgba(255,255,255,.28); letter-spacing: .08em;
+}
+.quote-translation {
+  font-size: 1rem; color: rgba(255,255,255,.58); margin-top: .5rem;
+  font-style: italic; line-height: 1.75;
+}
+
+/* IP Table */
+.ip-table {
+  width: 100%; border-collapse: collapse; margin: 1.5rem 0;
+  font-size: .9rem;
+}
+.ip-table th {
+  padding: .7rem 1rem; text-align: left;
+  font-size: .68rem; letter-spacing: .15em; text-transform: uppercase;
+  font-weight: 600; border-bottom: 1px solid rgba(255,255,255,.1);
+}
+.ip-table th:first-child { color: rgba(255,255,255,.45); }
+.ip-table th:last-child { color: var(--teal); }
+.ip-table td {
+  padding: .65rem 1rem; vertical-align: top;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  color: rgba(255,255,255,.65); line-height: 1.65;
+  font-size: .85rem;
+}
+.ip-table tr:last-child td { border-bottom: none; }
+.ip-box {
+  background: rgba(232,184,0,.05); border: 1px solid rgba(232,184,0,.15);
+  border-radius: 12px; padding: 1.4rem 1.6rem; margin-top: 1.5rem;
+  overflow-x: auto;
+}
+.ip-box-title {
+  font-size: .68rem; letter-spacing: .2em; color: var(--gold);
+  text-transform: uppercase; margin-bottom: 1rem;
+}
+
+/* Design Thinking cycle */
+.dt-section { margin-top: 2rem; }
+.dt-cycle {
+  display: flex; justify-content: center; align-items: center;
+  flex-wrap: wrap; gap: 0; margin: 1.5rem 0; position: relative;
+}
+.dt-node {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; width: 110px;
+}
+.dt-circle {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: rgba(232,184,0,.1); border: 2px solid rgba(232,184,0,.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .78rem; font-weight: 700; color: var(--gold);
+  line-height: 1.3; text-align: center; padding: .4rem;
+  transition: all .3s;
+}
+.dt-circle:hover { background: rgba(232,184,0,.2); border-color: var(--gold); }
+.dt-label { font-size: .68rem; color: rgba(255,255,255,.4); margin-top: .4rem; }
+.dt-arrow {
+  color: rgba(232,184,0,.4); font-size: 1.2rem;
+  padding: 0 .2rem; padding-bottom: 1.8rem;
+}
+.dt-arrow.wrap-arrow {
+  width: 100%; text-align: center; color: rgba(232,184,0,.3);
+  font-size: .75rem; letter-spacing: .1em; padding: .3rem 0 0;
+}
+.dt-note {
+  text-align: center; font-size: .82rem; color: rgba(255,255,255,.42);
+  line-height: 1.7; max-width: 560px; margin: 0 auto;
+}
+
+/* ── PEDAGOGY ── */
+.spacing-intro {
+  background: linear-gradient(135deg, rgba(108,191,160,.07), rgba(232,184,0,.04));
+  border-left: 3px solid var(--teal); border-radius: 0 12px 12px 0;
+  padding: 1.2rem 1.5rem; margin-bottom: 2rem;
+  font-size: .92rem; color: rgba(255,255,255,.68); line-height: 1.85;
+}
+.spacing-cite { font-size: .75rem; color: var(--teal); margin-top: .6rem; font-style: italic; }
+
+/* RAT */
+.rat-wrap { margin-bottom: 2rem; }
+.rat-cards {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem; margin-bottom: 1rem;
+}
+.rat-card {
+  border-radius: 12px; padding: 1.3rem 1.1rem; text-align: center;
+  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1);
+  transition: all .25s;
+}
+.rat-card.transform {
+  background: rgba(232,184,0,.08);
+  border: 2px solid var(--gold);
+  box-shadow: 0 0 24px rgba(232,184,0,.2), 0 0 48px rgba(232,184,0,.08);
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+@keyframes glow-pulse {
+  0%,100% { box-shadow: 0 0 20px rgba(232,184,0,.2), 0 0 40px rgba(232,184,0,.07); }
+  50% { box-shadow: 0 0 32px rgba(232,184,0,.35), 0 0 64px rgba(232,184,0,.15); }
+}
+.rat-letter {
+  font-family: 'Cinzel', serif; font-size: 2.4rem; font-weight: 700;
+  line-height: 1; margin-bottom: .3rem;
+}
+.rat-card:not(.transform) .rat-letter { color: rgba(255,255,255,.4); }
+.rat-card.transform .rat-letter { color: var(--gold); }
+.rat-word { font-size: .9rem; font-weight: 600; margin-bottom: .5rem; }
+.rat-card:not(.transform) .rat-word { color: rgba(255,255,255,.55); }
+.rat-card.transform .rat-word { color: var(--gold); }
+.rat-desc { font-size: .78rem; color: rgba(255,255,255,.5); line-height: 1.6; margin-bottom: .6rem; }
+.rat-card.transform .rat-desc { color: rgba(255,255,255,.75); }
+.rat-impact { font-size: .72rem; color: var(--teal); line-height: 1.55; font-style: italic; }
+.rat-card.transform .rat-impact { color: rgba(108,191,160,.9); }
+.rat-caption {
+  text-align: center; font-size: .8rem; color: rgba(255,255,255,.38);
+  line-height: 1.7; padding: .8rem 1rem;
+  border-top: 1px solid rgba(255,255,255,.07);
+}
+.rat-link {
+  display: inline-block; margin-top: .5rem;
+  font-size: .75rem; color: var(--gold); text-decoration: none;
+  border-bottom: 1px solid rgba(232,184,0,.3); transition: border-color .2s;
+}
+.rat-link:hover { border-color: var(--gold); }
+
+/* KAT cards */
+.kat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+.kat-card {
+  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px; padding: 1.3rem; cursor: pointer;
+  transition: all .25s; position: relative;
+}
+.kat-card:hover, .kat-card.open {
+  background: rgba(232,184,0,.06); border-color: rgba(232,184,0,.25);
+}
+.kat-icon { font-size: 1.9rem; margin-bottom: .6rem; }
+.kat-name {
+  font-family: 'Noto Serif SC', serif; font-size: 1rem; font-weight: 700;
+  color: var(--gold); margin-bottom: .25rem;
+}
+.kat-tag { font-size: .78rem; color: rgba(255,255,255,.45); line-height: 1.5; margin-bottom: .1rem; }
+.kat-expand {
+  max-height: 0; overflow: hidden; transition: max-height .4s ease;
+  font-size: .88rem; color: rgba(255,255,255,.62); line-height: 1.8;
+}
+.kat-card.open .kat-expand { max-height: 500px; margin-top: .85rem; }
+.kat-cite { font-size: .75rem; color: var(--teal); margin-top: .6rem; font-style: italic; }
+.kat-link {
+  display: inline-block; margin-top: .5rem; font-size: .75rem;
+  color: var(--gold); text-decoration: none;
+  border-bottom: 1px solid rgba(232,184,0,.3); transition: border-color .2s;
+}
+.kat-link:hover { border-color: var(--gold); }
+.kat-chevron {
+  position: absolute; top: 1rem; right: 1rem;
+  font-size: .72rem; color: rgba(255,255,255,.25); transition: transform .3s;
+}
+.kat-card.open .kat-chevron { transform: rotate(180deg); color: var(--gold); }
+
+/* ── TIMELINE ── */
+.tl { position: relative; }
+.tl::before {
+  content: ''; position: absolute; left: 27px; top: 0; bottom: 0; width: 2px;
+  background: linear-gradient(to bottom, transparent, rgba(232,184,0,.15) 8%, rgba(232,184,0,.35) 30%, rgba(108,191,160,.3) 60%, rgba(232,184,0,.15) 90%, transparent);
+  border-radius: 2px;
+}
+.ph {
+  position: relative; padding-left: 70px; margin-bottom: 1.2rem;
+  opacity: 0; transform: translateY(14px); transition: opacity .5s, transform .5s;
+}
+.ph.vis { opacity: 1; transform: translateY(0); }
+.dot {
+  position: absolute; left: 17px; top: 21px; width: 22px; height: 22px;
+  border-radius: 50%; border: 2px solid var(--gold); background: var(--deep);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .6rem; color: var(--gold); font-weight: 700; z-index: 2; transition: all .3s;
+  box-shadow: 0 0 0 3px rgba(232,184,0,.08);
+}
+.ph.open .dot { background: var(--gold); color: var(--deep); box-shadow: 0 0 16px rgba(232,184,0,.5), 0 0 0 4px rgba(232,184,0,.12); }
+.phh {
+  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px; padding: 1.1rem 1.4rem; cursor: pointer;
+  display: flex; align-items: center; gap: 1rem; transition: all .25s; user-select: none;
+}
+.phh:hover, .ph.open .phh { background: rgba(232,184,0,.05); border-color: rgba(232,184,0,.2); }
+.phe { font-size: 1.8rem; flex-shrink: 0; }
+.pht { flex: 1; }
+.ptag { font-size: .65rem; letter-spacing: .17em; color: var(--teal); text-transform: uppercase; margin-bottom: .2rem; }
+.ptitle {
+  font-family: 'Noto Serif SC', serif; font-size: 1.05rem; font-weight: 700;
+  color: rgba(255,255,255,.92); line-height: 1.35;
+}
+.pteaser { font-size: .82rem; color: rgba(255,255,255,.38); margin-top: .2rem; }
+.chev { font-size: .75rem; color: rgba(255,255,255,.22); transition: transform .3s; flex-shrink: 0; }
+.ph.open .chev { transform: rotate(180deg); color: var(--gold); }
+.phb { overflow: hidden; max-height: 0; transition: max-height .5s ease; }
+.ph.open .phb { max-height: 3000px; }
+.pbi { padding: 1.4rem 0 .5rem; }
+
+.ins {
+  background: linear-gradient(135deg, rgba(108,191,160,.07), rgba(232,184,0,.04));
+  border-left: 3px solid var(--teal); border-radius: 0 10px 10px 0;
+  padding: .9rem 1.2rem; margin-bottom: 1rem;
+}
+.insl { font-size: .62rem; letter-spacing: .18em; color: var(--teal); text-transform: uppercase; margin-bottom: .3rem; }
+.inst { font-size: .88rem; color: rgba(255,255,255,.68); line-height: 1.8; }
+
+.dg { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: .75rem; margin-bottom: 1rem; }
+.dc { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); border-radius: 10px; padding: 1rem 1.1rem; }
+.dci { font-size: 1.3rem; margin-bottom: .45rem; }
+.dct { font-size: .85rem; font-weight: 600; color: var(--gold); margin-bottom: .3rem; }
+.dcb { font-size: .82rem; color: rgba(255,255,255,.52); line-height: 1.7; }
+
+/* Problem chips */
+.ps-section { margin-bottom: 1rem; }
+.ps-label { font-size: .65rem; letter-spacing: .18em; color: rgba(255,255,255,.32); text-transform: uppercase; margin-bottom: .6rem; }
+.ps-chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+.ps-chip {
+  font-size: .78rem; padding: .32rem .85rem; border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.04);
+  color: rgba(255,255,255,.55); cursor: pointer; transition: all .2s;
+}
+.ps-chip:hover, .ps-chip.active { border-color: var(--gold); color: var(--gold); background: rgba(232,184,0,.08); }
+.ps-detail { max-height: 0; overflow: hidden; transition: max-height .4s ease, margin .3s; }
+.ps-detail.open { max-height: 300px; margin-top: .7rem; }
+.ps-detail-inner {
+  background: rgba(255,255,255,.03); border: 1px solid rgba(232,184,0,.15);
+  border-radius: 10px; padding: .9rem 1.1rem;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+}
+.ps-prob-label { font-size: .62rem; letter-spacing: .15em; color: #e74c3c; text-transform: uppercase; margin-bottom: .35rem; }
+.ps-sol-label { font-size: .62rem; letter-spacing: .15em; color: var(--teal); text-transform: uppercase; margin-bottom: .35rem; }
+.ps-prob-text, .ps-sol-text { font-size: .82rem; color: rgba(255,255,255,.62); line-height: 1.7; }
+
+/* ── FUTURE ── */
+.potential-intro {
+  text-align: center; font-size: 1rem; color: rgba(255,255,255,.45);
+  line-height: 1.9; margin-bottom: 2.5rem; max-width: 640px; margin-left: auto; margin-right: auto;
+}
+.fg { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+.fc {
+  border-radius: 14px; padding: 1.4rem;
+  opacity: 0; transform: translateY(12px); transition: opacity .5s, transform .5s;
+}
+.fc.vis { opacity: 1; transform: translateY(0); }
+.fc.amber { background: rgba(232,184,0,.06); border: 1px solid rgba(232,184,0,.18); }
+.fc.amber .ftag { color: var(--gold); }
+.fc.grn { background: rgba(108,191,160,.05); border: 1px solid rgba(108,191,160,.17); }
+.fc.grn .ftag { color: var(--teal); }
+.ftag { font-size: .62rem; letter-spacing: .17em; text-transform: uppercase; margin-bottom: .45rem; }
+.fi { font-size: 1.6rem; margin-bottom: .5rem; }
+.ft {
+  font-family: 'Noto Serif SC', serif; font-size: 1rem; font-weight: 700;
+  color: rgba(255,255,255,.88); margin-bottom: .4rem;
+}
+.fd { font-size: .84rem; color: rgba(255,255,255,.5); line-height: 1.7; }
+.fc-note { font-size: .72rem; margin-top: .6rem; color: rgba(255,255,255,.28); font-style: italic; }
+
+/* Accordion category */
+.acc-cat {
+  border-radius: 14px; margin-bottom: 1rem; overflow: hidden;
+}
+.acc-cat-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.1rem 1.4rem; cursor: pointer; user-select: none;
+  transition: all .25s;
+}
+.acc-cat.green .acc-cat-header {
+  background: rgba(108,191,160,.08); border: 1px solid rgba(108,191,160,.22);
+}
+.acc-cat.amber .acc-cat-header {
+  background: rgba(232,184,0,.07); border: 1px solid rgba(232,184,0,.2);
+}
+.acc-cat.green .acc-cat-header:hover { background: rgba(108,191,160,.14); }
+.acc-cat.amber .acc-cat-header:hover { background: rgba(232,184,0,.12); }
+.acc-cat-title {
+  font-family: 'Noto Serif SC', serif; font-size: 1.05rem; font-weight: 700;
+}
+.acc-cat.green .acc-cat-title { color: var(--teal); }
+.acc-cat.amber .acc-cat-title { color: var(--gold); }
+.acc-cat-chev {
+  font-size: .8rem; transition: transform .3s;
+}
+.acc-cat.green .acc-cat-chev { color: var(--teal); }
+.acc-cat.amber .acc-cat-chev { color: var(--gold); }
+.acc-cat.open .acc-cat-chev { transform: rotate(180deg); }
+.acc-cat-body {
+  max-height: 0; overflow: hidden; transition: max-height .5s ease;
+  padding-bottom: 0;
+}
+.acc-cat.open .acc-cat-body { padding-bottom: .1rem; }
+.acc-cat.open .acc-cat-body { max-height: 1200px; }
+.acc-cat.green .acc-cat-body {
+  border: 1px solid rgba(108,191,160,.22); border-top: none;
+  border-radius: 0 0 14px 14px; overflow: visible;
+}
+.acc-cat.amber .acc-cat-body {
+  border: 1px solid rgba(232,184,0,.2); border-top: none;
+  border-radius: 0 0 14px 14px; overflow: visible;
+}
+.acc-cards-inner { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: .9rem; padding: 1.1rem 1.1rem 1.4rem; }
+
+/* SLS hero card */
+.sls-card {
+  background: rgba(26,42,94,.55); border: 1px solid rgba(108,160,230,.35);
+  border-radius: 14px; padding: 1.5rem 1.8rem; margin-bottom: 1.2rem;
+}
+.sls-card-title {
+  font-family: 'Noto Serif SC', serif; font-size: 1.15rem; font-weight: 700;
+  color: #a8c8ff; margin-bottom: .5rem;
+}
+.sls-card-tag { font-size: .62rem; letter-spacing: .17em; text-transform: uppercase; color: #7aadff; margin-bottom: .8rem; }
+.sls-points { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: .8rem; margin: 1rem 0 .8rem; }
+.sls-point {
+  background: rgba(255,255,255,.04); border-radius: 10px; padding: .8rem 1rem;
+}
+.sls-point-label { font-size: .7rem; font-weight: 700; color: #a8c8ff; margin-bottom: .3rem; }
+.sls-point-text { font-size: .78rem; color: rgba(255,255,255,.55); line-height: 1.6; }
+.sls-umbrella {
+  font-size: .82rem; color: rgba(255,255,255,.4); font-style: italic;
+  border-top: 1px solid rgba(255,255,255,.07); padding-top: .8rem; line-height: 1.7;
+}
+
+/* Hex animation - vertical divs */
+.hex-stage { opacity: 0; transform: translateY(10px); transition: opacity .35s, transform .35s; }
+.hex-connector { opacity: 0; transition: opacity .25s; }
+.hex-return { opacity: 0; transition: opacity .5s; }
+
+/* SR chips */
+.sr-chip {
+  background: rgba(255,255,255,.03); border: 1px solid rgba(108,191,160,.15);
+  border-radius: 10px; overflow: hidden; cursor: pointer; transition: border-color .2s;
+}
+.sr-chip:hover, .sr-chip.open { border-color: rgba(108,191,160,.4); }
+.sr-chip-header {
+  display: flex; align-items: center; gap: .7rem;
+  padding: .75rem 1rem; font-size: .88rem; color: rgba(255,255,255,.72);
+  user-select: none;
+}
+.sr-chip-dot { color: var(--teal); font-size: 1rem; flex-shrink:0; transition: transform .3s; }
+.sr-chip.open .sr-chip-dot { transform: rotate(90deg); }
+.sr-chip-header span.zh, .sr-chip-header span.en { flex: 1; }
+.sr-chip-chev { font-size: .65rem; color: rgba(255,255,255,.25); transition: transform .3s; flex-shrink:0; }
+.sr-chip.open .sr-chip-chev { transform: rotate(180deg); color: var(--teal); }
+.sr-chip-body {
+  max-height: 0; overflow: hidden; transition: max-height .4s ease;
+  font-size: .84rem; color: rgba(255,255,255,.55); line-height: 1.75;
+  padding: 0 1rem;
+}
+.sr-chip.open .sr-chip-body { max-height: 200px; padding: 0 1rem .9rem; }
+
+/* Footer */
+.foot {
+  text-align: center; padding: 3rem 1.5rem;
+  border-top: 1px solid rgba(255,255,255,.07);
+  color: rgba(255,255,255,.25); font-size: .82rem;
+  letter-spacing: .06em; line-height: 2.2;
+}
+.foot-credit {
+  max-width: 640px; margin: 1.2rem auto 0;
+  font-size: .72rem; color: rgba(255,255,255,.2);
+  line-height: 1.9; font-style: italic;
+}
+
+@media (max-width: 640px) {
+  body { font-size: 17px; }
+  .stats { gap: 1.4rem; } .sn { font-size: 2rem; }
+  .tl::before { left: 19px; } .ph { padding-left: 54px; } .dot { left: 9px; }
+  .dg, .kat-grid { grid-template-columns: 1fr; }
+  .ps-detail-inner { grid-template-columns: 1fr; }
+  .lang-bar { top: .4rem; right: .4rem; }
+  .rat-cards { grid-template-columns: 1fr; }
+  .dt-cycle { flex-direction: column; gap: .5rem; }
+  .dt-arrow { padding-bottom: 0; transform: rotate(90deg); }
+}
+</style>
+</head>
+<body class="zh">
+
+<div class="lang-bar">
+  <button class="lb on" id="btn-zh" onclick="setLang('zh')">中文</button>
+  <button class="lb" id="btn-bi" onclick="setLang('bi')">双语</button>
+  <button class="lb" id="btn-en" onclick="setLang('en')">English</button>
+</div>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="hbg">
+    <div class="ring"></div><div class="ring"></div><div class="ring"></div>
+  </div>
+  <div class="hc">
+    <div class="eyebrow">
+      <span class="zh">教学设计之旅</span>
+      <span class="en">A Journey in Pedagogical Design</span>
+    </div>
+    <div class="htitle">词王淬炼坊</div>
+    <div class="hsub">
+      <span class="zh">G3 华文词语自主学习平台</span>
+      <span class="en" style="font-size:.76rem; letter-spacing:.02em; white-space:nowrap;">Vocab King · The Forge &nbsp;·&nbsp; G3 Chinese Language SDL Platform</span>
+    </div>
+    <div class="hattrib">
+      <span class="zh">百德中学 · 母语部 · 华文科</span>
+      <span class="en" style="font-size:.72rem; letter-spacing:.02em; white-space:nowrap;">Bukit View Secondary School · MTL Dept · CL Unit</span>
+    </div>
+    <div style="font-size:.9rem; color:rgba(255,255,255,.28); margin-bottom:1.6rem; letter-spacing:.06em; opacity:0; animation:fu .8s .78s forwards;">
+      <span class="zh">郑凯欣老师 · 母语部主任</span>
+      <span class="en">Mdm Chun Kai Xin · HOD/MTL</span>
+    </div>
+    <div class="stats">
+      <div class="st">
+        <span class="sn">1068</span>
+        <div class="sl zh">课程词汇</div><div class="sl en">VOCAB ITEMS</div>
+      </div>
+      <div class="st">
+        <span class="sn">4</span>
+        <div class="sl zh">学习模式</div><div class="sl en">STUDY MODES</div>
+      </div>
+      <div class="st">
+        <span class="sn">5</span>
+        <div class="sl zh">发展阶段</div><div class="sl en">STAGES</div>
+      </div>
+      <div class="st">
+        <span class="sn">120+</span>
+        <div class="sl zh">次部署迭代</div><div class="sl en">DEPLOYMENTS</div>
+      </div>
+    </div>
+    <div class="sc">
+      <span class="zh">展开历程</span><span class="en">Explore the story</span>
+      <div class="sa">
+        <div class="sa-chevron"></div>
+        <div class="sa-chevron"></div>
+        <div class="sa-chevron"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ORIGIN ══ -->
+<section class="sw section-origin" style="padding-top:3rem;">
+  <div class="sl2"><span class="zh">起点</span><span class="en">The Origin</span></div>
+  <h2 class="sh">
+    <span class="zh">一个人，一个想法，一段历程</span>
+    <span class="en">One person. One idea. One journey.</span>
+  </h2>
+  <div class="sh-sub">
+    <!-- Quote 1: Laozi -->
+    <div style="margin-bottom:1.2rem;">
+      <div style="font-family:'Noto Serif SC',serif; font-size:clamp(1.1rem,3vw,1.4rem); font-weight:700; color:rgba(255,255,255,.82); line-height:1.6; margin-bottom:.35rem;">
+        <span class="zh">千里之行，始于足下。</span>
+        <span class="en">A journey of a thousand miles begins with a single step.</span>
+      </div>
+      <div style="font-size:.82rem; color:rgba(255,255,255,.45); margin-bottom:.18rem;">
+        <span class="zh">— 老子</span>
+        <span class="en">— Laozi</span>
+      </div>
+      <div style="font-size:.7rem; color:rgba(255,255,255,.25); line-height:1.5;">
+        <span class="zh">中国古代哲学家，道家思想创始人 · 《道德经·第六十四章》</span>
+        <span class="en">Ancient Chinese philosopher, founder of Taoism · Tao Te Ching, Chapter 64</span>
+      </div>
+    </div>
+    <!-- Quote 2: Arthur Ashe -->
+    <div style="border-top:1px solid rgba(255,255,255,.07); padding-top:1rem;">
+      <div style="font-size:clamp(1rem,2.5vw,1.2rem); color:rgba(255,255,255,.75); font-style:italic; line-height:1.65; margin-bottom:.35rem;">
+        "Start where you are. Use what you have. Do what you can."
+      </div>
+      <div style="font-size:.82rem; color:rgba(255,255,255,.45); margin-bottom:.18rem;">
+        — Arthur Ashe
+      </div>
+      <div style="font-size:.7rem; color:rgba(255,255,255,.25); line-height:1.5;">
+        American professional tennis player · Three-time Grand Slam champion and humanitarian
+      </div>
+    </div>
+  </div>
+
+  <div class="origin-wrap">
+    <div class="chat-scene">
+      <div class="chat-label">
+        <span class="zh">第一次对话 · 2026 年 4 月 9 日</span>
+        <span class="en">The First Conversation · 9 April 2026</span>
+      </div>
+
+      <!-- User bubble - right aligned -->
+      <div class="bubble-row user" id="userBubble" style="opacity:0;transition:opacity .6s;">
+        <div>
+          <div class="bubble-sender">
+            <span class="zh">郑凯欣老师</span><span class="en">Mdm Chun Kai Xin</span>
+          </div>
+          <div class="bubble user">
+            <span class="zh">我想为学生建一个强大的中学词语复习工具，让他们能复习四年所学的全部华文词汇，能追踪进度，能专门回头练习还没掌握的词语。<br><br>我不知道怎么开始。你能帮我吗？</span>
+            <span class="en">I want to build a powerful secondary school revision tool for students to revise all CL vocab covered over 4 years, and for it to be trackable so they can revisit the vocab they have yet to master.<br><br>I don't know how to start. Could you help me?</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Typing indicator -->
+      <div class="typing-indicator" id="typingDots">
+        <div class="dot-pulse"></div>
+        <div class="dot-pulse"></div>
+        <div class="dot-pulse"></div>
+      </div>
+
+      <!-- Claude bubble -->
+      <div class="bubble-row ai ai-response" id="claudeBubble">
+        <div>
+          <div class="bubble-sender">Claude</div>
+          <div class="bubble ai">
+            <span class="zh">当然可以。我们一起来想想。<br><br>你已经有了最重要的东西：一个清晰的教学目标，和一群真实需要帮助的学生。剩下的，我们可以一步一步建起来。</span>
+            <span class="en">Of course. Let's think through this together.<br><br>You already have the most important thing: a clear pedagogical goal, and real students who need this. The rest, we can build step by step.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Replay chat button -->
+    <div style="text-align:center; margin-top:-.5rem; margin-bottom:1rem;">
+      <button onclick="replayChat()" style="background:transparent; border:1px solid rgba(232,184,0,.2); color:rgba(255,255,255,.3); font-size:.68rem; padding:.3rem .8rem; border-radius:12px; cursor:pointer; letter-spacing:.1em; font-family:inherit; transition:all .2s;" onmouseover="this.style.borderColor='rgba(232,184,0,.5)';this.style.color='rgba(255,255,255,.6)';" onmouseout="this.style.borderColor='rgba(232,184,0,.2)';this.style.color='rgba(255,255,255,.3)';">
+        <span class="zh">↺ 重播对话</span><span class="en">↺ Replay</span>
+      </button>
+    </div>
+    <!-- Quote -->
+    <div class="origin-quote">
+      <!-- Quote text - largest -->
+      <div class="quote-chinese">天下事有难易乎？<br>为之，则难者亦易矣。</div>
+      <!-- Translation - second tier -->
+      <div class="quote-translation">
+        <span class="zh">世间事，有难有易之分吗？<br>只要去做，难事也会变得容易。</span>
+        <span class="en">Are things in this world difficult or easy?<br>If you do them, even the difficult becomes easy.</span>
+      </div>
+      <!-- Author name - medium -->
+      <div style="font-size:.85rem; color:rgba(255,255,255,.45); margin-top:.6rem; letter-spacing:.05em;">
+        <span class="zh">— 彭端淑</span>
+        <span class="en">— Peng Duanshu</span>
+      </div>
+      <!-- Role + source - smallest, most muted -->
+      <div style="font-size:.7rem; color:rgba(255,255,255,.25); margin-top:.2rem; line-height:1.6;">
+        <span class="zh">清代文学家、教育家 · 《为学》</span>
+        <span class="en">Qing Dynasty writer and educator · Essay: <em>On Learning</em></span>
+      </div>
+    </div>
+
+    <!-- Design Thinking - moved here -->
+    <div class="dt-section">
+      <div style="margin-top:2.5rem; margin-bottom:1rem;">
+        <div class="sl2" style="margin-bottom:.5rem;"><span class="zh">开发方法论</span><span class="en">Development Methodology</span></div>
+        <div style="text-align:center; font-family:'Noto Serif SC',serif; font-size:1.1rem; font-weight:700; color:rgba(255,255,255,.85); margin-bottom:.4rem;">
+          <span class="zh">设计思维驱动迭代</span><span class="en">Design Thinking as the Engine of Iteration</span>
+        </div>
+      </div>
+      <!-- Design Thinking Vertical Hex Stack -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0;max-width:240px;margin:1.5rem auto;">
+        <div class="hex-stage" id="h1" style="display:flex;flex-direction:column;align-items:center;width:100%;">
+          <svg width="210" height="184" viewBox="-5 -5 210 184" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block;margin:0 auto;">
+            <defs>
+              <filter id="gfh1" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="10" result="b"/>
+                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <filter id="gf2h1" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="4" result="b2"/>
+                <feMerge><feMergeNode in="b2"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <polygon points="50,0 150,0 200,87 150,174 50,174 0,87" fill="#5B8DD9" opacity="0.3" filter="url(#gfh1)"/>
+            <polygon points="50,0 150,0 200,87 150,174 50,174 0,87" fill="#5B8DD9" opacity="0.88"/>
+            <polygon points="50,0 150,0 200,87 150,174 50,174 0,87" fill="none" stroke="rgba(140,185,255,0.95)" stroke-width="2" filter="url(#gf2h1)"/>
+            <text x="100" y="76" text-anchor="middle" font-family="Noto Sans SC,PingFang SC,sans-serif" font-size="26" font-weight="700" fill="white">同理</text>
+            <text x="100" y="102" text-anchor="middle" font-family="Arial,sans-serif" font-size="13.5" fill="rgba(255,255,255,0.88)">Empathise</text>
+            <text x="100" y="123" text-anchor="middle" font-family="Noto Sans SC,sans-serif" font-size="11.5" fill="rgba(255,255,255,0.55)">理解学生困境</text>
+          </svg>
+        </div>
+        <div class="hex-connector" id="c1" style="display:flex;flex-direction:column;align-items:center;padding:.1rem 0;margin:-6px 0;">
+          <svg width="2" height="20"><line x1="1" y1="0" x2="1" y2="20" stroke="rgba(255,255,255,0.28)" stroke-width="1.5"/></svg>
+          <svg width="12" height="7" style="margin-top:-1px;"><polygon points="0,0 12,0 6,7" fill="rgba(255,255,255,0.28)"/></svg>
+        </div>
+        <div class="hex-stage" id="h2" style="display:flex;flex-direction:column;align-items:center;width:100%;">
+          <svg width="210" height="184" viewBox="-5 -5 210 184" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block;margin:0 auto;">
+            <defs>
+              <filter id="gfh2" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="10" result="b"/>
+                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <filter id="gf2h2" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="4" result="b2"/>
+                <feMerge><feMergeNode in="b2"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <polygon points="50,0 150,0 200,87 150,174 50,174 0,87" fill="#3A9E6A" opacity="0.3" filter="url(#gfh2)"/>
+            <polygon points="50,0 150,0 200,87 150,174 50,174 0,87" fill="#3A9E6A" opacity="0.88"/>
+            <polygon points="50,0 150,0 200,87 150,174 50,174 0,87" fill="none" stroke="rgba(80,220,140,0.95)" stroke-width="2" filter="url(#gf2h2)"/>
+            <text x="100" y="76" text-anchor="middle" font-family="Noto Sans SC,PingFang SC,sans-serif" font-size="26" font-weight="700" fill="white">定义</text>
+            <text x="100" y="102" text-anchor="middle" font-family="Arial,sans-serif" font-size="13.5" fill="rgba(255,255,255,0.88)">Define</text>
+            <text x="100" y="123" text-anchor="middle" font-family="Noto Sans SC,sans-serif" font-size="11.5" fill="rgba(255,255,255,0.55)">厘清问题核心</text>
+          </svg>
+        </div>
+        <div class="hex-connector" id="c2" style="display:flex;flex-direction:column;align-items:center;padding:.1rem 0;margin:-6px 0;">
+          <svg width="2" height="20"><line x1="1" y1="0" x2="1" y2="20" stroke="rgba(255,255,255,0.28)" stroke-width="1.5"/></svg>
+          <svg width="12" height="7" style="margin-top:-1px;"><polygon points="0,0 12,0 6,7" fill="rgba(255,255,255,0.28)"/></svg>
+        </div>
+        <div class="hex-stage" id="h3" style="display:flex;flex-direction:column;align-items:center;width:100%;">
+          <svg width="210" height="184" viewBox="-5 -5 210 184" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block;margin:0 auto;">
+            <defs>
+              <filter id="gfh3" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="10" result="b"/>
+                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <filter id="gf2h3" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="4" result="b2"/>
+                <feMerge><feMergeNode in="b2"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <polygon points="50,0 150,0 200,87 150,174 50,174 0,87" fill="#E8954A" opacity="0.3" filter="url(#gfh3)"/>
+            <polygon points="50,0 150,0 200,87 150,174 50,174 0,87" fill="#E8954A" opacity="0.88"/>
+            <polygon points="50,0 150,0 200,87 150,174 50,174 0,87" fill="none" stroke="rgba(255,190,100,0.95)" stroke-width="2" filter="url(#gf2h3)"/>
+            <text x="100" y="76" text-anchor="middle" font-family="Noto Sans SC,PingFang SC,sans-serif" font-size="26" font-weight="700" fill="white">构想</text>
+            <text x="100" y="102" text-anchor="middle" font-family="Arial,sans-serif" font-size="13.5" fill="rgba(255,255,255,0.88)">Ideate</text>
+            <text x="100" y="123" text-anchor="middle" font-family="Noto Sans SC,sans-serif" font-size="11.5" fill="rgba(255,255,255,0.55)">设计解决方案</text>
+          </svg>
+        </div>
+        <div class="hex-connector" id="c3" style="display:flex;flex-direction:column;align-items:center;padding:.1rem 0;margin:-6px 0;">
+          <svg width="2" height="20"><line x1="1" y1="0" x2="1" y2="20" stroke="rgba(255,255,255,0.28)" stroke-width="1.5"/></svg>
+          <svg width="12" height="7" style="margin-top:-1px;"><polygon points="0,0 12,0 6,7" fill="rgba(255,255,255,0.28)"/></svg>
+        </div>
+        <div class="hex-stage" id="h4" style="display:flex;flex-direction:column;align-items:center;width:100%;">
+          <svg width="210" height="184" viewBox="-5 -5 210 184" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block;margin:0 auto;">
+            <defs>
+              <filter id="gfh4" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="10" result="b"/>
+                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <filter id="gf2h4" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="4" result="b2"/>
+                <feMerge><feMergeNode in="b2"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <polygon points="50,0 150,0 200,87 150,174 50,174 0,87" fill="#E06040" opacity="0.3" filter="url(#gfh4)"/>
+            <polygon points="50,0 150,0 200,87 150,174 50,174 0,87" fill="#E06040" opacity="0.88"/>
+            <polygon points="50,0 150,0 200,87 150,174 50,174 0,87" fill="none" stroke="rgba(255,130,90,0.95)" stroke-width="2" filter="url(#gf2h4)"/>
+            <text x="100" y="76" text-anchor="middle" font-family="Noto Sans SC,PingFang SC,sans-serif" font-size="26" font-weight="700" fill="white">原型</text>
+            <text x="100" y="102" text-anchor="middle" font-family="Arial,sans-serif" font-size="13.5" fill="rgba(255,255,255,0.88)">Prototype</text>
+            <text x="100" y="123" text-anchor="middle" font-family="Noto Sans SC,sans-serif" font-size="11.5" fill="rgba(255,255,255,0.55)">快速发布测试</text>
+          </svg>
+        </div>
+        <div class="hex-connector" id="c4" style="display:flex;flex-direction:column;align-items:center;padding:.1rem 0;margin:-6px 0;">
+          <svg width="2" height="20"><line x1="1" y1="0" x2="1" y2="20" stroke="rgba(255,255,255,0.28)" stroke-width="1.5"/></svg>
+          <svg width="12" height="7" style="margin-top:-1px;"><polygon points="0,0 12,0 6,7" fill="rgba(255,255,255,0.28)"/></svg>
+        </div>
+        <div class="hex-stage" id="h5" style="display:flex;flex-direction:column;align-items:center;width:100%;">
+          <svg width="210" height="184" viewBox="-5 -5 210 184" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block;margin:0 auto;">
+            <defs>
+              <filter id="gfh5" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="10" result="b"/>
+                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <filter id="gf2h5" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="4" result="b2"/>
+                <feMerge><feMergeNode in="b2"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <polygon points="50,0 150,0 200,87 150,174 50,174 0,87" fill="#C0392B" opacity="0.3" filter="url(#gfh5)"/>
+            <polygon points="50,0 150,0 200,87 150,174 50,174 0,87" fill="#C0392B" opacity="0.88"/>
+            <polygon points="50,0 150,0 200,87 150,174 50,174 0,87" fill="none" stroke="rgba(255,100,80,0.95)" stroke-width="2" filter="url(#gf2h5)"/>
+            <text x="100" y="76" text-anchor="middle" font-family="Noto Sans SC,PingFang SC,sans-serif" font-size="26" font-weight="700" fill="white">测试</text>
+            <text x="100" y="102" text-anchor="middle" font-family="Arial,sans-serif" font-size="13.5" fill="rgba(255,255,255,0.88)">Test</text>
+            <text x="100" y="123" text-anchor="middle" font-family="Noto Sans SC,sans-serif" font-size="11.5" fill="rgba(255,255,255,0.55)">反馈持续改进</text>
+          </svg>
+        </div>
+        <div class="hex-return" id="ret" style="margin-top:1rem;display:flex;align-items:center;gap:.5rem;opacity:0;transition:opacity .5s;">
+          <div style="height:1px;width:36px;background:linear-gradient(to right,transparent,rgba(232,184,0,.5));"></div>
+          <div style="font-size:.7rem;color:rgba(232,184,0,.6);letter-spacing:.1em;">循环迭代 · ITERATE</div>
+          <div style="height:1px;width:36px;background:linear-gradient(to left,transparent,rgba(232,184,0,.5));"></div>
+        </div>
+      </div>
+      <div class="dt-note">
+        <span class="zh">120+ 次部署迭代，是这个循环不断运转的真实记录。</span>
+        <span class="en">120+ deployments are the concrete record of this cycle in motion.</span>
+      </div>
+      <div style="text-align:center; margin-top:.8rem;">
+        <span style="font-size:.72rem; color:rgba(108,191,160,.6); font-style:italic;">Hasso Plattner Institute of Design, Stanford University (d.school). <em>An Introduction to Design Thinking Process Guide.</em> <a href="https://web.stanford.edu/~mshanks/MichaelShanks/files/509554.pdf" target="_blank" style="color:var(--teal);">→ Full guide</a></span>
+      </div>
+    </div>
+
+    <!-- IP table -->
+    <div class="ip-box" style="margin-top:2.5rem;">
+      <div class="ip-box-title">
+        <span class="zh">词汇来源与知识产权</span>
+        <span class="en">On Vocabulary Sources & Intellectual Property</span>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:.5rem 1.5rem; margin-top:.8rem;">
+        <div style="font-size:.68rem; letter-spacing:.15em; color:rgba(255,255,255,.4); text-transform:uppercase; padding-bottom:.4rem; border-bottom:1px solid rgba(255,255,255,.08); margin-bottom:.3rem;">
+          <span class="zh">MOE 所有</span><span class="en">MOE Owned</span>
+        </div>
+        <div style="font-size:.68rem; letter-spacing:.15em; color:var(--teal); text-transform:uppercase; padding-bottom:.4rem; border-bottom:1px solid rgba(255,255,255,.08); margin-bottom:.3rem;">
+          <span class="zh">开发者新增</span><span class="en">Independently Developed</span>
+        </div>
+        <div style="font-size:.8rem; color:rgba(255,255,255,.55); line-height:2;">
+          <span class="zh">课程纲要词汇选材<br>教材附录《生字词总表》<br>课文原文例句</span>
+          <span class="en">Curriculum vocabulary selection<br>Textbook appendix word lists<br>Textbook example sentences</span>
+        </div>
+        <div style="font-size:.8rem; color:rgba(255,255,255,.55); line-height:2;">
+          <span class="zh">中英文释义<br>填空练习句<br>词性标注<br>文化站词汇提取<br>整体平台设计与架构</span>
+          <span class="en">Chinese & English definitions<br>Cloze sentences<br>Part-of-speech tagging<br>Cultural Corner vocab extraction<br>Full platform design & architecture</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div style="text-align:center; margin:0; line-height:0; overflow:hidden;">
+  <svg viewBox="0 0 1440 40" width="100%" height="40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C360,40 720,0 1080,20 C1260,30 1350,25 1440,20 L1440,40 L0,40 Z" fill="rgba(232,184,0,0.04)"/>
+    <path d="M0,30 C400,10 800,40 1200,20 L1440,25 L1440,40 L0,40 Z" fill="rgba(108,191,160,0.03)"/>
+  </svg>
+</div>
+
+<!-- ══ PEDAGOGY ══ -->
+<section class="sw section-pedagogy">
+  <div class="sl2"><span class="zh">教学理念</span><span class="en">Pedagogical Grounding</span></div>
+  <h2 class="sh">
+    <span class="zh">教学设计背后的学习理论</span>
+    <span class="en">The Learning Science Behind the Design</span>
+  </h2>
+  <div class="sh-sub">
+    <span class="zh">点击各框架了解详情及学术来源</span>
+    <span class="en">Tap each framework to read more and access source references</span>
+  </div>
+
+  <!-- Spacing & Retrieval - interactive chips -->
+  <div class="spacing-intro" style="padding-bottom:.8rem;">
+    <div style="margin-bottom:1.2rem;">
+      <div style="font-size:.82rem; letter-spacing:.2em; color:var(--teal); text-transform:uppercase; margin-bottom:.5rem;">
+        <span class="zh">首要原理</span><span class="en">Foundational Principle</span>
+      </div>
+      <div style="font-family:'Noto Serif SC','Songti SC',serif; font-size:1.3rem; font-weight:700; color:rgba(255,255,255,.92); margin-bottom:.3rem;">
+        <span class="zh">间隔效应与检索练习</span><span class="en">Spacing & Retrieval Practice</span>
+      </div>
+      <div style="font-size:.85rem; color:rgba(255,255,255,.45); line-height:1.6;">
+        <span class="zh">认知科学中最有实证支持的记忆巩固方式之一</span>
+        <span class="en">One of the most empirically supported memory consolidation strategies in cognitive science</span>
+      </div>
+    </div>
+
+    <!-- Three clickable principles -->
+    <div style="display:flex; flex-direction:column; gap:.6rem; margin-bottom:1rem;">
+
+      <div class="sr-chip" onclick="togSR(this,'sr1')">
+        <div class="sr-chip-header">
+          <span class="sr-chip-dot">○</span>
+          <span class="zh">主动检索，胜于重复阅读</span>
+          <span class="en">Active retrieval beats re-reading</span>
+          <span class="sr-chip-chev">▼</span>
+        </div>
+        <div class="sr-chip-body" id="sr1">
+          <span class="zh">主动回想词语（recall）比反复翻阅词表更能建立持久记忆。每一次答题，都是一次主动提取，而非被动接收。</span>
+          <span class="en">Actively recalling a word strengthens memory far more than passively reviewing it. Every question answered is an act of retrieval, not passive exposure.</span>
+        </div>
+      </div>
+
+      <div class="sr-chip" onclick="togSR(this,'sr2')">
+        <div class="sr-chip-header">
+          <span class="sr-chip-dot">○</span>
+          <span class="zh">分散练习，胜于集中突击</span>
+          <span class="en">Spaced practice beats massed study</span>
+          <span class="sr-chip-chev">▼</span>
+        </div>
+        <div class="sr-chip-body" id="sr2">
+          <span class="zh">将词汇练习分散在多个时段，比临考前集中背诵效果更持久。自主学习平台让学生可以随时练习，自然形成间隔效应。</span>
+          <span class="en">Distributing vocabulary practice across multiple sessions produces longer-lasting retention than cramming. An SDL platform makes this natural — students practise whenever they choose, spacing automatically.</span>
+        </div>
+      </div>
+
+      <div class="sr-chip" onclick="togSR(this,'sr3')">
+        <div class="sr-chip-header">
+          <span class="sr-chip-dot">○</span>
+          <span class="zh">词王淬炼坊如何落实这一原理</span>
+          <span class="en">How 词王淬炼坊 applies this</span>
+          <span class="sr-chip-chev">▼</span>
+        </div>
+        <div class="sr-chip-body" id="sr3">
+          <span class="zh">课前预习词汇 → 课堂接触课文语境 → 课后平台反复检索巩固。每一次接触都是一次间隔后的主动提取，这正是记忆巩固最有效的方式。</span>
+          <span class="en">Pre-class: students preview vocabulary independently. In class: words appear in textbook context. After class: platform retrieval consolidates retention. Each encounter is a spaced retrieval event — exactly how memory consolidates most effectively.</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="spacing-cite">Karpicke, J. D., & Roediger, H. L. (2007). Expanding retrieval practice promotes short-term retention, but equally spaced retrieval enhances long-term retention. <em>Journal of Experimental Psychology: Learning, Memory, and Cognition</em>, 33(4), 704–719. <a href="https://learninglab.psych.purdue.edu/downloads/2007/2007_Karpicke_Roediger_JEPLMC.pdf" target="_blank" style="color:var(--teal);">→ Full paper</a></div>
+  </div>
+
+  <!-- RAT Framework -->
+  <div class="rat-wrap">
+    <div style="font-family:'Noto Serif SC',serif; font-size:1.05rem; font-weight:700; color:rgba(255,255,255,.8); margin-bottom:.8rem; text-align:center;">
+      <span class="zh">RAT 框架 · 技术整合层级</span><span class="en">RAT Framework · Technology Integration Level</span>
+    </div>
+    <div class="rat-cards">
+      <div class="rat-card">
+        <div class="rat-letter">R</div>
+        <div class="rat-word"><span class="zh">替代</span><span class="en">Replacement</span></div>
+        <div class="rat-desc"><span class="zh">将现有教学方式移至数字平台，学习任务与成效不变。</span><span class="en">Moving existing teaching methods to a digital format, with no functional changes to the task and students' learning.</span></div>
+        <div class="rat-impact"><span class="zh">学生的学习成果不变，只是记录在数字平台上。</span><span class="en">Impact: My students' learning is the same, except their artefacts are recorded on the digital platform.</span></div>
+      </div>
+      <div class="rat-card">
+        <div class="rat-letter">A</div>
+        <div class="rat-word"><span class="zh">扩增</span><span class="en">Amplification</span></div>
+        <div class="rat-desc"><span class="zh">通过技术改进现有教学方式，提升学习任务质量与成效。</span><span class="en">Improving/refining existing teaching methods through the use of technology, with some enhancements to the task and students' learning.</span></div>
+        <div class="rat-impact"><span class="zh">学生学习得到提升，例如能在需要时获得即时反馈，对学习有更大的自主性。</span><span class="en">Impact: My students' learning is enhanced e.g. they receive and understand the feedback when they need it and have greater agency in their learning.</span></div>
+      </div>
+      <div class="rat-card transform">
+        <div class="rat-letter">T</div>
+        <div class="rat-word"><span class="zh">革新</span><span class="en">Transformation</span></div>
+        <div class="rat-desc"><span class="zh">以传统教学法根本无法实现的方式开展教与学，学习任务与成效发生根本性改变。</span><span class="en">Teaching and learning in ways that would not be possible without technology, with key changes to the task and students' learning.</span></div>
+        <div class="rat-impact"><span class="zh">学生的学习得到根本性转化，例如在完成任务的过程中同步获得对自身学习历程的反馈。</span><span class="en">Impact: My students' learning is transformed e.g. they receive feedback on their learning process while completing the task.</span></div>
+      </div>
+    </div>
+    <div class="rat-caption">
+      <span class="zh">词王淬炼坊定位于 <strong style="color:var(--teal);">革新（Transformation）</strong> 层级：实时掌握度追踪、跨设备进度同步、个人化薄弱词汇地图，均为传统词汇练习所无法实现的学习体验。</span>
+      <span class="en">词王淬炼坊 operates at the <strong style="color:var(--teal);">Transformation</strong> level: real-time mastery tracking, cross-device progress sync, and personalised weak-word mapping are learning experiences not achievable through traditional vocabulary practice.</span>
+      <br><a class="rat-link" href="https://sites.google.com/moe.edu.sg/guidetoe-pedagogy/kat-x-rat" target="_blank">→ MOE Guide to e-Pedagogy: KAT × RAT</a>
+    </div>
+  </div>
+
+  <!-- KAT cards -->
+  <div class="kat-grid">
+
+    <div class="kat-card" onclick="togKat(this)">
+      <div class="kat-chevron">▼</div>
+      <div class="kat-icon">📊</div>
+      <div class="kat-name"><span class="zh">学习评估 (AfL)</span><span class="en">Assessment for Learning</span></div>
+      <div class="kat-tag"><span class="zh">KAT 1 · 即时反馈，可视化掌握进度</span><span class="en">KAT 1 · Immediate feedback, visible mastery progress</span></div>
+      <div class="kat-expand">
+        <span class="zh">每道题目都有即时对错反馈；主页以板块、单元为单位显示掌握百分比；教师面板可查看全班进度。学生不需要等待考试，随时都能知道自己在哪里、还需要做什么。</span>
+        <span class="en">Every question provides immediate right/wrong feedback. The home screen shows mastery percentages by unit and component. Teachers can view class-wide progress. Students don't need to wait for an exam to know where they stand.</span>
+        <div class="kat-cite">Black, P. & Wiliam, D. (1998). Inside the Black Box. King's College London.</div>
+        <a class="kat-link" href="https://sites.google.com/moe.edu.sg/guidetoe-pedagogy/kat-x-rat/support-assessment-for-learning" target="_blank">→ MOE: AfL</a>
+      </div>
+    </div>
+
+    <div class="kat-card" onclick="togKat(this)">
+      <div class="kat-chevron">▼</div>
+      <div class="kat-icon">🏆</div>
+      <div class="kat-name"><span class="zh">激励</span><span class="en">Motivation</span></div>
+      <div class="kat-tag"><span class="zh">KAT 6 · 自我决定理论驱动内在动力</span><span class="en">KAT 6 · Self-determination theory drives intrinsic motivation</span></div>
+      <div class="kat-expand">
+        <span class="zh">Deci 与 Ryan 的自我决定理论指出，学习动力来自三种基本心理需求：能力感（掌握词汇获得 XP 与徽章）、自主感（学生自选学习单元与模式）、归属感（排行榜与班级社群）。积分系统有明确的学习逻辑，答对越早奖励越高，鼓励扎实掌握而非碰运气。</span>
+        <span class="en">Deci & Ryan's SDT identifies three basic needs driving intrinsic motivation: competence (XP and badges for mastering vocab), autonomy (students choose their own units and modes), and relatedness (leaderboard community). The scoring system rewards earlier mastery more, incentivising genuine learning.</span>
+        <div class="kat-cite">Deci, E. L., & Ryan, R. M. (2000). The "what" and "why" of goal pursuits. Psychological Inquiry, 11(4), 227–268.</div>
+        <a class="kat-link" href="https://sites.google.com/moe.edu.sg/guidetoe-pedagogy/kat-x-rat/increase-motivation" target="_blank">→ MOE: Motivation</a>
+      </div>
+    </div>
+
+    <div class="kat-card" onclick="togKat(this)">
+      <div class="kat-chevron">▼</div>
+      <div class="kat-icon">🎯</div>
+      <div class="kat-name"><span class="zh">个人化</span><span class="en">Personalisation</span></div>
+      <div class="kat-tag"><span class="zh">KAT 7 · 学生主导学习节奏与路径</span><span class="en">KAT 7 · Students control their own pace and path</span></div>
+      <div class="kat-expand">
+        <span class="zh">学生自主选择从哪个年级、哪个单元开始练习，自主选择四种学习模式之一，随时可专项练习"未掌握词汇"。学习路径由学生自己决定，平台为此提供结构与支持，而不是规定顺序。</span>
+        <span class="en">Students choose which year level, which unit, and which study mode to engage with. They can switch to unmastered vocab review at any time. The platform provides structure and support; the learning path is the student's own.</span>
+        <div class="kat-cite">Keefe, J. W. (2007). What is Personalisation? Phi Delta Kappan, 89(3), 217–223.</div>
+        <a class="kat-link" href="https://sites.google.com/moe.edu.sg/guidetoe-pedagogy/kat-x-rat/enable-personalisation" target="_blank">→ MOE: Personalisation</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div style="text-align:center; margin:0; line-height:0; overflow:hidden;">
+  <svg viewBox="0 0 1440 40" width="100%" height="40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,10 C480,40 960,0 1440,20 L1440,40 L0,40 Z" fill="rgba(232,184,0,0.04)"/>
+  </svg>
+</div>
+
+<!-- ══ TIMELINE ══ -->
+<section class="sw section-timeline">
+  <div class="sl2"><span class="zh">发展历程</span><span class="en">Development Journey</span></div>
+  <h2 class="sh">
+    <span class="zh">五个关键发展阶段</span>
+    <span class="en">Five Defining Development Stages</span>
+  </h2>
+  <div class="sh-sub">
+    <span class="zh">点击各阶段展开详情 · 点击问题芯片查看解决方案</span>
+    <span class="en">Tap each stage to expand · Tap problem chips to see solutions</span>
+  </div>
+  <div class="tl">
+
+    <!-- P1 -->
+    <div class="ph" id="p1">
+      <div class="dot">一</div>
+      <div class="phh" onclick="togPhase('p1')">
+        <div class="phe">📖</div>
+        <div class="pht">
+          <div class="ptag"><span class="zh">第一阶段 · 词库建设</span><span class="en">Stage 1 · Vocabulary Foundation</span></div>
+          <div class="ptitle"><span class="zh">1068 个词汇，从教材附录到完整教学资源</span><span class="en">1,068 Vocab Items: From Textbook Appendix to Complete Teaching Resource</span></div>
+          <div class="pteaser"><span class="zh">词库是一切的基础。教材附录是起点，教学需要给它更多。</span><span class="en">The textbook appendix was the foundation. Teaching required building much more on top.</span></div>
+        </div>
+        <div class="chev">▼</div>
+      </div>
+      <div class="phb"><div class="pbi">
+        <div class="ins">
+          <div class="insl"><span class="zh">背景与判断</span><span class="en">Context & Rationale</span></div>
+          <div class="inst">
+            <span class="zh">每册教材的附录均收录《生字词总表》，是学生词汇学习的官方参考。然而，这份词表仅列出词语本身，没有释义、词性标注、英文对译，也没有文化站词汇。建立这个平台，首先意味着在此基础上，建立一份更具教学实用性的词汇资源库。</span>
+            <span class="en">Each textbook volume includes a 生字词总表 as an appendix — the official vocabulary reference. However, this list contains only the words, with no definitions, part-of-speech labels, English translations, or Cultural Corner coverage. Building this platform meant constructing a more pedagogically complete resource on this foundation.</span>
+          </div>
+        </div>
+        <div class="dg">
+          <div class="dc"><div class="dci">📚</div><div class="dct"><span class="zh">课文例句全程溯源</span><span class="en">Every Sentence Traced to Source</span></div><div class="dcb"><span class="zh">全部词汇的课文例句均回溯至原始教材，标注来源（原文直引 / 改编），确保语料权威性。</span><span class="en">Every example sentence traced to the original e-textbook, tagged as verbatim or adapted.</span></div></div>
+          <div class="dc"><div class="dci">🏛️</div><div class="dct"><span class="zh">文化站：77 个附录未收录的词汇</span><span class="en">Cultural Corner: 77 Items the Appendix Missed</span></div><div class="dcb"><span class="zh">逐一提取 23 个文化站单元，补入 77 个词汇，中一至中四全覆盖。这是本平台独有的词库深度。</span><span class="en">All 23 Cultural Corner units across Sec 1–4 extracted manually — 77 items found in no other comparable resource.</span></div></div>
+          <div class="dc"><div class="dci">🏷️</div><div class="dct"><span class="zh">词性标注规范</span><span class="en">Part-of-Speech Schema</span></div><div class="dcb"><span class="zh">约 20 个标签，谚语 / 俗语 / 成语严格区分；双词性按动词优先排列。</span><span class="en">~20 canonical labels. 谚语, 俗语, 成语 carefully distinguished. Verb-first for dual-class entries.</span></div></div>
+          <div class="dc"><div class="dci">✏️</div><div class="dct"><span class="zh">填空句另行撰写</span><span class="en">Separate Cloze Sentences</span></div><div class="dcb"><span class="zh">为每个词另写填空句，检测词汇在新语境中的实际运用，而非句子熟悉度。</span><span class="en">A separate cloze sentence for every word — testing application in new contexts, not sentence familiarity.</span></div></div>
+        </div>
+        <div class="ps-section">
+          <div class="ps-label"><span class="zh">遇到的问题 → 点击查看解决方案</span><span class="en">Problems encountered → tap to see solutions</span></div>
+          <div class="ps-chips">
+            <div class="ps-chip" onclick="togPS(this,'p1a')"><span class="zh">例句太容易认出来</span><span class="en">Sentences too recognisable</span></div>
+            <div class="ps-chip" onclick="togPS(this,'p1b')"><span class="zh">例句需要人工全面审核</span><span class="en">Sentences needed thorough human review</span></div>
+            <div class="ps-chip" onclick="togPS(this,'p1c')"><span class="zh">文化站词汇无从参照</span><span class="en">No reference for Cultural Corner vocab</span></div>
+          </div>
+          <div class="ps-detail" id="p1a"><div class="ps-detail-inner">
+            <div class="ps-prob"><div class="ps-prob-label"><span class="zh">问题</span><span class="en">Problem</span></div><div class="ps-prob-text"><span class="zh">闪卡与填空用同一例句，学生可根据句子熟悉度猜答案，绕过真实词汇掌握的检验。</span><span class="en">Shared sentences allowed students to answer from sentence memory, bypassing genuine word knowledge.</span></div></div>
+            <div class="ps-sol"><div class="ps-sol-label"><span class="zh">方案</span><span class="en">Solution</span></div><div class="ps-sol-text"><span class="zh">为每个词另行撰写填空句，语境不同、句型不同，专门测试词汇在新语境中的迁移运用。</span><span class="en">A completely separate cloze sentence authored for every word — different context and structure — to test genuine transfer.</span></div></div>
+          </div></div>
+          <div class="ps-detail" id="p1b"><div class="ps-detail-inner">
+            <div class="ps-prob"><div class="ps-prob-label"><span class="zh">问题</span><span class="en">Problem</span></div><div class="ps-prob-text"><span class="zh">AI 辅助审查例句时，部分建议在语义或语用上存在偏差，不能直接采用。</span><span class="en">AI-assisted review produced some suggestions with semantic or pragmatic inaccuracies that could not be used directly.</span></div></div>
+            <div class="ps-sol"><div class="ps-sol-label"><span class="zh">方案</span><span class="en">Solution</span></div><div class="ps-sol-text"><span class="zh">经科组同事细心逐句审阅并提供宝贵反馈，对全部例句进行了系统性人工核查与修订。教师判断始终是最终标准。</span><span class="en">A colleague's careful sentence-by-sentence review and invaluable feedback enabled a systematic human audit and revision of all example sentences. Teacher judgement remained the final standard throughout.</span></div></div>
+          </div></div>
+          <div class="ps-detail" id="p1c"><div class="ps-detail-inner">
+            <div class="ps-prob"><div class="ps-prob-label"><span class="zh">问题</span><span class="en">Problem</span></div><div class="ps-prob-text"><span class="zh">教材附录完全没有文化站词汇，没有任何现成参照列表。</span><span class="en">The textbook appendix contained no Cultural Corner vocabulary and no existing reference list to draw from.</span></div></div>
+            <div class="ps-sol"><div class="ps-sol-label"><span class="zh">方案</span><span class="en">Solution</span></div><div class="ps-sol-text"><span class="zh">逐课翻阅中一至中四电子教材，手工提取全部 23 个文化站单元，并按同等标准进行标注。</span><span class="en">Every e-textbook from Sec 1–4 was manually reviewed. All 23 Cultural Corner units extracted and annotated to the same standard as the main vocabulary bank.</span></div></div>
+          </div></div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- P2 -->
+    <div class="ph" id="p2">
+      <div class="dot">二</div>
+      <div class="phh" onclick="togPhase('p2')">
+        <div class="phe">🎯</div>
+        <div class="pht">
+          <div class="ptag"><span class="zh">第二阶段 · 学习模式设计</span><span class="en">Stage 2 · Learning Mode Design</span></div>
+          <div class="ptitle"><span class="zh">四种模式，对应词汇学习的四个维度</span><span class="en">Four Modes, Four Dimensions of Vocabulary Learning</span></div>
+          <div class="pteaser"><span class="zh">词汇能力影响听说读写，每种维度都需要独立训练。</span><span class="en">Vocabulary ability underpins all four language skills — each dimension needs its own practice.</span></div>
+        </div>
+        <div class="chev">▼</div>
+      </div>
+      <div class="phb"><div class="pbi">
+        <div class="ins">
+          <div class="insl"><span class="zh">教学逻辑</span><span class="en">Pedagogical Logic</span></div>
+          <div class="inst">
+            <span class="zh">WA 和 EOY 的词汇专项占分有限，但词汇积累渗透进阅读理解、作文表达、聆听、口试的每一个环节。四种学习模式正是为了在日常自主练习中，系统性地建立这种积累。</span>
+            <span class="en">While dedicated vocabulary items in WA and EOY carry limited direct weightage, vocabulary depth shapes performance across comprehension, composition, oral, and listening. The four modes build this depth through daily self-directed practice.</span>
+          </div>
+        </div>
+        <div class="dg">
+          <div class="dc"><div class="dci">🃏</div><div class="dct"><span class="zh">词语闪卡</span><span class="en">Flashcard Mode</span></div><div class="dcb"><span class="zh">认词与自评。翻牌后自主判断"已掌握 / 还需练习"，培养自我监控意识。</span><span class="en">Recognition + self-assessment. Students judge their own mastery after each flip, building self-monitoring awareness.</span></div></div>
+          <div class="dc"><div class="dci">📝</div><div class="dct"><span class="zh">填空挑战</span><span class="en">Cloze Challenge</span></div><div class="dcb"><span class="zh">语境填空，2×2 选项格。独立例句，专检词汇在语境中的实际运用。</span><span class="en">Context-based cloze with 2×2 option grid. Separate sentences test genuine contextual application.</span></div></div>
+          <div class="dc"><div class="dci">🔍</div><div class="dct"><span class="zh">华文解释</span><span class="en">Chinese Definition Mode</span></div><div class="dcb"><span class="zh">由中文释义反查词语，训练词义理解的深度与精准度。</span><span class="en">Identify words from Chinese definitions — developing precise semantic comprehension.</span></div></div>
+          <div class="dc"><div class="dci">🌐</div><div class="dct"><span class="zh">英文翻译</span><span class="en">English Translation Mode</span></div><div class="dcb"><span class="zh">由英文释义反查词语，为英语主导的学生建立双语理解桥梁。</span><span class="en">Identify words from English definitions — a cross-linguistic bridge for English-dominant students.</span></div></div>
+        </div>
+        <div class="ps-section">
+          <div class="ps-label"><span class="zh">遇到的问题 → 点击查看解决方案</span><span class="en">Problems encountered → tap to see solutions</span></div>
+          <div class="ps-chips">
+            <div class="ps-chip" onclick="togPS(this,'p2a')"><span class="zh">题序可被预判</span><span class="en">Question order predictable</span></div>
+            <div class="ps-chip" onclick="togPS(this,'p2b')"><span class="zh">闪卡翻牌故障</span><span class="en">Flashcard flip malfunction</span></div>
+            <div class="ps-chip" onclick="togPS(this,'p2c')"><span class="zh">语音功能受设备限制</span><span class="en">Voice function limited by device</span></div>
+          </div>
+          <div class="ps-detail" id="p2a"><div class="ps-detail-inner">
+            <div class="ps-prob"><div class="ps-prob-label"><span class="zh">问题</span><span class="en">Problem</span></div><div class="ps-prob-text"><span class="zh">学生发现填空题顺序与闪卡一致，可以根据顺序推断答案，降低了测试的有效性。</span><span class="en">Students noticed the cloze question order mirrored flashcards and used it to guess, undermining assessment validity.</span></div></div>
+            <div class="ps-sol"><div class="ps-sol-label"><span class="zh">方案</span><span class="en">Solution</span></div><div class="ps-sol-text"><span class="zh">切换模式后即时重新洗牌，每次练习呈现不同顺序，有效排除顺序记忆干扰。</span><span class="en">Questions reshuffled on every mode switch, eliminating order-based guessing entirely.</span></div></div>
+          </div></div>
+          <div class="ps-detail" id="p2b"><div class="ps-detail-inner">
+            <div class="ps-prob"><div class="ps-prob-label"><span class="zh">问题</span><span class="en">Problem</span></div><div class="ps-prob-text"><span class="zh">闪卡翻转动画在不同设备上出现错位或卡死，影响学习体验。</span><span class="en">The flashcard flip animation displayed incorrectly on certain devices — cards stuck or misaligned.</span></div></div>
+            <div class="ps-sol"><div class="ps-sol-label"><span class="zh">方案</span><span class="en">Solution</span></div><div class="ps-sol-text"><span class="zh">将共享 CSS class 的设计完全重构为两个独立 div，翻转逻辑用 JavaScript 直接控制，彻底消除继承冲突。</span><span class="en">Rebuilt as two fully independent divs with JavaScript-controlled display switching, eliminating CSS inheritance conflicts.</span></div></div>
+          </div></div>
+          <div class="ps-detail" id="p2c"><div class="ps-detail-inner">
+            <div class="ps-prob"><div class="ps-prob-label"><span class="zh">问题</span><span class="en">Problem</span></div><div class="ps-prob-text"><span class="zh">语音朗读练习是自然的扩展方向，但 iOS 完全不支持 Web Speech API。</span><span class="en">Voice pronunciation practice was a natural extension, but iOS does not support Web Speech API at all.</span></div></div>
+            <div class="ps-sol"><div class="ps-sol-label"><span class="zh">方案</span><span class="en">Solution</span></div><div class="ps-sol-text"><span class="zh">暂不纳入现阶段范围。功能的边界与平台的稳定性同样重要——知道在哪里停止，是判断力的一部分。</span><span class="en">Deferred from the current scope. Knowing where to stop is as important as knowing what to build.</span></div></div>
+          </div></div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- P3 -->
+    <div class="ph" id="p3">
+      <div class="dot">三</div>
+      <div class="phh" onclick="togPhase('p3')">
+        <div class="phe">🏆</div>
+        <div class="pht">
+          <div class="ptag"><span class="zh">第三阶段 · 游戏化系统</span><span class="en">Stage 3 · Gamification System</span></div>
+          <div class="ptitle"><span class="zh">让持续练习有意义</span><span class="en">Making Sustained Practice Meaningful</span></div>
+          <div class="pteaser"><span class="zh">每一个奖励机制，都直接绑定词汇学习的真实里程碑。</span><span class="en">Every reward is anchored to a genuine vocabulary learning milestone.</span></div>
+        </div>
+        <div class="chev">▼</div>
+      </div>
+      <div class="phb"><div class="pbi">
+        <div class="ins">
+          <div class="insl"><span class="zh">设计原则</span><span class="en">Design Principle</span></div>
+          <div class="inst"><span class="zh">积分系统有明确的学习逻辑：第一次答对 10 分，第二次 5 分，第三次及以后 2 分；掌握整个板块额外 +20 分。答对越早奖励越高，直接鼓励扎实掌握，而非反复碰运气。这与自我决定理论中"能力感"的激励机制直接对应。</span><span class="en">Clear pedagogical logic: 10 points first-attempt correct, 5 for second, 2 thereafter, plus 20-point component mastery bonus. Higher rewards for earlier mastery incentivise genuine learning — directly mapping to the competence need in Self-Determination Theory.</span></div>
+        </div>
+        <div class="dg">
+          <div class="dc"><div class="dci">🏅</div><div class="dct"><span class="zh">四级成就庆祝</span><span class="en">Four-Tier Achievement Celebration</span></div><div class="dcb"><span class="zh">⭐→✨→🏅→👑，对应板块、单元、年级、全部完成。最高级引用：锲而不舍，金石可镂。</span><span class="en">⭐→✨→🏅→👑 across component, unit, year-level, full completion. Ultimate tier: 锲而不舍，金石可镂.</span></div></div>
+          <div class="dc"><div class="dci">⭐</div><div class="dct"><span class="zh">词王排行榜</span><span class="en">Leaderboard</span></div><div class="dcb"><span class="zh">百德中学榜与全岛榜双 tab。昵称经教师审核后方显示，双重拦截机制保障社群安全。</span><span class="en">School and island-wide leaderboard tabs. Nicknames appear only after teacher approval, with automated content filtering.</span></div></div>
+          <div class="dc"><div class="dci">🎨</div><div class="dct"><span class="zh">圆形金属成就徽章</span><span class="en">Circular Achievement Badges</span></div><div class="dcb"><span class="zh">四种板块均有独立实体徽章图片，圆形裁切加金色光环。经三轮设计确认。</span><span class="en">Each component type has a distinct circular badge with gold-ring glow — three rounds of design iteration.</span></div></div>
+          <div class="dc"><div class="dci">🔊</div><div class="dct"><span class="zh">音效系统</span><span class="en">Sound Effects System</span></div><div class="dcb"><span class="zh">Web Audio API 纯程序合成，零外部文件。7 种音效事件，静音开关持久化记忆。</span><span class="en">Fully synthesised via Web Audio API — no external files. 7 sound events; mute preference persisted.</span></div></div>
+        </div>
+        <div class="ps-section">
+          <div class="ps-label"><span class="zh">遇到的问题 → 点击查看解决方案</span><span class="en">Problems encountered → tap to see solutions</span></div>
+          <div class="ps-chips">
+            <div class="ps-chip" onclick="togPS(this,'p3a')"><span class="zh">积分数字失去意义</span><span class="en">Score inflation</span></div>
+            <div class="ps-chip" onclick="togPS(this,'p3b')"><span class="zh">昵称内容风险</span><span class="en">Inappropriate nickname risk</span></div>
+          </div>
+          <div class="ps-detail" id="p3a"><div class="ps-detail-inner">
+            <div class="ps-prob"><div class="ps-prob-label"><span class="zh">问题</span><span class="en">Problem</span></div><div class="ps-prob-text"><span class="zh">初版积分（200/100/50）导致排行榜数字虚胀，分值与学习进度的关联模糊，削弱激励效果。</span><span class="en">Initial scoring (200/100/50) inflated leaderboard numbers, severing the connection between scores and actual learning progress.</span></div></div>
+            <div class="ps-sol"><div class="ps-sol-label"><span class="zh">方案</span><span class="en">Solution</span></div><div class="ps-sol-text"><span class="zh">重新校准为 10/5/2 + 速度奖励 + 板块掌握奖励，确保分值真实反映学习里程碑。</span><span class="en">Recalibrated to 10/5/2 + speed bonus + mastery bonus. Scores now meaningfully reflect learning milestones.</span></div></div>
+          </div></div>
+          <div class="ps-detail" id="p3b"><div class="ps-detail-inner">
+            <div class="ps-prob"><div class="ps-prob-label"><span class="zh">问题</span><span class="en">Problem</span></div><div class="ps-prob-text"><span class="zh">学生自选昵称若无审核，可能出现不当内容，在公开排行榜上造成负面影响。</span><span class="en">Without moderation, student-chosen nicknames could include inappropriate content visible on the public leaderboard.</span></div></div>
+            <div class="ps-sol"><div class="ps-sol-label"><span class="zh">方案</span><span class="en">Solution</span></div><div class="ps-sol-text"><span class="zh">双重机制：内置 30 个关键词的自动拦截词库，加上教师人工审核队列，昵称经批准后方显示。</span><span class="en">Two-layer system: automated blocklist (30 terms) + teacher approval queue before any nickname appears publicly.</span></div></div>
+          </div></div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- P4 -->
+    <div class="ph" id="p4">
+      <div class="dot">四</div>
+      <div class="phh" onclick="togPhase('p4')">
+        <div class="phe">☁️</div>
+        <div class="pht">
+          <div class="ptag"><span class="zh">第四阶段 · 基础设施升级</span><span class="en">Stage 4 · Infrastructure Upgrade</span></div>
+          <div class="ptitle"><span class="zh">从进度码到云端同步：保护每一份学习记录</span><span class="en">From Progress Codes to Cloud Sync: Protecting Every Student's Record</span></div>
+          <div class="pteaser"><span class="zh">一串数字，承载着一个学生数周的积累。这份脆弱性无法接受。</span><span class="en">A string of digits holding weeks of student effort — this vulnerability had to be resolved.</span></div>
+        </div>
+        <div class="chev">▼</div>
+      </div>
+      <div class="phb"><div class="pbi">
+        <div class="ins">
+          <div class="insl"><span class="zh">迁移决策</span><span class="en">The Migration Decision</span></div>
+          <div class="inst"><span class="zh">Beta 阶段学生用进度码手动保存记录，进度码丢失即记录清零。在推广至更多学生之前，迁移至 Firebase Auth + Firestore 是必须完成的升级。</span><span class="en">During beta, students saved progress manually with a code — a lost code meant a full reset. Migrating to Firebase Auth + Firestore was a prerequisite to any wider deployment.</span></div>
+        </div>
+        <div class="dg">
+          <div class="dc"><div class="dci">🔐</div><div class="dct"><span class="zh">身份验证与自动识别</span><span class="en">Authentication & Auto-Detection</span></div><div class="dcb"><span class="zh">邮箱域名自动识别（@students.edu.sg → 学生，@moe.edu.sg → 教师）。进度实时跨设备同步。</span><span class="en">Email domain auto-detection. Progress syncs across all devices in real time.</span></div></div>
+          <div class="dc"><div class="dci">📋</div><div class="dct"><span class="zh">教师管理面板</span><span class="en">Teacher Dashboard</span></div><div class="dcb"><span class="zh">昵称审核队列与学生进度概览。架构已预留测评推送接口。</span><span class="en">Nickname queue and student progress overview. Architecture supports future push-based assessment.</span></div></div>
+          <div class="dc"><div class="dci">🔧</div><div class="dct"><span class="zh">跨设备 TTS 兼容</span><span class="en">Cross-Device TTS</span></div><div class="dcb"><span class="zh">三星 Android 静音 bug 与 Chromebook 语音丢弃问题均已各自诊断并修复。</span><span class="en">Samsung Android silent-playback and Chromebook utterance-drop bugs individually diagnosed and resolved.</span></div></div>
+        </div>
+        <div class="ps-section">
+          <div class="ps-label"><span class="zh">遇到的问题 → 点击查看解决方案</span><span class="en">Problems encountered → tap to see solutions</span></div>
+          <div class="ps-chips">
+            <div class="ps-chip" onclick="togPS(this,'p4a')"><span class="zh">进度码丢失</span><span class="en">Progress code loss</span></div>
+            <div class="ps-chip" onclick="togPS(this,'p4b')"><span class="zh">三星手机无声</span><span class="en">Samsung TTS silence</span></div>
+            <div class="ps-chip" onclick="togPS(this,'p4c')"><span class="zh">跨账号进度串扰</span><span class="en">Cross-account progress bleed</span></div>
+          </div>
+          <div class="ps-detail" id="p4a"><div class="ps-detail-inner">
+            <div class="ps-prob"><div class="ps-prob-label"><span class="zh">问题</span><span class="en">Problem</span></div><div class="ps-prob-text"><span class="zh">学生依赖手动复制进度码，丢失或换设备，数周练习积累清零。</span><span class="en">Students relied on manually copying a progress code. Losing it or switching devices wiped all accumulated progress.</span></div></div>
+            <div class="ps-sol"><div class="ps-sol-label"><span class="zh">方案</span><span class="en">Solution</span></div><div class="ps-sol-text"><span class="zh">全面迁移至 Firebase Auth + Firestore，凭邮箱登录，进度自动云端同步。</span><span class="en">Full migration to Firebase Auth + Firestore. Email login; progress auto-syncs to the cloud from any device.</span></div></div>
+          </div></div>
+          <div class="ps-detail" id="p4b"><div class="ps-detail-inner">
+            <div class="ps-prob"><div class="ps-prob-label"><span class="zh">问题</span><span class="en">Problem</span></div><div class="ps-prob-text"><span class="zh">三星 Android 设备上 TTS 完全无声，其他设备正常。</span><span class="en">TTS produced complete silence on Samsung Android devices while working on all others.</span></div></div>
+            <div class="ps-sol"><div class="ps-sol-label"><span class="zh">方案</span><span class="en">Solution</span></div><div class="ps-sol-text"><span class="zh">诊断发现 getVoices() 在三星设备同步返回空数组，用 onvoiceschanged + 200ms 重试机制修复。</span><span class="en">Diagnosed: getVoices() returns empty array synchronously on Samsung. Fixed with onvoiceschanged listener + 200ms retry.</span></div></div>
+          </div></div>
+          <div class="ps-detail" id="p4c"><div class="ps-detail-inner">
+            <div class="ps-prob"><div class="ps-prob-label"><span class="zh">问题</span><span class="en">Problem</span></div><div class="ps-prob-text"><span class="zh">同一设备切换账号时，前一个账号的本地进度被后一个账号继承，造成进度错误。</span><span class="en">Switching accounts on the same device caused the previous account's local progress to bleed into the new account.</span></div></div>
+            <div class="ps-sol"><div class="ps-sol-label"><span class="zh">方案</span><span class="en">Solution</span></div><div class="ps-sol-text"><span class="zh">登录时检测邮箱是否与本地记录一致，若不符则自动清除本地数据，确保每个账号进度完全独立。</span><span class="en">On login, incoming email is checked against the locally stored email. Mismatch triggers a local data wipe before loading.</span></div></div>
+          </div></div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- P5 -->
+    <div class="ph" id="p5">
+      <div class="dot">五</div>
+      <div class="phh" onclick="togPhase('p5')">
+        <div class="phe">🌱</div>
+        <div class="pht">
+          <div class="ptag"><span class="zh">第五阶段 · 当前</span><span class="en">Stage 5 · Current</span></div>
+          <div class="ptitle"><span class="zh">证据建设与更大的可能性</span><span class="en">Building Evidence and Looking Further</span></div>
+          <div class="pteaser"><span class="zh">平台的教学价值，需要数据来支撑；平台的未来，需要更多人一起参与。</span><span class="en">The platform's impact needs evidence to ground it; its future needs more people to grow it.</span></div>
+        </div>
+        <div class="chev">▼</div>
+      </div>
+      <div class="phb"><div class="pbi">
+        <div class="ins">
+          <div class="insl"><span class="zh">现阶段重点</span><span class="en">Current Focus</span></div>
+          <div class="inst"><span class="zh">词汇积累对听说读写四大核心技能有深远影响，但这种影响难以通过单次测评完整捕捉。当前的重点是建立可靠的使用数据与学习成效关联，为未来的协作与扩展提供实质依据。</span><span class="en">Vocabulary development has a cumulative impact on all four language skills, but this is difficult to capture through any single assessment window. The current focus is on building meaningful correlations between platform usage data and learning outcomes to support future collaboration and wider deployment.</span></div>
+        </div>
+        <div class="dg">
+          <div class="dc"><div class="dci">📊</div><div class="dct"><span class="zh">学习成效数据建设</span><span class="en">Learning Outcome Evidence</span></div><div class="dcb"><span class="zh">将平台内词汇掌握度增量与 WA / EOY 测评成绩做关联分析。当前缺口：前测基线尚未建立。</span><span class="en">Correlating in-platform mastery gain with WA and EOY scores. Current gap: no pre-test baseline collected yet.</span></div></div>
+          <div class="dc"><div class="dci">📋</div><div class="dct"><span class="zh">前后测工具（待研究合作支持）</span><span class="en">Pre/Post Assessment (Needs Research Collaboration)</span></div><div class="dcb"><span class="zh">框架已初步构思，但测评设计涉及专业的测量学判断，需要具备相关专业的合作方介入，方能建立具说服力的效果证据。</span><span class="en">Framework conceptualised, but assessment design requires psychometric expertise. Credible evidence of impact needs a research collaboration.</span></div></div>
+          <div class="dc"><div class="dci">🔬</div><div class="dct"><span class="zh">差异化学习（规划中）</span><span class="en">Differentiated Learning (Planned)</span></div><div class="dcb"><span class="zh">教师标注词汇难度，结合学生错题模式，形成个人化薄弱点图谱，为差异化教学提供数据支撑。</span><span class="en">Teacher-curated difficulty tagging + individual error pattern analysis → personalised weak-area profiles for differentiated instruction.</span></div></div>
+          <div class="dc"><div class="dci">🏛️</div><div class="dct"><span class="zh">扩展潜力</span><span class="en">Scalability</span></div><div class="dcb"><span class="zh">平台可在其他学校复制并按需调适；也可融入 MOE 现有 e-pedagogy 体系，以更大规模惠及全国学生。</span><span class="en">The platform can be replicated and adapted for other schools, or integrated into MOE's existing e-pedagogy ecosystem to benefit students at scale.</span></div></div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</section>
+
+<div style="text-align:center; margin:0; line-height:0; overflow:hidden;">
+  <svg viewBox="0 0 1440 40" width="100%" height="40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,30 C360,0 720,40 1080,15 C1260,5 1380,25 1440,20 L1440,40 L0,40 Z" fill="rgba(108,191,160,0.04)"/>
+  </svg>
+</div>
+
+<!-- ══ VOCAB UNIVERSE ══ -->
+<section class="sw section-potential" style="padding-top:3rem; padding-bottom:2rem;">
+  <div class="sl2"><span class="zh">词语宇宙</span><span class="en">The Vocabulary Universe</span></div>
+  <h2 class="sh">
+    <span class="zh">一个平台，一个宇宙的开端</span>
+    <span class="en">One Platform. The Beginning of a Universe.</span>
+  </h2>
+
+
+  <!-- Universe cards - ascending progression -->
+  <div style="display:flex; flex-direction:column; gap:1rem; max-width:640px; margin:0 auto 2rem;">
+
+    <!-- HCL - top aspiration -->
+    <div style="background:rgba(255,255,255,.04); border:1px dashed rgba(232,184,0,.25); border-radius:14px; padding:1.2rem 1.5rem; opacity:.65;">
+      <div style="display:flex; align-items:center; gap:1rem;">
+        <div style="font-size:1.8rem;">🔱</div>
+        <div style="flex:1;">
+          <div style="font-size:.6rem; letter-spacing:.2em; color:rgba(232,184,0,.6); text-transform:uppercase; margin-bottom:.2rem;"><span class="zh">G3 高级华文</span><span class="en">G3 Higher Chinese Language (HCL)</span></div>
+          <div style="font-family:'Noto Serif SC',serif; font-size:1.05rem; font-weight:700; color:rgba(255,255,255,.65);">词圣鸿文苑</div>
+          <div style="font-size:.72rem; color:rgba(255,255,255,.3); margin-top:.1rem; font-style:italic;">Vocab Sage · The Sanctum</div>
+          <div style="font-size:.78rem; color:rgba(255,255,255,.35); margin-top:.2rem;"><span class="zh">精炼与超越</span><span class="en">Refine & transcend</span></div>
+        </div>
+        <div style="font-size:.68rem; color:rgba(255,255,255,.25); font-style:italic; text-align:right;"><span class="zh">愿景</span><span class="en">Vision</span></div>
+      </div>
+    </div>
+
+    <!-- G3 - CURRENT (highlighted) -->
+    <div style="background:rgba(232,184,0,.1); border:2px solid rgba(232,184,0,.5); border-radius:14px; padding:1.2rem 1.5rem; box-shadow:0 0 24px rgba(232,184,0,.15);">
+      <div style="display:flex; align-items:center; gap:1rem;">
+        <div style="font-size:1.8rem;">👑</div>
+        <div style="flex:1;">
+          <div style="font-size:.6rem; letter-spacing:.2em; color:var(--gold); text-transform:uppercase; margin-bottom:.2rem;"><span class="zh">G3 华文 · 当前平台</span><span class="en">G3 Chinese Language · Current Platform</span></div>
+          <div style="font-family:'Noto Serif SC',serif; font-size:1.1rem; font-weight:700; color:var(--gold);">词王淬炼坊</div>
+          <div style="font-size:.72rem; color:rgba(232,184,0,.65); margin-top:.1rem; font-style:italic;">Vocab King · The Forge</div>
+          <div style="font-size:.78rem; color:rgba(255,255,255,.6); margin-top:.2rem;"><span class="zh">淬炼与卓越</span><span class="en">Forge & excel · 1,068 vocab items · Built ✓</span></div>
+        </div>
+        <div style="font-size:.72rem; background:var(--gold); color:var(--deep); padding:.25rem .6rem; border-radius:8px; font-weight:700; white-space:nowrap;"><span class="zh">已建成</span><span class="en">Built</span></div>
+      </div>
+    </div>
+
+    <!-- G2 - aspiration -->
+    <div style="background:rgba(255,255,255,.04); border:1px dashed rgba(108,191,160,.25); border-radius:14px; padding:1.2rem 1.5rem; opacity:.65;">
+      <div style="display:flex; align-items:center; gap:1rem;">
+        <div style="font-size:1.8rem;">🥇</div>
+        <div style="flex:1;">
+          <div style="font-size:.6rem; letter-spacing:.2em; color:rgba(108,191,160,.6); text-transform:uppercase; margin-bottom:.2rem;"><span class="zh">G2 华文</span><span class="en">G2 Chinese Language</span></div>
+          <div style="font-family:'Noto Serif SC',serif; font-size:1.05rem; font-weight:700; color:rgba(255,255,255,.65);">词将竞技场</div>
+          <div style="font-size:.72rem; color:rgba(255,255,255,.3); margin-top:.1rem; font-style:italic;">Vocab Champion · The Arena</div>
+          <div style="font-size:.78rem; color:rgba(255,255,255,.35); margin-top:.2rem;"><span class="zh">竞技与提升</span><span class="en">Compete & rise</span></div>
+        </div>
+        <div style="font-size:.68rem; color:rgba(255,255,255,.25); font-style:italic; text-align:right;"><span class="zh">愿景</span><span class="en">Vision</span></div>
+      </div>
+    </div>
+
+    <!-- G1 - aspiration -->
+    <div style="background:rgba(255,255,255,.04); border:1px dashed rgba(108,191,160,.2); border-radius:14px; padding:1.2rem 1.5rem; opacity:.6;">
+      <div style="display:flex; align-items:center; gap:1rem;">
+        <div style="font-size:1.8rem;">⭐</div>
+        <div style="flex:1;">
+          <div style="font-size:.6rem; letter-spacing:.2em; color:rgba(108,191,160,.5); text-transform:uppercase; margin-bottom:.2rem;"><span class="zh">G1 基础华文</span><span class="en">G1 Basic Chinese Language</span></div>
+          <div style="font-family:'Noto Serif SC',serif; font-size:1.05rem; font-weight:700; color:rgba(255,255,255,.6);">词星大冒险</div>
+          <div style="font-size:.72rem; color:rgba(255,255,255,.28); margin-top:.1rem; font-style:italic;">Vocab Star · The Adventure</div>
+          <div style="font-size:.78rem; color:rgba(255,255,255,.3); margin-top:.2rem;"><span class="zh">探索与成长</span><span class="en">Play & explore</span></div>
+        </div>
+        <div style="font-size:.68rem; color:rgba(255,255,255,.25); font-style:italic; text-align:right;"><span class="zh">愿景</span><span class="en">Vision</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- G1/G2 vision note -->
+  <div style="background:rgba(108,191,160,.06); border:1px solid rgba(108,191,160,.18); border-radius:12px; padding:1.3rem 1.5rem; max-width:640px; margin:0 auto;">
+    <div style="font-size:.65rem; letter-spacing:.2em; color:var(--teal); text-transform:uppercase; margin-bottom:.7rem;">
+      <span class="zh">G1 / G2 平台的差异化构想</span><span class="en">A Different Vision for G1 / G2</span>
+    </div>
+    <div style="font-size:.88rem; color:rgba(255,255,255,.65); line-height:1.85;">
+      <span class="zh">G1 与 G2 学生的词语学习，需要截然不同的设计思路。他们所需要的，不只是复习工具，而是能真正激发内在动力的学习体验：<br><br>
+      <strong style="color:rgba(255,255,255,.85);">每日打卡与连续激励</strong> · 建立学习习惯的持续动力<br>
+      <strong style="color:rgba(255,255,255,.85);">冒险叙事与角色扮演</strong> · 以剧情驱动词语学习的探索感<br>
+      <strong style="color:rgba(255,255,255,.85);">口语发音测试</strong> · 遇到生词即时练习发音，与国家考试接轨<br>
+      <strong style="color:rgba(255,255,255,.85);">打字技能整合</strong> · 输入练习呼应华文打字考试要求<br><br>
+      这需要的不只是技术，而是游戏设计、教学设计与学生心理研究的深度跨界合作。</span>
+      <span class="en">G1 and G2 students need a fundamentally different design approach — not just a revision tool, but an experience that genuinely builds intrinsic motivation:<br><br>
+      <strong style="color:rgba(255,255,255,.85);">Daily check-ins & streak motivation</strong> · Building consistent learning habits<br>
+      <strong style="color:rgba(255,255,255,.85);">Adventure narrative & avatar roleplay</strong> · Story-driven vocabulary exploration<br>
+      <strong style="color:rgba(255,255,255,.85);">Oral pronunciation testing</strong> · Immediate pronunciation practice aligned with national exam requirements<br>
+      <strong style="color:rgba(255,255,255,.85);">Typing skill integration</strong> · Input practice aligned with Chinese typing exam components<br><br>
+      This requires not just technology, but deep cross-disciplinary collaboration across game design, instructional design, and student motivation research.</span>
+    </div>
+  </div>
+</section>
+
+<div style="text-align:center; margin:0; line-height:0; overflow:hidden;">
+  <svg viewBox="0 0 1440 40" width="100%" height="40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C360,40 720,0 1080,20 C1260,30 1350,25 1440,20 L1440,40 L0,40 Z" fill="rgba(232,184,0,0.04)"/>
+  </svg>
+</div>
+
+<!-- ══ FUTURE ══ -->
+<section class="sw section-potential" style="padding-top:3rem;">
+  <div class="sl2"><span class="zh">发展潜能</span><span class="en">New Horizons</span></div>
+  <p class="potential-intro">
+    <span class="zh">这个平台的现有形态，是现有条件下所能做到的。以下是我们已经能看到的可能性——等待合适的合作伙伴、研究力量或资源支持，共同实现。</span>
+    <span class="en">What exists today is what could be built within current constraints. What follows are possibilities already visible — waiting for the right collaborators, research expertise, or support to realise.</span>
+  </p>
+
+  <!-- SLS Hero Card -->
+  <div class="sls-card">
+    <div class="sls-card-tag"><span class="zh">策略性整合 · 一站式解决方案</span><span class="en">Strategic Integration · One-Stop Solution</span></div>
+    <div class="sls-card-title" style="font-size:1.2rem; margin-bottom:.8rem;">
+      <span class="zh">融入 MOE Student Learning Space（SLS）</span>
+      <span class="en">Integration into MOE Student Learning Space (SLS)</span>
+    </div>
+    <div style="font-size:.88rem; color:rgba(255,255,255,.6); line-height:1.8; margin-bottom:1rem;">
+      <span class="zh">SLS 整合一举解决三个核心制约，同时为以下所有发展方向提供统一的实现框架。</span>
+      <span class="en">SLS integration resolves three structural constraints in one move, and provides the unified framework within which all development directions below can be realised.</span>
+    </div>
+    <div class="sls-points">
+      <div class="sls-point">
+        <div class="sls-point-label"><span class="zh">🔑 登录</span><span class="en">🔑 Login</span></div>
+        <div class="sls-point-text"><span class="zh">学生已有 SLS 账号，无需另行注册，开箱即用。</span><span class="en">Students already have SLS accounts. No new registration needed; immediate access.</span></div>
+      </div>
+      <div class="sls-point">
+        <div class="sls-point-label"><span class="zh">🚀 规模化</span><span class="en">🚀 Scale</span></div>
+        <div class="sls-point-text"><span class="zh">SLS 是全国学校的统一平台，整合后可即时覆盖更广泛的学生群体。</span><span class="en">SLS is the national platform for all schools. Integration means instant reach to a much wider student population.</span></div>
+      </div>
+      <div class="sls-point">
+        <div class="sls-point-label"><span class="zh">🔒 数据安全</span><span class="en">🔒 Data Security</span></div>
+        <div class="sls-point-text"><span class="zh">学生学习数据在 MOE 基础设施内存储与管理，符合 PDPA 及学校数据治理要求。</span><span class="en">Student data stored within MOE infrastructure, fully aligned with PDPA and school data governance requirements.</span></div>
+      </div>
+    </div>
+    <div class="sls-umbrella">
+      <span class="zh">以下所有发展方向，均可在 SLS 整合的框架下逐步实现。</span>
+      <span class="en">All development directions below can be progressively realised within the SLS integration framework.</span>
+    </div>
+  </div>
+
+  <!-- Accordion 1: GREEN - Internal -->
+  <div class="acc-cat green" id="acc-green">
+    <div class="acc-cat-header" onclick="togAcc('acc-green')">
+      <div>
+        <div class="acc-cat-title">
+          <span class="zh">校内可推</span><span class="en">Internal Capability</span>
+        </div>
+        <div style="font-size:.78rem; color:rgba(255,255,255,.38); margin-top:.2rem;">
+          <span class="zh">百德中学华文科有能力自主迭代</span>
+          <span class="en">Bukit View CL Unit can drive these independently</span>
+        </div>
+      </div>
+      <div class="acc-cat-chev">▼</div>
+    </div>
+    <div class="acc-cat-body">
+      <div class="acc-cards-inner">
+        <div class="fc grn vis" style="opacity:1;transform:none;">
+          <div class="ftag"><span class="zh">华文科下一步</span><span class="en">CL Unit Next Step</span></div>
+          <div class="fi">📝</div>
+          <div class="ft"><span class="zh">综合运用练习</span><span class="en">Integrated Application Practice</span></div>
+          <div class="fd"><span class="zh">为每个章节或每个年级设计一篇累积性填空语段，检验学生能否在真实语境中综合运用所学词汇。这比逐词填空更贴近 EOY 纸二的实际考核要求，也是词汇教学从认识走向运用的关键一步。</span><span class="en">Authoring one cumulative cloze passage per chapter or year level — testing whether students can deploy vocabulary across a whole unit in authentic context. This is closer to what EOY Paper 2 actually demands, and the natural progression from word-level recognition to genuine application.</span></div>
+          <div class="fc-note"><span class="zh">由华文科教师共同设计语段，平台负责题目呈现与追踪</span><span class="en">CL unit teachers design the passages; the platform handles delivery and tracking</span></div>
+        </div>
+        <div class="fc grn vis" style="opacity:1;transform:none;">
+          <div class="ftag"><span class="zh">概念已确立，规划中</span><span class="en">Concept Established — In Planning</span></div>
+          <div class="fi">🔬</div>
+          <div class="ft"><span class="zh">个人化错题诊断</span><span class="en">Personalised Error Diagnostics</span></div>
+          <div class="fd"><span class="zh">将学生错题模式与课程板块（生活空间 / 核心 / 巩固 / 文化站）绑定，生成个人化薄弱点图谱，为教师提供有依据的差异化教学参考。</span><span class="en">Mapping student error patterns to curriculum components to generate personalised weak-area profiles — giving teachers an evidence base for differentiated instruction.</span></div>
+          <div class="fc-note"><span class="zh">待错题样本量积累后可推进</span><span class="en">Progresses as error data accumulates</span></div>
+        </div>
+        <div class="fc grn vis" style="opacity:1;transform:none; grid-column:1/-1;">
+          <div class="ftag"><span class="zh">长远愿景 · 扩展词库边界</span><span class="en">Longer Vision · Expanding the Vocabulary Boundary</span></div>
+          <div class="fi">🗺️</div>
+          <div class="ft"><span class="zh">新加坡情境词汇库</span><span class="en">Singapore Contextual Vocabulary Hub</span></div>
+          <div class="fd"><span class="zh">课程词汇是起点，但真正的词语应用能力需要更广泛的情境词汇支撑。可扩充涵盖：课外活动中文名称、各学科中文名称、MOE 教育术语、新加坡本地地名、本地食物名称、各部门名称、核心价值观中文表达，以及具有本地特色的词汇（如易通卡、乐龄人士、组屋、民众俱乐部等）——建立一个真正扎根于新加坡情境的华文词汇学习枢纽。</span>
+          <span class="en">Curriculum vocabulary is the starting point, but genuine vocabulary competence requires a broader contextual base. Potential expansions include: CCA names in Chinese, subject names, MOE educational terminology, local place names, local food names, ministry names, core values translations, and Singapore-specific terms (e.g. 易通卡, 乐龄人士, 组屋, 民众俱乐部) — building a vocabulary learning hub genuinely rooted in the Singapore context.</span></div>
+          <div class="fc-note"><span class="zh">词王淬炼坊的架构支持词库的持续扩展，无需重建平台</span><span class="en">The platform architecture supports continuous vocabulary bank expansion without rebuilding</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Accordion 2: AMBER - External -->
+  <div class="acc-cat amber" id="acc-amber">
+    <div class="acc-cat-header" onclick="togAcc('acc-amber')">
+      <div>
+        <div class="acc-cat-title">
+          <span class="zh">无界成长</span><span class="en">Boundless Growth</span>
+        </div>
+        <div style="font-size:.78rem; color:rgba(255,255,255,.38); margin-top:.2rem;">
+          <span class="zh">独行快，众行远</span>
+          <span class="en">If you want to go fast, go alone. If you want to go far, go together.</span>
+        </div>
+      </div>
+      <div class="acc-cat-chev">▼</div>
+    </div>
+    <div class="acc-cat-body">
+      <div class="acc-cards-inner">
+        <div class="fc amber vis" style="opacity:1;transform:none;">
+          <div class="ftag"><span class="zh">等待：专业研究合作</span><span class="en">Awaiting: Research Collaboration</span></div>
+          <div class="fi">📊</div>
+          <div class="ft"><span class="zh">建立扎实的学习成效证据</span><span class="en">Establishing Robust Evidence of Impact</span></div>
+          <div class="fd"><span class="zh">前后测工具的设计——题量、干扰项效度、增益分数的统计意义——涉及专业的测量学判断。这是目前最需要专业伙伴的地方。</span><span class="en">Assessment design — item validity, distractor discrimination, gain score significance — requires psychometric expertise. This is where a research partner would make the greatest difference.</span></div>
+          <div class="fc-note"><span class="zh">潜在合作方：ETD、本地高校教育研究团队</span><span class="en">Potential collaborators: ETD, local university education research units</span></div>
+        </div>
+        <div class="fc amber vis" style="opacity:1;transform:none;">
+          <div class="ftag"><span class="zh">等待：基础设施支持</span><span class="en">Awaiting: Infrastructure Support</span></div>
+          <div class="fi">🧠</div>
+          <div class="ft"><span class="zh">动态间隔重复</span><span class="en">Dynamic Spaced Repetition</span></div>
+          <div class="fd"><span class="zh">真正的间隔重复须为每个词记录复习历史，并在合适时机主动提醒学生。这是认知科学中最有力的记忆巩固工具，也是这个平台最值得追求的下一步。</span><span class="en">True spaced repetition requires per-word revision history and timely review nudges — one of the most powerful memory consolidation tools cognitive science has identified.</span></div>
+          <div class="fc-note"><span class="zh">所需：更高层级的云端配额与算法支持</span><span class="en">Requires: Higher cloud quota and algorithm support</span></div>
+        </div>
+        <div class="fc amber vis" style="opacity:1;transform:none;">
+          <div class="ftag"><span class="zh">等待：专用语音接口</span><span class="en">Awaiting: Voice API Access</span></div>
+          <div class="fi">🎙️</div>
+          <div class="ft"><span class="zh">语音发音练习</span><span class="en">Pronunciation Practice</span></div>
+          <div class="fd"><span class="zh">学生朗读词语、平台即时反馈——最自然的第五种学习模式。可靠方案需要专用语音识别接口，这超出当前学校开发的资源范围。</span><span class="en">Students speak words aloud; the platform responds — the most natural fifth study mode. A reliable solution requires a dedicated speech recognition service beyond current school development capacity.</span></div>
+          <div class="fc-note"><span class="zh">潜在路径：接入 MOE 语音接口</span><span class="en">Potential path: MOE voice API</span></div>
+        </div>
+        <div class="fc amber vis" style="opacity:1;transform:none;">
+          <div class="ftag"><span class="zh">等待：设计与游戏化专业支持</span><span class="en">Awaiting: Design & Gamification Expertise</span></div>
+          <div class="fi">🎮</div>
+          <div class="ft"><span class="zh">视觉美学与深度游戏化</span><span class="en">Visual Design & Deep Gamification</span></div>
+          <div class="fd"><span class="zh">吸引学生持续使用，美学体验与游戏化深度同样重要。专业的 UI/UX 设计、角色动画、剧情叙事、深度成就体系——这些需要具备游戏化设计专业背景的伙伴共同实现，超出当前单人开发的能力边界。</span><span class="en">Sustained student engagement depends as much on visual appeal as on content quality. Professional UI/UX design, character animation, narrative storytelling, and deep achievement systems require gamification design expertise — beyond current solo development capacity.</span></div>
+          <div class="fc-note"><span class="zh">潜在合作方：游戏化设计师、EdTech 设计团队</span><span class="en">Potential collaborators: gamification designers, EdTech design teams</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══ CLOSING ══ -->
+<section class="sw section-closing" style="padding-top:2rem; padding-bottom:3rem; text-align:center;">
+
+  <!-- Lightbulb SVG -->
+  <div style="display:flex; justify-content:center; margin-bottom:2rem;">
+    <svg width="90" height="130" viewBox="0 0 90 130" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="glow-grad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#E8B800" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="#E8B800" stop-opacity="0"/>
+        </radialGradient>
+        <filter id="blur-glow">
+          <feGaussianBlur stdDeviation="4" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <!-- Outer glow -->
+      <ellipse cx="45" cy="52" rx="38" ry="38" fill="url(#glow-grad)">
+        <animate attributeName="rx" values="36;42;36" dur="3s" repeatCount="indefinite"/>
+        <animate attributeName="ry" values="36;42;36" dur="3s" repeatCount="indefinite"/>
+        <animate attributeName="stop-opacity" values="0.25;0.45;0.25" dur="3s" repeatCount="indefinite"/>
+      </ellipse>
+      <!-- Bulb glass -->
+      <path d="M45,10 C28,10 18,22 18,38 C18,50 25,58 30,64 L30,75 C30,77 32,78 34,78 L56,78 C58,78 60,77 60,75 L60,64 C65,58 72,50 72,38 C72,22 62,10 45,10 Z"
+            fill="none" stroke="rgba(232,184,0,0.7)" stroke-width="2" filter="url(#blur-glow)"/>
+      <!-- Filament lines inside -->
+      <line x1="38" y1="45" x2="45" y2="35" stroke="rgba(232,184,0,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="45" y1="35" x2="52" y2="45" stroke="rgba(232,184,0,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Base bands -->
+      <line x1="30" y1="82" x2="60" y2="82" stroke="rgba(232,184,0,0.5)" stroke-width="2" stroke-linecap="round"/>
+      <line x1="32" y1="87" x2="58" y2="87" stroke="rgba(232,184,0,0.35)" stroke-width="2" stroke-linecap="round"/>
+      <line x1="35" y1="92" x2="55" y2="92" stroke="rgba(232,184,0,0.2)" stroke-width="2" stroke-linecap="round"/>
+      <!-- Spark lines -->
+      <g stroke="rgba(232,184,0,0.4)" stroke-width="1.2" stroke-linecap="round">
+        <line x1="14" y1="20" x2="10" y2="15"><animate attributeName="opacity" values="0;1;0" dur="2.5s" begin="0.5s" repeatCount="indefinite"/></line>
+        <line x1="76" y1="20" x2="80" y2="15"><animate attributeName="opacity" values="0;1;0" dur="2.5s" begin="1s" repeatCount="indefinite"/></line>
+        <line x1="10" y1="42" x2="5" y2="42"><animate attributeName="opacity" values="0;1;0" dur="2.5s" begin="0.2s" repeatCount="indefinite"/></line>
+        <line x1="80" y1="42" x2="85" y2="42"><animate attributeName="opacity" values="0;1;0" dur="2.5s" begin="1.5s" repeatCount="indefinite"/></line>
+        <line x1="18" y1="62" x2="13" y2="67"><animate attributeName="opacity" values="0;1;0" dur="2.5s" begin="0.8s" repeatCount="indefinite"/></line>
+        <line x1="72" y1="62" x2="77" y2="67"><animate attributeName="opacity" values="0;1;0" dur="2.5s" begin="0.3s" repeatCount="indefinite"/></line>
+      </g>
+    </svg>
+  </div>
+
+  <div style="font-family:'Noto Serif SC','Songti SC',serif; font-size:clamp(1.5rem,4vw,2.2rem); font-weight:700; color:rgba(255,255,255,.92); line-height:1.5; margin-bottom:1.4rem; margin-top:.2rem;">
+    <span class="zh">共创学习之未来</span>
+    <span class="en">Co-creating the Future of Learning</span>
+  </div>
+
+  <!-- Closing quote -->
+  <div style="max-width:520px; margin:0 auto;">
+    <div style="font-family:'Noto Serif SC','Songti SC',serif; font-size:clamp(1.1rem,3vw,1.4rem); font-weight:700; color:var(--gold); line-height:1.7; margin-bottom:.5rem;">
+      <span class="zh">路虽远，行则将至；<br>事虽难，做则必成。</span>
+      <span class="en">However long the road, those who walk it shall arrive.<br>However hard the task, those who do it shall succeed.</span>
+    </div>
+    <div style="font-size:.82rem; color:rgba(255,255,255,.42); margin-bottom:.18rem;">
+      <span class="zh">— 荀子</span>
+      <span class="en">— Xunzi</span>
+    </div>
+    <div style="font-size:.7rem; color:rgba(255,255,255,.24); line-height:1.6;">
+      <span class="zh">先秦儒家思想家、教育家 · 《荀子·修身》</span>
+      <span class="en">Pre-Qin Confucian philosopher and educator · <em>Xunzi: On Self-Cultivation</em></span>
+    </div>
+  </div>
+
+</section>
+
+<footer class="foot">
+  <div>
+    <span class="zh">词王淬炼坊（Vocab King · The Forge）· 百德中学母语部华文科</span>
+    <span class="en">Vocab King · The Forge &nbsp;·&nbsp; CL Unit, MTL Dept · Bukit View Secondary School</span>
+  </div>
+  <div>
+    <span class="zh">郑凯欣老师（母语部主任）独立开发</span>
+    <span class="en">Independently developed by Mdm Chun Kai Xin · HOD/MTL</span>
+  </div>
+  <div class="foot-credit">
+    <span class="zh">词汇选材以 MOE CPDD 课程纲要及教材为依据；课文例句均引自各册教材，版权归属 MOE。平台另行开发的内容——包括中英文释义、填空练习、词性标注及整体平台设计——由开发者自主完成。</span>
+    <span class="en">Vocabulary selection and example sentences are based on MOE CPDD's curriculum framework and textbooks; copyright for textbook content belongs to MOE. The platform's independently developed layers — definitions, cloze sentences, part-of-speech tagging, and overall platform design — were created by the developer.</span>
+  </div>
+</footer>
+
+<script>
+function togAcc(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+function togSR(chip, bodyId) {
+  const isOpen = chip.classList.contains('open');
+  document.querySelectorAll('.sr-chip').forEach(c => c.classList.remove('open'));
+  if (!isOpen) chip.classList.add('open');
+}
+
+// Hexagon sequential animation (vertical div layout)
+function animateHexagons() {
+  const seq = ['h1','c1','h2','c2','h3','c3','h4','c4','h5','ret'];
+  seq.forEach((id, i) => {
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }
+    }, i * 220);
+  });
+}
+
+const hexObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !e.target.dataset.hexplayed) {
+      e.target.dataset.hexplayed = '1';
+      animateHexagons();
+    }
+  });
+}, { threshold: 0.3 });
+const firstHex = document.getElementById('h1');
+if (firstHex) hexObs.observe(firstHex.closest('div[style*="flex-direction:column"]') || firstHex);
+
+function setLang(l) {
+  document.body.className = l;
+  document.querySelectorAll('.lb').forEach(b => b.classList.remove('on'));
+  const btn = document.getElementById('btn-' + l);
+  if (btn) btn.classList.add('on');
+}
+function togPhase(id) {
+  const el = document.getElementById(id);
+  const was = el.classList.contains('open');
+  document.querySelectorAll('.ph').forEach(p => p.classList.remove('open'));
+  if (!was) el.classList.add('open');
+}
+function togKat(card) {
+  const was = card.classList.contains('open');
+  document.querySelectorAll('.kat-card').forEach(c => c.classList.remove('open'));
+  if (!was) card.classList.add('open');
+}
+function togPS(chip, id) {
+  const section = chip.closest('.ps-section');
+  const allChips = section.querySelectorAll('.ps-chip');
+  const allDetails = section.querySelectorAll('.ps-detail');
+  const target = document.getElementById(id);
+  const isOpen = target.classList.contains('open');
+  allChips.forEach(c => c.classList.remove('active'));
+  allDetails.forEach(d => d.classList.remove('open'));
+  if (!isOpen) { chip.classList.add('active'); target.classList.add('open'); }
+}
+
+// Intersection observer for fade-in
+const obs = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+}, { threshold: 0.06 });
+document.querySelectorAll('.ph, .fc, .kat-card').forEach((el, i) => {
+  el.style.transitionDelay = (i % 5) * 0.07 + 's';
+  obs.observe(el);
+});
+
+// Chat conversation animation - triggers when chat scene scrolls into view
+const chatObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && !entry.target.dataset.played) {
+      entry.target.dataset.played = '1';
+      playChat();
+    }
+  });
+}, { threshold: 0.4 });
+const chatScene = document.querySelector('.chat-scene');
+if (chatScene) chatObs.observe(chatScene);
+
+function playChat() {
+  const userBubble = document.getElementById('userBubble');
+  const typingDots = document.getElementById('typingDots');
+  const claudeBubble = document.getElementById('claudeBubble');
+  userBubble.style.opacity = '0';
+  typingDots.classList.remove('visible');
+  claudeBubble.classList.remove('visible');
+  setTimeout(() => { userBubble.style.opacity = '1'; }, 300);
+  setTimeout(() => { typingDots.classList.add('visible'); }, 1200);
+  setTimeout(() => {
+    typingDots.classList.remove('visible');
+    claudeBubble.classList.add('visible');
+  }, 3200);
+}
+
+function replayChat() {
+  const chatScene = document.querySelector('.chat-scene');
+  delete chatScene.dataset.played;
+  playChat();
+}
+</script>
+</body>
+</html>
