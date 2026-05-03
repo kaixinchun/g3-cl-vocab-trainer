@@ -374,6 +374,13 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   .install-close{color:rgba(255,255,255,.4);font-size:1.1rem;padding:.2rem;cursor:pointer;flex-shrink:0;}
   /* ── SAVE PROGRESS BUTTON (home screen) ─────────── */
   .save-restore-row{display:flex;gap:.5rem;padding:0 1.2rem .6rem;max-width:480px;margin:0 auto;width:100%;}
+@media(min-width:700px){
+  .save-restore-row{max-width:960px;}
+  .weak-btn{max-width:calc(960px - 2.4rem);}
+  .stats-counter-card { padding: 1rem 1.5rem; }
+  .counter-num { font-size: 2rem !important; }
+  .counter-label { font-size: .85rem !important; }
+}
   .save-btn,.restore-btn{flex:1;padding:.65rem;border:1px solid rgba(255,255,255,.6);border-radius:var(--r-sm);background:rgba(255,255,255,.45);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:var(--ink-soft);font-size:.78rem;cursor:pointer;font-family:inherit;transition:all var(--t);display:flex;align-items:center;justify-content:center;gap:.35rem;}
   .save-btn:hover,.restore-btn:hover{background:rgba(255,255,255,.65);}
   /* ── SYNC INDICATOR ──────────────────────────────── */
@@ -1351,13 +1358,10 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
         <!-- Student fields (shown for @students.edu.sg) -->
         <div id="reg-student-fields-desktop" style="display:none;">
           <label class="welcome-label" style="margin-top:.2rem">你的学校</label>
-          <div class="school-search-wrap">
-            <input class="welcome-input school-search-input" id="reg-school-search-desktop"
-              type="text" placeholder="输入学校名称搜索…" autocomplete="off"
-              oninput="filterSchools('desktop')" onfocus="showSchoolDropdown('desktop')" onblur="hideSchoolDropdown('desktop')">
-            <div class="school-dropdown" id="reg-school-dropdown-desktop"></div>
-            <input type="hidden" id="reg-school-desktop">
-          </div>
+          <select class="welcome-select" id="reg-school-desktop">
+            <option value="百德中学">百德中学 Bukit View Secondary School</option>
+            <option value="其他学校">其他学校 Other Schools</option>
+          </select>
         </div>
         <!-- Teacher fields (shown for @moe.edu.sg) -->
         <div id="reg-teacher-fields-desktop" style="display:none;">
@@ -1385,6 +1389,9 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
         <div class="welcome-error" id="welcome-reg-error-desktop"></div>
         <button class="welcome-btn" onclick="submitRegister('desktop')">注册并开始学习 →</button>
         <div class="welcome-note" style="margin-top:.5rem">昵称须经老师审核后才会正式显示。仅限MOE iCON电邮注册。</div>
+        <div style="margin-top:.8rem;text-align:center;">
+          <button onclick="loginAsGuest()" style="background:none;border:none;color:rgba(26,42,94,.5);font-size:.75rem;font-family:var(--font-ui);cursor:pointer;text-decoration:underline;padding:.2rem .4rem;">🎪 访客模式（活动/工作坊用）</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1439,13 +1446,10 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       <!-- Student fields -->
       <div id="reg-student-fields-mobile" style="display:none;">
         <label class="welcome-label" style="margin-top:.2rem">你的学校</label>
-        <div class="school-search-wrap">
-          <input class="welcome-input school-search-input" id="reg-school-search-mobile"
-            type="text" placeholder="输入学校名称搜索…" autocomplete="off"
-            oninput="filterSchools('mobile')" onfocus="showSchoolDropdown('mobile')" onblur="hideSchoolDropdown('mobile')">
-          <div class="school-dropdown" id="reg-school-dropdown-mobile"></div>
-          <input type="hidden" id="reg-school-mobile">
-        </div>
+        <select class="welcome-select" id="reg-school-mobile">
+          <option value="百德中学">百德中学 Bukit View Secondary School</option>
+          <option value="其他学校">其他学校 Other Schools</option>
+        </select>
       </div>
       <!-- Teacher fields -->
       <div id="reg-teacher-fields-mobile" style="display:none;">
@@ -1473,6 +1477,9 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       <div class="welcome-error" id="welcome-reg-error"></div>
       <button class="welcome-btn" onclick="submitRegister('mobile')">注册并开始学习 →</button>
       <div class="welcome-note">昵称须经老师审核后才会正式显示。仅限MOE iCON电邮注册。</div>
+    </div>
+    <div style="margin:.8rem 0 .4rem;text-align:center;">
+      <button onclick="loginAsGuest()" style="background:none;border:none;color:rgba(26,42,94,.55);font-size:.75rem;font-family:var(--font-ui);cursor:pointer;text-decoration:underline;padding:.2rem .4rem;">🎪 访客模式（活动/工作坊用）</button>
     </div>
     <div class="welcome-credit-school">
       百德中学 · Bukit View Secondary School
@@ -1594,16 +1601,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
           <div class="counter-num" id="counter-teachers">—</div>
           <div class="counter-label">教师</div>
         </div>
-        <div class="counter-divider"></div>
-        <div class="counter-item">
-          <div class="counter-num" id="counter-parents">—</div>
-          <div class="counter-label">家长</div>
-        </div>
-        <div class="counter-divider"></div>
-        <div class="counter-item">
-          <div class="counter-num" id="counter-public">—</div>
-          <div class="counter-label">公众人士</div>
-        </div>
+
       </div>
     </div>
   </div>
@@ -7274,7 +7272,7 @@ async function submitRegister(panel) {
       userType,
       school: school || org,
       subject: subject || '',
-      accountApproved: !needsApproval,
+      accountApproved: !needsApproval || email.endsWith('@students.edu.sg') || email.endsWith('@moe.edu.sg'),
       createdAt:  serverTimestamp(),
       lastSeen:   serverTimestamp(),
       progress:   {}
@@ -7291,6 +7289,14 @@ async function submitRegister(panel) {
 
 // ── AFTER FIREBASE LOGIN: load Firestore doc, sync, launch ───
 async function _onFirebaseLogin(user, fallback) {
+  // Guest account: bypass all Firestore, launch directly
+  if (isGuestAccount(user.email)) {
+    sessionStorage.setItem(GUEST_UID_KEY, '1');
+    progress = {};
+    saveUserIdentity(GUEST_EMAIL, '访客', '', false);
+    launchApp(GUEST_EMAIL, '访客', '', false);
+    return;
+  }
   const { doc, getDoc, updateDoc, serverTimestamp } = window._fbFns;
   const uid = user.uid;
   let   userDoc = null;
@@ -7310,6 +7316,26 @@ async function _onFirebaseLogin(user, fallback) {
   const nicknameApproved = userDoc?.nicknameApproved || false;
   const nicknameRejected = userDoc?.nicknameRejected || false;
   const rejReason = userDoc?.nicknameRejectionReason || '';
+  const accountApproved = userDoc?.accountApproved !== false; // default true for legacy accounts
+  const accountBanned   = userDoc?.banned === true;
+
+  // Banned account: block immediately
+  if (accountBanned) {
+    showScreen('welcome-screen');
+    setTimeout(() => {
+      const errEl = document.getElementById('welcome-error') || document.getElementById('welcome-reg-error');
+      if (errEl) { errEl.textContent = '此账号已被停用。如有疑问，请联系老师。'; errEl.style.display = 'block'; }
+      else alert('此账号已被停用。如有疑问，请联系老师。');
+    }, 300);
+    return;
+  }
+
+  // Non-approved account: can study but leaderboard gated
+  if (!accountApproved) {
+    sessionStorage.setItem('cl_account_pending', '1');
+  } else {
+    sessionStorage.removeItem('cl_account_pending');
+  }
 
   // Clear local progress if a DIFFERENT user is logging in (prevents cross-account bleed)
   try {
@@ -7409,6 +7435,16 @@ function setBadge(userType) {
 
 // ── LAUNCH APP AFTER LOGIN ────────────────────────────────────
 function launchApp(email, userType, nickname, nicknameApproved) {
+  // Guest mode UI adjustments
+  const _isGuest = isGuestAccount(email);
+  if (_isGuest) {
+    const lbBtn = document.querySelector('button[onclick="showLeaderboard()"]');
+    if (lbBtn) lbBtn.style.display = 'none';
+  }
+  // Pending account notice (shown once on launch)
+  if (sessionStorage.getItem('cl_account_pending') === '1') {
+    setTimeout(() => showToast('⏳ 你的账号正在审核中，可正常练习，排行榜功能暂不开放。'), 1200);
+  }
   const emailDisplay = document.getElementById('user-email-display');
   if (emailDisplay) emailDisplay.textContent = email;
 
@@ -7445,6 +7481,33 @@ function launchApp(email, userType, nickname, nicknameApproved) {
 }
 
 // ── SIGN OUT ─────────────────────────────────────────────────
+// ── GUEST MODE ───────────────────────────────────────────────
+const GUEST_EMAIL    = 'guest@vocabking.edu.sg';
+const GUEST_PASSWORD = 'V0cabK!ng';
+const GUEST_UID_KEY  = 'cl_vocab_guest_mode';
+
+function isGuestAccount(emailOrUid) {
+  return (emailOrUid || '').toLowerCase() === GUEST_EMAIL;
+}
+
+async function loginAsGuest() {
+  try {
+    const { signInWithEmailAndPassword } = window._fbFns || {};
+    if (!signInWithEmailAndPassword) { showToast('系统未就绪，请稍后再试'); return; }
+    const cred = await signInWithEmailAndPassword(window._fbAuth, GUEST_EMAIL, GUEST_PASSWORD);
+    // Guest mode: skip Firestore sync, skip leaderboard, skip nickname
+    sessionStorage.setItem(GUEST_UID_KEY, '1');
+    localStorage.removeItem('cl_vocab_progress_v2'); // fresh session
+    progress = {};
+    saveUserIdentity(GUEST_EMAIL, '访客', '', false);
+    launchApp(GUEST_EMAIL, '访客', '', false);
+    showToast('🎪 访客模式 — 练习进度仅限本次使用');
+  } catch(e) {
+    console.warn('Guest login failed:', e);
+    showToast('访客登录失败，请联系老师。');
+  }
+}
+
 function signOut() {
   if (!confirm('确定要退出登录吗？你的学习进度不会丢失。')) return;
   try {
@@ -7702,13 +7765,9 @@ async function fetchUsageStats() {
       const bv  = document.getElementById('counter-bukit');
       const tot = document.getElementById('counter-total');
       const tch = document.getElementById('counter-teachers');
-      const par = document.getElementById('counter-parents');
-      const pub = document.getElementById('counter-public');
       if (bv)  bv.textContent  = data.bukitViewStudents  ?? '—';
       if (tot) tot.textContent = data.otherSchoolStudents ?? '—';
       if (tch) tch.textContent = data.teachers            ?? '—';
-      if (par) par.textContent = data.parents             ?? '—';
-      if (pub) pub.textContent = data.publicUsers         ?? '—';
     }
   } catch(e) { console.warn('Stats fetch failed:', e); }
   // For dashboard users: check pending nickname count
@@ -7816,6 +7875,7 @@ async function _syncProgressToFirestore() {
   try {
     const user = window._fbUser;
     if (!user) return;
+    if (isGuestAccount(user.email)) return; // guest: no Firestore sync
     const { doc, updateDoc, serverTimestamp } = window._fbFns;
     await updateDoc(doc(window._fbDb, 'users', user.uid), {
       progress: progress,
@@ -9383,6 +9443,7 @@ function renderStudentProgress(users, container) {
         <th style="padding:.45rem .6rem;text-align:center;">登录次数</th>
         <th style="padding:.45rem .6rem;">最近活跃</th>
         <th style="padding:.45rem .6rem;text-align:center;">状态</th>
+        <th style="padding:.45rem .6rem;text-align:center;">管理</th>
       </tr>
     </thead>
     <tbody>`;
@@ -9397,12 +9458,13 @@ function renderStudentProgress(users, container) {
       : daysSince <= 7 ? `<span style="background:rgba(230,170,0,.15);color:var(--amber);border-radius:4px;padding:.1rem .4rem;font-size:.68rem;">低频</span>`
       : `<span style="background:rgba(192,57,43,.12);color:var(--red);border-radius:4px;padding:.1rem .4rem;font-size:.68rem;">沉睡</span>`;
     const nick = u.nicknameApproved ? (u.nickname || '—') : (u.nickname ? u.nickname + '⏳' : '—');
+    const bannedTag = u.banned ? ' <span style="background:rgba(192,57,43,.12);color:var(--red);border-radius:4px;padding:.1rem .35rem;font-size:.65rem;">已停用</span>' : '';
     const mins = Math.round((u.totalSessionSeconds || 0) / 60);
     const timeStr = mins >= 60 ? Math.floor(mins/60) + 'h ' + (mins%60) + 'm' : (mins > 0 ? mins + 'm' : '—');
     const loginCount = u.loginCount || '—';
     const bg = i % 2 === 0 ? 'transparent' : 'var(--paper-2)';
     html += `<tr style="background:${bg};border-bottom:1px solid var(--paper-3);">
-      <td style="padding:.4rem .6rem;font-family:var(--font-body);">${nick}</td>
+      <td style="padding:.4rem .6rem;font-family:var(--font-body);">${nick}${bannedTag}</td>
       <td style="padding:.4rem .6rem;color:var(--ink-mute);font-size:.7rem;">${u.email}</td>
       <td style="padding:.4rem .6rem;text-align:center;font-weight:700;color:var(--green);">${mastered}</td>
       <td style="padding:.4rem .6rem;text-align:center;">
@@ -9415,11 +9477,127 @@ function renderStudentProgress(users, container) {
       <td style="padding:.4rem .6rem;text-align:center;color:var(--ink-mute);">${loginCount}</td>
       <td style="padding:.4rem .6rem;color:var(--ink-mute);">${lastSeen}</td>
       <td style="padding:.4rem .6rem;text-align:center;">${statusBadge}</td>
+      <td style="padding:.4rem .6rem;text-align:center;">
+        <button onclick="_dashEditUser('${u.id}')" style="font-size:.68rem;padding:.18rem .5rem;background:var(--paper-3);border:1px solid var(--paper-3);border-radius:4px;cursor:pointer;color:var(--blue);font-family:var(--font-ui);">编辑</button>
+        ${_banBtn(u.id, u.banned)}
+      </td>
     </tr>`;
   });
 
   html += '</tbody></table></div>';
   container.innerHTML = html;
+}
+
+function _banBtn(uid, banned) {
+  const bg  = banned ? 'rgba(74,154,32,.15)'  : 'rgba(192,57,43,.1)';
+  const bdr = banned ? 'rgba(74,154,32,.3)'   : 'rgba(192,57,43,.25)';
+  const col = banned ? 'var(--green)'          : 'var(--red)';
+  const lbl = banned ? '解禁'                  : '停用';
+  const fn  = banned ? '_dashUnbanUser'        : '_dashBanUser';
+  return '<button onclick="' + fn + '(\'' + uid + '\')" style="font-size:.68rem;padding:.18rem .5rem;background:' + bg + ';border:1px solid ' + bdr + ';border-radius:4px;cursor:pointer;color:' + col + ';font-family:var(--font-ui);margin-left:.2rem;">' + lbl + '</button>';
+}
+
+// ── DASHBOARD USER MANAGEMENT ───────────────────────────────
+let _dashUsers = []; // cached from last load
+
+async function _dashBanUser(uid) {
+  if (!confirm('确认停用此账号？该用户将无法进入应用。')) return;
+  try {
+    const { doc, updateDoc } = window._fbFns;
+    await updateDoc(doc(window._fbDb, 'users', uid), { banned: true });
+    showToast('✅ 账号已停用');
+    showDashboard(); // refresh
+  } catch(e) { showToast('操作失败：' + e.message); }
+}
+
+async function _dashUnbanUser(uid) {
+  if (!confirm('确认解除停用？该用户将可重新登录。')) return;
+  try {
+    const { doc, updateDoc } = window._fbFns;
+    await updateDoc(doc(window._fbDb, 'users', uid), { banned: false });
+    showToast('✅ 账号已解禁');
+    showDashboard();
+  } catch(e) { showToast('操作失败：' + e.message); }
+}
+
+async function _dashDeleteUser(uid) {
+  if (!confirm('⚠️ 永久删除此账号及所有学习数据？此操作不可撤销。')) return;
+  if (!confirm('再次确认：删除后该用户所有进度将丢失。')) return;
+  try {
+    const { doc, deleteDoc } = window._fbFns;
+    await deleteDoc(doc(window._fbDb, 'users', uid));
+    await deleteDoc(doc(window._fbDb, 'scores', uid));
+    await deleteDoc(doc(window._fbDb, 'avatars', uid));
+    showToast('✅ 账号已删除');
+    showDashboard();
+  } catch(e) { showToast('删除失败：' + e.message); }
+}
+
+function _dashEditUser(uid) {
+  // Find user in cached dashboard data via Firestore re-fetch
+  const { doc, getDoc } = window._fbFns;
+  getDoc(doc(window._fbDb, 'users', uid)).then(snap => {
+    if (!snap.exists()) { showToast('找不到此用户'); return; }
+    const u = snap.data();
+    _showEditModal(uid, u);
+  }).catch(e => showToast('加载失败：' + e.message));
+}
+
+function _showEditModal(uid, u) {
+  const existing = document.getElementById('_dash-edit-modal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = '_dash-edit-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+  modal.innerHTML = `
+    <div style="background:white;border-radius:12px;padding:1.4rem;max-width:400px;width:100%;font-family:var(--font-ui);box-shadow:0 8px 32px rgba(0,0,0,.25);">
+      <div style="font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:1rem;">✏️ 编辑用户：<span style="color:var(--blue);font-size:.85rem;">${u.email}</span></div>
+      <label style="font-size:.75rem;color:var(--ink-mute);display:block;margin-bottom:.25rem;">昵称</label>
+      <input id="_edit-nickname" value="${u.nickname || ''}" maxlength="8" style="width:100%;padding:.5rem .7rem;border:1px solid var(--paper-3);border-radius:6px;font-size:.88rem;font-family:var(--font-ui);box-sizing:border-box;margin-bottom:.8rem;">
+      <label style="font-size:.75rem;color:var(--ink-mute);display:block;margin-bottom:.25rem;">账号类型</label>
+      <select id="_edit-usertype" style="width:100%;padding:.5rem .7rem;border:1px solid var(--paper-3);border-radius:6px;font-size:.88rem;font-family:var(--font-ui);box-sizing:border-box;margin-bottom:.8rem;">
+        <option value="百德中学学生" ${u.userType==='百德中学学生'?'selected':''}>百德中学学生</option>
+        <option value="其他学校学生" ${u.userType==='其他学校学生'?'selected':''}>其他学校学生</option>
+        <option value="华文教师" ${u.userType==='华文教师'?'selected':''}>华文教师</option>
+        <option value="其他科目教师" ${u.userType==='其他科目教师'?'selected':''}>其他科目教师</option>
+        <option value="访客" ${u.userType==='访客'?'selected':''}>访客</option>
+      </select>
+      <label style="font-size:.75rem;color:var(--ink-mute);display:block;margin-bottom:.25rem;">账号状态</label>
+      <div style="display:flex;gap:.5rem;margin-bottom:1rem;">
+        <label style="display:flex;align-items:center;gap:.3rem;font-size:.82rem;cursor:pointer;">
+          <input type="radio" name="_edit-status" value="active" ${!u.banned?'checked':''}> 正常
+        </label>
+        <label style="display:flex;align-items:center;gap:.3rem;font-size:.82rem;cursor:pointer;">
+          <input type="radio" name="_edit-status" value="banned" ${u.banned?'checked':''}> 已停用
+        </label>
+        <label style="display:flex;align-items:center;gap:.3rem;font-size:.82rem;cursor:pointer;">
+          <input type="radio" name="_edit-status" value="approved" ${u.accountApproved&&!u.banned?'checked':''}> 已审核
+        </label>
+      </div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+        <button onclick="_saveEditUser('${uid}')" style="flex:1;padding:.55rem;background:var(--blue);color:white;border:none;border-radius:6px;font-size:.85rem;cursor:pointer;font-family:var(--font-ui);">保存</button>
+        <button onclick="document.getElementById('_dash-edit-modal').remove()" style="flex:1;padding:.55rem;background:var(--paper-2);color:var(--ink);border:1px solid var(--paper-3);border-radius:6px;font-size:.85rem;cursor:pointer;font-family:var(--font-ui);">取消</button>
+        <button onclick="_dashDeleteUser('${uid}')" style="width:100%;padding:.55rem;background:rgba(192,57,43,.1);color:var(--red);border:1px solid rgba(192,57,43,.25);border-radius:6px;font-size:.82rem;cursor:pointer;font-family:var(--font-ui);margin-top:.2rem;">🗑 永久删除账号</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+}
+
+async function _saveEditUser(uid) {
+  const nickname = document.getElementById('_edit-nickname')?.value.trim() || '';
+  const userType = document.getElementById('_edit-usertype')?.value || '';
+  const statusVal = document.querySelector('input[name="_edit-status"]:checked')?.value || 'active';
+  const banned = statusVal === 'banned';
+  const accountApproved = statusVal === 'approved' || statusVal === 'active';
+  try {
+    const { doc, updateDoc } = window._fbFns;
+    await updateDoc(doc(window._fbDb, 'users', uid), { nickname, userType, banned, accountApproved });
+    document.getElementById('_dash-edit-modal')?.remove();
+    showToast('✅ 用户信息已更新');
+    showDashboard();
+  } catch(e) { showToast('保存失败：' + e.message); }
 }
 
 // ── WORD ERROR ANALYSIS TAB ──────────────────────────────────
@@ -9679,6 +9857,7 @@ var _pendingMasteryDelta = 0;
 var _scoreFlushTimer = null;
 
 function _addToUserScore(points, masteryBonus) {
+  if (isGuestAccount(window._fbUser?.email)) return; // guest: no score tracking
   _pendingScoreDelta   += points;
   _pendingMasteryDelta += masteryBonus;
   clearTimeout(_scoreFlushTimer);
@@ -9735,6 +9914,11 @@ function _showScoreToast(msg) {
 var _lbTab = 'school';
 
 function showLeaderboard() {
+  if (sessionStorage.getItem('cl_account_pending') === '1') {
+    showToast('你的账号正在审核中，排行榜功能暂不开放。');
+    return;
+  }
+  if (isGuestAccount(window._fbUser?.email)) return;
   showScreen('leaderboard-screen');
   loadLeaderboard(_lbTab);
 }
