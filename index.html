@@ -7345,6 +7345,9 @@ async function _onFirebaseLogin(user, fallback) {
   reportLogin(email, userType);
   launchApp(email, userType, nickname, nicknameApproved);
 
+  // Reconcile leaderboard score against ground-truth progress (async, non-blocking)
+  _reconcileScore(user.uid, user.email, userType, nickname, nicknameApproved).catch(() => {});
+
   // Notify student if nickname was rejected
   if (nicknameRejected && !nicknameApproved) {
     setTimeout(() => {
@@ -9604,6 +9607,71 @@ function _awardMasteryBonus(word) {
 }
 var _masteryBonusAwarded = {}; // populated on login from Firestore
 
+// ── Reconcile score on login ──────────────────────────────────
+// Computes what masteryScore SHOULD be from ground-truth progress,
+// and corrects the scores doc if it is missing or understated.
+// Also restores _masteryBonusAwarded so duplicate bonuses cannot fire.
+async function _reconcileScore(uid, email, userType, nickname, nicknameApproved) {
+  let waited = 0;
+  while ((!window._fbFns || !window._fbDb) && waited < 5000) {
+    await new Promise(r => setTimeout(r, 200));
+    waited += 200;
+  }
+  if (!window._fbFns || !window._fbDb) return;
+
+  const { doc, getDoc, setDoc, serverTimestamp } = window._fbFns;
+
+  // Ground-truth: all words where fcKnown && clozeOk in merged progress
+  const masteredWords = Object.entries(progress)
+    .filter(([, p]) => p.fcKnown && p.clozeOk)
+    .map(([w]) => w);
+  const correctMasteryScore = masteredWords.length * SCORE_MASTERY_BONUS;
+
+  // Read existing scores doc
+  const ref = doc(window._fbDb, 'scores', uid);
+  let existing = null;
+  try {
+    const snap = await getDoc(ref);
+    existing = snap.exists() ? snap.data() : null;
+  } catch(e) { return; }
+
+  // Always restore _masteryBonusAwarded (prevents duplicate bonuses after re-login)
+  if (existing?.masteryAwarded && Object.keys(existing.masteryAwarded).length > 0) {
+    _masteryBonusAwarded = { ...existing.masteryAwarded };
+  } else {
+    // No scores doc or empty masteryAwarded — seed from progress so bonuses don't re-fire
+    masteredWords.forEach(w => { _masteryBonusAwarded[w] = true; });
+  }
+
+  // Only rewrite if masteryScore is understated
+  const storedMastery = existing?.masteryScore || 0;
+  if (storedMastery >= correctMasteryScore) return;
+
+  const storedScore    = existing?.score || 0;
+  const correctedTotal = storedScore + correctMasteryScore;
+  const masteryAwarded = {};
+  masteredWords.forEach(w => { masteryAwarded[w] = true; });
+
+  try {
+    await setDoc(ref, {
+      uid,
+      email,
+      score:            storedScore,
+      masteryScore:     correctMasteryScore,
+      totalScore:       correctedTotal,
+      school:           localStorage.getItem('cl_vocab_school') || '',
+      userType:         localStorage.getItem('cl_vocab_user_type') || userType,
+      nickname:         localStorage.getItem('cl_vocab_user_nickname') || nickname,
+      nicknameApproved: localStorage.getItem('cl_vocab_nickname_approved') === '1',
+      masteryAwarded,
+      updatedAt:        serverTimestamp()
+    });
+    console.log(`[Score reconcile] ${email}: masteryScore ${storedMastery}→${correctMasteryScore}, total→${correctedTotal}`);
+  } catch(e) {
+    console.warn('[Score reconcile] Write failed:', e);
+  }
+}
+
 // ── Add score to Firestore (debounced) ───────────────────────
 var _pendingScoreDelta = 0;
 var _autoAdvTimer = null;
@@ -9802,22 +9870,22 @@ function renderLeaderboard(top10, myEmail, container) {
 // ══════════════════════════════════════════════════════════════
 var _sfxStreak = 0;   // consecutive correct answers this session
 
-// iOS requires AudioContext to be created/resumed inside a synchronous
-// user-gesture handler. We unlock it on the very first touch so that
-// sounds triggered asynchronously (after answer evaluation) can play.
+// iOS requires AudioContext to be created/resumed INSIDE a synchronous
+// user-gesture handler. We create the shared context on the very first
+// touch and store it in window._sfxCtx so SFX reuses it — never
+// creating a second context outside a gesture.
 (function _unlockAudioOnFirstGesture() {
   function _unlock() {
-    if (window._sfxCtxUnlocked) return;
+    if (window._sfxCtx) return;
     try {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      // Play a zero-length silent buffer to fully unlock on iOS
+      // Play a zero-length silent buffer — fully unlocks iOS audio sandbox
       const buf = ctx.createBuffer(1, 1, 22050);
       const src = ctx.createBufferSource();
       src.buffer = buf;
       src.connect(ctx.destination);
       src.start(0);
-      src.onended = () => { ctx.close(); };
-      window._sfxCtxUnlocked = true;
+      window._sfxCtx = ctx;   // hand off to SFX engine
     } catch(e) {}
     document.removeEventListener('touchstart', _unlock, true);
     document.removeEventListener('touchend',   _unlock, true);
@@ -9829,13 +9897,14 @@ var _sfxStreak = 0;   // consecutive correct answers this session
 })();
 
 const SFX = (() => {
-  let _ctx = null;
   let _on  = (localStorage.getItem('cl_sound_on') !== '0'); // default ON
 
   function _ac() {
-    if (!_ctx) _ctx = new (window.AudioContext || window.webkitAudioContext)();
-    if (_ctx.state === 'suspended') _ctx.resume();
-    return _ctx;
+    // Reuse the gesture-unlocked context if available; fall back to new() on non-iOS
+    if (!window._sfxCtx) window._sfxCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = window._sfxCtx;
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
   }
 
   function _tone(freq, type, vol, dur, delayStart) {
