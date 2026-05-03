@@ -40,7 +40,7 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;}
 body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-size:17px;line-height:1.7;}
-.screen{display:none;width:100%;height:100vh;}
+.screen{display:none;width:100%;height:100vh;position:relative;}
 .screen.active{display:flex;flex-direction:column;}
 
 /* HOME */
@@ -1233,6 +1233,412 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   .podium-slot:nth-child(2) .podium-block { animation-delay:0s; }
   .podium-slot:nth-child(3) .podium-block { animation-delay:.2s; }
 
+  /* ── WORD INDEX DRAWER ───────────────────────────────────── */
+  #word-index-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    z-index: 50;
+    flex-direction: column;
+    justify-content: flex-end;
+    animation: fadeInOverlay .18s ease;
+  }
+  #word-index-overlay.open { display: flex; }
+  @keyframes fadeInOverlay { from { opacity:0; } to { opacity:1; } }
+  .wi-drawer {
+    background: white;
+    border-radius: 20px 20px 0 0;
+    max-height: 78%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideUpDrawer .22s cubic-bezier(.25,.8,.25,1);
+  }
+  @keyframes slideUpDrawer { from { transform:translateY(100%); } to { transform:translateY(0); } }
+  .wi-handle {
+    width: 36px; height: 4px;
+    background: var(--paper-3);
+    border-radius: 2px;
+    margin: .7rem auto .4rem;
+    flex-shrink: 0;
+  }
+  .wi-header {
+    padding: .3rem 1rem .65rem;
+    border-bottom: 1px solid var(--paper-2);
+    flex-shrink: 0;
+  }
+  .wi-title {
+    font-family: var(--font-body);
+    font-size: .88rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: .45rem;
+  }
+  .wi-filters {
+    display: flex;
+    gap: .35rem;
+    flex-wrap: wrap;
+  }
+  .wi-filter-pill {
+    padding: .22rem .6rem;
+    border-radius: 12px;
+    border: 1.5px solid;
+    font-size: .65rem;
+    font-family: sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+    user-select: none;
+  }
+  .wi-fp-all   { border-color: var(--navy); color: var(--navy); background: rgba(26,42,94,.08); }
+  .wi-fp-all.wi-active   { background: var(--navy); color: white; }
+  .wi-fp-bad   { border-color: var(--red); color: var(--red); background: var(--red-soft); }
+  .wi-fp-bad.wi-active   { background: var(--red); color: white; }
+  .wi-fp-new   { border-color: var(--paper-3); color: var(--ink-mute); background: var(--paper-2); }
+  .wi-fp-new.wi-active   { background: var(--ink-mute); color: white; }
+  .wi-fp-good  { border-color: var(--green); color: var(--green); background: var(--green-soft); }
+  .wi-fp-good.wi-active  { background: var(--green); color: white; }
+  .wi-legend {
+    display: flex;
+    gap: .6rem;
+    margin-top: .45rem;
+    align-items: center;
+  }
+  .wi-legend-item {
+    display: flex;
+    align-items: center;
+    gap: .22rem;
+    font-size: .6rem;
+    color: var(--ink-mute);
+    font-family: sans-serif;
+  }
+  .wi-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .wi-dot-good { background: var(--green); }
+  .wi-dot-bad  { background: var(--red); }
+  .wi-dot-new  { background: var(--paper-3); border: 1px solid var(--ink-mute); }
+  .wi-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+    padding: .75rem 1rem 1.2rem;
+    overflow-y: auto;
+  }
+  .wi-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .22rem;
+    padding: .3rem .65rem;
+    border-radius: 18px;
+    font-family: var(--font-body);
+    font-size: .88rem;
+    border: 1.5px solid;
+    cursor: pointer;
+    transition: transform .1s, box-shadow .1s;
+    position: relative;
+  }
+  .wi-chip:active { transform: scale(.94); }
+  .wi-chip.wi-current { box-shadow: 0 0 0 2.5px var(--navy); font-weight: 700; }
+  .wi-chip-good { background: var(--green-soft); color: var(--green); border-color: var(--green); }
+  .wi-chip-bad  { background: var(--red-soft);   color: var(--red);   border-color: var(--red);   }
+  .wi-chip-new  { background: var(--paper-2);     color: var(--ink-mute); border-color: var(--paper-3); }
+  .wi-chip.wi-hidden { display: none; }
+
+  /* ── 词语目录 button in flashcard counter row ── */
+  .wi-open-btn {
+    display: flex;
+    align-items: center;
+    gap: .28rem;
+    padding: .28rem .65rem;
+    border-radius: 14px;
+    border: 1.5px solid var(--navy);
+    background: white;
+    color: var(--navy);
+    font-size: .68rem;
+    font-family: sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: .02em;
+    transition: background .15s;
+  }
+  .wi-open-btn:active { background: var(--navy); color: white; }
+
+  /* counter row wrapper */
+  .fc-counter-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 380px;
+  }
+
+  /* ── LOOKUP SCREEN ───────────────────────────────────────── */
+  #lookup-screen { background: var(--paper); }
+  .lookup-topbar {
+    background: white;
+    border-bottom: 1px solid var(--paper-3);
+    padding: .6rem .9rem;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    flex-shrink: 0;
+  }
+  .lookup-mode-badge {
+    font-size: .6rem;
+    font-family: sans-serif;
+    font-weight: 700;
+    background: var(--amber-soft);
+    border: 1px solid var(--amber);
+    border-radius: 6px;
+    padding: .15rem .45rem;
+    color: var(--amber);
+    white-space: nowrap;
+  }
+  .lookup-search-bar {
+    background: white;
+    border-bottom: 1px solid var(--paper-2);
+    padding: .55rem .9rem;
+    flex-shrink: 0;
+  }
+  .lookup-input-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--paper);
+    border-radius: 10px;
+    border: 1.5px solid var(--paper-3);
+    padding: .42rem .7rem;
+    gap: .45rem;
+    transition: border-color .15s;
+  }
+  .lookup-input-wrap:focus-within { border-color: var(--blue); }
+  .lookup-search-icon { font-size: .9rem; color: var(--ink-mute); }
+  #lookup-input {
+    border: none; background: none;
+    font-family: var(--font-body);
+    font-size: .95rem;
+    color: var(--ink);
+    outline: none;
+    flex: 1;
+    min-width: 0;
+  }
+  #lookup-input::placeholder { color: var(--ink-mute); font-size: .82rem; font-family: sans-serif; }
+  #lookup-clear-btn {
+    background: none; border: none;
+    color: var(--ink-mute); font-size: .9rem;
+    cursor: pointer; padding: 0;
+    display: none;
+  }
+  .lookup-scope-row {
+    display: flex;
+    gap: .3rem;
+    margin-top: .5rem;
+    overflow-x: auto;
+    padding-bottom: .05rem;
+  }
+  .lookup-scope-chip {
+    padding: .2rem .55rem;
+    border-radius: 10px;
+    border: 1px solid var(--paper-3);
+    background: var(--paper-2);
+    color: var(--ink-mute);
+    font-size: .65rem;
+    font-family: sans-serif;
+    white-space: nowrap;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all .15s;
+  }
+  .lookup-scope-chip.active {
+    background: var(--navy);
+    color: white;
+    border-color: var(--navy);
+  }
+  #lookup-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: .55rem .9rem 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: .35rem;
+  }
+  .lookup-empty {
+    text-align: center;
+    padding: 2rem 1rem;
+    font-size: .82rem;
+    color: var(--ink-mute);
+    font-family: sans-serif;
+  }
+  .lu-item {
+    background: white;
+    border-radius: var(--r-sm);
+    border: 1px solid var(--paper-3);
+    cursor: pointer;
+    transition: border-color .15s, box-shadow .15s;
+    overflow: hidden;
+  }
+  .lu-item.expanded {
+    border-color: var(--blue);
+    box-shadow: 0 2px 10px rgba(40,120,200,.12);
+  }
+  .lu-summary {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    padding: .6rem .8rem;
+  }
+  .lu-status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .lu-word {
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--ink);
+    flex-shrink: 0;
+    min-width: 52px;
+  }
+  .lu-def-preview {
+    font-family: sans-serif;
+    font-size: .7rem;
+    color: var(--ink-mute);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .lu-expand-icon {
+    font-size: .7rem;
+    color: var(--ink-mute);
+    flex-shrink: 0;
+    transition: transform .2s;
+  }
+  .lu-item.expanded .lu-expand-icon { transform: rotate(180deg); }
+  .lu-detail {
+    display: none;
+    flex-direction: column;
+    gap: .45rem;
+    padding: 0 .8rem .85rem;
+    border-top: 1px solid var(--paper-2);
+    margin-top: 0;
+  }
+  .lu-item.expanded .lu-detail { display: flex; }
+  .lu-pinyin {
+    font-family: sans-serif;
+    font-size: .72rem;
+    color: var(--ink-mute);
+    margin-top: .5rem;
+  }
+  .lu-tags {
+    display: flex;
+    gap: .3rem;
+    flex-wrap: wrap;
+    margin-top: -.1rem;
+  }
+  .lu-tag {
+    font-size: .6rem;
+    font-family: sans-serif;
+    border-radius: 5px;
+    padding: .1rem .38rem;
+    border: 1px solid var(--paper-3);
+    color: var(--ink-mute);
+    background: var(--paper);
+  }
+  .lu-full-def {
+    font-family: sans-serif;
+    font-size: .78rem;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    padding: .45rem .55rem;
+    background: var(--paper);
+    border-radius: 6px;
+    border-left: 3px solid var(--blue);
+  }
+  .lu-english {
+    font-family: sans-serif;
+    font-size: .7rem;
+    color: var(--ink-mute);
+    font-style: italic;
+  }
+  .lu-example {
+    font-family: var(--font-body);
+    font-size: .78rem;
+    color: var(--ink-soft);
+    line-height: 1.65;
+    background: var(--amber-soft);
+    border-left: 3px solid var(--amber);
+    padding: .4rem .6rem;
+    border-radius: 4px;
+  }
+  .lu-actions {
+    display: flex;
+    gap: .4rem;
+  }
+  .lu-btn {
+    flex: 1;
+    padding: .42rem .3rem;
+    border-radius: 8px;
+    border: 1.5px solid var(--paper-3);
+    background: white;
+    font-size: .68rem;
+    font-family: sans-serif;
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-weight: 600;
+    transition: background .15s;
+  }
+  .lu-btn.primary {
+    background: var(--navy);
+    color: white;
+    border-color: var(--navy);
+  }
+  .lu-btn:active { opacity: .75; }
+
+  /* ── 查找词语 chip on unit card ── */
+  .unit-lookup-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+    padding: .22rem .6rem;
+    border-radius: 11px;
+    border: 1.5px dashed var(--blue);
+    background: var(--blue-soft);
+    color: var(--blue);
+    font-size: .65rem;
+    font-family: sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: .35rem;
+    transition: background .15s;
+  }
+  .unit-lookup-btn:hover { background: var(--blue); color: white; border-style: solid; }
+
+  /* Global lookup button in units list footer */
+  .global-lookup-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .4rem;
+    width: 100%;
+    padding: .7rem;
+    border-radius: 10px;
+    border: 1.5px dashed var(--navy);
+    background: rgba(26,42,94,.04);
+    color: var(--navy);
+    font-size: .8rem;
+    font-family: sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: .6rem;
+    transition: background .15s;
+  }
+  .global-lookup-btn:hover { background: rgba(26,42,94,.1); }
+
   </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <!-- Firebase SDK -->
@@ -1639,9 +2045,35 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   <button id="study-chapter-btn" onclick="exitStudy()" class="study-nav-pill study-nav-pill-center">↩ 返回单元</button>
   <button id="study-feedback-btn" onclick="showFeedbackModal()" class="study-nav-pill study-nav-pill-right">💬 提供反馈</button>
 
+  <!-- WORD INDEX DRAWER OVERLAY -->
+  <div id="word-index-overlay" onclick="closeWordIndexIfOutside(event)">
+    <div class="wi-drawer" onclick="event.stopPropagation()">
+      <div class="wi-handle"></div>
+      <div class="wi-header">
+        <div class="wi-title" id="wi-title">词语目录</div>
+        <div class="wi-filters">
+          <span class="wi-filter-pill wi-fp-all wi-active" onclick="filterWordIndex('all')">全部</span>
+          <span class="wi-filter-pill wi-fp-bad"  onclick="filterWordIndex('bad')">❌ 未掌握</span>
+          <span class="wi-filter-pill wi-fp-new"  onclick="filterWordIndex('new')">○ 未看</span>
+          <span class="wi-filter-pill wi-fp-good" onclick="filterWordIndex('good')">✓ 已会</span>
+        </div>
+        <div class="wi-legend">
+          <div class="wi-legend-item"><span class="wi-dot wi-dot-bad"></span>未掌握</div>
+          <div class="wi-legend-item"><span class="wi-dot wi-dot-new"></span>未看</div>
+          <div class="wi-legend-item"><span class="wi-dot wi-dot-good"></span>已会</div>
+          <div class="wi-legend-item" style="margin-left:.2rem;border:1.5px solid var(--navy);border-radius:4px;padding:.08rem .28rem;font-size:.6rem;font-family:sans-serif;color:var(--navy);">当前</div>
+        </div>
+      </div>
+      <div class="wi-grid" id="wi-grid"></div>
+    </div>
+  </div>
+
   <!-- Flashcard -->
   <div id="flashcard-mode" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:1rem 1rem 5rem;gap:.6rem;overflow-y:auto;">
-    <div class="card-counter" id="fc-counter">1 / 20</div>
+    <div class="fc-counter-row">
+      <div class="card-counter" id="fc-counter">1 / 20</div>
+      <button class="wi-open-btn" onclick="openWordIndex()">☰ 词语目录</button>
+    </div>
 
     <!-- FRONT FACE -->
     <div id="fc-front" style="width:100%;max-width:380px;background:white;border-radius:var(--r);box-shadow:var(--shadow-md);border:1px solid var(--paper-3);cursor:pointer;min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.4rem;position:relative;" onclick="flipCard()">
@@ -1760,6 +2192,30 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       <button class="action-btn action-secondary" onclick="showScreen('home-screen');updateHomeStats()">🏠 返回主页</button>
     </div>
   </div>
+</div>
+
+<!-- LOOKUP SCREEN -->
+<div id="lookup-screen" class="screen">
+  <div class="lookup-topbar">
+    <button class="back-btn" onclick="closeLookup()">‹</button>
+    <div class="top-bar-title" style="flex:1;">词语查找</div>
+    <span class="lookup-mode-badge">查找模式</span>
+  </div>
+  <div class="lookup-search-bar">
+    <div class="lookup-input-wrap">
+      <span class="lookup-search-icon">🔍</span>
+      <input id="lookup-input" type="text" placeholder="输入词语…" oninput="onLookupInput()" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <button id="lookup-clear-btn" onclick="clearLookupInput()">✕</button>
+    </div>
+    <div class="lookup-scope-row" id="lookup-scope-row">
+      <span class="lookup-scope-chip" data-scope="all" onclick="setLookupScope('all')">全部</span>
+      <span class="lookup-scope-chip" data-scope="中一" onclick="setLookupScope('中一')">中一</span>
+      <span class="lookup-scope-chip" data-scope="中二" onclick="setLookupScope('中二')">中二</span>
+      <span class="lookup-scope-chip" data-scope="中三" onclick="setLookupScope('中三')">中三</span>
+      <span class="lookup-scope-chip" data-scope="中四" onclick="setLookupScope('中四')">中四</span>
+    </div>
+  </div>
+  <div id="lookup-list"></div>
 </div>
 
 
@@ -5996,6 +6452,16 @@ function renderUnitsList(level) {
       btn.onclick = () => startStudy(level, key, words);
 
       // Targeted practice button — only show if there are unmastered words
+      // Lookup chip
+      const lookupBtn = document.createElement('button');
+      lookupBtn.className = 'unit-lookup-btn';
+      lookupBtn.innerHTML = '🔍 查找词语';
+      lookupBtn.title = '做练习时查词义，不影响练习进度';
+      lookupBtn.onclick = (e) => {
+        e.stopPropagation();
+        openLookup(level, key, words);
+      };
+
       if (unmastered.length > 0) {
         const targetBtn = document.createElement('button');
         targetBtn.className = 'unit-target-btn';
@@ -6012,12 +6478,22 @@ function renderUnitsList(level) {
         };
         grp.appendChild(btn);
         grp.appendChild(targetBtn);
+        grp.appendChild(lookupBtn);
       } else {
         grp.appendChild(btn);
+        grp.appendChild(lookupBtn);
       }
     });
     container.appendChild(grp);
   });
+
+  // Global lookup button at bottom of list
+  const globalLookup = document.createElement('button');
+  globalLookup.className = 'global-lookup-btn';
+  globalLookup.innerHTML = '🔍 跨单元词语查找';
+  globalLookup.title = '搜索本年级全部词语';
+  globalLookup.onclick = () => openLookup(level, null, null);
+  container.appendChild(globalLookup);
 }
 
 // ══ STUDY SESSION ══════════════════════════════════════════
@@ -6888,6 +7364,320 @@ function _pwReveal(id) { const el=document.getElementById(id); if(el) el.type='t
 function _pwHide(id)   { const el=document.getElementById(id); if(el) el.type='password'; }
 // Legacy click toggle used by reset modal
 function togglePwVisibility(id) { const el=document.getElementById(id); if(el) el.type=el.type==='password'?'text':'password'; }
+
+// ── WORD INDEX DRAWER ─────────────────────────────────────────
+function openWordIndex() {
+  const overlay = document.getElementById('word-index-overlay');
+  if (!overlay) return;
+
+  // Build chip grid
+  const grid = document.getElementById('wi-grid');
+  grid.innerHTML = '';
+
+  const title = document.getElementById('wi-title');
+  title.textContent = `词语目录 · ${currentUnit || ''} （${currentWords.length} 词）`;
+
+  currentWords.forEach((word, idx) => {
+    const chip = document.createElement('span');
+    chip.className = 'wi-chip';
+    chip.dataset.word = word;
+    chip.dataset.idx = idx;
+
+    const fc = progress[word]?.fcKnown;
+    const cl = progress[word]?.clozeOk;
+    const mastered = isMastered(word);
+    const seen = progress[word] && (progress[word].box > 0 || progress[word].wrongCount || progress[word].fcKnown);
+
+    let statusClass, dotClass;
+    if (mastered || fc) {
+      statusClass = 'wi-chip-good';
+      dotClass = 'wi-dot-good';
+    } else if (seen) {
+      statusClass = 'wi-chip-bad';
+      dotClass = 'wi-dot-bad';
+    } else {
+      statusClass = 'wi-chip-new';
+      dotClass = 'wi-dot-new';
+    }
+    chip.classList.add(statusClass);
+    if (idx === currentIdx) chip.classList.add('wi-current');
+
+    chip.innerHTML = `<span class="wi-dot ${dotClass}"></span>${word}`;
+    chip.onclick = () => jumpToWord(idx);
+    grid.appendChild(chip);
+  });
+
+  // Reset filter
+  filterWordIndex('all', false);
+  overlay.classList.add('open');
+}
+
+function closeWordIndex() {
+  const overlay = document.getElementById('word-index-overlay');
+  if (overlay) overlay.classList.remove('open');
+}
+
+function closeWordIndexIfOutside(e) {
+  if (e.target === document.getElementById('word-index-overlay')) {
+    closeWordIndex();
+  }
+}
+
+function filterWordIndex(type, doToggle) {
+  // Update active pill
+  document.querySelectorAll('.wi-filter-pill').forEach(p => p.classList.remove('wi-active'));
+  const activePill = document.querySelector(`.wi-fp-${type === 'all' ? 'all' : type === 'bad' ? 'bad' : type === 'new' ? 'new' : 'good'}`);
+  if (activePill) activePill.classList.add('wi-active');
+
+  // Show/hide chips
+  document.querySelectorAll('.wi-chip').forEach(chip => {
+    if (type === 'all') {
+      chip.classList.remove('wi-hidden');
+      return;
+    }
+    const word = chip.dataset.word;
+    const fc = progress[word]?.fcKnown;
+    const mastered = isMastered(word);
+    const seen = progress[word] && (progress[word].box > 0 || progress[word].wrongCount || progress[word].fcKnown);
+
+    let chipType;
+    if (mastered || fc) chipType = 'good';
+    else if (seen) chipType = 'bad';
+    else chipType = 'new';
+
+    chip.classList.toggle('wi-hidden', chipType !== type);
+  });
+}
+
+function jumpToWord(idx) {
+  closeWordIndex();
+  currentIdx = idx;
+  // If already answered, show review; else fresh render
+  if (sessionAnswers[idx]) {
+    _renderQuestionReview();
+  } else {
+    renderQuestion();
+  }
+}
+
+// ── LOOKUP (字典模式) ─────────────────────────────────────────
+var _lookupScope = 'all';
+var _lookupLevel = null;
+var _lookupWords = null;   // null = use all words in level
+var _lookupExpanded = null;
+
+function openLookup(level, unitKey, words) {
+  _lookupLevel = level;
+  _lookupWords = words;  // null = all in level
+  _lookupExpanded = null;
+
+  // Set default scope: if called from a unit, default to that level
+  _lookupScope = level || 'all';
+
+  // Update scope chips
+  document.querySelectorAll('.lookup-scope-chip').forEach(c => c.classList.remove('active'));
+  const activeChip = document.querySelector(`.lookup-scope-chip[data-scope="${_lookupScope}"]`);
+  if (activeChip) activeChip.classList.add('active');
+
+  // Clear input
+  const input = document.getElementById('lookup-input');
+  if (input) { input.value = ''; }
+  const clearBtn = document.getElementById('lookup-clear-btn');
+  if (clearBtn) clearBtn.style.display = 'none';
+
+  showScreen('lookup-screen');
+  renderLookupList('');
+  if (input) setTimeout(() => input.focus(), 200);
+}
+
+function closeLookup() {
+  // Return to wherever made sense: level screen if we came from there
+  if (_lookupLevel) {
+    showScreen('level-screen');
+  } else {
+    showScreen('home-screen');
+  }
+}
+
+function setLookupScope(scope) {
+  _lookupScope = scope;
+  document.querySelectorAll('.lookup-scope-chip').forEach(c => c.classList.remove('active'));
+  const chip = document.querySelector(`.lookup-scope-chip[data-scope="${scope}"]`);
+  if (chip) chip.classList.add('active');
+  const input = document.getElementById('lookup-input');
+  renderLookupList(input ? input.value.trim() : '');
+}
+
+function onLookupInput() {
+  const input = document.getElementById('lookup-input');
+  const val = input ? input.value.trim() : '';
+  const clearBtn = document.getElementById('lookup-clear-btn');
+  if (clearBtn) clearBtn.style.display = val ? 'block' : 'none';
+  renderLookupList(val);
+}
+
+function clearLookupInput() {
+  const input = document.getElementById('lookup-input');
+  if (input) { input.value = ''; input.focus(); }
+  const clearBtn = document.getElementById('lookup-clear-btn');
+  if (clearBtn) clearBtn.style.display = 'none';
+  renderLookupList('');
+}
+
+function _getLookupPool() {
+  // Build the pool based on current scope
+  if (_lookupScope !== 'all' && VOCAB[_lookupScope]) {
+    const lvl = VOCAB[_lookupScope];
+    const pool = [];
+    Object.values(lvl).forEach(words => pool.push(...words));
+    return [...new Set(pool)];
+  }
+  // All levels
+  const pool = [];
+  Object.values(VOCAB).forEach(lvl => {
+    Object.values(lvl).forEach(words => pool.push(...words));
+  });
+  return [...new Set(pool)];
+}
+
+function _getWordLevel(word) {
+  for (const [lvl, units] of Object.entries(VOCAB)) {
+    for (const words of Object.values(units)) {
+      if (words.includes(word)) return lvl;
+    }
+  }
+  return '';
+}
+
+function _getWordUnit(word) {
+  for (const [lvl, units] of Object.entries(VOCAB)) {
+    for (const [unitKey, words] of Object.entries(units)) {
+      if (words.includes(word)) {
+        const m = unitKey.match(/^(单元\S+)\s+(.+)$/);
+        return m ? m[2] : unitKey;
+      }
+    }
+  }
+  return '';
+}
+
+function renderLookupList(query) {
+  const container = document.getElementById('lookup-list');
+  if (!container) return;
+
+  let pool = _getLookupPool();
+
+  // Filter by query
+  if (query) {
+    pool = pool.filter(w => w.includes(query));
+  }
+
+  // Limit to 40 results for performance
+  const results = pool.slice(0, 40);
+
+  if (!results.length) {
+    container.innerHTML = `<div class="lookup-empty">没有找到「${query}」<br><span style="font-size:.72rem;">换个关键词试试？</span></div>`;
+    return;
+  }
+
+  container.innerHTML = '';
+  results.forEach(word => {
+    const item = document.createElement('div');
+    item.className = 'lu-item' + (word === _lookupExpanded ? ' expanded' : '');
+    item.dataset.word = word;
+
+    const fc = progress[word]?.fcKnown;
+    const mastered = isMastered(word);
+    const seen = progress[word] && (progress[word].box > 0 || progress[word].wrongCount || progress[word].fcKnown);
+    const dotColor = mastered || fc ? 'var(--green)' : seen ? 'var(--red)' : 'var(--paper-3)';
+
+    const def = DEFS[word] || '（义项见课本）';
+    const defShort = def.length > 22 ? def.slice(0, 22) + '…' : def;
+    const en  = ENGLISH_DEFS[word] || '';
+    const py  = PINYIN_DATA[word] || '';
+    const ex  = EXAMPLES[word] ? EXAMPLES[word].replace('__', `【${word}】`) : '';
+    const lvl = _getWordLevel(word);
+    const unitType = _getWordUnit(word);
+
+    item.innerHTML = `
+      <div class="lu-summary" onclick="toggleLookupItem('${word}')">
+        <span class="lu-status-dot" style="background:${dotColor};border:${!seen && !fc ? '1px solid var(--ink-mute)' : 'none'};"></span>
+        <span class="lu-word">${word}</span>
+        <span class="lu-def-preview">${defShort}</span>
+        <span class="lu-expand-icon">▾</span>
+      </div>
+      <div class="lu-detail">
+        ${py ? `<div class="lu-pinyin">${py}</div>` : ''}
+        <div class="lu-tags">
+          ${lvl ? `<span class="lu-tag">${lvl}</span>` : ''}
+          ${unitType ? `<span class="lu-tag">${unitType}</span>` : ''}
+        </div>
+        <div class="lu-full-def">${def}</div>
+        ${en ? `<div class="lu-english">${en}</div>` : ''}
+        ${ex ? `<div class="lu-example">${ex}</div>` : ''}
+        <div class="lu-actions">
+          <button class="lu-btn" onclick="speakLookupWord('${word}')">🔊 朗读</button>
+          <button class="lu-btn primary" onclick="jumpToFlashcard('${word}')">→ 跳到闪卡</button>
+        </div>
+      </div>`;
+    container.appendChild(item);
+  });
+
+  if (pool.length > 40) {
+    const more = document.createElement('div');
+    more.className = 'lookup-empty';
+    more.textContent = `还有 ${pool.length - 40} 个结果，输入更多字符缩小范围`;
+    container.appendChild(more);
+  }
+}
+
+function toggleLookupItem(word) {
+  const item = document.querySelector(`#lookup-list .lu-item[data-word="${word}"]`);
+  if (!item) return;
+  const wasExpanded = item.classList.contains('expanded');
+  // Collapse all
+  document.querySelectorAll('#lookup-list .lu-item').forEach(i => i.classList.remove('expanded'));
+  if (!wasExpanded) {
+    item.classList.add('expanded');
+    _lookupExpanded = word;
+    // Speak the word automatically
+    setTimeout(() => speak(word), 150);
+  } else {
+    _lookupExpanded = null;
+  }
+}
+
+function speakLookupWord(word) {
+  speak(word);
+}
+
+function jumpToFlashcard(word) {
+  // Find which level/unit this word lives in
+  let targetLevel = null, targetKey = null, targetWords = null;
+  for (const [lvl, units] of Object.entries(VOCAB)) {
+    for (const [unitKey, words] of Object.entries(units)) {
+      if (words.includes(word)) {
+        targetLevel = lvl;
+        targetKey = unitKey;
+        targetWords = words;
+        break;
+      }
+    }
+    if (targetLevel) break;
+  }
+  if (!targetLevel) { showToast('找不到该词语'); return; }
+
+  // Start study session with this unit in flashcard mode, jump to word
+  currentMode = 'flashcard';
+  // startStudy shuffles, so we override currentWords after
+  startStudy(targetLevel, targetKey, targetWords, false);
+  // After startStudy, find the word index and jump
+  const wordIdx = currentWords.indexOf(word);
+  if (wordIdx >= 0) {
+    currentIdx = wordIdx;
+    renderQuestion();
+  }
+}
 
 // ── FORGOT PASSWORD ──────────────────────────────────────────
 async function submitForgotPassword(panel) {
