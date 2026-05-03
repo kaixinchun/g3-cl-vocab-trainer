@@ -7492,15 +7492,33 @@ function isGuestAccount(emailOrUid) {
   return (emailOrUid || '').toLowerCase() === GUEST_EMAIL;
 }
 
+// Wipe all local progress stores — used for guest mode
+async function _clearAllLocalProgress() {
+  // localStorage
+  const lsKeys = ['cl_vocab_progress_v2', 'cl_session_history', 'cl_vocab_user_email',
+                  'cl_vocab_user_type', 'cl_vocab_user_nickname', 'cl_vocab_nickname_approved',
+                  'cl_vocab_school', 'cl_account_pending'];
+  lsKeys.forEach(k => { try { localStorage.removeItem(k); } catch(_) {} });
+  // sessionStorage
+  try { sessionStorage.clear(); } catch(_) {}
+  // IndexedDB progress keys
+  try {
+    await idbSet('progress', null);
+    await idbSet('sessionHistory', null);
+  } catch(_) {}
+  // Reset in-memory state
+  progress = {};
+  sessionHistory = [];
+}
+
 async function loginAsGuest() {
   try {
     const { signInWithEmailAndPassword } = window._fbFns || {};
     if (!signInWithEmailAndPassword) { showToast('系统未就绪，请稍后再试'); return; }
     const cred = await signInWithEmailAndPassword(window._fbAuth, GUEST_EMAIL, GUEST_PASSWORD);
-    // Guest mode: skip Firestore sync, skip leaderboard, skip nickname
+    // Clear ALL local state so no cached progress from a previous user leaks in
+    await _clearAllLocalProgress();
     sessionStorage.setItem(GUEST_UID_KEY, '1');
-    localStorage.removeItem('cl_vocab_progress_v2'); // fresh session
-    progress = {};
     saveUserIdentity(GUEST_EMAIL, '访客', '', false);
     launchApp(GUEST_EMAIL, '访客', '', false);
     showToast('🎪 访客模式 — 练习进度仅限本次使用');
@@ -7511,7 +7529,9 @@ async function loginAsGuest() {
 }
 
 function signOut() {
-  if (!confirm('确定要退出登录吗？你的学习进度不会丢失。')) return;
+  const _guestSignOut = isGuestAccount(window._fbUser?.email);
+  if (!_guestSignOut && !confirm('确定要退出登录吗？你的学习进度不会丢失。')) return;
+  if (_guestSignOut) { _clearAllLocalProgress().catch(()=>{}); }
   try {
     localStorage.removeItem(USER_KEY);
     localStorage.removeItem(USER_TYPE_KEY);
