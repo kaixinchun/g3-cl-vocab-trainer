@@ -13,6 +13,32 @@
   --deep: #0d1a3e;
   --amber: #f0a500;
 }
+
+/* Universe card hover */
+.universe-vision {
+  transition: all .3s ease;
+  cursor: default;
+}
+.universe-vision:hover {
+  opacity: 1 !important;
+  background: rgba(255,255,255,.07) !important;
+  border-color: rgba(108,191,160,.45) !important;
+  transform: translateX(4px);
+}
+.universe-vision:hover .universe-name { color: rgba(255,255,255,.88) !important; }
+.universe-vision:hover .universe-spirit { color: rgba(255,255,255,.55) !important; }
+
+/* G3 current card pulse glow */
+@keyframes card-pulse {
+  0%, 100% { box-shadow: 0 0 24px rgba(232,184,0,.15), 0 0 0 2px rgba(232,184,0,.5); }
+  50% { box-shadow: 0 0 40px rgba(232,184,0,.35), 0 0 0 2px rgba(232,184,0,.8); }
+}
+.universe-current {
+  animation: card-pulse 3s ease-in-out infinite;
+}
+
+
+
 /* Desktop: lift background and text for calibrated monitors */
 @media (min-width: 768px) {
   :root {
@@ -88,27 +114,15 @@ body.en div.en, body.en p.en { display: block !important; color: inherit; font-s
 
 /* ── HERO ── */
 .hero {
-  position: relative; min-height: 100vh;
+  position: relative; z-index: 1; min-height: 100vh;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   text-align: center; padding: 3rem 2rem; overflow: hidden;
 }
 .hbg {
   position: absolute; inset: 0;
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(26,42,94,.92), transparent 70%),
-    radial-gradient(ellipse 60% 80% at 80% 100%, rgba(108,191,160,.1), transparent 60%),
-    radial-gradient(ellipse 50% 60% at 20% 80%, rgba(232,184,0,.07), transparent 60%),
-    linear-gradient(160deg, #0d1a3e, #12224d 40%, #0a1628);
+  background: linear-gradient(160deg, #0d1a3e, #12224d 40%, #0a1628);
 }
-.ring {
-  position: absolute; border-radius: 50%;
-  border: 1px solid rgba(232,184,0,.06);
-  animation: ring 8s ease-in-out infinite;
-}
-.ring:nth-child(1) { width: 300px; height: 300px; top: 8%; left: -6%; animation-delay: 0s; }
-.ring:nth-child(2) { width: 500px; height: 500px; top: 48%; right: -10%; animation-delay: 2s; }
-.ring:nth-child(3) { width: 200px; height: 200px; bottom: 18%; left: 28%; animation-delay: 4s; }
-@keyframes ring { 0%,100%{opacity:.3;transform:scale(1)} 50%{opacity:.65;transform:scale(1.05)} }
+
 
 .hc { position: relative; z-index: 2; max-width: 840px; }
 .eyebrow {
@@ -181,7 +195,7 @@ body.bi .sh span.en { font-size: clamp(.95rem, 2.5vw, 1.5rem); }
 body.bi .hattrib span.en { font-size: .72rem; }
 
 /* ── SECTIONS ── */
-.sw { max-width: 880px; margin: 0 auto; padding: 4rem 1.6rem; }
+.sw { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; padding: 4rem 1.6rem; }
 .sl2 {
   font-family: 'Cinzel', 'Georgia', serif;
   font-size: .82rem; letter-spacing: .3em; color: var(--teal);
@@ -627,6 +641,7 @@ body.bi .hattrib span.en { font-size: .72rem; }
 
 /* Footer */
 .foot {
+  position: relative; z-index: 1;
   text-align: center; padding: 3rem 1.5rem;
   border-top: 1px solid rgba(255,255,255,.07);
   color: rgba(255,255,255,.25); font-size: .82rem;
@@ -661,14 +676,62 @@ body.bi .hattrib span.en { font-size: .72rem; }
 
 <!-- ══ HERO ══ -->
 <section class="hero">
-  <div class="hbg">
-    <div class="ring"></div><div class="ring"></div><div class="ring"></div>
-  </div>
+  <div class="hbg"></div>
   <div class="hc">
     <div class="eyebrow">
       <span class="zh">教学设计之旅</span>
       <span class="en">A Journey in Pedagogical Design</span>
     </div>
+    <!-- Crown SVG -->
+    <div style="display:flex; justify-content:center; margin-top:.8rem; margin-bottom:.8rem; opacity:0; animation:fu .8s .45s forwards;">
+      <svg width="80" height="64" viewBox="0 0 80 64" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">
+        <defs>
+          <filter id="crown-glow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="5" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="crown-glow2" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="2.5" result="blur2"/>
+            <feMerge><feMergeNode in="blur2"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <!-- Outer glow layer -->
+        <path d="M4,52 L4,20 L20,36 L40,4 L60,36 L76,20 L76,52 Z"
+          fill="none" stroke="rgba(232,184,0,0.25)" stroke-width="3"
+          stroke-linejoin="round" filter="url(#crown-glow)">
+          <animate attributeName="stroke-opacity" values="0.2;0.45;0.2" dur="3s" repeatCount="indefinite"/>
+        </path>
+        <!-- Main crown outline -->
+        <path d="M4,52 L4,20 L20,36 L40,4 L60,36 L76,20 L76,52 Z"
+          fill="none" stroke="rgba(232,184,0,0.85)" stroke-width="1.8"
+          stroke-linejoin="round" filter="url(#crown-glow2)"/>
+        <!-- Base bar -->
+        <line x1="4" y1="52" x2="76" y2="52"
+          stroke="rgba(232,184,0,0.85)" stroke-width="1.8" stroke-linecap="round" filter="url(#crown-glow2)"/>
+        <!-- Base glow -->
+        <line x1="4" y1="52" x2="76" y2="52"
+          stroke="rgba(232,184,0,0.25)" stroke-width="4" stroke-linecap="round" filter="url(#crown-glow)">
+          <animate attributeName="stroke-opacity" values="0.2;0.45;0.2" dur="3s" repeatCount="indefinite"/>
+        </line>
+        <!-- Three jewel dots -->
+        <circle cx="40" cy="10" r="2.5" fill="rgba(232,184,0,0.9)" filter="url(#crown-glow2)">
+          <animate attributeName="opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="17" cy="38" r="2" fill="rgba(232,184,0,0.75)" filter="url(#crown-glow2)">
+          <animate attributeName="opacity" values="0.6;0.95;0.6" dur="3s" begin="0.5s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="63" cy="38" r="2" fill="rgba(232,184,0,0.75)" filter="url(#crown-glow2)">
+          <animate attributeName="opacity" values="0.6;0.95;0.6" dur="3s" begin="1s" repeatCount="indefinite"/>
+        </circle>
+        <!-- Spark lines -->
+        <g stroke="rgba(232,184,0,0.5)" stroke-width="1" stroke-linecap="round">
+          <line x1="40" y1="-2" x2="40" y2="-8"><animate attributeName="opacity" values="0;1;0" dur="2.5s" begin="0.3s" repeatCount="indefinite"/></line>
+          <line x1="8"  y1="16" x2="3"  y2="12"><animate attributeName="opacity" values="0;1;0" dur="2.5s" begin="0.9s" repeatCount="indefinite"/></line>
+          <line x1="72" y1="16" x2="77" y2="12"><animate attributeName="opacity" values="0;1;0" dur="2.5s" begin="1.5s" repeatCount="indefinite"/></line>
+        </g>
+      </svg>
+    </div>
+
     <div class="htitle">词王淬炼坊</div>
     <div class="hsub">
       <span class="zh">G3 华文词语自主学习平台</span>
@@ -696,7 +759,7 @@ body.bi .hattrib span.en { font-size: .72rem; }
         <div class="sl zh">发展阶段</div><div class="sl en">STAGES</div>
       </div>
       <div class="st">
-        <span class="sn">120+</span>
+        <span class="sn">130+</span>
         <div class="sl zh">次部署迭代</div><div class="sl en">DEPLOYMENTS</div>
       </div>
     </div>
@@ -793,6 +856,7 @@ body.bi .hattrib span.en { font-size: .72rem; }
         <span class="zh">↺ 重播对话</span><span class="en">↺ Replay</span>
       </button>
     </div>
+
     <!-- Quote -->
     <div class="origin-quote">
       <!-- Quote text - largest -->
@@ -947,8 +1011,8 @@ body.bi .hattrib span.en { font-size: .72rem; }
         </div>
       </div>
       <div class="dt-note">
-        <span class="zh">120+ 次部署迭代，是这个循环不断运转的真实记录。</span>
-        <span class="en">120+ deployments are the concrete record of this cycle in motion.</span>
+        <span class="zh">130+ 次部署迭代，是这个循环不断运转的真实记录。</span>
+        <span class="en">130+ deployments are the concrete record of this cycle in motion.</span>
       </div>
       <div style="text-align:center; margin-top:.8rem;">
         <span style="font-size:.72rem; color:rgba(108,191,160,.6); font-style:italic;">Hasso Plattner Institute of Design, Stanford University (d.school). <em>An Introduction to Design Thinking Process Guide.</em> <a href="https://web.stanford.edu/~mshanks/MichaelShanks/files/509554.pdf" target="_blank" style="color:var(--teal);">→ Full guide</a></span>
@@ -1364,6 +1428,7 @@ body.bi .hattrib span.en { font-size: .72rem; }
           <div class="dc"><div class="dci">📋</div><div class="dct"><span class="zh">前后测工具（待研究合作支持）</span><span class="en">Pre/Post Assessment (Needs Research Collaboration)</span></div><div class="dcb"><span class="zh">框架已初步构思，但测评设计涉及专业的测量学判断，需要具备相关专业的合作方介入，方能建立具说服力的效果证据。</span><span class="en">Framework conceptualised, but assessment design requires psychometric expertise. Credible evidence of impact needs a research collaboration.</span></div></div>
           <div class="dc"><div class="dci">🔬</div><div class="dct"><span class="zh">差异化学习（规划中）</span><span class="en">Differentiated Learning (Planned)</span></div><div class="dcb"><span class="zh">教师标注词汇难度，结合学生错题模式，形成个人化薄弱点图谱，为差异化教学提供数据支撑。</span><span class="en">Teacher-curated difficulty tagging + individual error pattern analysis → personalised weak-area profiles for differentiated instruction.</span></div></div>
           <div class="dc"><div class="dci">🏛️</div><div class="dct"><span class="zh">扩展潜力</span><span class="en">Scalability</span></div><div class="dcb"><span class="zh">平台可在其他学校复制并按需调适；也可融入 MOE 现有 e-pedagogy 体系，以更大规模惠及全国学生。</span><span class="en">The platform can be replicated and adapted for other schools, or integrated into MOE's existing e-pedagogy ecosystem to benefit students at scale.</span></div></div>
+          <div class="dc"><div class="dci">🌐</div><div class="dct"><span class="zh">多场景访问设计（已实现）</span><span class="en">Multi-Context Access Design (Built)</span></div><div class="dcb"><span class="zh">三种访问路径已设计完成：百德学生凭学校邮箱登录；教师使用同一账号并可切换师生视角；公众开放日与专业发展分享会参与者使用游客模式——零登录、零数据留存、符合 PDPA，随时可供大规模展示。</span><span class="en">Three access paths are designed: BVSS students log in with school email; teachers toggle between teacher and student views; open house visitors and PD event participants use guest/kiosk mode — zero login, zero data retained, PDPA-compliant, ready for demonstration at any scale.</span></div></div>
         </div>
       </div></div>
     </div>
@@ -1390,14 +1455,14 @@ body.bi .hattrib span.en { font-size: .72rem; }
   <div style="display:flex; flex-direction:column; gap:1rem; max-width:640px; margin:0 auto 2rem;">
 
     <!-- HCL - top aspiration -->
-    <div style="background:rgba(255,255,255,.04); border:1px dashed rgba(232,184,0,.25); border-radius:14px; padding:1.2rem 1.5rem; opacity:.65;">
+    <div class="universe-vision" style="background:rgba(255,255,255,.04); border:1px dashed rgba(232,184,0,.25); border-radius:14px; padding:1.2rem 1.5rem; opacity:.65;">
       <div style="display:flex; align-items:center; gap:1rem;">
         <div style="font-size:1.8rem;">🔱</div>
         <div style="flex:1;">
           <div style="font-size:.6rem; letter-spacing:.2em; color:rgba(232,184,0,.6); text-transform:uppercase; margin-bottom:.2rem;"><span class="zh">G3 高级华文</span><span class="en">G3 Higher Chinese Language (HCL)</span></div>
-          <div style="font-family:'Noto Serif SC',serif; font-size:1.05rem; font-weight:700; color:rgba(255,255,255,.65);">词圣鸿文苑</div>
+          <div class="universe-name" style="font-family:'Noto Serif SC',serif; font-size:1.05rem; font-weight:700; color:rgba(255,255,255,.65);">词圣鸿文苑</div>
           <div style="font-size:.72rem; color:rgba(255,255,255,.3); margin-top:.1rem; font-style:italic;">Vocab Sage · The Sanctum</div>
-          <div style="font-size:.78rem; color:rgba(255,255,255,.35); margin-top:.2rem;"><span class="zh">精炼与超越</span><span class="en">Refine & transcend</span></div>
+          <div class="universe-spirit" style="font-size:.78rem; color:rgba(255,255,255,.35); margin-top:.2rem;"><span class="zh">精炼与超越</span><span class="en">Refine & transcend</span></div>
         </div>
         <div style="font-size:.68rem; color:rgba(255,255,255,.25); font-style:italic; text-align:right;"><span class="zh">愿景</span><span class="en">Vision</span></div>
       </div>
@@ -1418,28 +1483,28 @@ body.bi .hattrib span.en { font-size: .72rem; }
     </div>
 
     <!-- G2 - aspiration -->
-    <div style="background:rgba(255,255,255,.04); border:1px dashed rgba(108,191,160,.25); border-radius:14px; padding:1.2rem 1.5rem; opacity:.65;">
+    <div class="universe-vision" style="background:rgba(255,255,255,.04); border:1px dashed rgba(108,191,160,.25); border-radius:14px; padding:1.2rem 1.5rem; opacity:.65;">
       <div style="display:flex; align-items:center; gap:1rem;">
         <div style="font-size:1.8rem;">🥇</div>
         <div style="flex:1;">
           <div style="font-size:.6rem; letter-spacing:.2em; color:rgba(108,191,160,.6); text-transform:uppercase; margin-bottom:.2rem;"><span class="zh">G2 华文</span><span class="en">G2 Chinese Language</span></div>
-          <div style="font-family:'Noto Serif SC',serif; font-size:1.05rem; font-weight:700; color:rgba(255,255,255,.65);">词将竞技场</div>
+          <div class="universe-name" style="font-family:'Noto Serif SC',serif; font-size:1.05rem; font-weight:700; color:rgba(255,255,255,.65);">词将竞技场</div>
           <div style="font-size:.72rem; color:rgba(255,255,255,.3); margin-top:.1rem; font-style:italic;">Vocab Champion · The Arena</div>
-          <div style="font-size:.78rem; color:rgba(255,255,255,.35); margin-top:.2rem;"><span class="zh">竞技与提升</span><span class="en">Compete & rise</span></div>
+          <div class="universe-spirit" style="font-size:.78rem; color:rgba(255,255,255,.35); margin-top:.2rem;"><span class="zh">竞技与提升</span><span class="en">Compete & rise</span></div>
         </div>
         <div style="font-size:.68rem; color:rgba(255,255,255,.25); font-style:italic; text-align:right;"><span class="zh">愿景</span><span class="en">Vision</span></div>
       </div>
     </div>
 
     <!-- G1 - aspiration -->
-    <div style="background:rgba(255,255,255,.04); border:1px dashed rgba(108,191,160,.2); border-radius:14px; padding:1.2rem 1.5rem; opacity:.6;">
+    <div class="universe-vision" style="background:rgba(255,255,255,.04); border:1px dashed rgba(108,191,160,.2); border-radius:14px; padding:1.2rem 1.5rem; opacity:.6;">
       <div style="display:flex; align-items:center; gap:1rem;">
         <div style="font-size:1.8rem;">⭐</div>
         <div style="flex:1;">
           <div style="font-size:.6rem; letter-spacing:.2em; color:rgba(108,191,160,.5); text-transform:uppercase; margin-bottom:.2rem;"><span class="zh">G1 基础华文</span><span class="en">G1 Basic Chinese Language</span></div>
-          <div style="font-family:'Noto Serif SC',serif; font-size:1.05rem; font-weight:700; color:rgba(255,255,255,.6);">词星大冒险</div>
+          <div class="universe-name" style="font-family:'Noto Serif SC',serif; font-size:1.05rem; font-weight:700; color:rgba(255,255,255,.6);">词星大冒险</div>
           <div style="font-size:.72rem; color:rgba(255,255,255,.28); margin-top:.1rem; font-style:italic;">Vocab Star · The Adventure</div>
-          <div style="font-size:.78rem; color:rgba(255,255,255,.3); margin-top:.2rem;"><span class="zh">探索与成长</span><span class="en">Play & explore</span></div>
+          <div class="universe-spirit" style="font-size:.78rem; color:rgba(255,255,255,.3); margin-top:.2rem;"><span class="zh">探索与成长</span><span class="en">Play & explore</span></div>
         </div>
         <div style="font-size:.68rem; color:rgba(255,255,255,.25); font-style:italic; text-align:right;"><span class="zh">愿景</span><span class="en">Vision</span></div>
       </div>
