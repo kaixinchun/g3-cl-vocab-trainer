@@ -552,31 +552,26 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     line-height: 1.6;
     margin-bottom: .9rem;
   }
-  /* School name credit — visible but understated */
-  .welcome-credit-school {
-    font-size: .75rem;
-    color: #1a2a5e;
-    font-family: var(--font-ui);
-    letter-spacing: .04em;
-    padding-top: .85rem;
-    border-top: 1px solid rgba(26,42,94,.2);
-  }
-  /* Personal credit — significantly smaller, very discreet */
-  .welcome-credit-name {
-    font-size: .6rem;
-    color: #1a2a5e;
+  /* Attribution credit — equal weight for both lines */
+  .app-credit {
+    font-size: .65rem;
+    color: rgba(26,42,94,.6);
     font-family: var(--font-ui);
     letter-spacing: .03em;
-    margin-top: .25rem;
+    line-height: 1.7;
+    padding-top: .85rem;
+    border-top: 1px solid rgba(26,42,94,.15);
+    text-align: center;
   }
-  /* Year tag */
-  .welcome-credit-year {
-    display: inline-block;
-    font-size: .58rem;
-    color: #1a2a5e;
+  /* Home footer credit */
+  .home-footer-credit {
+    font-size: .62rem;
+    color: rgba(26,42,94,.45);
     font-family: var(--font-ui);
-    margin-left: .4rem;
-    letter-spacing: .06em;
+    letter-spacing: .03em;
+    line-height: 1.8;
+    text-align: center;
+    padding: 1.2rem 1.5rem 2rem;
   }
   /* ── TEACHER MODE BANNER ─────────────────────────────── */
   .teacher-banner {
@@ -1704,7 +1699,10 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
         <div class="ws-feature"><span class="ws-feat-icon">📊</span><div class="ws-feat-text"><strong>进度追踪</strong> — 掌握情况一目了然</div></div>
         <div class="ws-feature"><span class="ws-feat-icon">🏆</span><div class="ws-feat-text"><strong>成就系统</strong> — 完成单元解锁专属称号</div></div>
       </div>
-      <div class="ws-credit">百德中学 · Bukit View Secondary School<br>郑凯欣老师 · Mdm Chun Kai Xin &nbsp;© 2026</div>
+      <div class="ws-credit" style="font-size:.65rem;color:rgba(26,42,94,.6);font-family:var(--font-ui);letter-spacing:.03em;line-height:1.7;padding-top:.75rem;border-top:1px solid rgba(26,42,94,.15);text-align:center;">
+        词汇与课文例句取自新加坡教育部课程规划与发展司《华文伴我行》中一至中四教材，版权归新加坡教育部所有<br>
+        《词王淬炼坊》学习平台由百德中学母语部主任郑凯欣老师开发 © 2026
+      </div>
     </div>
     <div class="ws-right">
       <!-- Tab toggle: Login / Register -->
@@ -1871,12 +1869,9 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       <button class="welcome-btn" onclick="submitRegister('mobile')">注册并开始学习 →</button>
       <div class="welcome-note">昵称须经老师审核后才会正式显示。仅限MOE iCON电邮注册。</div>
     </div>
-    <div class="welcome-credit-school">
-      百德中学 · Bukit View Secondary School
-    </div>
-    <div class="welcome-credit-name">
-      郑凯欣老师 · Mdm Chun Kai Xin
-      <span class="welcome-credit-year">© 2026</span>
+    <div class="app-credit">
+      词汇与课文例句取自新加坡教育部课程规划与发展司《华文伴我行》中一至中四教材，版权归新加坡教育部所有<br>
+      《词王淬炼坊》学习平台由百德中学母语部主任郑凯欣老师开发 © 2026
     </div>
   </div>
 </div>
@@ -2025,6 +2020,10 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 
       </div>
     </div>
+  </div>
+  <div class="home-footer-credit">
+    词汇与课文例句取自新加坡教育部课程规划与发展司《华文伴我行》中一至中四教材，版权归新加坡教育部所有<br>
+    《词王淬炼坊》学习平台由百德中学母语部主任郑凯欣老师开发 © 2026
   </div>
 </div>
 
