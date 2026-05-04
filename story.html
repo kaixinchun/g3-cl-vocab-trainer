@@ -218,14 +218,14 @@ body.bi .hattrib span.en { font-size: .72rem; }
 /* Chat scene */
 .chat-scene {
   background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08);
-  border-radius: 16px; padding: 2rem 1.8rem; margin-bottom: 1.8rem;
+  border-radius: 16px; padding: 1.2rem 1.4rem; margin-bottom: 1.4rem;
 }
 .chat-label {
   font-size: .65rem; letter-spacing: .2em; color: rgba(255,255,255,.25);
   text-transform: uppercase; text-align: center; margin-bottom: 1.6rem;
 }
 .bubble-row {
-  display: flex; margin-bottom: 1.2rem; width: 100%;
+  display: flex; margin-bottom: .8rem; width: 100%;
 }
 .bubble-row.user {
   justify-content: flex-end;
@@ -236,8 +236,8 @@ body.bi .hattrib span.en { font-size: .72rem; }
 .bubble-row.user > div { max-width: 80%; }
 .bubble-row.ai > div { max-width: 80%; }
 .bubble {
-  padding: 1rem 1.3rem; border-radius: 18px;
-  font-size: .95rem; line-height: 1.8; width: 100%;
+  padding: .75rem 1rem; border-radius: 14px;
+  font-size: .88rem; line-height: 1.72; width: 100%;
 }
 .bubble.user {
   background: #2f3b52;
@@ -579,7 +579,7 @@ body.bi .hattrib span.en { font-size: .72rem; }
   padding-bottom: 0;
 }
 .acc-cat.open .acc-cat-body { padding-bottom: .1rem; }
-.acc-cat.open .acc-cat-body { max-height: 2400px; }
+.acc-cat.open .acc-cat-body { max-height: 4000px; }
 .acc-cat.green .acc-cat-body {
   border: 1px solid rgba(108,191,160,.22); border-top: none;
   border-radius: 0 0 14px 14px; overflow: visible; padding-bottom: 1.2rem;
@@ -588,7 +588,7 @@ body.bi .hattrib span.en { font-size: .72rem; }
   border: 1px solid rgba(232,184,0,.2); border-top: none;
   border-radius: 0 0 14px 14px; overflow: visible; padding-bottom: 1.2rem;
 }
-.acc-cards-inner { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: .9rem; padding: 1.1rem 1.1rem 1.4rem; }
+.acc-cards-inner { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; padding: 1.1rem 1.1rem 1.4rem; }
 
 /* SLS hero card */
 .sls-card {
@@ -812,10 +812,58 @@ body.bi .hattrib span.en { font-size: .72rem; }
   </div>
 
   <div class="origin-wrap">
-    <!-- SgLDC spark -->
-    <div style="font-size:.92rem; color:rgba(255,255,255,.58); line-height:1.95; margin-bottom:1.8rem; padding:1.1rem 1.3rem; background:rgba(255,255,255,.03); border-left:2px solid rgba(232,184,0,.3); border-radius:0 10px 10px 0;">
-      <span class="zh">有一天在 Facebook 上刷到新加坡学习设计圈（SgLDC）群组里，看到同行们满怀热情地分享他们用 HTML 制作的 SLS 互动教学内容。<br><br>我脑子里亮起了一盏灯。<br><br>即使我没有编程经验，也许我也可以用编程为学生做出有意义的学习资源。</span>
-      <span class="en">While scrolling on Facebook one day, I came across multiple posts in the Singapore Learning Designers Circle (SgLDC) community where colleagues were sharing their HTML-built SLS interactive learning resources with much excitement.<br><br>Something lit up.<br><br>Perhaps, even without coding experience, I could use code to build something meaningful for students.</span>
+    <!-- SgLDC spark - storytelling design -->
+    <div id="spark-section" style="margin-bottom:2rem;">
+
+      <!-- Line 1 -->
+      <p class="spark-line" id="spark1" style="font-size:.95rem; color:rgba(255,255,255,.62); line-height:1.9; margin-bottom:1rem; opacity:0; transform:translateY(10px); transition:opacity .7s, transform .7s;">
+        <span class="zh">某一天，我在 Facebook 上连续刷到同行们在新加坡学习设计圈（SgLDC）群组里的帖文。大家满怀热情地分享他们用 HTML 制作的 SLS 互动教学内容。</span>
+        <span class="en">One day, I kept scrolling past post after post in the Singapore Learning Designers Circle (SgLDC) community on Facebook. Colleagues were sharing their HTML-built SLS interactive learning resources with infectious excitement.</span>
+      </p>
+
+      <!-- Lightbulb moment -->
+      <div class="spark-line" id="spark2" style="display:flex; flex-direction:column; align-items:center; gap:.6rem; margin:1.4rem 0; opacity:0; transform:translateY(10px); transition:opacity .7s, transform .7s;">
+        <!-- Tracing lightbulb SVG -->
+        <svg id="spark-bulb" width="52" height="82" viewBox="0 0 52 82" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">
+          <defs>
+            <filter id="sb-glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="4" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <!-- Outer glow layer -->
+          <path d="M26,4 C14,4 6,12 6,23 C6,31 10,37 15,42 L15,52 C15,54 17,55 19,55 L33,55 C35,55 37,54 37,52 L37,42 C42,37 46,31 46,23 C46,12 38,4 26,4 Z"
+            fill="rgba(232,184,0,0.08)" stroke="rgba(232,184,0,0.25)" stroke-width="4"
+            filter="url(#sb-glow)" style="stroke-dasharray:200; stroke-dashoffset:200; transition:stroke-dashoffset 1.8s ease;"/>
+          <!-- Bulb outline - traces itself -->
+          <path id="bulb-path"
+            d="M26,4 C14,4 6,12 6,23 C6,31 10,37 15,42 L15,52 C15,54 17,55 19,55 L33,55 C35,55 37,54 37,52 L37,42 C42,37 46,31 46,23 C46,12 38,4 26,4 Z"
+            fill="none" stroke="rgba(232,184,0,0.9)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+            filter="url(#sb-glow)"
+            style="stroke-dasharray:200; stroke-dashoffset:200; transition:stroke-dashoffset 1.8s ease;"/>
+          <!-- Base lines - horizontal, narrowing -->
+          <line id="bulb-base1" x1="14" y1="59" x2="38" y2="59" stroke="rgba(232,184,0,0.9)" stroke-width="1.8" stroke-linecap="round" filter="url(#sb-glow)" style="opacity:0; transition:opacity .4s;"/>
+          <line id="bulb-base2" x1="17" y1="64" x2="35" y2="64" stroke="rgba(232,184,0,0.65)" stroke-width="1.6" stroke-linecap="round" filter="url(#sb-glow)" style="opacity:0; transition:opacity .4s;"/>
+          <line id="bulb-base3" x1="20" y1="69" x2="32" y2="69" stroke="rgba(232,184,0,0.4)" stroke-width="1.4" stroke-linecap="round" filter="url(#sb-glow)" style="opacity:0; transition:opacity .4s;"/>
+          <!-- Filament -->
+          <path id="bulb-fil" d="M20,34 L26,26 L32,34" fill="none" stroke="rgba(232,184,0,0.65)" stroke-width="1.4" stroke-linecap="round" filter="url(#sb-glow)" style="opacity:0; transition:opacity .5s;"/>
+          <!-- Glow dot centre -->
+          <circle id="bulb-dot" cx="26" cy="26" r="2.5" fill="rgba(232,184,0,0.9)" filter="url(#sb-glow)" style="opacity:0; transition:opacity .4s;">
+            <animate attributeName="opacity" values="0.7;1;0.7" dur="2.5s" begin="indefinite" repeatCount="indefinite" id="dot-pulse"/>
+          </circle>
+        </svg>
+        <p style="font-family:'Noto Serif SC',serif; font-size:1.05rem; font-weight:700; color:var(--gold); text-align:center; margin:0;">
+          <span class="zh">我脑子里亮起了一盏灯。</span>
+          <span class="en">Something lit up.</span>
+        </p>
+      </div>
+
+      <!-- Line 3 -->
+      <p class="spark-line" id="spark3" style="font-size:.95rem; color:rgba(255,255,255,.62); line-height:1.9; opacity:0; transform:translateY(10px); transition:opacity .7s, transform .7s;">
+        <span class="zh">或许即便没有编程经验，我也可以用编程为学生做出有意义的学习资源。</span>
+        <span class="en">Perhaps, even without coding experience, I could use code to build something meaningful for students.</span>
+      </p>
+
     </div>
 
     <div class="chat-scene">
@@ -849,8 +897,12 @@ body.bi .hattrib span.en { font-size: .72rem; }
         <div>
           <div class="bubble-sender">Claude</div>
           <div class="bubble ai">
-            <span class="zh">当然可以。我们一起来想想。<br><br>你已经有了最重要的东西：一个清晰的教学目标，和一群真实需要帮助的学生。剩下的，我们可以一步一步建起来。</span>
-            <span class="en">Of course. Let's think through this together.<br><br>You already have the most important thing: a clear pedagogical goal, and real students who need this. The rest, we can build step by step.</span>
+            <div id="claude-zh-block">
+              <span id="type-zh"></span><span id="type-zh-rest" style="opacity:0; transition:opacity .6s;"><br><br>你已经有了最重要的东西：一个清晰的教学目标，和一群真实需要帮助的学生。剩下的，我们可以一步一步建起来。</span>
+            </div>
+            <div id="claude-en-block" style="display:none;">
+              <span id="type-en"></span><span id="type-en-rest" style="opacity:0; transition:opacity .6s;"><br><br>You already have the most important thing: a clear pedagogical goal, and real students who need this. The rest, we can build step by step.</span>
+            </div>
           </div>
         </div>
       </div>
@@ -1248,11 +1300,11 @@ body.bi .hattrib span.en { font-size: .72rem; }
             <span class="en">Each textbook volume includes a 生字词总表 as an appendix — the official vocabulary reference. However, this list contains only the words, with no definitions, part-of-speech labels, English translations, or Cultural Corner coverage. Building this platform meant constructing a more pedagogically complete resource on this foundation.</span>
           </div>
         </div>
-        <div class="dg">
+        <div class="dg" style="grid-template-columns:1fr 1fr;">
           <div class="dc"><div class="dci">📚</div><div class="dct"><span class="zh">课文例句全程溯源</span><span class="en">Every Sentence Traced to Source</span></div><div class="dcb"><span class="zh">全部词汇的课文例句均回溯至原始教材，标注来源（原文直引 / 改编），确保语料权威性。</span><span class="en">Every example sentence traced to the original e-textbook, tagged as verbatim or adapted.</span></div></div>
-          <div class="dc"><div class="dci">🏛️</div><div class="dct"><span class="zh">文化站：77 个附录未收录的词汇</span><span class="en">Cultural Corner: 77 Items the Appendix Missed</span></div><div class="dcb"><span class="zh">逐一提取 23 个文化站单元，补入 77 个词汇，中一至中四全覆盖。这是本平台独有的词库深度。</span><span class="en">All 23 Cultural Corner units across Sec 1–4 extracted manually — 77 items found in no other comparable resource.</span></div></div>
-          <div class="dc"><div class="dci">🏷️</div><div class="dct"><span class="zh">词性标注规范</span><span class="en">Part-of-Speech Schema</span></div><div class="dcb"><span class="zh">约 20 个标签，谚语 / 俗语 / 成语严格区分；双词性按动词优先排列。</span><span class="en">~20 canonical labels. 谚语, 俗语, 成语 carefully distinguished. Verb-first for dual-class entries.</span></div></div>
           <div class="dc"><div class="dci">✏️</div><div class="dct"><span class="zh">填空句另行撰写</span><span class="en">Separate Cloze Sentences</span></div><div class="dcb"><span class="zh">为每个词另写填空句，检测词汇在新语境中的实际运用，而非句子熟悉度。</span><span class="en">A separate cloze sentence for every word — testing application in new contexts, not sentence familiarity.</span></div></div>
+          <div class="dc"><div class="dci">🏛️</div><div class="dct"><span class="zh">文化站：77 个附录未收录于课本生字词总表的词汇</span><span class="en">Cultural Corner: 77 Items Absent from the Textbook Appendix</span></div><div class="dcb"><span class="zh">逐一提取 23 个文化站单元，补入 77 个词汇，中一至中四全覆盖。</span><span class="en">All 23 Cultural Corner units across Sec 1–4 extracted manually — 77 items found in no other comparable resource.</span></div></div>
+          <div class="dc"><div class="dci">🏷️</div><div class="dct"><span class="zh">词性标注增加选项干扰性</span><span class="en">Part-of-Speech Tagging for Better Distractors</span></div><div class="dcb"><span class="zh">为每个词标注词性，目的是在生成 MCQ 选项时，确保干扰项（错误选项）与目标词词性相符，提高题目区分度。这不是在教学生辨析词性，而是让题目更有效地检测真实的词语掌握度。</span><span class="en">Part-of-speech tags ensure MCQ distractors (wrong options) match the grammatical class of the target word — making wrong options more plausible and the test more discriminating. This is about distractor quality, not teaching students to identify word classes.</span></div></div>
         </div>
         <div class="ps-section">
           <div class="ps-label"><span class="zh">遇到的问题 → 点击查看解决方案</span><span class="en">Problems encountered → tap to see solutions</span></div>
@@ -1297,7 +1349,7 @@ body.bi .hattrib span.en { font-size: .72rem; }
             <span class="en">While dedicated vocabulary items in WA and EOY carry limited direct weightage, vocabulary depth shapes performance across comprehension, composition, oral, and listening. The four modes build this depth through daily self-directed practice.</span>
           </div>
         </div>
-        <div class="dg">
+        <div class="dg" style="grid-template-columns:1fr 1fr;">
           <div class="dc"><div class="dci">🃏</div><div class="dct"><span class="zh">词语闪卡</span><span class="en">Flashcard Mode</span></div><div class="dcb"><span class="zh">认词与自评。翻牌后自主判断"已掌握 / 还需练习"，培养自我监控意识。</span><span class="en">Recognition + self-assessment. Students judge their own mastery after each flip, building self-monitoring awareness.</span></div></div>
           <div class="dc"><div class="dci">📝</div><div class="dct"><span class="zh">填空挑战</span><span class="en">Cloze Challenge</span></div><div class="dcb"><span class="zh">语境填空，2×2 选项格。独立例句，专检词汇在语境中的实际运用。</span><span class="en">Context-based cloze with 2×2 option grid. Separate sentences test genuine contextual application.</span></div></div>
           <div class="dc"><div class="dci">🔍</div><div class="dct"><span class="zh">华文解释</span><span class="en">Chinese Definition Mode</span></div><div class="dcb"><span class="zh">由中文释义反查词语，训练词义理解的深度与精准度。</span><span class="en">Identify words from Chinese definitions — developing precise semantic comprehension.</span></div></div>
@@ -1343,11 +1395,11 @@ body.bi .hattrib span.en { font-size: .72rem; }
           <div class="insl"><span class="zh">设计原则</span><span class="en">Design Principle</span></div>
           <div class="inst"><span class="zh">积分系统有明确的学习逻辑：第一次答对 10 分，第二次 5 分，第三次及以后 2 分；掌握整个板块额外 +20 分。答对越早奖励越高，直接鼓励扎实掌握，而非反复碰运气。这与自我决定理论中"能力感"的激励机制直接对应。</span><span class="en">Clear pedagogical logic: 10 points first-attempt correct, 5 for second, 2 thereafter, plus 20-point component mastery bonus. Higher rewards for earlier mastery incentivise genuine learning — directly mapping to the competence need in Self-Determination Theory.</span></div>
         </div>
-        <div class="dg">
+        <div class="dg" style="grid-template-columns:1fr 1fr;">
           <div class="dc"><div class="dci">🏅</div><div class="dct"><span class="zh">四级成就庆祝</span><span class="en">Four-Tier Achievement Celebration</span></div><div class="dcb"><span class="zh">⭐→✨→🏅→👑，对应板块、单元、年级、全部完成。最高级引用：锲而不舍，金石可镂。</span><span class="en">⭐→✨→🏅→👑 across component, unit, year-level, full completion. Ultimate tier: 锲而不舍，金石可镂.</span></div></div>
           <div class="dc"><div class="dci">⭐</div><div class="dct"><span class="zh">词王排行榜</span><span class="en">Leaderboard</span></div><div class="dcb"><span class="zh">百德中学榜与全岛榜双 tab。昵称经教师审核后方显示，双重拦截机制保障社群安全。</span><span class="en">School and island-wide leaderboard tabs. Nicknames appear only after teacher approval, with automated content filtering.</span></div></div>
           <div class="dc"><div class="dci">🎨</div><div class="dct"><span class="zh">圆形金属成就徽章</span><span class="en">Circular Achievement Badges</span></div><div class="dcb"><span class="zh">四种板块均有独立实体徽章图片，圆形裁切加金色光环。经三轮设计确认。</span><span class="en">Each component type has a distinct circular badge with gold-ring glow — three rounds of design iteration.</span></div></div>
-          <div class="dc"><div class="dci">🔊</div><div class="dct"><span class="zh">音效系统</span><span class="en">Sound Effects System</span></div><div class="dcb"><span class="zh">Web Audio API 纯程序合成，零外部文件。7 种音效事件，静音开关持久化记忆。</span><span class="en">Fully synthesised via Web Audio API — no external files. 7 sound events; mute preference persisted.</span></div></div>
+          <div class="dc"><div class="dci">🔊</div><div class="dct"><span class="zh">音效系统</span><span class="en">Sound Effects System</span></div><div class="dcb"><span class="zh">Web Audio API 纯程序合成，零外部文件。7 种音效事件，静音开关持久化记忆。庆祝音效在 iOS 设备上暂无法播放，属已知系统限制，目前尚无解决方案。</span><span class="en">Fully synthesised via Web Audio API — no external files. 7 sound events; mute preference persisted. Celebratory sounds cannot play on iOS — a known system limitation with no current workaround.</span></div></div>
         </div>
         <div class="ps-section">
           <div class="ps-label"><span class="zh">遇到的问题 → 点击查看解决方案</span><span class="en">Problems encountered → tap to see solutions</span></div>
@@ -1433,7 +1485,7 @@ body.bi .hattrib span.en { font-size: .72rem; }
         </div>
         <div class="dg">
           <div class="dc"><div class="dci">📊</div><div class="dct"><span class="zh">学习成效数据建设</span><span class="en">Learning Outcome Evidence</span></div><div class="dcb"><span class="zh">将平台内词汇掌握度增量与 WA / EOY 测评成绩做关联分析。当前缺口：前测基线尚未建立。</span><span class="en">Correlating in-platform mastery gain with WA and EOY scores. Current gap: no pre-test baseline collected yet.</span></div></div>
-          <div class="dc"><div class="dci">📋</div><div class="dct"><span class="zh">前后测工具（待研究合作支持）</span><span class="en">Pre/Post Assessment (Needs Research Collaboration)</span></div><div class="dcb"><span class="zh">框架已初步构思，但测评设计涉及专业的测量学判断，需要具备相关专业的合作方介入，方能建立具说服力的效果证据。</span><span class="en">Framework conceptualised, but assessment design requires psychometric expertise. Credible evidence of impact needs a research collaboration.</span></div></div>
+          <div class="dc"><div class="dci">📋</div><div class="dct"><span class="zh">前后测工具（待研究合作支持）</span><span class="en">Pre/Post Assessment (Needs Research Collaboration)</span></div><div class="dcb"><span class="zh">框架已初步构思，但测评设计——题目效度、干扰项质量、增益分数的解读——涉及专业的测评设计知识，需要具备相关专业的合作方介入，方能建立具说服力的效果证据。</span><span class="en">Framework conceptualised, but assessment design — item validity, distractor quality, gain score interpretation — requires specialist assessment design expertise. Credible evidence of impact needs a research collaboration.</span></div></div>
           <div class="dc"><div class="dci">🔬</div><div class="dct"><span class="zh">差异化学习（规划中）</span><span class="en">Differentiated Learning (Planned)</span></div><div class="dcb"><span class="zh">教师标注词汇难度，结合学生错题模式，形成个人化薄弱点图谱，为差异化教学提供数据支撑。</span><span class="en">Teacher-curated difficulty tagging + individual error pattern analysis → personalised weak-area profiles for differentiated instruction.</span></div></div>
           <div class="dc"><div class="dci">🏛️</div><div class="dct"><span class="zh">扩展潜力</span><span class="en">Scalability</span></div><div class="dcb"><span class="zh">平台可在其他学校复制并按需调适；也可融入 MOE 现有 e-pedagogy 体系，以更大规模惠及全国学生。</span><span class="en">The platform can be replicated and adapted for other schools, or integrated into MOE's existing e-pedagogy ecosystem to benefit students at scale.</span></div></div>
           <div class="dc"><div class="dci">🌐</div><div class="dct"><span class="zh">多场景访问设计（已实现）</span><span class="en">Multi-Context Access Design (Built)</span></div><div class="dcb"><span class="zh">三种访问路径已设计完成：百德学生凭学校邮箱登录；教师使用同一账号并可切换师生视角；公众开放日与专业发展分享会参与者使用游客模式——零登录、零数据留存、符合 PDPA，随时可供大规模展示。</span><span class="en">Three access paths are designed: BVSS students log in with school email; teachers toggle between teacher and student views; open house visitors and PD event participants use guest/kiosk mode — zero login, zero data retained, PDPA-compliant, ready for demonstration at any scale.</span></div></div>
@@ -1607,17 +1659,10 @@ body.bi .hattrib span.en { font-size: .72rem; }
           <div class="ftag"><span class="zh">华文科下一步</span><span class="en">CL Unit Next Step</span></div>
           <div class="fi">📝</div>
           <div class="ft"><span class="zh">综合运用练习</span><span class="en">Integrated Application Practice</span></div>
-          <div class="fd"><span class="zh">为每个章节或每个年级设计一篇累积性填空语段，检验学生能否在真实语境中综合运用所学词汇。这比逐词填空更贴近 EOY 纸二的实际考核要求，也是词汇教学从认识走向运用的关键一步。</span><span class="en">Authoring one cumulative cloze passage per chapter or year level — testing whether students can deploy vocabulary across a whole unit in authentic context. This is closer to what EOY Paper 2 actually demands, and the natural progression from word-level recognition to genuine application.</span></div>
+          <div class="fd"><span class="zh">为每个章节或每个年级设计一篇累积性填空语段，检验学生能否在真实语境中综合运用所学词汇。</span><span class="en">Authoring one cumulative cloze passage per chapter or year level — testing whether students can deploy vocabulary across a whole unit in authentic context. This is closer to what EOY Paper 2 actually demands, and the natural progression from word-level recognition to genuine application.</span></div>
           <div class="fc-note"><span class="zh">由华文科教师共同设计语段，平台负责题目呈现与追踪</span><span class="en">CL unit teachers design the passages; the platform handles delivery and tracking</span></div>
         </div>
         <div class="fc grn vis" style="opacity:1;transform:none;">
-          <div class="ftag"><span class="zh">概念已确立，规划中</span><span class="en">Concept Established — In Planning</span></div>
-          <div class="fi">🔬</div>
-          <div class="ft"><span class="zh">个人化错题诊断</span><span class="en">Personalised Error Diagnostics</span></div>
-          <div class="fd"><span class="zh">将学生错题模式与课程板块（生活空间 / 核心 / 巩固 / 文化站）绑定，生成个人化薄弱点图谱，为教师提供有依据的差异化教学参考。</span><span class="en">Mapping student error patterns to curriculum components to generate personalised weak-area profiles — giving teachers an evidence base for differentiated instruction.</span></div>
-          <div class="fc-note"><span class="zh">待错题样本量积累后可推进</span><span class="en">Progresses as error data accumulates</span></div>
-        </div>
-        <div class="fc grn vis" style="opacity:1;transform:none; grid-column:1/-1;">
           <div class="ftag"><span class="zh">长远愿景 · 扩展词库边界</span><span class="en">Longer Vision · Expanding the Vocabulary Boundary</span></div>
           <div class="fi">🗺️</div>
           <div class="ft"><span class="zh">新加坡情境词汇库</span><span class="en">Singapore Contextual Vocabulary Hub</span></div>
@@ -1646,18 +1691,18 @@ body.bi .hattrib span.en { font-size: .72rem; }
     <div class="acc-cat-body">
       <div class="acc-cards-inner">
         <div class="fc amber vis" style="opacity:1;transform:none;">
+          <div class="ftag"><span class="zh">等待：数据与算法支持</span><span class="en">Awaiting: Data & Algorithm Support</span></div>
+          <div class="fi">🧠</div>
+          <div class="ft"><span class="zh">智能学生仪表板：遗忘曲线与错题追踪</span><span class="en">Intelligent Student Dashboard: Forgetting Curves & Error Tracking</span></div>
+          <div class="fd"><span class="zh">愿景是一个强大的学生学习仪表板——系统根据艾宾浩斯遗忘曲线，在最佳时机主动向学生推送复习题目，实现真正意义上的间隔重复；同时追踪个人错题模式，与课程板块（生活空间 / 核心 / 巩固 / 文化站）绑定，生成个人化薄弱词汇图谱，支持差异化教学。</span><span class="en">The vision is a powerful student dashboard where the system proactively pushes review questions at optimal intervals based on the Ebbinghaus forgetting curve — true spaced repetition driven by the system, not the student. Combined with individual error pattern tracking mapped to curriculum components, this generates personalised weak-vocabulary profiles to support differentiated instruction.</span></div>
+          <div class="fc-note"><span class="zh">潜在合作方：ETD、教育研究团队</span><span class="en">Potential collaborators: ETD, education research teams</span></div><div style="font-size:.65rem; color:rgba(108,191,160,.5); margin-top:.4rem; font-style:italic;">Murre &amp; Dros (2015). Replication and Analysis of Ebbinghaus' Forgetting Curve. <em>PLOS ONE.</em> <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4492928/" target="_blank" style="color:var(--teal);">→ Full paper</a></div>
+        </div>
+        <div class="fc amber vis" style="opacity:1;transform:none;">
           <div class="ftag"><span class="zh">等待：专业研究合作</span><span class="en">Awaiting: Research Collaboration</span></div>
           <div class="fi">📊</div>
           <div class="ft"><span class="zh">建立扎实的学习成效证据</span><span class="en">Establishing Robust Evidence of Impact</span></div>
           <div class="fd"><span class="zh">前后测工具的设计——题量、干扰项效度、增益分数的统计意义——涉及专业的测量学判断。这是目前最需要专业伙伴的地方。</span><span class="en">Assessment design — item validity, distractor discrimination, gain score significance — requires psychometric expertise. This is where a research partner would make the greatest difference.</span></div>
-          <div class="fc-note"><span class="zh">潜在合作方：ETD、本地高校教育研究团队</span><span class="en">Potential collaborators: ETD, local university education research units</span></div>
-        </div>
-        <div class="fc amber vis" style="opacity:1;transform:none;">
-          <div class="ftag"><span class="zh">等待：基础设施支持</span><span class="en">Awaiting: Infrastructure Support</span></div>
-          <div class="fi">🧠</div>
-          <div class="ft"><span class="zh">动态间隔重复</span><span class="en">Dynamic Spaced Repetition</span></div>
-          <div class="fd"><span class="zh">真正的间隔重复须为每个词记录复习历史，并在合适时机主动提醒学生。这是认知科学中最有力的记忆巩固工具，也是这个平台最值得追求的下一步。</span><span class="en">True spaced repetition requires per-word revision history and timely review nudges — one of the most powerful memory consolidation tools cognitive science has identified.</span></div>
-          <div class="fc-note"><span class="zh">所需：更高层级的云端配额与算法支持</span><span class="en">Requires: Higher cloud quota and algorithm support</span></div>
+          <div class="fc-note"><span class="zh">潜在合作方：ETD、教育研究团队</span><span class="en">Potential collaborators: ETD, education research teams</span></div>
         </div>
         <div class="fc amber vis" style="opacity:1;transform:none;">
           <div class="ftag"><span class="zh">等待：专用语音接口</span><span class="en">Awaiting: Voice API Access</span></div>
@@ -1762,6 +1807,128 @@ body.bi .hattrib span.en { font-size: .72rem; }
 </footer>
 
 <script>
+// Spark section sequential reveal
+function revealSpark() {
+  const lines = ['spark1','spark2','spark3'];
+  lines.forEach((id, i) => {
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) { el.style.opacity='1'; el.style.transform='translateY(0)'; }
+      // Trigger bulb trace on spark2
+      if (id === 'spark2') {
+        setTimeout(() => {
+          const path = document.getElementById('bulb-path');
+          if (path) path.style.strokeDashoffset = '0';
+          ['bulb-base1','bulb-base2','bulb-base3','bulb-fil','bulb-dot'].forEach(eid => {
+            const el2 = document.getElementById(eid);
+            if (el2) el2.style.opacity = '1';
+          });
+          // Start dot pulse after it appears
+          setTimeout(() => {
+            const dot = document.getElementById('bulb-dot');
+            if (dot) {
+              const anim = dot.querySelector('animate');
+              if (anim) anim.beginElement();
+            }
+          }, 1600);
+        }, 200);
+      }
+    }, i * 900);
+  });
+}
+
+function resetSpark() {
+  ['spark1','spark2','spark3'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.style.opacity='0'; el.style.transform='translateY(10px)'; }
+  });
+  const path = document.getElementById('bulb-path');
+  if (path) path.style.strokeDashoffset = '200';
+  ['bulb-base1','bulb-base2','bulb-base3','bulb-fil','bulb-dot'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.opacity = '0';
+  });
+}
+const sparkObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      revealSpark();
+    } else {
+      resetSpark();
+    }
+  });
+}, { threshold: 0.3 });
+const sparkSection = document.getElementById('spark-section');
+if (sparkSection) sparkObs.observe(sparkSection);
+
+// Typewriter for Claude response
+function typeWriter(elementId, text, speed, callback) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  let i = 0;
+  el.textContent = '';
+  function tick() {
+    if (i < text.length) {
+      el.textContent += text[i++];
+      setTimeout(tick, speed);
+    } else if (callback) {
+      callback();
+    }
+  }
+  tick();
+}
+
+function playChat() {
+  const userBubble = document.getElementById('userBubble');
+  const typingDots = document.getElementById('typingDots');
+  const claudeBubble = document.getElementById('claudeBubble');
+  ['type-zh','type-en'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent=''; });
+  ['type-zh-rest','type-en-rest'].forEach(id => { const el=document.getElementById(id); if(el) el.style.opacity='0'; });
+  userBubble.style.opacity = '0';
+  typingDots.classList.remove('visible');
+  claudeBubble.classList.remove('visible');
+
+  setTimeout(() => { userBubble.style.opacity = '1'; }, 300);
+  setTimeout(() => { typingDots.classList.add('visible'); }, 1200);
+  setTimeout(() => {
+    typingDots.classList.remove('visible');
+    claudeBubble.classList.add('visible');
+    const lang = document.body.className;
+    const zhBlock = document.getElementById('claude-zh-block');
+    const enBlock = document.getElementById('claude-en-block');
+    if (lang === 'en') {
+      if (zhBlock) zhBlock.style.display = 'none';
+      if (enBlock) enBlock.style.display = 'block';
+      typeWriter('type-en', "Of course. Let's think through this together.", 28, () => {
+        setTimeout(() => { document.getElementById('type-en-rest').style.opacity='1'; }, 400);
+      });
+    } else if (lang === 'bi') {
+      if (zhBlock) zhBlock.style.display = 'block';
+      if (enBlock) enBlock.style.display = 'block';
+      typeWriter('type-zh', '当然可以。我们一起来想想。', 55, () => {
+        setTimeout(() => { document.getElementById('type-zh-rest').style.opacity='1'; }, 400);
+      });
+      setTimeout(() => {
+        typeWriter('type-en', "Of course. Let's think through this together.", 28, () => {
+          setTimeout(() => { document.getElementById('type-en-rest').style.opacity='1'; }, 400);
+        });
+      }, 1800);
+    } else {
+      if (zhBlock) zhBlock.style.display = 'block';
+      if (enBlock) enBlock.style.display = 'none';
+      typeWriter('type-zh', '当然可以。我们一起来想想。', 55, () => {
+        setTimeout(() => { document.getElementById('type-zh-rest').style.opacity='1'; }, 400);
+      });
+    }
+  }, 3200);
+}
+
+function replayChat() {
+  const chatScene = document.querySelector('.chat-scene');
+  delete chatScene.dataset.played;
+  playChat();
+}
+
 function togAcc(id) {
   const el = document.getElementById(id);
   el.classList.toggle('open');
@@ -1773,33 +1940,42 @@ function togSR(chip, bodyId) {
   if (!isOpen) chip.classList.add('open');
 }
 
-// Hexagon sequential animation (vertical div layout)
-function animateHexagons() {
-  const seq = ['h1','c1','h2','c2','h3','c3','h4','c4','h5','ret'];
-  seq.forEach((id, i) => {
-    setTimeout(() => {
-      const el = document.getElementById(id);
-      if (el) { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }
-    }, i * 220);
-  });
-}
-
-const hexObs = new IntersectionObserver((entries) => {
+// Hexagon animation - each triggered individually as it scrolls into view
+const hexIds = ['h1','c1','h2','c2','h3','c3','h4','c4','h5','ret'];
+const hexIndividualObs = new IntersectionObserver((entries) => {
   entries.forEach(e => {
-    if (e.isIntersecting && !e.target.dataset.hexplayed) {
-      e.target.dataset.hexplayed = '1';
-      animateHexagons();
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+      hexIndividualObs.unobserve(e.target);
     }
   });
-}, { threshold: 0.3 });
-const firstHex = document.getElementById('h1');
-if (firstHex) hexObs.observe(firstHex.closest('div[style*="flex-direction:column"]') || firstHex);
+}, { threshold: 0.5 });
+hexIds.forEach(id => {
+  const el = document.getElementById(id);
+  if (el) hexIndividualObs.observe(el);
+});
 
 function setLang(l) {
   document.body.className = l;
   document.querySelectorAll('.lb').forEach(b => b.classList.remove('on'));
   const btn = document.getElementById('btn-' + l);
   if (btn) btn.classList.add('on');
+  // Claude bubble language switching
+  const zhBlock = document.getElementById('claude-zh-block');
+  const enBlock = document.getElementById('claude-en-block');
+  if (zhBlock && enBlock) {
+    if (l === 'en') {
+      zhBlock.style.display = 'none';
+      enBlock.style.display = 'block';
+    } else if (l === 'bi') {
+      zhBlock.style.display = 'block';
+      enBlock.style.display = 'block';
+    } else {
+      zhBlock.style.display = 'block';
+      enBlock.style.display = 'none';
+    }
+  }
 }
 function togPhase(id) {
   const el = document.getElementById(id);
@@ -1844,26 +2020,6 @@ const chatObs = new IntersectionObserver((entries) => {
 const chatScene = document.querySelector('.chat-scene');
 if (chatScene) chatObs.observe(chatScene);
 
-function playChat() {
-  const userBubble = document.getElementById('userBubble');
-  const typingDots = document.getElementById('typingDots');
-  const claudeBubble = document.getElementById('claudeBubble');
-  userBubble.style.opacity = '0';
-  typingDots.classList.remove('visible');
-  claudeBubble.classList.remove('visible');
-  setTimeout(() => { userBubble.style.opacity = '1'; }, 300);
-  setTimeout(() => { typingDots.classList.add('visible'); }, 1200);
-  setTimeout(() => {
-    typingDots.classList.remove('visible');
-    claudeBubble.classList.add('visible');
-  }, 3200);
-}
-
-function replayChat() {
-  const chatScene = document.querySelector('.chat-scene');
-  delete chatScene.dataset.played;
-  playChat();
-}
 </script>
 </body>
 </html>
