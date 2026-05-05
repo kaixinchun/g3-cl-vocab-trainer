@@ -1807,14 +1807,12 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
         </div>
         <!-- Teacher fields (shown for @moe.edu.sg) -->
         <div id="reg-teacher-fields-desktop" style="display:none;">
-          <label class="welcome-label" style="margin-top:.2rem">你的学校 / 机构</label>
-          <div class="school-search-wrap">
-            <input class="welcome-input school-search-input" id="reg-tschool-search-desktop"
-              type="text" placeholder="输入学校或机构名称搜索…" autocomplete="off"
-              oninput="filterSchools('desktop','teacher')" onfocus="showSchoolDropdown('desktop','teacher')" onblur="hideSchoolDropdown('desktop','teacher')">
-            <div class="school-dropdown" id="reg-tschool-dropdown-desktop"></div>
-            <input type="hidden" id="reg-tschool-desktop">
-          </div>
+          <label class="welcome-label" style="margin-top:.2rem">你的学校</label>
+          <select class="welcome-select" id="reg-tschool-desktop">
+            <option value="">── 请选择 ──</option>
+            <option value="百德中学">百德中学 Bukit View Secondary School</option>
+            <option value="其他学校">其他学校 Other Schools</option>
+          </select>
           <label class="welcome-label" style="margin-top:.2rem">科目</label>
           <select class="welcome-select" id="reg-tsubject-desktop">
             <option value="">── 请选择 ──</option>
@@ -1888,14 +1886,12 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       </div>
       <!-- Teacher fields -->
       <div id="reg-teacher-fields-mobile" style="display:none;">
-        <label class="welcome-label" style="margin-top:.2rem">你的学校 / 机构</label>
-        <div class="school-search-wrap">
-          <input class="welcome-input school-search-input" id="reg-tschool-search-mobile"
-            type="text" placeholder="输入学校或机构名称搜索…" autocomplete="off"
-            oninput="filterSchools('mobile','teacher')" onfocus="showSchoolDropdown('mobile','teacher')" onblur="hideSchoolDropdown('mobile','teacher')">
-          <div class="school-dropdown" id="reg-tschool-dropdown-mobile"></div>
-          <input type="hidden" id="reg-tschool-mobile">
-        </div>
+        <label class="welcome-label" style="margin-top:.2rem">你的学校</label>
+        <select class="welcome-select" id="reg-tschool-mobile">
+          <option value="">── 请选择 ──</option>
+          <option value="百德中学">百德中学 Bukit View Secondary School</option>
+          <option value="其他学校">其他学校 Other Schools</option>
+        </select>
         <label class="welcome-label" style="margin-top:.2rem">科目</label>
         <select class="welcome-select" id="reg-tsubject-mobile">
           <option value="">── 请选择 ──</option>
