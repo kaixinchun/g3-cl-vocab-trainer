@@ -600,6 +600,41 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     margin: .5rem auto 0;
     width: 100%;
   }
+  /* Desktop inline search bar — hidden on mobile */
+  .user-pill-search {
+    display: none;
+  }
+  /* Mobile: icon-only for profile/guide buttons */
+  .btn-label-desktop { display: none; }
+  /* Desktop overrides */
+  @media(min-width:700px) {
+    .user-pill {
+      max-width: 960px;
+    }
+    .user-pill-search {
+      display: flex;
+      align-items: center;
+      flex: 0 0 220px;
+    }
+    .user-pill-search-row {
+      display: flex;
+      align-items: center;
+      background: rgba(255,255,255,.88);
+      border-radius: 22px;
+      border: 1.5px solid rgba(26,42,94,.22);
+      padding: .38rem .85rem;
+      gap: .45rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,.1);
+      cursor: text;
+      width: 100%;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .user-pill-search-row:hover {
+      border-color: rgba(26,42,94,.4);
+      box-shadow: 0 2px 14px rgba(40,120,200,.15);
+    }
+    .btn-label-desktop { display: inline; }
+  }
   .user-email {
     font-size: .7rem;
     color: #1a2a5e;
@@ -1381,6 +1416,9 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     position: relative;
     z-index: 2;
   }
+  @media(min-width:700px) {
+    .home-search-wrap { display: none; }
+  }
   .home-search-row {
     display: flex;
     align-items: center;
@@ -1700,8 +1738,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
         <div class="ws-feature"><span class="ws-feat-icon">🏆</span><div class="ws-feat-text"><strong>成就系统</strong> — 完成单元解锁专属称号</div></div>
       </div>
       <div class="ws-credit" style="font-size:.65rem;color:rgba(26,42,94,.6);font-family:var(--font-ui);letter-spacing:.03em;line-height:1.7;padding-top:.75rem;border-top:1px solid rgba(26,42,94,.15);text-align:center;">
-        词汇与课文例句取自新加坡教育部课程规划与发展司《华文伴我行》中一至中四教材，版权归新加坡教育部所有<br>
-        《词王淬炼坊》学习平台由百德中学母语部主任郑凯欣老师开发 © 2026
+        百德中学母语部 · 词王淬炼坊 © 2026
       </div>
     </div>
     <div class="ws-right">
@@ -1870,8 +1907,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       <div class="welcome-note">昵称须经老师审核后才会正式显示。仅限MOE iCON电邮注册。</div>
     </div>
     <div class="app-credit">
-      词汇与课文例句取自新加坡教育部课程规划与发展司《华文伴我行》中一至中四教材，版权归新加坡教育部所有<br>
-      《词王淬炼坊》学习平台由百德中学母语部主任郑凯欣老师开发 © 2026
+      百德中学母语部 · 词王淬炼坊 © 2026
     </div>
   </div>
 </div>
@@ -1890,8 +1926,8 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     </div>
   </div>
 
-  <!-- User identity pill — email | badge | 修改身份 | 退出 -->
-  <div class="user-pill" style="max-width:520px;">
+  <!-- User identity pill — email | badge | 修改身份 | 使用指南 | 退出 -->
+  <div class="user-pill" id="user-pill">
     <div style="display:flex;flex-direction:column;gap:.1rem;">
       <span class="user-email" id="user-email-display"></span>
       <span id="user-nickname-display" style="display:none;font-size:.78rem;font-family:var(--font-ui);font-weight:600;"></span>
@@ -1899,8 +1935,17 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     <div style="display:flex;align-items:center;gap:.4rem;">
       <span class="user-type-badge" id="user-type-badge"></span>
       <button class="sfx-btn" id="sfx-toggle-btn" onclick="toggleSfx()" title="声音开关">🔊</button>
-      <button class="profile-btn" onclick="showProfileModal()">✏️ 修改身份</button>
+      <!-- Desktop: full text labels; Mobile: icon only — controlled by CSS -->
+      <button class="profile-btn" onclick="showProfileModal()"><span class="btn-icon">✏️</span><span class="btn-label-desktop"> 修改身份</span></button>
+      <button class="profile-btn guide-pill-btn" onclick="showScreen('guide-screen');renderGuide()"><span class="btn-icon">🧭</span><span class="btn-label-desktop"> 使用指南</span></button>
       <button class="user-signout" onclick="signOut()">退出</button>
+    </div>
+    <!-- Desktop-only inline search bar -->
+    <div class="user-pill-search" id="user-pill-search">
+      <div class="user-pill-search-row" onclick="openSearchOverlay()">
+        <span style="font-size:.9rem;">🔍</span>
+        <input id="home-search-input-desktop" type="text" placeholder="查找词语…" readonly onclick="openSearchOverlay()" autocomplete="off" style="border:none;background:none;font-family:var(--font-body);font-size:.88rem;color:var(--ink);outline:none;flex:1;min-width:0;cursor:text;">
+      </div>
     </div>
   </div>
   <!-- Usage counter — moved below levels grid -->
@@ -1944,9 +1989,8 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   <!-- Save / Restore row -->
   <!-- Action buttons row -->
   <div class="home-action-row" style="display:flex;gap:.5rem;padding:0 1.2rem .5rem;max-width:520px;margin:0 auto;width:100%;">
-    <button onclick="showScreen('achievements-screen');updateAchievementsScreen()" style="flex:2;padding:.75rem;background:rgba(245,200,0,.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#7B5A00;border:1px solid rgba(255,255,255,.5);border-radius:var(--r-sm);font-size:.92rem;font-family:var(--font-body);font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;">🏅 我的成就</button>
-    <button onclick="showLeaderboard()" style="flex:2;padding:.75rem;background:rgba(26,82,118,.75);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:white;border:1px solid rgba(255,255,255,.4);border-radius:var(--r-sm);font-size:.92rem;font-family:var(--font-body);font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;">🏆 排行榜</button>
-    <button onclick="showScreen('guide-screen');renderGuide()" style="flex:1;padding:.75rem;background:rgba(255,255,255,.45);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:var(--blue);border:1px solid rgba(255,255,255,.6);border-radius:var(--r-sm);font-size:.88rem;font-family:var(--font-body);cursor:pointer;">🧭 使用指南</button>
+    <button onclick="showScreen('achievements-screen');updateAchievementsScreen()" style="flex:1;padding:.75rem;background:rgba(245,200,0,.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#7B5A00;border:1px solid rgba(255,255,255,.5);border-radius:var(--r-sm);font-size:.92rem;font-family:var(--font-body);font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;">🏅 我的成就</button>
+    <button onclick="showLeaderboard()" style="flex:1;padding:.75rem;background:rgba(26,82,118,.75);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:white;border:1px solid rgba(255,255,255,.4);border-radius:var(--r-sm);font-size:.92rem;font-family:var(--font-body);font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;">🏆 排行榜</button>
   </div>
   </div><!-- /.home-top-row -->
   <div class="save-restore-row" id="dashboard-btn-row" style="display:none;">
@@ -2022,8 +2066,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     </div>
   </div>
   <div class="home-footer-credit">
-    词汇与课文例句取自新加坡教育部课程规划与发展司《华文伴我行》中一至中四教材，版权归新加坡教育部所有<br>
-    《词王淬炼坊》学习平台由百德中学母语部主任郑凯欣老师开发 © 2026
+    百德中学母语部 · 词王淬炼坊 © 2026
   </div>
 </div>
 
@@ -9439,6 +9482,17 @@ function renderGuide() {
   // Open the first item by default
   const first = container.querySelector('.guide-acc-item');
   if (first) first.classList.add('open');
+
+  // Copyright / attribution section at the bottom of guide
+  const credit = document.createElement('div');
+  credit.style.cssText = 'margin-top:1.5rem;padding:1rem 1.2rem;background:rgba(26,42,94,.05);border-radius:10px;border:1px solid rgba(26,42,94,.1);text-align:center;';
+  credit.innerHTML = `
+    <div style="font-size:.78rem;font-weight:700;color:var(--hero-green);font-family:var(--font-body);margin-bottom:.5rem;">📜 关于本应用</div>
+    <p style="font-size:.72rem;color:rgba(26,42,94,.7);font-family:var(--font-ui);line-height:1.8;margin:0;">
+      词汇与课文例句取自新加坡教育部课程规划与发展司《华文伴我行》中一至中四教材，版权归新加坡教育部所有。<br>
+      《词王淬炼坊》学习平台由百德中学母语部主任郑凯欣老师开发。© 2026
+    </p>`;
+  container.appendChild(credit);
 }
 
 function toggleGuideAcc(el) {
