@@ -1666,7 +1666,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as fbSignOut, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset, applyActionCode, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, collection, getDocs, addDoc, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDbQ4gCmhkmtnspyByPLUxIcBFhSHYb1QQ",
@@ -1719,7 +1719,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     confirmPasswordReset,
     applyActionCode,
     deleteUser,
-    doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, collection, getDocs
+    doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, collection, getDocs, addDoc, query, where, orderBy, limit
   };
 
   // ── Auth state observer ───────────────────────────────────
@@ -7239,7 +7239,7 @@ updateHomeStats();
 // ══════════════════════════════════════════════════════════════
 
 // ── CONFIG — replace with your deployed Google Apps Script URL ──
-const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyjzetUGrwPmGz4dblpIh7BfvVfN37bjNRbch41Bz8umCPLTtujM70TV8yRPTpNC0KM/exec';
+// GAS_ENDPOINT removed — all data now stored in Firebase
 // Example: 'https://script.google.com/macros/s/AKfycbx.../exec'
 
 
@@ -8516,39 +8516,52 @@ function normaliseUserType(t) {
   return '公众人士';
 }
 
-async function gasPost(payload) {
-  if (!GAS_ENDPOINT || GAS_ENDPOINT === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') return null;
-  try {
-    const res = await fetch(GAS_ENDPOINT, {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    });
-    return await res.json();
-  } catch(e) { return null; }
-}
+// ── GAS removed: all data now written to Firestore ──────────
+// gasPost() retired. reportRegistration/reportLogin write to Firestore events collection.
 
 async function reportRegistration(email, userType) {
-  await gasPost({ action: 'register', email, userType: normaliseUserType(userType) });
+  try {
+    const { addDoc, collection, serverTimestamp } = window._fbFns;
+    await addDoc(collection(window._fbDb, 'events'), {
+      action: 'register',
+      email,
+      userType: normaliseUserType(userType),
+      ts: serverTimestamp()
+    });
+  } catch(e) { console.warn('reportRegistration failed:', e); }
 }
 
 async function reportLogin(email, userType) {
-  await gasPost({ action: 'login', email, userType: normaliseUserType(userType) });
+  try {
+    const { addDoc, collection, serverTimestamp } = window._fbFns;
+    await addDoc(collection(window._fbDb, 'events'), {
+      action: 'login',
+      email,
+      userType: normaliseUserType(userType),
+      ts: serverTimestamp()
+    });
+  } catch(e) { console.warn('reportLogin failed:', e); }
 }
 
 async function fetchUsageStats() {
-  if (!GAS_ENDPOINT || GAS_ENDPOINT === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') return;
   try {
-    const res = await fetch(GAS_ENDPOINT + '?action=stats');
-    const data = await res.json();
-    if (data.ok) {
-      const bv  = document.getElementById('counter-bukit');
-      const tot = document.getElementById('counter-total');
-      const tch = document.getElementById('counter-teachers');
-      if (bv)  bv.textContent  = data.bukitViewStudents  ?? '—';
-      if (tot) tot.textContent = data.otherSchoolStudents ?? '—';
-      if (tch) tch.textContent = data.teachers            ?? '—';
-    }
-  } catch(e) { console.warn('Stats fetch failed:', e); }
+    const { collection, getDocs } = window._fbFns;
+    const snap = await getDocs(collection(window._fbDb, 'users'));
+    let bukitViewStudents = 0, otherSchoolStudents = 0, teachers = 0;
+    snap.forEach(d => {
+      const u = d.data();
+      if (!u.userType) return;
+      if (u.userType === '百德中学学生') bukitViewStudents++;
+      else if (u.userType === '其他学校学生') otherSchoolStudents++;
+      else if (TEACHER_TYPES.includes(u.userType)) teachers++;
+    });
+    const bv  = document.getElementById('counter-bukit');
+    const tot = document.getElementById('counter-total');
+    const tch = document.getElementById('counter-teachers');
+    if (bv)  bv.textContent  = bukitViewStudents;
+    if (tot) tot.textContent = otherSchoolStudents;
+    if (tch) tch.textContent = teachers;
+  } catch(e) { console.warn('fetchUsageStats failed:', e); }
   // For dashboard users: check pending nickname count
   if (isDashboardUser()) _updatePendingNickBadge();
 }
@@ -9819,24 +9832,18 @@ async function submitFeedback() {
   closeFeedbackModal();
   showToast('正在提交…');
 
-  if (!GAS_ENDPOINT || GAS_ENDPOINT === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
-    showToast('✓ 反馈已记录（GAS未配置）');
-    return;
-  }
-
   try {
-    await gasPost({
-      action: 'feedback',
-      email: getUserEmail(),
-      userType: getUserType(),
+    const { addDoc, collection, serverTimestamp } = window._fbFns;
+    await addDoc(collection(window._fbDb, 'feedback'), {
+      email:        getUserEmail(),
+      userType:     getUserType(),
       feedbackText: text,
-      questionContext: {
-        word:         word || '',
-        mode:         modeStr,
-        level:        currentLevel || '',
-        unit:         currentUnit  || '',
-        questionText: word ? (currentMode === 'cloze' ? (EXAMPLES[word]||'') : word) : ''
-      }
+      word:         word || '',
+      mode:         modeStr,
+      level:        currentLevel || '',
+      unit:         currentUnit  || '',
+      questionText: word ? (currentMode === 'cloze' ? (EXAMPLES[word]||'') : word) : '',
+      ts:           serverTimestamp()
     });
     showToast('✓ 反馈已提交，谢谢！');
   } catch(e) {
@@ -10451,7 +10458,7 @@ function renderExportTab(users, container) {
         <li>快照时间</li>
       </ul>
     </div>
-    <button onclick="_doExportSnapshot()" style="background:var(--hero-green);color:white;border:none;border-radius:var(--r-sm);padding:.65rem 1.4rem;font-size:.88rem;font-family:var(--font-ui);font-weight:700;cursor:pointer;width:100%;">📤 导出快照到 Google Sheets</button>
+    <button onclick="_doExportSnapshot()" style="background:var(--hero-green);color:white;border:none;border-radius:var(--r-sm);padding:.65rem 1.4rem;font-size:.88rem;font-family:var(--font-ui);font-weight:700;cursor:pointer;width:100%;">📥 下载进度快照 CSV</button>
     <div id="export-status" style="margin-top:.8rem;font-size:.8rem;color:var(--ink-mute);text-align:center;min-height:1.2rem;"></div>
   </div>`;
 }
@@ -10494,16 +10501,28 @@ async function _doExportSnapshot() {
       });
     });
 
-    const res = await gasPost({ action: 'progressSnapshot', rows });
-    if (res && res.ok) {
-      if (status) status.textContent = '✅ 成功导出 ' + rows.length + ' 名学生的进度快照！';
-    } else {
-      if (status) status.textContent = '❌ 导出失败：' + (res?.error || '未知错误');
-    }
+    // Build CSV
+    const headers = ['昵称','已掌握','词语总数','学习时长(分钟)','登录次数','总积分','最近活跃'];
+    const csvRows = [headers.join(',')];
+    rows.forEach(r => {
+      csvRows.push([
+        r.nickname, r.mastered, r.totalWords,
+        r.sessionMins, r.loginCount, r.totalScore, r.lastSeen
+      ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(','));
+    });
+    const csv = '\uFEFF' + csvRows.join('\n'); // BOM for Excel UTF-8
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = '词王淬炼坊_进度快照_' + new Date().toLocaleDateString('zh-SG').replace(/\//g,'-') + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    if (status) status.textContent = '✅ 已下载 ' + rows.length + ' 名学生的进度快照！';
   } catch(e) {
     if (status) status.textContent = '❌ 导出失败：' + e.message;
   } finally {
-    if (btn) { btn.disabled = false; btn.textContent = '📤 导出快照到 Google Sheets'; }
+    if (btn) { btn.disabled = false; btn.textContent = '📥 下载进度快照 CSV'; }
   }
 }
 
