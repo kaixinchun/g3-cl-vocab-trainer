@@ -1683,16 +1683,28 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   const db   = getFirestore(app);
 
   // ── Expose to global scope for non-module JS ──────────────
-  // NOTE: Firestore rules needed:
+  // NOTE: Firestore rules (deploy via Firebase console):
+  //
+  // function isAllowedDomain() {
+  //   return request.auth.token.email.matches('.*@moe\.edu\.sg$') ||
+  //          request.auth.token.email.matches('.*@students\.edu\.sg$');
+  // }
   // match /users/{uid} {
-  //   allow read: if request.auth != null &&
-  //     (request.auth.uid == uid ||
-  //      request.auth.token.email == 'kai_xin_chun@moe.edu.sg');
-  //   allow write: if request.auth != null && request.auth.uid == uid;
+  //   allow read:   if request.auth != null &&
+  //                    (request.auth.uid == uid ||
+  //                     request.auth.token.email == 'kai_xin_chun@moe.edu.sg');
+  //   allow create: if request.auth != null &&
+  //                    request.auth.uid == uid &&
+  //                    isAllowedDomain();
+  //   allow update: if request.auth != null && request.auth.uid == uid;
+  //   allow delete: if request.auth != null && request.auth.uid == uid;
   // }
   // match /scores/{uid} {
-  //   allow read: if request.auth != null;   // all logged-in users can read leaderboard
-  //   allow write: if request.auth != null && request.auth.uid == uid;
+  //   allow read:   if request.auth != null;
+  //   allow write:  if request.auth != null && request.auth.uid == uid;
+  // }
+  // match /avatars/{uid} {
+  //   allow read, write: if request.auth != null && request.auth.uid == uid;
   // }
   window._fbAuth = auth;
   window._fbDb   = db;
@@ -1765,7 +1777,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
           <button type="button" onclick="submitForgotPassword('desktop')" style="background:none;border:none;color:var(--hero-blue);font-size:.75rem;font-family:var(--font-ui);cursor:pointer;text-decoration:underline;padding:0;">忘记密码？</button>
         </div>
         <div class="welcome-note" style="margin-top:.3rem">没有账号？点击上方「注册新账号」。</div>
-        <div style="margin-top:.6rem;text-align:center;"><button onclick="loginAsGuest()" style="background:none;border:none;color:rgba(26,42,94,.5);font-size:.75rem;font-family:var(--font-ui);cursor:pointer;text-decoration:underline;padding:.2rem .4rem;">🎪 访客模式（活动/工作坊用）</button></div>
+
       </div>
       <div id="ws-register-desktop" style="display:none;">
         <div class="ws-heading" style="margin-bottom:.3rem;">注册新账号</div>
@@ -1810,12 +1822,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
             <option value="其他科目教师">其他科目教师 (Other Subject Teacher)</option>
           </select>
         </div>
-        <!-- Other domain fields -->
-        <div id="reg-other-fields-desktop" style="display:none;">
-          <label class="welcome-label" style="margin-top:.2rem">你的机构</label>
-          <input class="welcome-input" id="reg-org-desktop" type="text" placeholder="例：NIE、SCCL、南洋理工大学">
-          <div style="font-size:.72rem;color:var(--amber);font-family:var(--font-ui);margin-top:.2rem;">你的账号将待审核后方可使用。</div>
-        </div>
+
         <div class="welcome-error" id="welcome-reg-error-desktop"></div>
         <button class="welcome-btn" onclick="submitRegister('desktop')">注册并开始学习 →</button>
         <div class="welcome-note" style="margin-top:.5rem">昵称须经老师审核后才会正式显示。仅限MOE iCON电邮注册。</div>
@@ -1852,7 +1859,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
         <button type="button" onclick="submitForgotPassword('mobile')" style="background:none;border:none;color:var(--hero-blue);font-size:.75rem;font-family:var(--font-ui);cursor:pointer;text-decoration:underline;padding:0;">忘记密码？</button>
       </div>
       <div class="welcome-note">没有账号？点击上方「注册新账号」。</div>
-      <div style="margin-top:.6rem;text-align:center;"><button onclick="loginAsGuest()" style="background:none;border:none;color:rgba(26,42,94,.55);font-size:.75rem;font-family:var(--font-ui);cursor:pointer;text-decoration:underline;padding:.2rem .4rem;">🎪 访客模式（活动/工作坊用）</button></div>
+
     </div>
     <!-- REGISTER panel -->
     <div id="ws-register-mobile" style="display:none;">
@@ -1896,12 +1903,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
           <option value="其他科目教师">其他科目教师 (Other Subject Teacher)</option>
         </select>
       </div>
-      <!-- Other domain fields -->
-      <div id="reg-other-fields-mobile" style="display:none;">
-        <label class="welcome-label" style="margin-top:.2rem">你的机构</label>
-        <input class="welcome-input" id="reg-org-mobile" type="text" placeholder="例：NIE、SCCL、南洋理工大学">
-        <div style="font-size:.72rem;color:var(--amber);font-family:var(--font-ui);margin-top:.2rem;">你的账号将待审核后方可使用。</div>
-      </div>
+
       <div class="welcome-error" id="welcome-reg-error"></div>
       <button class="welcome-btn" onclick="submitRegister('mobile')">注册并开始学习 →</button>
       <div class="welcome-note">昵称须经老师审核后才会正式显示。仅限MOE iCON电邮注册。</div>
@@ -7881,12 +7883,12 @@ function onRegEmailInput(panel) {
   if (hint) {
     if (cls === 'student') { hint.textContent = '✅ 学生账号'; hint.style.color = 'var(--green)'; }
     else if (cls === 'teacher') { hint.textContent = '✅ 教师账号'; hint.style.color = 'var(--hero-blue)'; }
-    else if (cls === 'other' && email.includes('@')) { hint.textContent = '⚠️ 非MOE iCON电邮，账号须待审核'; hint.style.color = 'var(--amber)'; }
+    else if (email.includes('@')) { hint.textContent = '❌ 仅限 @students.edu.sg 或 @moe.edu.sg 注册'; hint.style.color = 'var(--red, #c0392b)'; }
     else { hint.textContent = ''; }
   }
   if (studentEl) studentEl.style.display = cls === 'student' ? '' : 'none';
   if (teacherEl) teacherEl.style.display = cls === 'teacher' ? '' : 'none';
-  if (otherEl)   otherEl.style.display   = cls === 'other' && email.includes('@') ? '' : 'none';
+  if (otherEl)   otherEl.style.display   = 'none';
 }
 
 // ── NICKNAME VALIDATION ───────────────────────────────────────
@@ -7986,6 +7988,10 @@ async function submitRegister(panel) {
   // Email validation
   if (!email) { showWelcomeError('请输入电邮地址', errId); return; }
   if (!email.includes('@')) { showWelcomeError('请输入有效的电邮地址', errId); return; }
+  if (cls !== 'student' && cls !== 'teacher') {
+    showWelcomeError('注册仅限 @students.edu.sg（学生）或 @moe.edu.sg（教师）电邮。', errId);
+    return;
+  }
 
   // Nickname validation
   const nickErr = validateNickname(nickname);
@@ -7994,7 +8000,7 @@ async function submitRegister(panel) {
   if (pw.length < 6) { showWelcomeError('密码至少需要6位', errId); return; }
 
   // Build userType and school from domain
-  let userType = '', school = '', subject = '', org = '', needsApproval = false;
+  let userType = '', school = '', subject = '';
 
   if (cls === 'student') {
     school = document.getElementById('reg-school-' + panel)?.value || '';
@@ -8006,12 +8012,6 @@ async function submitRegister(panel) {
     if (!school) { showWelcomeError('请选择你的学校或机构', errId); return; }
     if (!subject) { showWelcomeError('请选择你的科目', errId); return; }
     userType = subject;
-  } else {
-    // Other domain — require org, flag for approval
-    org = (document.getElementById('reg-org-' + panel)?.value || '').trim();
-    if (!org) { showWelcomeError('请输入你的机构', errId); return; }
-    userType = '其他机构';
-    needsApproval = true;
   }
 
   const btn = document.querySelector(`#ws-register-${panel} .welcome-btn`);
@@ -8031,7 +8031,7 @@ async function submitRegister(panel) {
       userType,
       school: school || org,
       subject: subject || '',
-      accountApproved: !needsApproval || email.endsWith('@students.edu.sg') || email.endsWith('@moe.edu.sg'),
+      accountApproved: true,
       createdAt:  serverTimestamp(),
       lastSeen:   serverTimestamp(),
       progress:   {}
