@@ -10558,6 +10558,20 @@ function _addToUserScore(points, masteryBonus) {
   _scoreFlushTimer = setTimeout(_flushScore, 3000);
 }
 
+// Reset quarterScore if we're in a new quarter vs what's stored
+function _calcQuarterScore(existing, pts, mpts) {
+  const now = new Date();
+  const curYear = now.getFullYear();
+  const curQ = Math.floor(now.getMonth() / 3) + 1;
+  const storedYear = existing?.quarterYear;
+  const storedQ    = existing?.quarterNum;
+  // New quarter → reset to just this session's points
+  if (!storedYear || storedYear !== curYear || storedQ !== curQ) {
+    return pts + mpts;
+  }
+  return (existing?.quarterScore || 0) + pts + mpts;
+}
+
 async function _flushScore() {
   if (_pendingScoreDelta === 0 && _pendingMasteryDelta === 0) return;
   const user = window._fbAuth?.currentUser;
@@ -10585,6 +10599,9 @@ async function _flushScore() {
       nickname:     localStorage.getItem('cl_vocab_user_nickname') || '',
       nicknameApproved: localStorage.getItem('cl_vocab_nickname_approved') === '1',
       masteryAwarded: _masteryBonusAwarded,
+      quarterScore: _calcQuarterScore(existing, pts, mpts),
+      quarterYear: new Date().getFullYear(),
+      quarterNum: Math.floor(new Date().getMonth() / 3) + 1,
       updatedAt:    serverTimestamp()
     });
   } catch(e) { console.warn('Score flush failed:', e); }
@@ -10605,7 +10622,26 @@ function _showScoreToast(msg) {
 }
 
 // ── Leaderboard fetch & render ────────────────────────────────
-var _lbTab = 'school';
+var _lbTab = 'quarter';
+
+// ── Quarter helpers ───────────────────────────────────────────
+function _currentQuarter() {
+  const now = new Date();
+  const m = now.getMonth(); // 0-indexed
+  const q = Math.floor(m / 3) + 1;
+  return { year: now.getFullYear(), q };
+}
+function _quarterLabel() {
+  const { year, q } = _currentQuarter();
+  const names = { 1:'1月—3月', 2:'4月—6月', 3:'7月—9月', 4:'10月—12月' };
+  return year + '年 · ' + names[q];
+}
+function _inCurrentQuarter(tsMs) {
+  if (!tsMs) return false;
+  const { year, q } = _currentQuarter();
+  const d = new Date(tsMs);
+  return d.getFullYear() === year && Math.floor(d.getMonth() / 3) + 1 === q;
+}
 
 function showLeaderboard() {
   if (sessionStorage.getItem('cl_account_pending') === '1') {
@@ -10614,13 +10650,16 @@ function showLeaderboard() {
   }
   if (isGuestAccount(window._fbUser?.email)) return;
   showScreen('leaderboard-screen');
+  // Update quarter label in subtitle
+  const sub = document.querySelector('#leaderboard-screen .lb-subtitle');
+  if (sub) sub.textContent = '每次掌握词语即时更新';
   loadLeaderboard(_lbTab);
 }
 
 function switchLbTab(tab) {
   _lbTab = tab;
-  document.getElementById('lb-tab-school').className = 'lb-tab' + (tab === 'school' ? ' active' : '');
-  document.getElementById('lb-tab-global').className = 'lb-tab' + (tab === 'global' ? ' active' : '');
+  document.getElementById('lb-tab-quarter').className = 'lb-tab' + (tab === 'quarter' ? ' active' : '');
+  document.getElementById('lb-tab-alltime').className = 'lb-tab' + (tab === 'alltime' ? ' active' : '');
   loadLeaderboard(tab);
 }
 
@@ -10631,7 +10670,12 @@ async function loadLeaderboard(tab) {
   content.innerHTML = '<div class="lb-loading">加载中…</div>';
   if (myRankEl) myRankEl.textContent = '';
 
-  // Wait up to 5s for Firebase to be ready
+  // Update tab subtitle
+  const quarterNote = document.getElementById('lb-quarter-note');
+  if (quarterNote) {
+    quarterNote.textContent = tab === 'quarter' ? _quarterLabel() : '自平台上线以来';
+  }
+
   let _fbWait = 0;
   while ((!window._fbFns || !window._fbDb) && _fbWait < 5000) {
     await new Promise(r => setTimeout(r, 200));
@@ -10648,33 +10692,48 @@ async function loadLeaderboard(tab) {
     let entries = [];
     snap.forEach(d => entries.push(d.data()));
 
-    // Filter for leaderboard display
+    // Exclude teacher accounts from leaderboard
     entries = entries.filter(e => {
       if (!e.email) return false;
-      if (tab === 'school') return e.userType === '百德中学学生';
-      // Global tab: include everyone (students, teachers, public)
+      if (e.userType === '华文教师' || e.userType === '其他科目教师') return false;
       return true;
     });
 
-    // Sort by totalScore descending
-    entries.sort((a, b) => (b.totalScore || 0) - (a.totalScore || 0));
+    // Score field: quarter vs alltime
+    if (tab === 'quarter') {
+      // Use quarterScore field if available, else fall back to totalScore for legacy
+      entries = entries.map(e => ({
+        ...e,
+        _displayScore: e.quarterScore || 0
+      }));
+    } else {
+      entries = entries.map(e => ({
+        ...e,
+        _displayScore: e.totalScore || 0
+      }));
+    }
+
+    // Sort by display score descending, hide zero-score entries on quarter tab
+    if (tab === 'quarter') {
+      entries = entries.filter(e => e._displayScore > 0);
+    }
+    entries.sort((a, b) => b._displayScore - a._displayScore);
 
     const myEmail = getUserEmail();
     const myIdx   = entries.findIndex(e => e.email === myEmail);
 
-    // Rank-up SFX: fire if rank improved since last check
     if (myIdx !== -1) {
       const prevRank = window._sfxPrevRank;
       if (prevRank !== undefined && myIdx < prevRank) SFX.levelUp();
       window._sfxPrevRank = myIdx;
     }
 
-    renderLeaderboard(entries.slice(0, 10), myEmail, content);
+    renderLeaderboard(entries.slice(0, 10), myEmail, content, tab);
 
     if (myRankEl) {
       const hasEntry = entries.some(e => e.email === myEmail);
       if (!hasEntry) {
-        myRankEl.textContent = '练习后即可上榜！加油💪';
+        myRankEl.textContent = tab === 'quarter' ? '本季度还未得分，快去练习！💪' : '练习后即可上榜！加油💪';
       } else if (myIdx === -1 || myIdx >= 10) {
         myRankEl.textContent = myIdx === -1 ? '继续加油，冲击前10！🔥' : `你目前的排名：第 ${myIdx + 1} 名`;
       } else {
@@ -10688,12 +10747,12 @@ async function loadLeaderboard(tab) {
 
 function _displayName(entry) {
   if (entry.nicknameApproved && entry.nickname) return entry.nickname;
-  // Mask email: show first 3 chars + ***
-  const local = (entry.email || '').split('@')[0];
-  return local.slice(0, 3) + '***';
+  // Fallback: show masked userId (strip @bvss.vk, show first 4 chars + ***)
+  const local = (entry.email || '').replace('@bvss.vk','').split('@')[0];
+  return local.slice(0, 4) + '***';
 }
 
-function renderLeaderboard(top10, myEmail, container) {
+function renderLeaderboard(top10, myEmail, container, tab) {
   if (!top10.length) {
     container.innerHTML = '<div class="lb-empty">暂无数据，快来成为第一名！🚀</div>';
     return;
@@ -10717,7 +10776,7 @@ function renderLeaderboard(top10, myEmail, container) {
           <span class="podium-medal">${medals[vi]}</span>
         </div>
         <div class="podium-name" style="${isMe ? 'color:#F5C800;' : ''}">${_displayName(entry)}</div>
-        <div class="podium-score">${(entry.totalScore||0).toLocaleString()} 分</div>
+        <div class="podium-score">${(entry._displayScore||entry.totalScore||0).toLocaleString()} 分</div>
         <div class="podium-block ${rankClass[vi]}">${vi === 1 ? '1' : vi === 0 ? '2' : '3'}</div>
       </div>`;
   });
@@ -10733,7 +10792,7 @@ function renderLeaderboard(top10, myEmail, container) {
         <div class="lb-rank-num">${i + 1}</div>
         <div class="lb-row-name">${_displayName(e)}</div>
         <div style="display:flex;align-items:center;">
-          <div class="lb-row-score">${(e.totalScore||0).toLocaleString()}</div>
+          <div class="lb-row-score">${(e._displayScore||e.totalScore||0).toLocaleString()}</div>
           <div class="lb-row-mastery">分</div>
         </div>
       </div>`;
@@ -10987,9 +11046,10 @@ function toggleSfx() {
     <div class="lb-subtitle">每次掌握词语即时更新</div>
   </div>
   <div class="lb-tabs">
-    <button class="lb-tab active" id="lb-tab-school" onclick="switchLbTab('school')">🏫 百德中学</button>
-    <button class="lb-tab" id="lb-tab-global" onclick="switchLbTab('global')">🇸🇬 全岛榜</button>
+    <button class="lb-tab active" id="lb-tab-quarter" onclick="switchLbTab('quarter')">📅 本季度</button>
+    <button class="lb-tab" id="lb-tab-alltime" onclick="switchLbTab('alltime')">🏆 历史总榜</button>
   </div>
+  <div id="lb-quarter-note" style="text-align:center;font-size:.72rem;font-family:var(--font-ui);color:var(--ink-mute);padding:.3rem 0 .1rem;"></div>
   <div id="lb-content">
     <div class="lb-loading">加载中…</div>
   </div>
