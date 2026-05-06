@@ -8033,7 +8033,9 @@ async function submitRegister(panel) {
       progress:   {}
     });
 
-    await _onFirebaseLogin(cred.user, { nickname, userType });
+    const { sendEmailVerification } = window._fbFns;
+    await sendEmailVerification(cred.user);
+    _showVerifyEmailWall(email);
   } catch(e) {
     const msg = _fbErrorMsg(e.code);
     showWelcomeError(msg, errId);
@@ -8052,6 +8054,13 @@ async function _onFirebaseLogin(user, fallback) {
     launchApp(GUEST_EMAIL, '访客', '', false);
     return;
   }
+  // ── EMAIL VERIFICATION GATE ───────────────────────────────
+  try { await user.reload(); } catch(_) {}
+  if (!user.emailVerified) {
+    _showVerifyEmailWall(user.email, user);
+    return;
+  }
+
   const { doc, getDoc, updateDoc, serverTimestamp } = window._fbFns;
   const uid = user.uid;
   let   userDoc = null;
@@ -8134,6 +8143,51 @@ async function _onFirebaseLogin(user, fallback) {
     setTimeout(() => {
       showToast('⚠️ 昵称「' + nickname + '」已被拒绝：' + rejReason + '。请联系老师。');
     }, 1500);
+  }
+}
+
+// ── EMAIL VERIFICATION WALL ───────────────────────────────────
+function _showVerifyEmailWall(email, userObj) {
+  const modal = document.getElementById('email-verif-wall');
+  if (!modal) return;
+  const emailEl = document.getElementById('evw-email');
+  if (emailEl) emailEl.textContent = email;
+  modal.style.display = 'flex';
+  modal._firebaseUser = userObj || null;
+}
+
+async function _resendVerificationEmail() {
+  const modal = document.getElementById('email-verif-wall');
+  const btn   = document.getElementById('evw-resend-btn');
+  const msg   = document.getElementById('evw-msg');
+  let fbUser = modal?._firebaseUser || window._fbAuth?.currentUser;
+  if (!fbUser) { if (msg) msg.textContent = '⚠️ Please log in again to resend.'; return; }
+  try {
+    if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+    await window._fbFns.sendEmailVerification(fbUser);
+    if (msg) { msg.textContent = '✅ Verification email resent! Check inbox and spam folder.'; msg.style.color = 'var(--green)'; }
+  } catch(e) {
+    if (msg) { msg.textContent = '⚠️ ' + (e.code === 'auth/too-many-requests' ? 'Too many requests. Wait a few minutes.' : 'Failed to resend. Try again later.'); msg.style.color = 'var(--red)'; }
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '重发验证邮件 Resend'; }
+  }
+}
+
+async function _checkVerifiedAndLogin() {
+  const modal = document.getElementById('email-verif-wall');
+  const msg   = document.getElementById('evw-msg');
+  const fbUser = modal?._firebaseUser || window._fbAuth?.currentUser;
+  if (!fbUser) { if (msg) { msg.textContent = 'Please log in again.'; msg.style.color = 'var(--red)'; } return; }
+  try {
+    await fbUser.reload();
+    if (fbUser.emailVerified) {
+      modal.style.display = 'none';
+      await _onFirebaseLogin(fbUser);
+    } else {
+      if (msg) { msg.textContent = '❌ Not verified yet. Click the link in your email first.'; msg.style.color = 'var(--red)'; }
+    }
+  } catch(e) {
+    if (msg) { msg.textContent = 'Error checking status. Please try logging in again.'; msg.style.color = 'var(--red)'; }
   }
 }
 
@@ -11148,6 +11202,51 @@ function toggleSfx() {
   </div>
 </div>
 
+
+<!-- ── EMAIL VERIFICATION WALL (blocks unverified users) ─── -->
+<div id="email-verif-wall" style="display:none;position:fixed;inset:0;z-index:9998;
+  background:rgba(0,0,0,.65);backdrop-filter:blur(5px);
+  align-items:center;justify-content:center;">
+  <div style="background:white;border-radius:18px;padding:2rem 1.6rem;
+    max-width:380px;width:92%;box-shadow:0 8px 40px rgba(0,0,0,.35);text-align:center;
+    font-family:var(--font-ui);">
+    <div style="font-size:2.8rem;margin-bottom:.5rem;">📧</div>
+    <div style="font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:.4rem;
+      font-family:var(--font-body);">请先验证电邮</div>
+    <div style="font-size:.8rem;color:var(--ink-mute);line-height:1.6;margin-bottom:.3rem;">
+      A verification email has been sent to:
+    </div>
+    <div id="evw-email" style="font-size:.85rem;font-weight:700;color:var(--hero-blue);
+      margin-bottom:1rem;word-break:break-all;"></div>
+    <div style="font-size:.78rem;color:var(--ink-mute);line-height:1.7;margin-bottom:1rem;">
+      Please click the link in the email to verify your account.<br>
+      Check your <strong>inbox and spam/junk folder</strong>.
+    </div>
+    <div id="evw-msg" style="font-size:.75rem;min-height:1.2em;margin-bottom:.8rem;
+      color:var(--ink-mute);"></div>
+    <button id="evw-check-btn" onclick="_checkVerifiedAndLogin()"
+      style="width:100%;padding:.8rem;background:var(--hero-green);color:white;
+      border:none;border-radius:var(--r-sm);font-size:.95rem;font-family:var(--font-body);
+      font-weight:700;cursor:pointer;margin-bottom:.6rem;">
+      ✅ I've verified — Enter App
+    </button>
+    <button id="evw-resend-btn" onclick="_resendVerificationEmail()"
+      style="width:100%;padding:.7rem;background:transparent;color:var(--hero-blue);
+      border:1.5px solid var(--hero-blue);border-radius:var(--r-sm);font-size:.85rem;
+      font-family:var(--font-ui);cursor:pointer;">
+      重发验证邮件 Resend Email
+    </button>
+    <div style="margin-top:1rem;font-size:.72rem;color:var(--ink-mute);">
+      Wrong email?
+      <button onclick="document.getElementById('email-verif-wall').style.display='none';
+        window._fbFns?.fbSignOut(window._fbAuth);"
+        style="background:none;border:none;color:var(--hero-blue);cursor:pointer;
+        font-size:.72rem;text-decoration:underline;padding:0;">
+        Back to login
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- ── EMAIL VERIFICATION MODAL (handles Firebase email link) ─── -->
 <div id="email-verify-modal" style="display:none;position:fixed;inset:0;z-index:9999;
