@@ -1658,6 +1658,55 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   .sr-btn.primary { background: var(--navy); color: white; border-color: var(--navy); }
   .sr-btn:active { opacity: .75; }
   .sr-more { text-align: center; font-size: .7rem; color: var(--ink-mute); font-family: sans-serif; padding: .6rem; }
+/* ── TEACHER DASHBOARD v2 ── */
+.dash-fpill{padding:.28rem .65rem;border-radius:14px;border:1.5px solid var(--paper-3);background:var(--paper);font-size:.65rem;font-family:var(--font-ui);font-weight:600;color:var(--ink-mute);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.dash-fpill:hover{border-color:var(--navy);color:var(--navy);}
+.dash-fpill.active{border-color:var(--navy);background:var(--navy);color:white;}
+.dash-sum-chip{flex:1;background:var(--paper);border-radius:var(--r-sm);padding:.4rem .3rem;text-align:center;border:1px solid var(--paper-3);}
+.dash-sum-num{font-size:1.1rem;font-weight:700;color:var(--navy);line-height:1;font-family:var(--font-ui);}
+.dash-sum-num.green{color:var(--hero-green);}
+.dash-sum-label{font-size:.55rem;color:var(--ink-mute);margin-top:.2rem;line-height:1.3;}
+.dscard{background:white;border-radius:var(--r);border:1.5px solid var(--paper-3);margin-bottom:.6rem;overflow:hidden;transition:box-shadow .15s;}
+.dscard:hover{box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.dscard.has-pending{border-color:#e8b0ac;}
+.dscard-header{display:flex;align-items:center;padding:.7rem .85rem;gap:.6rem;cursor:pointer;user-select:none;}
+.dscard-av{width:38px;height:38px;border-radius:50%;background:var(--paper-2);border:1.5px solid var(--paper-3);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;position:relative;}
+.dscard-pending-dot{position:absolute;top:-1px;right:-1px;width:10px;height:10px;background:var(--red);border-radius:50%;border:1.5px solid white;}
+.dscard-info{flex:1;min-width:0;}
+.dscard-id{font-size:.75rem;font-weight:700;color:var(--navy);letter-spacing:.03em;}
+.dscard-nick{font-size:.68rem;color:var(--ink-mute);margin-top:.05rem;}
+.dscard-bar-track{height:4px;background:var(--paper-2);border-radius:2px;margin-top:.3rem;overflow:hidden;}
+.dscard-bar-fill{height:100%;background:var(--hero-green);border-radius:2px;}
+.dscard-right{display:flex;flex-direction:column;align-items:flex-end;gap:.25rem;flex-shrink:0;}
+.dscard-status{font-size:.6rem;font-weight:700;padding:.15rem .5rem;border-radius:10px;}
+.dss-active{background:#e8f7ec;color:var(--hero-green);}
+.dss-low{background:#fef9e7;color:#c49000;}
+.dss-gone{background:var(--paper-2);color:var(--ink-mute);}
+.dscard-pct{font-size:.65rem;color:var(--ink-mute);}
+.dscard-chev{color:var(--paper-3);font-size:.65rem;margin-left:.2rem;transition:transform .2s;align-self:center;}
+.dscard-chev.open{transform:rotate(180deg);}
+.dscard-body{display:none;border-top:1.5px solid var(--paper-2);}
+.dscard-body.open{display:block;}
+.ds-itabs{display:flex;border-bottom:1px solid var(--paper-2);background:var(--paper);}
+.ds-itab{flex:1;padding:.48rem .2rem;font-size:.68rem;font-family:var(--font-ui);font-weight:600;border:none;background:transparent;color:var(--ink-mute);cursor:pointer;position:relative;transition:color .15s;}
+.ds-itab.active{color:var(--navy);}
+.ds-itab.active::after{content:'';position:absolute;bottom:-1px;left:15%;right:15%;height:2px;background:var(--hero-green);border-radius:1px;}
+.ds-ipane{display:none;padding:.8rem .85rem;}
+.ds-ipane.active{display:block;}
+.ds-pgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.45rem;margin-bottom:.7rem;}
+.ds-pcell{background:var(--paper);border-radius:var(--r-sm);padding:.5rem .55rem;border:1px solid var(--paper-3);}
+.ds-pcell-label{font-size:.58rem;color:var(--ink-mute);margin-bottom:.12rem;line-height:1.3;}
+.ds-pcell-val{font-size:.82rem;font-weight:700;color:var(--ink);}
+.ds-pcell-val.green{color:var(--hero-green);}
+.ds-action-btn{flex:1;padding:.45rem .5rem;border-radius:var(--r-sm);border:1.5px solid var(--paper-3);background:white;font-size:.7rem;font-family:var(--font-ui);font-weight:600;color:var(--ink-soft);cursor:pointer;text-align:center;transition:background .15s;}
+.ds-action-btn:hover{background:var(--paper-2);}
+.ds-action-btn.reset{border-color:var(--blue);color:var(--blue);}
+.ds-action-btn.reset:hover{background:#eef4fb;}
+.ds-action-btn.danger{border-color:#e0b0ac;color:var(--red);}
+.ds-action-btn.danger:hover{background:#fdf0ee;}
+.ds-pw-reveal{display:none;background:#eef4fb;border:1.5px solid #b8d4ee;border-radius:var(--r-sm);padding:.65rem .75rem;margin-top:.55rem;}
+.ds-pw-reveal.show{display:block;}
+.ds-pw-code{font-size:1.15rem;font-weight:700;color:var(--navy);letter-spacing:.06em;font-family:monospace;margin:.2rem 0;}
 
 
   </style>
@@ -1665,7 +1714,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as fbSignOut, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset, applyActionCode, deleteUser, updatePassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as fbSignOut, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset, applyActionCode, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, collection, getDocs, addDoc, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -1719,7 +1768,6 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     confirmPasswordReset,
     applyActionCode,
     deleteUser,
-    updatePassword,
     doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, collection, getDocs, addDoc, query, where, orderBy, limit
   };
 
@@ -1758,7 +1806,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       <div id="ws-login-desktop">
         <div class="ws-heading" style="margin-bottom:.3rem;">欢迎回来</div>
         <div class="ws-sub2">输入学号和密码登录。</div>
-        <label class="welcome-label">账号</label>
+        <label class="welcome-label">学号</label>
         <input class="welcome-input" id="welcome-email-desktop" type="text" placeholder="例：2027G3CL001"
           autocomplete="username" autocapitalize="none" onkeydown="if(event.key==='Enter') submitLogin('desktop')">
         <label class="welcome-label" style="margin-top:.2rem">密码</label>
@@ -1784,7 +1832,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     </div>
     <!-- LOGIN panel -->
     <div id="ws-login-mobile">
-      <label class="welcome-label">账号</label>
+      <label class="welcome-label">学号</label>
       <input class="welcome-input" id="welcome-email" type="text" placeholder="例：2027G3CL001"
         autocomplete="username" autocapitalize="none" onkeydown="if(event.key==='Enter') submitLogin('mobile')">
       <label class="welcome-label" style="margin-top:.2rem">密码</label>
@@ -7996,15 +8044,7 @@ async function _onFirebaseLogin(user, fallback) {
 
   saveUserIdentity(email, userType, nickname, nicknameApproved);
   reportLogin(email, userType);
-
-  // Force password change on first login
-  const mustChangePw = userDoc?.defaultPasswordChanged === false;
-  if (mustChangePw) {
-    launchApp(email, userType, nickname, nicknameApproved);
-    setTimeout(() => _showForcedPwChange(user), 800);
-  } else {
-    launchApp(email, userType, nickname, nicknameApproved);
-  }
+  launchApp(email, userType, nickname, nicknameApproved);
 
   // Reconcile leaderboard score against ground-truth progress (async, non-blocking)
   _reconcileScore(user.uid, user.email, userType, nickname, nicknameApproved).catch(() => {});
@@ -9903,509 +9943,338 @@ document.addEventListener('DOMContentLoaded', () => {
 // ══════════════════════════════════════════════════════════════
 let _dashTab = 'nicknames';
 
+// ══════════════════════════════════════════════════════════════
+// TEACHER DASHBOARD v2
+// ══════════════════════════════════════════════════════════════
+var _dashAllUsers = [];
+var _dashFilter = 'all';
+
 function showDashboard() {
   if (!isDashboardUser()) return;
   document.getElementById('dashboard-modal').classList.add('show');
-  loadDashboardTab('nicknames');
+  _loadDashboardUsers();
 }
 function closeDashboard() {
   document.getElementById('dashboard-modal').classList.remove('show');
 }
-function switchDashTab(tab) {
-  _dashTab = tab;
-  const tabs = ['nicknames','students','errors','export'];
-  tabs.forEach(t => {
-    const btn = document.getElementById('dash-tab-' + t);
-    if (!btn) return;
-    btn.style.background = t === tab ? 'var(--hero-green)' : 'var(--paper-2)';
-    btn.style.color = t === tab ? 'white' : 'var(--ink-mute)';
-  });
-  loadDashboardTab(tab);
-}
-async function loadDashboardTab(tab) {
+
+async function _loadDashboardUsers() {
   const content = document.getElementById('dashboard-content');
   if (!content) return;
-  content.innerHTML = '<div id="dash-loading" style="text-align:center;padding:2rem;color:var(--ink-mute);font-family:var(--font-ui);font-size:.85rem;">加载中…</div>';
+  content.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--ink-mute);font-family:var(--font-ui);font-size:.85rem;">加载中…</div>';
   try {
     const { collection, getDocs } = window._fbFns;
     const snap = await getDocs(collection(window._fbDb, 'users'));
-    const users = [];
-    snap.forEach(d => users.push({ id: d.id, ...d.data() }));
-    if (tab === 'nicknames') renderNicknameQueue(users, content);
-    else if (tab === 'students') renderStudentProgress(users, content);
-    else if (tab === 'errors')  { renderWordErrors(content); return; }
-    else if (tab === 'export')  { renderExportTab(users, content); return; }
+    _dashAllUsers = [];
+    snap.forEach(function(d) { _dashAllUsers.push(Object.assign({ _uid: d.id }, d.data())); });
+    _renderDashSummary();
+    _renderDashCards();
+    _updatePendingPill();
   } catch(e) {
     content.innerHTML = '<div style="padding:1.5rem;color:var(--red);font-family:var(--font-ui);font-size:.85rem;">加载失败：' + e.message + '</div>';
   }
 }
 
-function renderNicknameQueue(users, container) {
-  const pending  = users.filter(u => u.nickname && !u.nicknameApproved && !u.nicknameRejected);
-  const rejected = users.filter(u => u.nickname && u.nicknameRejected);
-  const approved = users.filter(u => u.nickname && u.nicknameApproved);
-  let html = '';
+function _renderDashSummary() {
+  var students = _dashAllUsers.filter(function(u) { return u.userType === '百德中学学生' && u.status !== 'disabled'; });
+  var sevenDaysAgo = Date.now() - 7 * 24 * 3600 * 1000;
+  var active = students.filter(function(u) { return u.lastSeen && u.lastSeen.toDate && u.lastSeen.toDate().getTime() > sevenDaysAgo; }).length;
+  var totalMastered = students.reduce(function(s, u) { return s + Object.values(u.progress || {}).filter(function(p) { return p.clozeOk; }).length; }, 0);
+  var avgMastered = students.length ? Math.round(totalMastered / students.length) : 0;
+  var totalSessions = students.reduce(function(s, u) { return s + (u.flashcardSessions || 0) + (u.clozeSessions || 0); }, 0);
+  var avgSessions = students.length ? Math.round(totalSessions / students.length) : 0;
+  var el;
+  el = document.getElementById('dsum-total'); if (el) el.textContent = students.length;
+  el = document.getElementById('dsum-active'); if (el) el.textContent = active;
+  el = document.getElementById('dsum-mastered'); if (el) el.textContent = avgMastered;
+  el = document.getElementById('dsum-sessions'); if (el) el.textContent = avgSessions;
+}
 
-  if (!pending.length && !rejected.length && !approved.length) {
-    html = '<div style="padding:1.5rem;text-align:center;color:var(--ink-mute);font-family:var(--font-ui);">✅ 暂无待审核昵称</div>';
-    container.innerHTML = html; return;
+function _updatePendingPill() {
+  var pending = _dashAllUsers.filter(function(u) { return u.nicknamePending && u.nicknamePending.trim(); });
+  var pill = document.getElementById('dash-pill-pending');
+  if (pill) pill.textContent = pending.length ? ('待审核 (' + pending.length + ')') : '待审核';
+}
+
+function dashSetFilter(btn, filter) {
+  document.querySelectorAll('.dash-fpill').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  _dashFilter = filter;
+  _renderDashCards();
+}
+
+function dashFilter() {
+  _renderDashCards();
+}
+
+function _renderDashCards() {
+  var content = document.getElementById('dashboard-content');
+  if (!content) return;
+  var query = (document.getElementById('dash-search-input') ? document.getElementById('dash-search-input').value : '').toLowerCase().trim();
+
+  var users = _dashAllUsers.filter(function(u) {
+    if (_dashFilter === 'student') return u.userType === '百德中学学生';
+    if (_dashFilter === 'teacher') return u.userType === '华文教师' || u.userType === '其他科目教师';
+    if (_dashFilter === 'pending') return u.nicknamePending && u.nicknamePending.trim();
+    if (_dashFilter === 'disabled') return u.status === 'disabled';
+    return true;
+  });
+
+  if (query) {
+    users = users.filter(function(u) {
+      return (u.userId || '').toLowerCase().includes(query) ||
+             (u.nickname || '').includes(query) ||
+             (u.nicknamePending || '').includes(query);
+    });
   }
 
-  if (pending.length) {
-    html += '<div style="font-size:.7rem;font-family:var(--font-ui);color:var(--amber);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem;">⏳ 待审核 (' + pending.length + ')</div>';
-    pending.forEach(u => { html += _nickCard(u, 'pending'); });
-  }
-  if (rejected.length) {
-    html += '<div style="font-size:.7rem;font-family:var(--font-ui);color:var(--ink-mute);letter-spacing:.08em;text-transform:uppercase;margin:.8rem 0 .6rem;">已拒绝 (' + rejected.length + ')</div>';
-    rejected.forEach(u => html += _nickCard(u, 'rejected'));
-  }
-  if (approved.length) {
-    html += '<div style="font-size:.7rem;font-family:var(--font-ui);color:var(--ink-mute);letter-spacing:.08em;text-transform:uppercase;margin:.8rem 0 .6rem;">已批准 (' + approved.length + ')</div>';
-    approved.forEach(u => html += _nickCard(u, 'approved'));
-  }
-  container.innerHTML = html;
-}
-
-function _nickCard(u, state) {
-  const isRejected = state === 'rejected';
-  const isApproved = state === 'approved';
-  const date = u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString('zh-SG') : '—';
-  const rejReasons = ['内容不当','名人姓名','无意义','冒充身份','重复昵称','其他'];
-  const reasonOpts = rejReasons.map(r => `<option value="${r}">${r}</option>`).join('');
-  const borderColor = isApproved ? 'rgba(74,154,32,.3)' : 'var(--paper-3)';
-  const bgColor = isApproved ? 'rgba(232,245,208,.5)' : 'var(--paper-2)';
-  return `<div id="nick-card-${u.id}" style="background:${bgColor};border:1px solid ${borderColor};border-radius:var(--r-sm);padding:.8rem .9rem;margin-bottom:.6rem;">
-    <div style="display:flex;align-items:flex-start;gap:.6rem;">
-      <div style="flex:1;">
-        <div style="font-size:1rem;font-family:var(--font-body);font-weight:700;color:var(--ink);">👤 ${u.nickname || '—'}</div>
-        <div style="font-size:.72rem;font-family:var(--font-ui);color:var(--ink-mute);margin-top:.2rem;">${u.email}</div>
-        <div style="font-size:.72rem;font-family:var(--font-ui);color:var(--ink-mute);">${u.userType || ''}${u.school ? ' · ' + u.school : ''} · ${date}</div>
-        ${isRejected ? `<div style="font-size:.7rem;color:var(--red);margin-top:.2rem;">拒绝原因：${u.nicknameRejectionReason || '—'}</div>` : ''}
-      </div>
-      ${isApproved ? `
-      <button onclick="revokeNickname('${u.id}')" style="background:var(--red-soft);color:var(--red);border:1px solid rgba(192,57,43,.25);border-radius:var(--r-sm);padding:.35rem .75rem;font-size:.75rem;font-family:var(--font-ui);font-weight:600;cursor:pointer;align-self:flex-start;">撤销批准</button>
-      ` : isRejected ? `
-      <button onclick="approveNickname('${u.id}')" style="background:var(--hero-green);color:white;border:none;border-radius:var(--r-sm);padding:.35rem .8rem;font-size:.78rem;font-family:var(--font-ui);font-weight:600;cursor:pointer;align-self:flex-start;">↩️ 重新批准</button>
-      ` : `
-      <div style="display:flex;flex-direction:column;gap:.35rem;align-items:flex-end;">
-        <button onclick="approveNickname('${u.id}')" style="background:var(--hero-green);color:white;border:none;border-radius:var(--r-sm);padding:.35rem .8rem;font-size:.78rem;font-family:var(--font-ui);font-weight:600;cursor:pointer;">✅ 批准</button>
-        <div style="display:flex;gap:.3rem;align-items:center;">
-          <select id="rej-reason-${u.id}" style="font-size:.7rem;border:1px solid var(--paper-3);border-radius:6px;padding:.2rem .3rem;font-family:var(--font-ui);">${reasonOpts}</select>
-          <button onclick="rejectNickname('${u.id}')" style="background:var(--red);color:white;border:none;border-radius:var(--r-sm);padding:.35rem .65rem;font-size:.78rem;font-family:var(--font-ui);font-weight:600;cursor:pointer;">❌ 拒绝</button>
-        </div>
-      </div>`}
-    </div>
-  </div>`;
-}
-
-async function approveNickname(uid) {
-  try {
-    const { doc, updateDoc, getDoc } = window._fbFns;
-    // Get nickname from users doc
-    const userSnap = await getDoc(doc(window._fbDb, 'users', uid));
-    const nickname = userSnap.exists() ? (userSnap.data().nickname || '') : '';
-    // Update users doc
-    await updateDoc(doc(window._fbDb, 'users', uid), {
-      nicknameApproved: true, nicknameRejected: false, nicknameRejectionReason: ''
-    });
-    // Sync to scores doc so leaderboard shows nickname immediately
-    try {
-      await updateDoc(doc(window._fbDb, 'scores', uid), {
-        nickname: nickname, nicknameApproved: true
-      });
-    } catch(_) {} // scores doc may not exist yet if student hasn't practiced
-    const card = document.getElementById('nick-card-' + uid);
-    if (card) { card.style.opacity = '.4'; card.style.pointerEvents = 'none'; }
-    showToast('✅ 昵称已批准');
-    setTimeout(() => loadDashboardTab('nicknames'), 800);
-  } catch(e) { showToast('操作失败：' + e.message); }
-}
-
-async function revokeNickname(uid) {
-  if (!confirm('确定要撤销此昵称的批准吗？该用户在排行榜上将显示为遮蔽电邮。')) return;
-  try {
-    const { doc, updateDoc } = window._fbFns;
-    await updateDoc(doc(window._fbDb, 'users', uid), {
-      nicknameApproved: false, nicknameRejected: true, nicknameRejectionReason: '已撤销批准'
-    });
-    // Sync revocation to scores doc
-    try {
-      await updateDoc(doc(window._fbDb, 'scores', uid), {
-        nicknameApproved: false
-      });
-    } catch(_) {}
-    const card = document.getElementById('nick-card-' + uid);
-    if (card) { card.style.opacity = '.4'; card.style.pointerEvents = 'none'; }
-    showToast('↩️ 批准已撤销');
-    setTimeout(() => loadDashboardTab('nicknames'), 800);
-  } catch(e) { showToast('操作失败：' + e.message); }
-}
-
-async function rejectNickname(uid) {
-  const reason = document.getElementById('rej-reason-' + uid)?.value || '其他';
-  try {
-    const { doc, updateDoc } = window._fbFns;
-    await updateDoc(doc(window._fbDb, 'users', uid), {
-      nicknameApproved: false, nicknameRejected: true, nicknameRejectionReason: reason
-    });
-    // Sync to scores doc
-    try {
-      await updateDoc(doc(window._fbDb, 'scores', uid), {
-        nicknameApproved: false
-      });
-    } catch(_) {}
-    const card = document.getElementById('nick-card-' + uid);
-    if (card) { card.style.opacity = '.4'; card.style.pointerEvents = 'none'; }
-    showToast('❌ 昵称已拒绝');
-    setTimeout(() => loadDashboardTab('nicknames'), 800);
-  } catch(e) { showToast('操作失败：' + e.message); }
-}
-
-function renderStudentProgress(users, container) {
-  const NON_TEACHER = [...STUDENT_TYPES, '其他机构', '公众人士'];
-  const students = users
-    .filter(u => NON_TEACHER.includes(u.userType) || !TEACHER_TYPES.includes(u.userType))
-    .sort((a, b) => {
-      const aM = Object.values(a.progress || {}).filter(p => p.clozeOk).length;
-      const bM = Object.values(b.progress || {}).filter(p => p.clozeOk).length;
-      return bM - aM;
-    });
-
-  if (!students.length) {
-    container.innerHTML = '<div style="padding:1.5rem;text-align:center;color:var(--ink-mute);font-family:var(--font-ui);">暂无学生数据</div>';
+  if (!users.length) {
+    content.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--ink-mute);font-family:var(--font-ui);font-size:.82rem;">没有符合条件的账号</div>';
     return;
   }
 
-  const totalWords = Object.values(VOCAB).flatMap(u => Object.values(u).flat()).length;
-
-  // Summary stats
-  const totalMastered = students.reduce((s, u) => s + Object.values(u.progress || {}).filter(p => p.clozeOk).length, 0);
-  const avgMastered = students.length ? Math.round(totalMastered / students.length) : 0;
-  const totalMins = students.reduce((s, u) => s + Math.round((u.totalSessionSeconds || 0) / 60), 0);
-  const avgMins = students.length ? Math.round(totalMins / students.length) : 0;
-  const sevenDaysAgo = Date.now() - 7 * 24 * 3600 * 1000;
-  const activeCount = students.filter(u => u.lastSeen?.toDate && u.lastSeen.toDate().getTime() > sevenDaysAgo).length;
-
-  let html = `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1rem;">
-    <div style="background:var(--paper-2);border-radius:var(--r-sm);padding:.6rem .8rem;">
-      <div style="font-size:.65rem;font-family:var(--font-ui);color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;">学生总数</div>
-      <div style="font-size:1.3rem;font-weight:700;font-family:var(--font-body);color:var(--ink);">${students.length}</div>
-    </div>
-    <div style="background:var(--paper-2);border-radius:var(--r-sm);padding:.6rem .8rem;">
-      <div style="font-size:.65rem;font-family:var(--font-ui);color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;">近7天活跃</div>
-      <div style="font-size:1.3rem;font-weight:700;font-family:var(--font-body);color:var(--hero-green);">${activeCount}</div>
-    </div>
-    <div style="background:var(--paper-2);border-radius:var(--r-sm);padding:.6rem .8rem;">
-      <div style="font-size:.65rem;font-family:var(--font-ui);color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;">平均掌握词数</div>
-      <div style="font-size:1.3rem;font-weight:700;font-family:var(--font-body);color:var(--ink);">${avgMastered}</div>
-    </div>
-    <div style="background:var(--paper-2);border-radius:var(--r-sm);padding:.6rem .8rem;">
-      <div style="font-size:.65rem;font-family:var(--font-ui);color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;">平均学习时长</div>
-      <div style="font-size:1.3rem;font-weight:700;font-family:var(--font-body);color:var(--ink);">${avgMins >= 60 ? (avgMins/60).toFixed(1)+'h' : avgMins+'m'}</div>
-    </div>
-  </div>
-  <div style="overflow-x:auto;">
-  <table style="width:100%;border-collapse:collapse;font-size:.78rem;font-family:var(--font-ui);">
-    <thead>
-      <tr style="background:var(--paper-3);text-align:left;">
-        <th style="padding:.45rem .6rem;">昵称</th>
-        <th style="padding:.45rem .6rem;">电邮</th>
-        <th style="padding:.45rem .6rem;text-align:center;">已掌握</th>
-        <th style="padding:.45rem .6rem;text-align:center;">进度</th>
-        <th style="padding:.45rem .6rem;text-align:center;">学习时长</th>
-        <th style="padding:.45rem .6rem;text-align:center;">登录次数</th>
-        <th style="padding:.45rem .6rem;">最近活跃</th>
-        <th style="padding:.45rem .6rem;text-align:center;">状态</th>
-        <th style="padding:.45rem .6rem;text-align:center;">管理</th>
-      </tr>
-    </thead>
-    <tbody>`;
-
-  students.forEach((u, i) => {
-    const mastered = Object.values(u.progress || {}).filter(p => p.clozeOk).length;
-    const pct = Math.round(mastered / totalWords * 100);
-    const lastSeenDate = u.lastSeen?.toDate ? u.lastSeen.toDate() : null;
-    const lastSeen = lastSeenDate ? lastSeenDate.toLocaleDateString('zh-SG') : '—';
-    const daysSince = lastSeenDate ? Math.floor((Date.now() - lastSeenDate.getTime()) / 86400000) : 999;
-    const statusBadge = daysSince <= 2 ? `<span style="background:rgba(74,154,32,.15);color:var(--green);border-radius:4px;padding:.1rem .4rem;font-size:.68rem;">活跃</span>`
-      : daysSince <= 7 ? `<span style="background:rgba(230,170,0,.15);color:var(--amber);border-radius:4px;padding:.1rem .4rem;font-size:.68rem;">低频</span>`
-      : `<span style="background:rgba(192,57,43,.12);color:var(--red);border-radius:4px;padding:.1rem .4rem;font-size:.68rem;">沉睡</span>`;
-    const nick = u.nicknameApproved ? (u.nickname || '—') : (u.nickname ? u.nickname + '⏳' : '—');
-    const bannedTag = u.banned ? ' <span style="background:rgba(192,57,43,.12);color:var(--red);border-radius:4px;padding:.1rem .35rem;font-size:.65rem;">已停用</span>' : '';
-    const mins = Math.round((u.totalSessionSeconds || 0) / 60);
-    const timeStr = mins >= 60 ? Math.floor(mins/60) + 'h ' + (mins%60) + 'm' : (mins > 0 ? mins + 'm' : '—');
-    const loginCount = u.loginCount || '—';
-    const bg = i % 2 === 0 ? 'transparent' : 'var(--paper-2)';
-    html += `<tr style="background:${bg};border-bottom:1px solid var(--paper-3);">
-      <td style="padding:.4rem .6rem;font-family:var(--font-body);">${nick}${bannedTag}</td>
-      <td style="padding:.4rem .6rem;color:var(--ink-mute);font-size:.7rem;">${u.email}</td>
-      <td style="padding:.4rem .6rem;text-align:center;font-weight:700;color:var(--green);">${mastered}</td>
-      <td style="padding:.4rem .6rem;text-align:center;">
-        <div style="background:var(--paper-3);border-radius:4px;height:8px;width:52px;overflow:hidden;display:inline-block;vertical-align:middle;">
-          <div style="background:var(--hero-green);height:100%;width:${pct}%;"></div>
-        </div>
-        <span style="margin-left:.3rem;color:var(--ink-mute);">${pct}%</span>
-      </td>
-      <td style="padding:.4rem .6rem;text-align:center;color:var(--ink-mute);">${timeStr}</td>
-      <td style="padding:.4rem .6rem;text-align:center;color:var(--ink-mute);">${loginCount}</td>
-      <td style="padding:.4rem .6rem;color:var(--ink-mute);">${lastSeen}</td>
-      <td style="padding:.4rem .6rem;text-align:center;">${statusBadge}</td>
-      <td style="padding:.4rem .6rem;text-align:center;">
-        <button onclick="_dashEditUser('${u.id}')" style="font-size:.68rem;padding:.18rem .5rem;background:var(--paper-3);border:1px solid var(--paper-3);border-radius:4px;cursor:pointer;color:var(--blue);font-family:var(--font-ui);">编辑</button>
-        ${_banBtn(u.id, u.banned)}
-      </td>
-    </tr>`;
+  users.sort(function(a, b) {
+    var ap = a.nicknamePending ? 1 : 0, bp = b.nicknamePending ? 1 : 0;
+    if (bp !== ap) return bp - ap;
+    var am = Object.values(a.progress || {}).filter(function(p) { return p.clozeOk; }).length;
+    var bm = Object.values(b.progress || {}).filter(function(p) { return p.clozeOk; }).length;
+    return bm - am;
   });
 
-  html += '</tbody></table></div>';
-  container.innerHTML = html;
+  content.innerHTML = users.map(_dashCard).join('');
 }
 
-function _banBtn(uid, banned) {
-  const bg  = banned ? 'rgba(74,154,32,.15)'  : 'rgba(192,57,43,.1)';
-  const bdr = banned ? 'rgba(74,154,32,.3)'   : 'rgba(192,57,43,.25)';
-  const col = banned ? 'var(--green)'          : 'var(--red)';
-  const lbl = banned ? '解禁'                  : '停用';
-  const fn  = banned ? '_dashUnbanUser'        : '_dashBanUser';
-  return '<button onclick="' + fn + '(\'' + uid + '\')" style="font-size:.68rem;padding:.18rem .5rem;background:' + bg + ';border:1px solid ' + bdr + ';border-radius:4px;cursor:pointer;color:' + col + ';font-family:var(--font-ui);margin-left:.2rem;">' + lbl + '</button>';
-}
+function _dashCard(u) {
+  var uid = u._uid;
+  var isTeacher = u.userType === '华文教师' || u.userType === '其他科目教师';
+  var mastered = Object.values(u.progress || {}).filter(function(p) { return p.clozeOk; }).length;
+  var totalWords = 1068;
+  var pct = Math.round(mastered / totalWords * 100);
+  var hasPending = !!(u.nicknamePending && u.nicknamePending.trim());
+  var isDisabled = u.status === 'disabled';
+  var lastSeenDate = u.lastSeen && u.lastSeen.toDate ? u.lastSeen.toDate() : null;
+  var daysSince = lastSeenDate ? Math.floor((Date.now() - lastSeenDate.getTime()) / 86400000) : 999;
+  var statusCls = isDisabled ? 'dss-gone' : daysSince <= 2 ? 'dss-active' : daysSince <= 7 ? 'dss-low' : 'dss-gone';
+  var statusLabel = isDisabled ? '已离校' : daysSince <= 2 ? '活跃' : daysSince <= 7 ? '低频' : '沉睡';
+  var avatars = ['🦁','🐯','🐼','🦊','🐻','🐨','🦅','🐬'];
+  var avatar = isTeacher ? '👩‍🏫' : avatars[parseInt(uid.slice(-2), 16) % 8];
+  var curYear = new Date().getFullYear().toString();
+  var curClass = ((u.classHistory || {})[curYear]) || '';
+  var nickDisplay = u.nickname ? (u.nicknameApproved ? u.nickname : u.nickname + ' ⏳') : '（未设昵称）';
+  var lastSeenStr = lastSeenDate ? lastSeenDate.toLocaleDateString('zh-SG') : '—';
 
-// ── DASHBOARD USER MANAGEMENT ───────────────────────────────
-let _dashUsers = []; // cached from last load
-
-async function _dashBanUser(uid) {
-  if (!confirm('确认停用此账号？该用户将无法进入应用。')) return;
-  try {
-    const { doc, updateDoc } = window._fbFns;
-    await updateDoc(doc(window._fbDb, 'users', uid), { banned: true });
-    showToast('✅ 账号已停用');
-    showDashboard(); // refresh
-  } catch(e) { showToast('操作失败：' + e.message); }
-}
-
-async function _dashUnbanUser(uid) {
-  if (!confirm('确认解除停用？该用户将可重新登录。')) return;
-  try {
-    const { doc, updateDoc } = window._fbFns;
-    await updateDoc(doc(window._fbDb, 'users', uid), { banned: false });
-    showToast('✅ 账号已解禁');
-    showDashboard();
-  } catch(e) { showToast('操作失败：' + e.message); }
-}
-
-async function _dashDeleteUser(uid) {
-  if (!confirm('⚠️ 永久删除此账号及所有学习数据？此操作不可撤销。')) return;
-  if (!confirm('再次确认：删除后该用户所有进度将丢失。')) return;
-  try {
-    const { doc, deleteDoc } = window._fbFns;
-    await deleteDoc(doc(window._fbDb, 'users', uid));
-    await deleteDoc(doc(window._fbDb, 'scores', uid));
-    await deleteDoc(doc(window._fbDb, 'avatars', uid));
-    showToast('✅ 账号已删除');
-    showDashboard();
-  } catch(e) { showToast('删除失败：' + e.message); }
-}
-
-function _dashEditUser(uid) {
-  // Find user in cached dashboard data via Firestore re-fetch
-  const { doc, getDoc } = window._fbFns;
-  getDoc(doc(window._fbDb, 'users', uid)).then(snap => {
-    if (!snap.exists()) { showToast('找不到此用户'); return; }
-    const u = snap.data();
-    _showEditModal(uid, u);
-  }).catch(e => showToast('加载失败：' + e.message));
-}
-
-function _showEditModal(uid, u) {
-  const existing = document.getElementById('_dash-edit-modal');
-  if (existing) existing.remove();
-
-  const modal = document.createElement('div');
-  modal.id = '_dash-edit-modal';
-  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
-  modal.innerHTML = `
-    <div style="background:white;border-radius:12px;padding:1.4rem;max-width:400px;width:100%;font-family:var(--font-ui);box-shadow:0 8px 32px rgba(0,0,0,.25);">
-      <div style="font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:1rem;">✏️ 编辑用户：<span style="color:var(--blue);font-size:.85rem;">${u.email}</span></div>
-      <label style="font-size:.75rem;color:var(--ink-mute);display:block;margin-bottom:.25rem;">昵称</label>
-      <input id="_edit-nickname" value="${u.nickname || ''}" maxlength="8" style="width:100%;padding:.5rem .7rem;border:1px solid var(--paper-3);border-radius:6px;font-size:.88rem;font-family:var(--font-ui);box-sizing:border-box;margin-bottom:.8rem;">
-      <label style="font-size:.75rem;color:var(--ink-mute);display:block;margin-bottom:.25rem;">账号类型</label>
-      <select id="_edit-usertype" style="width:100%;padding:.5rem .7rem;border:1px solid var(--paper-3);border-radius:6px;font-size:.88rem;font-family:var(--font-ui);box-sizing:border-box;margin-bottom:.8rem;">
-        <option value="百德中学学生" ${u.userType==='百德中学学生'?'selected':''}>百德中学学生</option>
-        <option value="其他学校学生" ${u.userType==='其他学校学生'?'selected':''}>其他学校学生</option>
-        <option value="华文教师" ${u.userType==='华文教师'?'selected':''}>华文教师</option>
-        <option value="其他科目教师" ${u.userType==='其他科目教师'?'selected':''}>其他科目教师</option>
-        <option value="访客" ${u.userType==='访客'?'selected':''}>访客</option>
-      </select>
-      <label style="font-size:.75rem;color:var(--ink-mute);display:block;margin-bottom:.25rem;">账号状态</label>
-      <div style="display:flex;gap:.5rem;margin-bottom:1rem;">
-        <label style="display:flex;align-items:center;gap:.3rem;font-size:.82rem;cursor:pointer;">
-          <input type="radio" name="_edit-status" value="active" ${!u.banned?'checked':''}> 正常
-        </label>
-        <label style="display:flex;align-items:center;gap:.3rem;font-size:.82rem;cursor:pointer;">
-          <input type="radio" name="_edit-status" value="banned" ${u.banned?'checked':''}> 已停用
-        </label>
-        <label style="display:flex;align-items:center;gap:.3rem;font-size:.82rem;cursor:pointer;">
-          <input type="radio" name="_edit-status" value="approved" ${u.accountApproved&&!u.banned?'checked':''}> 已审核
-        </label>
-      </div>
-      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
-        <button onclick="_saveEditUser('${uid}')" style="flex:1;padding:.55rem;background:var(--blue);color:white;border:none;border-radius:6px;font-size:.85rem;cursor:pointer;font-family:var(--font-ui);">保存</button>
-        <button onclick="document.getElementById('_dash-edit-modal').remove()" style="flex:1;padding:.55rem;background:var(--paper-2);color:var(--ink);border:1px solid var(--paper-3);border-radius:6px;font-size:.85rem;cursor:pointer;font-family:var(--font-ui);">取消</button>
-        <button onclick="_dashDeleteUser('${uid}')" style="width:100%;padding:.55rem;background:rgba(192,57,43,.1);color:var(--red);border:1px solid rgba(192,57,43,.25);border-radius:6px;font-size:.82rem;cursor:pointer;font-family:var(--font-ui);margin-top:.2rem;">🗑 永久删除账号</button>
-      </div>
-    </div>`;
-  document.body.appendChild(modal);
-  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
-}
-
-async function _saveEditUser(uid) {
-  const nickname = document.getElementById('_edit-nickname')?.value.trim() || '';
-  const userType = document.getElementById('_edit-usertype')?.value || '';
-  const statusVal = document.querySelector('input[name="_edit-status"]:checked')?.value || 'active';
-  const banned = statusVal === 'banned';
-  const accountApproved = statusVal === 'approved' || statusVal === 'active';
-  try {
-    const { doc, updateDoc } = window._fbFns;
-    await updateDoc(doc(window._fbDb, 'users', uid), { nickname, userType, banned, accountApproved });
-    document.getElementById('_dash-edit-modal')?.remove();
-    showToast('✅ 用户信息已更新');
-    showDashboard();
-  } catch(e) { showToast('保存失败：' + e.message); }
-}
-
-// ── WORD ERROR ANALYSIS TAB ──────────────────────────────────
-async function renderWordErrors(container) {
-  container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--ink-mute);font-family:var(--font-ui);font-size:.85rem;">加载中…</div>';
-  try {
-    const { collection, getDocs } = window._fbFns;
-    const snap = await getDocs(collection(window._fbDb, 'wordErrors'));
-    const errors = [];
-    snap.forEach(d => errors.push(d.data()));
-    errors.sort((a, b) => (b.count || 0) - (a.count || 0));
-    const top = errors.slice(0, 30);
-    if (!top.length) {
-      container.innerHTML = '<div style="padding:1.5rem;text-align:center;color:var(--ink-mute);font-family:var(--font-ui);">暂无错误数据 — 学生练习后即可显示</div>';
-      return;
-    }
-    const maxCount = top[0].count || 1;
-    let html = '<div style="font-size:.7rem;font-family:var(--font-ui);color:var(--ink-mute);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.8rem;">常见错误词语 Top ' + top.length + '（全班累计答错次数）</div>';
-    html += '<div style="display:flex;flex-direction:column;gap:.35rem;">';
-    top.forEach((e, i) => {
-      const pct = Math.round((e.count / maxCount) * 100);
-      const word = e.word || '—';
-      const unit = getUnitContext(word);
-      const barColor = pct >= 70 ? 'var(--red)' : pct >= 40 ? 'var(--amber)' : 'var(--hero-green)';
-      html += `<div style="display:flex;align-items:center;gap:.6rem;">
-        <div style="width:1.2rem;text-align:right;font-size:.7rem;color:var(--ink-mute);flex-shrink:0;">${i+1}</div>
-        <div style="font-family:var(--font-body);font-size:.95rem;width:3.2rem;flex-shrink:0;">${word}</div>
-        <div style="flex:1;background:var(--paper-3);border-radius:3px;height:10px;overflow:hidden;">
-          <div style="background:${barColor};height:100%;width:${pct}%;border-radius:3px;transition:width .3s;"></div>
-        </div>
-        <div style="font-size:.75rem;font-weight:700;color:var(--ink);width:2.2rem;text-align:right;flex-shrink:0;">${e.count}</div>
-        <div style="font-size:.65rem;color:var(--ink-mute);width:4rem;flex-shrink:0;text-align:right;">${unit}</div>
-      </div>`;
-    });
-    html += '</div>';
-    container.innerHTML = html;
-  } catch(e) {
-    container.innerHTML = '<div style="padding:1.5rem;color:var(--red);font-family:var(--font-ui);font-size:.85rem;">加载失败：' + e.message + '</div>';
+  var classHistoryHtml = '';
+  var ch = u.classHistory || {};
+  var chKeys = Object.keys(ch).sort();
+  if (chKeys.length) {
+    classHistoryHtml = '<div style="background:var(--paper);border-radius:var(--r-sm);padding:.5rem .65rem;border:1px solid var(--paper-3);font-size:.7rem;margin-top:.45rem;">' +
+      '<div style="font-size:.6rem;color:var(--ink-mute);font-weight:600;margin-bottom:.3rem;">班级记录</div>' +
+      chKeys.map(function(yr) { return '<div style="display:flex;gap:.5rem;"><span style="color:var(--ink-mute);width:36px;">' + yr + '</span><span style="color:var(--navy);font-weight:600;">' + ch[yr] + '</span></div>'; }).join('') +
+      '</div>';
   }
+
+  var pendingHtml = '';
+  if (hasPending) {
+    var fromNick = u.nickname ? ('<span style="font-size:.72rem;color:var(--ink-mute);text-decoration:line-through;">' + u.nickname + '</span><span style="color:var(--ink-mute);margin:0 .3rem;">→</span>') : '';
+    pendingHtml = '<div style="background:#fff8f8;border:1.5px solid #f0c0bc;border-radius:var(--r-sm);padding:.6rem .7rem;margin-bottom:.55rem;" id="dsnick-pending-' + uid + '">' +
+      '<div style="font-size:.6rem;color:var(--red);font-weight:700;margin-bottom:.3rem;">⏳ ' + (u.nickname ? '修改昵称申请' : '初次昵称申请') + '</div>' +
+      '<div style="display:flex;align-items:center;margin-bottom:.45rem;">' + fromNick +
+      '<span style="font-size:.82rem;font-weight:700;color:var(--navy);font-family:var(--font-body);">' + u.nicknamePending + '</span></div>' +
+      '<div style="display:flex;gap:.45rem;">' +
+      '<button class="ds-action-btn" style="background:var(--hero-green);color:white;border-color:var(--hero-green);" onclick="dashApproveNick(\'' + uid + '\')">✓ 批准</button>' +
+      '<button class="ds-action-btn danger" onclick="dashRejectNick(\'' + uid + '\')">✕ 拒绝</button>' +
+      '</div></div>';
+  } else {
+    pendingHtml = '<div style="display:flex;align-items:center;gap:.4rem;font-size:.7rem;color:var(--hero-green);font-weight:600;padding:.5rem .65rem;background:#e8f7ec;border-radius:var(--r-sm);">✓ 无待审核申请</div>';
+  }
+
+  var pwStatusBg = u.defaultPasswordChanged ? 'background:#e8f7ec;color:var(--hero-green);' : 'background:#fdf6d8;color:#a07000;';
+  var pwStatusLabel = u.defaultPasswordChanged ? '已更改 ✓' : '尚未更改';
+  var disableLabel = isDisabled ? '✅ 重新启用账号' : '⏸ 停用账号（已离校）';
+
+  var progPane = !isTeacher ? (
+    '<div class="ds-ipane active" id="dsip-' + uid + '-prog">' +
+    '<div class="ds-pgrid">' +
+    '<div class="ds-pcell"><div class="ds-pcell-label">已掌握词数</div><div class="ds-pcell-val green">' + mastered + '</div></div>' +
+    '<div class="ds-pcell"><div class="ds-pcell-label">进度</div><div class="ds-pcell-val">' + pct + '%</div></div>' +
+    '<div class="ds-pcell"><div class="ds-pcell-label">最近活跃</div><div class="ds-pcell-val" style="font-size:.68rem">' + lastSeenStr + '</div></div>' +
+    '<div class="ds-pcell"><div class="ds-pcell-label">闪卡次数</div><div class="ds-pcell-val">' + (u.flashcardSessions || 0) + '</div></div>' +
+    '<div class="ds-pcell"><div class="ds-pcell-label">填空次数</div><div class="ds-pcell-val">' + (u.clozeSessions || 0) + '</div></div>' +
+    '<div class="ds-pcell"><div class="ds-pcell-label">总学习次数</div><div class="ds-pcell-val">' + ((u.flashcardSessions || 0) + (u.clozeSessions || 0)) + '</div></div>' +
+    '</div>' + classHistoryHtml + '</div>'
+  ) : '';
+
+  var nickPane = !isTeacher ? (
+    '<div class="ds-ipane" id="dsip-' + uid + '-nick">' +
+    '<div style="display:flex;align-items:center;gap:.5rem;padding:.55rem .65rem;background:var(--paper);border-radius:var(--r-sm);border:1px solid var(--paper-3);margin-bottom:.55rem;">' +
+    '<div><div style="font-size:.6rem;color:var(--ink-mute);">当前昵称（已批准）</div>' +
+    '<div style="font-size:.88rem;font-weight:700;color:var(--navy);font-family:var(--font-body);">' + (u.nicknameApproved && u.nickname ? u.nickname : '（未设置）') + '</div></div></div>' +
+    pendingHtml + '</div>'
+  ) : '';
+
+  var pwPane = (
+    '<div class="ds-ipane' + (isTeacher ? ' active' : '') + '" id="dsip-' + uid + '-pw">' +
+    '<div style="display:flex;align-items:center;gap:.5rem;padding:.5rem .65rem;background:var(--paper);border-radius:var(--r-sm);border:1px solid var(--paper-3);margin-bottom:.6rem;">' +
+    '<span style="font-size:.6rem;color:var(--ink-mute);flex:1;">默认密码是否已更改</span>' +
+    '<span style="font-size:.6rem;font-weight:700;padding:.15rem .45rem;border-radius:8px;' + pwStatusBg + '">' + pwStatusLabel + '</span></div>' +
+    '<button class="ds-action-btn reset" style="width:100%;margin-bottom:.55rem;" onclick="dashResetPw(\'' + uid + '\')">🔑 重置为临时密码</button>' +
+    '<div class="ds-pw-reveal" id="dspwr-' + uid + '">' +
+    '<div style="font-size:.6rem;color:var(--blue);margin-bottom:.2rem;font-weight:600;">临时密码（仅显示一次，请立即告知）</div>' +
+    '<div class="ds-pw-code" id="dspwc-' + uid + '"></div>' +
+    '<div style="font-size:.6rem;color:var(--ink-mute);line-height:1.5;">使用此密码登录后，系统将强制要求更改密码。</div></div>' +
+    '<button class="ds-action-btn danger" style="width:100%;margin-top:.3rem;" onclick="dashToggleDisable(\'' + uid + '\',\'' + (u.status || 'active') + '\')">' + disableLabel + '</button>' +
+    '</div>'
+  );
+
+  var itabs = '';
+  if (!isTeacher) {
+    itabs += '<button class="ds-itab active" onclick="dsSwitchTab(\'' + uid + '\',\'prog\')" id="dsitab-' + uid + '-prog">进度</button>';
+    itabs += '<button class="ds-itab" onclick="dsSwitchTab(\'' + uid + '\',\'nick\')" id="dsitab-' + uid + '-nick">昵称' + (hasPending ? '<span style="display:inline-block;width:6px;height:6px;background:var(--red);border-radius:50%;margin-left:3px;vertical-align:middle;margin-bottom:1px;"></span>' : '') + '</button>';
+  }
+  itabs += '<button class="ds-itab' + (isTeacher ? ' active' : '') + '" onclick="dsSwitchTab(\'' + uid + '\',\'pw\')" id="dsitab-' + uid + '-pw">密码</button>';
+
+  return '<div class="dscard' + (hasPending ? ' has-pending' : '') + '" id="dsc-' + uid + '">' +
+    '<div class="dscard-header" onclick="toggleDscard(\'' + uid + '\')">' +
+    '<div class="dscard-av">' + avatar + (hasPending ? '<div class="dscard-pending-dot"></div>' : '') + '</div>' +
+    '<div class="dscard-info">' +
+    '<div class="dscard-id">' + (u.userId || uid) + '</div>' +
+    '<div class="dscard-nick">昵称：' + nickDisplay + (curClass ? ' · ' + curClass : '') + '</div>' +
+    (!isTeacher ? '<div class="dscard-bar-track"><div class="dscard-bar-fill" style="width:' + pct + '%"></div></div>' : '') +
+    '</div>' +
+    '<div class="dscard-right">' +
+    '<span class="dscard-status ' + statusCls + '">' + (isTeacher ? '教师' : statusLabel) + '</span>' +
+    (!isTeacher ? '<span class="dscard-pct">' + mastered + '词 · ' + pct + '%</span>' : '') +
+    '</div>' +
+    '<span class="dscard-chev" id="dschev-' + uid + '">▼</span>' +
+    '</div>' +
+    '<div class="dscard-body" id="dsbody-' + uid + '">' +
+    '<div class="ds-itabs">' + itabs + '</div>' +
+    progPane + nickPane + pwPane +
+    '</div></div>';
 }
 
-// ── EXPORT TAB ────────────────────────────────────────────────
-function renderExportTab(users, container) {
-  const NON_TEACHER = [...STUDENT_TYPES, '其他机构', '公众人士'];
-  const students = users.filter(u => NON_TEACHER.includes(u.userType) || !TEACHER_TYPES.includes(u.userType));
-  const totalWords = Object.values(VOCAB).flatMap(u => Object.values(u).flat()).length;
-
-  container.innerHTML = `<div style="font-family:var(--font-ui);font-size:.85rem;">
-    <div style="background:var(--paper-2);border-radius:var(--r-sm);padding:.8rem 1rem;margin-bottom:1rem;color:var(--ink-mute);font-size:.78rem;line-height:1.5;">
-      将当前学生进度快照导出到 Google Sheets。导出内容不含班级或年级资料。每次导出会覆盖上次的快照。
-    </div>
-    <div style="margin-bottom:1rem;">
-      <div style="font-size:.7rem;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem;">即将导出 ${students.length} 名学生的以下数据：</div>
-      <ul style="font-size:.82rem;color:var(--ink);padding-left:1.2rem;line-height:1.8;margin:0;">
-        <li>昵称（如已批准）</li>
-        <li>已掌握词语数 / 总词数</li>
-        <li>累计学习时长（分钟）</li>
-        <li>登录次数</li>
-        <li>XP 总分</li>
-        <li>最近活跃日期</li>
-        <li>快照时间</li>
-      </ul>
-    </div>
-    <button onclick="_doExportSnapshot()" style="background:var(--hero-green);color:white;border:none;border-radius:var(--r-sm);padding:.65rem 1.4rem;font-size:.88rem;font-family:var(--font-ui);font-weight:700;cursor:pointer;width:100%;">📥 下载进度快照 CSV</button>
-    <div id="export-status" style="margin-top:.8rem;font-size:.8rem;color:var(--ink-mute);text-align:center;min-height:1.2rem;"></div>
-  </div>`;
+function toggleDscard(uid) {
+  var body = document.getElementById('dsbody-' + uid);
+  var chev = document.getElementById('dschev-' + uid);
+  var isOpen = body.classList.contains('open');
+  document.querySelectorAll('.dscard-body').forEach(function(b) { b.classList.remove('open'); });
+  document.querySelectorAll('.dscard-chev').forEach(function(c) { c.classList.remove('open'); });
+  if (!isOpen) { body.classList.add('open'); chev.classList.add('open'); }
 }
+
+function dsSwitchTab(uid, tab) {
+  var body = document.getElementById('dsbody-' + uid);
+  body.querySelectorAll('.ds-itab').forEach(function(t) { t.classList.remove('active'); });
+  body.querySelectorAll('.ds-ipane').forEach(function(p) { p.classList.remove('active'); });
+  var t = document.getElementById('dsitab-' + uid + '-' + tab);
+  var p = document.getElementById('dsip-' + uid + '-' + tab);
+  if (t) t.classList.add('active');
+  if (p) p.classList.add('active');
+}
+
+async function dashApproveNick(uid) {
+  var u = _dashAllUsers.find(function(u) { return u._uid === uid; });
+  if (!u) return;
+  var newNick = u.nicknamePending;
+  try {
+    var fns = window._fbFns;
+    await fns.updateDoc(fns.doc(window._fbDb, 'users', uid), {
+      nickname: newNick, nicknameApproved: true,
+      nicknameRejected: false, nicknamePending: '', nicknameRejectionReason: ''
+    });
+    try { await fns.updateDoc(fns.doc(window._fbDb, 'scores', uid), { nickname: newNick, nicknameApproved: true }); } catch(_) {}
+    showToast('✅ 昵称「' + newNick + '」已批准');
+    _loadDashboardUsers();
+  } catch(e) { showToast('操作失败：' + e.message); }
+}
+
+async function dashRejectNick(uid) {
+  try {
+    var fns = window._fbFns;
+    await fns.updateDoc(fns.doc(window._fbDb, 'users', uid), {
+      nicknamePending: '', nicknameRejected: true, nicknameRejectionReason: '内容不符合规范'
+    });
+    showToast('❌ 昵称申请已拒绝');
+    _loadDashboardUsers();
+  } catch(e) { showToast('操作失败：' + e.message); }
+}
+
+async function dashResetPw(uid) {
+  var adjs = ['Swift','Bright','Calm','Bold','Clear','Sharp','Kind','Wise'];
+  var nouns = ['Crane','Tiger','Jade','River','Stone','Cloud','Star','Moon'];
+  var num = Math.floor(10 + Math.random() * 90);
+  var tempPw = adjs[Math.floor(Math.random() * adjs.length)] + num + nouns[Math.floor(Math.random() * nouns.length)] + '!';
+  var reveal = document.getElementById('dspwr-' + uid);
+  var codeEl = document.getElementById('dspwc-' + uid);
+  if (codeEl) codeEl.textContent = tempPw;
+  if (reveal) reveal.classList.add('show');
+  try {
+    var fns = window._fbFns;
+    await fns.updateDoc(fns.doc(window._fbDb, 'users', uid), { defaultPasswordChanged: false });
+    showToast('🔑 临时密码已生成，请告知学生');
+  } catch(e) { showToast('更新失败：' + e.message); }
+}
+
+async function dashToggleDisable(uid, currentStatus) {
+  var action = currentStatus === 'disabled' ? '重新启用' : '停用';
+  if (!confirm('确认' + action + '此账号？')) return;
+  var newStatus = currentStatus === 'disabled' ? 'active' : 'disabled';
+  try {
+    var fns = window._fbFns;
+    await fns.updateDoc(fns.doc(window._fbDb, 'users', uid), { status: newStatus });
+    showToast('✅ 账号已' + action);
+    _loadDashboardUsers();
+  } catch(e) { showToast('操作失败：' + e.message); }
+}
+
+async function approveNickname(uid) { await dashApproveNick(uid); }
+async function rejectNickname(uid) { await dashRejectNick(uid); }
 
 async function _doExportSnapshot() {
-  const btn = document.querySelector('[onclick="_doExportSnapshot()"]');
-  const status = document.getElementById('export-status');
-  if (btn) { btn.disabled = true; btn.textContent = '导出中…'; }
-  if (status) status.textContent = '';
-
   try {
-    const { collection, getDocs } = window._fbFns;
-    const [userSnap, scoreSnap] = await Promise.all([
-      getDocs(collection(window._fbDb, 'users')),
-      getDocs(collection(window._fbDb, 'scores'))
+    var fns = window._fbFns;
+    var snaps = await Promise.all([
+      fns.getDocs(fns.collection(window._fbDb, 'users')),
+      fns.getDocs(fns.collection(window._fbDb, 'scores'))
     ]);
-
-    const scoreMap = {};
-    scoreSnap.forEach(d => { scoreMap[d.id] = d.data(); });
-
-    const NON_TEACHER = [...STUDENT_TYPES, '其他机构', '公众人士'];
-    const totalWords = Object.values(VOCAB).flatMap(u => Object.values(u).flat()).length;
-    const rows = [];
-    userSnap.forEach(d => {
-      const u = d.data();
-      if (!NON_TEACHER.includes(u.userType) && TEACHER_TYPES.includes(u.userType)) return;
-      const mastered = Object.values(u.progress || {}).filter(p => p.clozeOk).length;
-      const mins = Math.round((u.totalSessionSeconds || 0) / 60);
-      const sc = scoreMap[d.id] || {};
-      const lastSeen = u.lastSeen?.toDate ? u.lastSeen.toDate().toLocaleDateString('zh-SG') : '—';
-      const nick = u.nicknameApproved ? (u.nickname || '') : '';
-      rows.push({
-        nickname: nick,
-        mastered,
-        totalWords,
-        sessionMins: mins,
-        loginCount: u.loginCount || 0,
-        totalScore: sc.totalScore || 0,
-        lastSeen,
-      });
+    var scoreMap = {};
+    snaps[1].forEach(function(d) { scoreMap[d.id] = d.data(); });
+    var totalWords = 1068;
+    var curYear = new Date().getFullYear().toString();
+    var rows = [];
+    snaps[0].forEach(function(d) {
+      var u = d.data();
+      if (u.userType !== '百德中学学生') return;
+      var mastered = Object.values(u.progress || {}).filter(function(p) { return p.clozeOk; }).length;
+      var pct = Math.round(mastered / totalWords * 100);
+      var lastSeen = u.lastSeen && u.lastSeen.toDate ? u.lastSeen.toDate().toLocaleDateString('zh-SG') : '—';
+      var nick = u.nicknameApproved ? (u.nickname || '') : '';
+      var curClass = ((u.classHistory || {})[curYear]) || '';
+      rows.push([u.userId || d.id, curClass, nick, mastered, pct + '%',
+        u.flashcardSessions || 0, u.clozeSessions || 0,
+        (u.flashcardSessions || 0) + (u.clozeSessions || 0), lastSeen, u.status || 'active']);
     });
-
-    // Build CSV
-    const headers = ['昵称','已掌握','词语总数','学习时长(分钟)','登录次数','总积分','最近活跃'];
-    const csvRows = [headers.join(',')];
-    rows.forEach(r => {
-      csvRows.push([
-        r.nickname, r.mastered, r.totalWords,
-        r.sessionMins, r.loginCount, r.totalScore, r.lastSeen
-      ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(','));
-    });
-    const csv = '\uFEFF' + csvRows.join('\n'); // BOM for Excel UTF-8
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    var headers = ['学号','班级','昵称','已掌握词数','进度%','闪卡次数','填空次数','总学习次数','最近活跃','状态'];
+    var csvRows = [headers.join(',')].concat(rows.map(function(r) {
+      return r.map(function(v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(',');
+    }));
+    var csv = '\uFEFF' + csvRows.join('\n');
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
     a.href = url;
-    a.download = '词王淬炼坊_进度快照_' + new Date().toLocaleDateString('zh-SG').replace(/\//g,'-') + '.csv';
+    a.download = '词王淬炼坊_进度快照_' + new Date().toLocaleDateString('zh-SG').replace(/\//g, '-') + '.csv';
     a.click();
     URL.revokeObjectURL(url);
-    if (status) status.textContent = '✅ 已下载 ' + rows.length + ' 名学生的进度快照！';
-  } catch(e) {
-    if (status) status.textContent = '❌ 导出失败：' + e.message;
-  } finally {
-    if (btn) { btn.disabled = false; btn.textContent = '📥 下载进度快照 CSV'; }
-  }
+    showToast('✅ 已导出 ' + rows.length + ' 名学生的数据');
+  } catch(e) { showToast('❌ 导出失败：' + e.message); }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const overlay = document.getElementById('dashboard-modal');
-  if (overlay) overlay.addEventListener('click', e => { if (e.target === overlay) closeDashboard(); });
+document.addEventListener('DOMContentLoaded', function() {
+  var overlay = document.getElementById('dashboard-modal');
+  if (overlay) overlay.addEventListener('click', function(e) { if (e.target === overlay) closeDashboard(); });
 });
+
 
 
 // ══════════════════════════════════════════════════════════════
@@ -10567,66 +10436,6 @@ function _addToUserScore(points, masteryBonus) {
   _scoreFlushTimer = setTimeout(_flushScore, 3000);
 }
 
-// ── Forced password change on first login ────────────────────
-function _showForcedPwChange(user) {
-  const overlay = document.createElement('div');
-  overlay.id = 'force-pw-modal';
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:1rem;';
-  overlay.innerHTML = `
-    <div style="background:white;border-radius:14px;padding:1.5rem 1.4rem;width:100%;max-width:360px;box-shadow:0 8px 40px rgba(0,0,0,.25);">
-      <div style="font-size:1.1rem;font-family:var(--font-body);color:var(--navy);font-weight:700;margin-bottom:.3rem;">🔑 请修改默认密码</div>
-      <div style="font-size:.78rem;font-family:var(--font-ui);color:var(--ink-mute);margin-bottom:1rem;line-height:1.6;">首次登录须更改密码。新密码至少6位，请妥善保管。</div>
-      <label style="font-size:.72rem;font-family:var(--font-ui);color:var(--ink-soft);display:block;margin-bottom:.25rem;">新密码</label>
-      <input id="force-pw-new" type="password" placeholder="输入新密码（至少6位）"
-        style="width:100%;padding:.55rem .75rem;border:1.5px solid var(--paper-3);border-radius:8px;font-size:.88rem;font-family:var(--font-ui);margin-bottom:.5rem;outline:none;box-sizing:border-box;">
-      <label style="font-size:.72rem;font-family:var(--font-ui);color:var(--ink-soft);display:block;margin-bottom:.25rem;">确认新密码</label>
-      <input id="force-pw-confirm" type="password" placeholder="再次输入新密码"
-        style="width:100%;padding:.55rem .75rem;border:1.5px solid var(--paper-3);border-radius:8px;font-size:.88rem;font-family:var(--font-ui);margin-bottom:.6rem;outline:none;box-sizing:border-box;">
-      <div id="force-pw-error" style="font-size:.72rem;color:#c0392b;min-height:1.2em;margin-bottom:.5rem;font-family:var(--font-ui);"></div>
-      <button onclick="_submitForcedPwChange('${user.uid}')"
-        style="width:100%;padding:.65rem;background:var(--navy);color:white;border:none;border-radius:8px;font-size:.88rem;font-family:var(--font-body);font-weight:600;cursor:pointer;">
-        确认修改 →
-      </button>
-    </div>`;
-  document.body.appendChild(overlay);
-}
-
-async function _submitForcedPwChange(uid) {
-  const newPw  = (document.getElementById('force-pw-new')?.value || '').trim();
-  const confPw = (document.getElementById('force-pw-confirm')?.value || '').trim();
-  const errEl  = document.getElementById('force-pw-error');
-  if (!newPw || newPw.length < 6) { errEl.textContent = '密码至少需要6位'; return; }
-  if (newPw !== confPw) { errEl.textContent = '两次输入的密码不一致'; return; }
-  errEl.textContent = '';
-  try {
-    const { updatePassword, doc, updateDoc } = window._fbFns;
-    await updatePassword(window._fbAuth.currentUser, newPw);
-    await updateDoc(doc(window._fbDb, 'users', uid), { defaultPasswordChanged: true });
-    document.getElementById('force-pw-modal')?.remove();
-    showToast('✅ 密码已更新，请牢记新密码！');
-  } catch(e) {
-    const msgs = {
-      'auth/requires-recent-login': '请重新登录后再修改密码。',
-      'auth/weak-password': '密码太简单，请设置至少6位。',
-    };
-    errEl.textContent = msgs[e.code] || '修改失败：' + e.message;
-  }
-}
-
-// Reset quarterScore if we're in a new quarter vs what's stored
-function _calcQuarterScore(existing, pts, mpts) {
-  const now = new Date();
-  const curYear = now.getFullYear();
-  const curQ = Math.floor(now.getMonth() / 3) + 1;
-  const storedYear = existing?.quarterYear;
-  const storedQ    = existing?.quarterNum;
-  // New quarter → reset to just this session's points
-  if (!storedYear || storedYear !== curYear || storedQ !== curQ) {
-    return pts + mpts;
-  }
-  return (existing?.quarterScore || 0) + pts + mpts;
-}
-
 async function _flushScore() {
   if (_pendingScoreDelta === 0 && _pendingMasteryDelta === 0) return;
   const user = window._fbAuth?.currentUser;
@@ -10654,9 +10463,6 @@ async function _flushScore() {
       nickname:     localStorage.getItem('cl_vocab_user_nickname') || '',
       nicknameApproved: localStorage.getItem('cl_vocab_nickname_approved') === '1',
       masteryAwarded: _masteryBonusAwarded,
-      quarterScore: _calcQuarterScore(existing, pts, mpts),
-      quarterYear: new Date().getFullYear(),
-      quarterNum: Math.floor(new Date().getMonth() / 3) + 1,
       updatedAt:    serverTimestamp()
     });
   } catch(e) { console.warn('Score flush failed:', e); }
@@ -10677,26 +10483,7 @@ function _showScoreToast(msg) {
 }
 
 // ── Leaderboard fetch & render ────────────────────────────────
-var _lbTab = 'quarter';
-
-// ── Quarter helpers ───────────────────────────────────────────
-function _currentQuarter() {
-  const now = new Date();
-  const m = now.getMonth(); // 0-indexed
-  const q = Math.floor(m / 3) + 1;
-  return { year: now.getFullYear(), q };
-}
-function _quarterLabel() {
-  const { year, q } = _currentQuarter();
-  const names = { 1:'1月—3月', 2:'4月—6月', 3:'7月—9月', 4:'10月—12月' };
-  return year + '年 · ' + names[q];
-}
-function _inCurrentQuarter(tsMs) {
-  if (!tsMs) return false;
-  const { year, q } = _currentQuarter();
-  const d = new Date(tsMs);
-  return d.getFullYear() === year && Math.floor(d.getMonth() / 3) + 1 === q;
-}
+var _lbTab = 'school';
 
 function showLeaderboard() {
   if (sessionStorage.getItem('cl_account_pending') === '1') {
@@ -10705,16 +10492,13 @@ function showLeaderboard() {
   }
   if (isGuestAccount(window._fbUser?.email)) return;
   showScreen('leaderboard-screen');
-  // Update quarter label in subtitle
-  const sub = document.querySelector('#leaderboard-screen .lb-subtitle');
-  if (sub) sub.textContent = '每次掌握词语即时更新';
   loadLeaderboard(_lbTab);
 }
 
 function switchLbTab(tab) {
   _lbTab = tab;
-  document.getElementById('lb-tab-quarter').className = 'lb-tab' + (tab === 'quarter' ? ' active' : '');
-  document.getElementById('lb-tab-alltime').className = 'lb-tab' + (tab === 'alltime' ? ' active' : '');
+  document.getElementById('lb-tab-school').className = 'lb-tab' + (tab === 'school' ? ' active' : '');
+  document.getElementById('lb-tab-global').className = 'lb-tab' + (tab === 'global' ? ' active' : '');
   loadLeaderboard(tab);
 }
 
@@ -10725,12 +10509,7 @@ async function loadLeaderboard(tab) {
   content.innerHTML = '<div class="lb-loading">加载中…</div>';
   if (myRankEl) myRankEl.textContent = '';
 
-  // Update tab subtitle
-  const quarterNote = document.getElementById('lb-quarter-note');
-  if (quarterNote) {
-    quarterNote.textContent = tab === 'quarter' ? _quarterLabel() : '自平台上线以来';
-  }
-
+  // Wait up to 5s for Firebase to be ready
   let _fbWait = 0;
   while ((!window._fbFns || !window._fbDb) && _fbWait < 5000) {
     await new Promise(r => setTimeout(r, 200));
@@ -10747,48 +10526,33 @@ async function loadLeaderboard(tab) {
     let entries = [];
     snap.forEach(d => entries.push(d.data()));
 
-    // Exclude teacher accounts from leaderboard
+    // Filter for leaderboard display
     entries = entries.filter(e => {
       if (!e.email) return false;
-      if (e.userType === '华文教师' || e.userType === '其他科目教师') return false;
+      if (tab === 'school') return e.userType === '百德中学学生';
+      // Global tab: include everyone (students, teachers, public)
       return true;
     });
 
-    // Score field: quarter vs alltime
-    if (tab === 'quarter') {
-      // Use quarterScore field if available, else fall back to totalScore for legacy
-      entries = entries.map(e => ({
-        ...e,
-        _displayScore: e.quarterScore || 0
-      }));
-    } else {
-      entries = entries.map(e => ({
-        ...e,
-        _displayScore: e.totalScore || 0
-      }));
-    }
-
-    // Sort by display score descending, hide zero-score entries on quarter tab
-    if (tab === 'quarter') {
-      entries = entries.filter(e => e._displayScore > 0);
-    }
-    entries.sort((a, b) => b._displayScore - a._displayScore);
+    // Sort by totalScore descending
+    entries.sort((a, b) => (b.totalScore || 0) - (a.totalScore || 0));
 
     const myEmail = getUserEmail();
     const myIdx   = entries.findIndex(e => e.email === myEmail);
 
+    // Rank-up SFX: fire if rank improved since last check
     if (myIdx !== -1) {
       const prevRank = window._sfxPrevRank;
       if (prevRank !== undefined && myIdx < prevRank) SFX.levelUp();
       window._sfxPrevRank = myIdx;
     }
 
-    renderLeaderboard(entries.slice(0, 10), myEmail, content, tab);
+    renderLeaderboard(entries.slice(0, 10), myEmail, content);
 
     if (myRankEl) {
       const hasEntry = entries.some(e => e.email === myEmail);
       if (!hasEntry) {
-        myRankEl.textContent = tab === 'quarter' ? '本季度还未得分，快去练习！💪' : '练习后即可上榜！加油💪';
+        myRankEl.textContent = '练习后即可上榜！加油💪';
       } else if (myIdx === -1 || myIdx >= 10) {
         myRankEl.textContent = myIdx === -1 ? '继续加油，冲击前10！🔥' : `你目前的排名：第 ${myIdx + 1} 名`;
       } else {
@@ -10802,12 +10566,12 @@ async function loadLeaderboard(tab) {
 
 function _displayName(entry) {
   if (entry.nicknameApproved && entry.nickname) return entry.nickname;
-  // Fallback: show masked userId (strip @bvss.vk, show first 4 chars + ***)
-  const local = (entry.email || '').replace('@bvss.vk','').split('@')[0];
-  return local.slice(0, 4) + '***';
+  // Mask email: show first 3 chars + ***
+  const local = (entry.email || '').split('@')[0];
+  return local.slice(0, 3) + '***';
 }
 
-function renderLeaderboard(top10, myEmail, container, tab) {
+function renderLeaderboard(top10, myEmail, container) {
   if (!top10.length) {
     container.innerHTML = '<div class="lb-empty">暂无数据，快来成为第一名！🚀</div>';
     return;
@@ -10831,7 +10595,7 @@ function renderLeaderboard(top10, myEmail, container, tab) {
           <span class="podium-medal">${medals[vi]}</span>
         </div>
         <div class="podium-name" style="${isMe ? 'color:#F5C800;' : ''}">${_displayName(entry)}</div>
-        <div class="podium-score">${(entry._displayScore||entry.totalScore||0).toLocaleString()} 分</div>
+        <div class="podium-score">${(entry.totalScore||0).toLocaleString()} 分</div>
         <div class="podium-block ${rankClass[vi]}">${vi === 1 ? '1' : vi === 0 ? '2' : '3'}</div>
       </div>`;
   });
@@ -10847,7 +10611,7 @@ function renderLeaderboard(top10, myEmail, container, tab) {
         <div class="lb-rank-num">${i + 1}</div>
         <div class="lb-row-name">${_displayName(e)}</div>
         <div style="display:flex;align-items:center;">
-          <div class="lb-row-score">${(e._displayScore||e.totalScore||0).toLocaleString()}</div>
+          <div class="lb-row-score">${(e.totalScore||0).toLocaleString()}</div>
           <div class="lb-row-mastery">分</div>
         </div>
       </div>`;
@@ -11071,21 +10835,36 @@ function toggleSfx() {
 
 <!-- TEACHER DASHBOARD MODAL -->
 <div class="modal-overlay" id="dashboard-modal" style="z-index:300;">
-  <div class="modal" style="max-width:540px;padding:0;overflow:hidden;max-height:90vh;display:flex;flex-direction:column;">
-    <div style="background:#1a2a5e;padding:1rem 1.2rem;display:flex;align-items:center;gap:.6rem;flex-shrink:0;">
-      <div style="font-size:1.05rem;color:white;font-family:var(--font-body);flex:1;">📋 教师管理面板</div>
-      <button onclick="closeDashboard()" style="background:rgba(255,255,255,.2);border:none;border-radius:50%;width:26px;height:26px;color:white;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+  <div class="modal" style="max-width:560px;padding:0;overflow:hidden;max-height:92vh;display:flex;flex-direction:column;border-radius:16px;">
+    <div style="background:var(--navy);padding:.9rem 1.2rem;display:flex;align-items:center;gap:.6rem;flex-shrink:0;">
+      <div style="font-size:.98rem;color:white;font-family:var(--font-body);flex:1;">📋 教师管理面板</div>
+      <button onclick="closeDashboard()" style="background:rgba(255,255,255,.2);border:none;border-radius:50%;width:28px;height:28px;color:white;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
     </div>
-    <!-- Tabs -->
-    <div style="display:flex;border-bottom:1.5px solid var(--paper-3);flex-shrink:0;">
-      <button id="dash-tab-nicknames" onclick="switchDashTab('nicknames')" style="flex:1;padding:.55rem .3rem;font-size:.75rem;font-family:var(--font-ui);font-weight:600;border:none;background:var(--hero-green);color:white;cursor:pointer;">昵称审核</button>
-      <button id="dash-tab-students" onclick="switchDashTab('students')" style="flex:1;padding:.55rem .3rem;font-size:.75rem;font-family:var(--font-ui);font-weight:600;border:none;background:var(--paper-2);color:var(--ink-mute);cursor:pointer;">学生进度</button>
-      <button id="dash-tab-errors" onclick="switchDashTab('errors')" style="flex:1;padding:.55rem .3rem;font-size:.75rem;font-family:var(--font-ui);font-weight:600;border:none;background:var(--paper-2);color:var(--ink-mute);cursor:pointer;">学习规律</button>
-      <button id="dash-tab-export" onclick="switchDashTab('export')" style="flex:1;padding:.55rem .3rem;font-size:.75rem;font-family:var(--font-ui);font-weight:600;border:none;background:var(--paper-2);color:var(--ink-mute);cursor:pointer;">导出</button>
+    <div style="padding:.85rem 1.1rem .6rem;background:white;border-bottom:1.5px solid var(--paper-3);flex-shrink:0;">
+      <div style="display:flex;align-items:center;background:var(--paper);border:1.5px solid var(--paper-3);border-radius:22px;padding:.48rem .85rem;gap:.5rem;margin-bottom:.6rem;">
+        <span style="color:var(--ink-mute);font-size:.85rem;flex-shrink:0;">🔍</span>
+        <input id="dash-search-input" type="text" placeholder="搜索账号或昵称…" style="flex:1;border:none;background:transparent;font-size:.8rem;font-family:var(--font-ui);color:var(--ink);outline:none;" oninput="dashFilter()">
+      </div>
+      <div style="display:flex;gap:.38rem;flex-wrap:wrap;">
+        <button class="dash-fpill active" onclick="dashSetFilter(this,'all')">全部</button>
+        <button class="dash-fpill" onclick="dashSetFilter(this,'student')">学生</button>
+        <button class="dash-fpill" onclick="dashSetFilter(this,'teacher')">教师</button>
+        <button class="dash-fpill" id="dash-pill-pending" onclick="dashSetFilter(this,'pending')">待审核</button>
+        <button class="dash-fpill" onclick="dashSetFilter(this,'disabled')">已离校</button>
+      </div>
     </div>
-    <!-- Content -->
-    <div id="dashboard-content" style="overflow-y:auto;flex:1;padding:1rem 1.2rem;">
-      <div id="dash-loading" style="text-align:center;padding:2rem;color:var(--ink-mute);font-family:var(--font-ui);font-size:.85rem;">加载中…</div>
+    <div style="display:flex;gap:.4rem;padding:.6rem 1.1rem;background:white;border-bottom:1px solid var(--paper-3);flex-shrink:0;">
+      <div class="dash-sum-chip"><div class="dash-sum-num" id="dsum-total">—</div><div class="dash-sum-label">学生总数</div></div>
+      <div class="dash-sum-chip"><div class="dash-sum-num green" id="dsum-active">—</div><div class="dash-sum-label">近7天活跃</div></div>
+      <div class="dash-sum-chip"><div class="dash-sum-num" id="dsum-mastered">—</div><div class="dash-sum-label">平均掌握词数</div></div>
+      <div class="dash-sum-chip"><div class="dash-sum-num" id="dsum-sessions">—</div><div class="dash-sum-label">平均学习次数</div></div>
+    </div>
+    <div id="dashboard-content" style="overflow-y:auto;flex:1;padding:.75rem 1.1rem;background:var(--paper);">
+      <div style="text-align:center;padding:2rem;color:var(--ink-mute);font-family:var(--font-ui);font-size:.85rem;">加载中…</div>
+    </div>
+    <div style="border-top:1.5px solid var(--paper-3);padding:.65rem 1.1rem;display:flex;align-items:center;justify-content:space-between;background:white;flex-shrink:0;">
+      <span style="font-size:.6rem;color:var(--ink-mute);font-family:var(--font-ui);max-width:200px;line-height:1.4;">学号·班级·昵称·掌握词数·进度%·闪卡次·填空次·总次数·最近活跃·状态</span>
+      <button onclick="_doExportSnapshot()" style="padding:.38rem .85rem;border-radius:16px;border:1.5px solid var(--navy);background:white;color:var(--navy);font-size:.7rem;font-family:var(--font-ui);font-weight:700;cursor:pointer;white-space:nowrap;">📥 导出 CSV</button>
     </div>
   </div>
 </div>
@@ -11101,10 +10880,9 @@ function toggleSfx() {
     <div class="lb-subtitle">每次掌握词语即时更新</div>
   </div>
   <div class="lb-tabs">
-    <button class="lb-tab active" id="lb-tab-quarter" onclick="switchLbTab('quarter')">📅 本季度</button>
-    <button class="lb-tab" id="lb-tab-alltime" onclick="switchLbTab('alltime')">🏆 历史总榜</button>
+    <button class="lb-tab active" id="lb-tab-school" onclick="switchLbTab('school')">🏫 百德中学</button>
+    <button class="lb-tab" id="lb-tab-global" onclick="switchLbTab('global')">🇸🇬 全岛榜</button>
   </div>
-  <div id="lb-quarter-note" style="text-align:center;font-size:.72rem;font-family:var(--font-ui);color:var(--ink-mute);padding:.3rem 0 .1rem;"></div>
   <div id="lb-content">
     <div class="lb-loading">加载中…</div>
   </div>
