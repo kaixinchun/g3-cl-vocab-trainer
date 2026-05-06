@@ -1665,7 +1665,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as fbSignOut, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset, applyActionCode, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as fbSignOut, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset, applyActionCode, deleteUser, updatePassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, collection, getDocs, addDoc, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -1719,6 +1719,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     confirmPasswordReset,
     applyActionCode,
     deleteUser,
+    updatePassword,
     doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, collection, getDocs, addDoc, query, where, orderBy, limit
   };
 
@@ -1757,7 +1758,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       <div id="ws-login-desktop">
         <div class="ws-heading" style="margin-bottom:.3rem;">欢迎回来</div>
         <div class="ws-sub2">输入学号和密码登录。</div>
-        <label class="welcome-label">学号</label>
+        <label class="welcome-label">账号</label>
         <input class="welcome-input" id="welcome-email-desktop" type="text" placeholder="例：2027G3CL001"
           autocomplete="username" autocapitalize="none" onkeydown="if(event.key==='Enter') submitLogin('desktop')">
         <label class="welcome-label" style="margin-top:.2rem">密码</label>
@@ -1783,7 +1784,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     </div>
     <!-- LOGIN panel -->
     <div id="ws-login-mobile">
-      <label class="welcome-label">学号</label>
+      <label class="welcome-label">账号</label>
       <input class="welcome-input" id="welcome-email" type="text" placeholder="例：2027G3CL001"
         autocomplete="username" autocapitalize="none" onkeydown="if(event.key==='Enter') submitLogin('mobile')">
       <label class="welcome-label" style="margin-top:.2rem">密码</label>
@@ -7995,7 +7996,15 @@ async function _onFirebaseLogin(user, fallback) {
 
   saveUserIdentity(email, userType, nickname, nicknameApproved);
   reportLogin(email, userType);
-  launchApp(email, userType, nickname, nicknameApproved);
+
+  // Force password change on first login
+  const mustChangePw = userDoc?.defaultPasswordChanged === false;
+  if (mustChangePw) {
+    launchApp(email, userType, nickname, nicknameApproved);
+    setTimeout(() => _showForcedPwChange(user), 800);
+  } else {
+    launchApp(email, userType, nickname, nicknameApproved);
+  }
 
   // Reconcile leaderboard score against ground-truth progress (async, non-blocking)
   _reconcileScore(user.uid, user.email, userType, nickname, nicknameApproved).catch(() => {});
@@ -10556,6 +10565,52 @@ function _addToUserScore(points, masteryBonus) {
   _pendingMasteryDelta += masteryBonus;
   clearTimeout(_scoreFlushTimer);
   _scoreFlushTimer = setTimeout(_flushScore, 3000);
+}
+
+// ── Forced password change on first login ────────────────────
+function _showForcedPwChange(user) {
+  const overlay = document.createElement('div');
+  overlay.id = 'force-pw-modal';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:1rem;';
+  overlay.innerHTML = `
+    <div style="background:white;border-radius:14px;padding:1.5rem 1.4rem;width:100%;max-width:360px;box-shadow:0 8px 40px rgba(0,0,0,.25);">
+      <div style="font-size:1.1rem;font-family:var(--font-body);color:var(--navy);font-weight:700;margin-bottom:.3rem;">🔑 请修改默认密码</div>
+      <div style="font-size:.78rem;font-family:var(--font-ui);color:var(--ink-mute);margin-bottom:1rem;line-height:1.6;">首次登录须更改密码。新密码至少6位，请妥善保管。</div>
+      <label style="font-size:.72rem;font-family:var(--font-ui);color:var(--ink-soft);display:block;margin-bottom:.25rem;">新密码</label>
+      <input id="force-pw-new" type="password" placeholder="输入新密码（至少6位）"
+        style="width:100%;padding:.55rem .75rem;border:1.5px solid var(--paper-3);border-radius:8px;font-size:.88rem;font-family:var(--font-ui);margin-bottom:.5rem;outline:none;box-sizing:border-box;">
+      <label style="font-size:.72rem;font-family:var(--font-ui);color:var(--ink-soft);display:block;margin-bottom:.25rem;">确认新密码</label>
+      <input id="force-pw-confirm" type="password" placeholder="再次输入新密码"
+        style="width:100%;padding:.55rem .75rem;border:1.5px solid var(--paper-3);border-radius:8px;font-size:.88rem;font-family:var(--font-ui);margin-bottom:.6rem;outline:none;box-sizing:border-box;">
+      <div id="force-pw-error" style="font-size:.72rem;color:#c0392b;min-height:1.2em;margin-bottom:.5rem;font-family:var(--font-ui);"></div>
+      <button onclick="_submitForcedPwChange('${user.uid}')"
+        style="width:100%;padding:.65rem;background:var(--navy);color:white;border:none;border-radius:8px;font-size:.88rem;font-family:var(--font-body);font-weight:600;cursor:pointer;">
+        确认修改 →
+      </button>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+async function _submitForcedPwChange(uid) {
+  const newPw  = (document.getElementById('force-pw-new')?.value || '').trim();
+  const confPw = (document.getElementById('force-pw-confirm')?.value || '').trim();
+  const errEl  = document.getElementById('force-pw-error');
+  if (!newPw || newPw.length < 6) { errEl.textContent = '密码至少需要6位'; return; }
+  if (newPw !== confPw) { errEl.textContent = '两次输入的密码不一致'; return; }
+  errEl.textContent = '';
+  try {
+    const { updatePassword, doc, updateDoc } = window._fbFns;
+    await updatePassword(window._fbAuth.currentUser, newPw);
+    await updateDoc(doc(window._fbDb, 'users', uid), { defaultPasswordChanged: true });
+    document.getElementById('force-pw-modal')?.remove();
+    showToast('✅ 密码已更新，请牢记新密码！');
+  } catch(e) {
+    const msgs = {
+      'auth/requires-recent-login': '请重新登录后再修改密码。',
+      'auth/weak-password': '密码太简单，请设置至少6位。',
+    };
+    errEl.textContent = msgs[e.code] || '修改失败：' + e.message;
+  }
 }
 
 // Reset quarterScore if we're in a new quarter vs what's stored
