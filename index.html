@@ -107,6 +107,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 .stat-num.n-total{color:var(--ink);}
 .stat-num.n-mastered{color:var(--green);}
 .stat-num.n-learning{color:var(--amber);}
+.stat-num.n-consolidate{color:#E65100;}
 .stat-label{font-size:.7rem;color:var(--ink-mute);font-family:var(--font-ui);margin-top:.2rem;}
 .global-bar{background:var(--paper-3);border-radius:4px;height:6px;margin:.8rem 0 .25rem;overflow:hidden;}
 .global-bar-fill{height:100%;background:linear-gradient(90deg,var(--green-mid),var(--gold));border-radius:4px;transition:width .6s ease;}
@@ -179,6 +180,9 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 .unit-btn-sub{font-size:.68rem;color:var(--ink-mute);font-family:sans-serif;margin-top:.1rem;}
 .unit-mastery-bar{width:56px;background:var(--paper-2);border-radius:3px;height:4px;overflow:hidden;flex-shrink:0;}
 .unit-mastery-fill{height:100%;border-radius:3px;transition:width .4s ease;}
+.unit-mastery-bar-dual{width:56px;height:4px;background:var(--paper-2);border-radius:3px;overflow:hidden;flex-shrink:0;display:flex;}
+.dual-seg-green{background:var(--green);height:100%;}
+.dual-seg-orange{background:#FF9800;height:100%;}
 .fill-none{background:var(--paper-3);} .fill-some{background:var(--amber);} .fill-most{background:var(--blue);} .fill-all{background:var(--green);}
 
 /* STUDY SCREEN */
@@ -186,7 +190,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 .study-header{padding:.6rem .9rem;border-bottom:1px solid var(--paper-3);background:white;}
 .study-nav{display:flex;align-items:center;gap:.6rem;margin-bottom:.4rem;}
 .study-title{font-size:.88rem;color:var(--ink-soft);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.mode-tabs{display:grid;grid-template-columns:repeat(4,1fr);background:white;border-bottom:1px solid var(--paper-3);gap:0;}
+.mode-tabs{display:grid;grid-template-columns:repeat(3,1fr);background:white;border-bottom:1px solid var(--paper-3);gap:0;}
 .mode-tab{
   padding:.7rem .3rem;
   border:none;
@@ -1709,6 +1713,92 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 .ds-pw-code{font-size:1.15rem;font-weight:700;color:var(--navy);letter-spacing:.06em;font-family:monospace;margin:.2rem 0;}
 
 
+
+/* ── CHALLENGE SCREEN ─────────────────────────────────── */
+#challenge-screen{background:#1A1A3E;overflow-y:auto;}
+.ch-topbar{background:#1A1A3E;padding:14px 16px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,0.06);position:sticky;top:0;z-index:10;}
+.ch-back{font-size:22px;color:rgba(255,255,255,0.6);cursor:pointer;background:none;border:none;line-height:1;}
+.ch-title-block{flex:1;}
+.ch-title{font-size:15px;font-weight:800;color:#fff;}
+.ch-sub{font-size:10.5px;color:rgba(255,255,255,0.45);margin-top:1px;}
+.ch-q-pill{background:rgba(124,77,255,0.25);border:1px solid rgba(124,77,255,0.5);border-radius:99px;padding:4px 11px;font-size:12px;font-weight:800;color:#fff;}
+.ch-prog-wrap{background:#1A1A3E;padding:10px 16px 12px;}
+.ch-prog-track{height:5px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden;}
+.ch-prog-fill{height:100%;border-radius:99px;transition:width 0.4s ease;background:linear-gradient(90deg,#7C4DFF,#E040FB);}
+.ch-prog-labels{display:flex;justify-content:space-between;margin-top:4px;font-size:9.5px;color:rgba(255,255,255,0.25);}
+.ch-score-strip{background:#22234A;display:flex;justify-content:space-around;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08);}
+.ch-ss-item{text-align:center;}
+.ch-ss-num{font-size:15px;font-weight:800;color:#fff;}
+.ch-ss-num.g{color:#66BB6A;}.ch-ss-num.r{color:#EF9A9A;}
+.ch-ss-label{font-size:9px;color:rgba(255,255,255,0.45);margin-top:1px;}
+.ch-body{background:#1A1A3E;padding:18px 16px 0;min-height:360px;}
+.ch-src-tag{display:none;align-items:center;gap:5px;background:rgba(107,45,139,0.25);border:1px solid rgba(107,45,139,0.4);border-radius:99px;padding:3px 10px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.6);margin-bottom:10px;}
+.ch-src-tag.show{display:inline-flex;}
+.ch-sentence{font-size:18px;line-height:2;color:#fff;margin-bottom:4px;font-family:var(--font-body);}
+.ch-blank{display:inline-block;min-width:70px;height:29px;border-bottom:2.5px solid #E040FB;background:rgba(224,64,251,0.1);border-radius:4px 4px 0 0;vertical-align:middle;margin:0 4px;transition:all 0.2s;text-align:center;line-height:29px;font-weight:700;}
+.ch-blank.filled{border-bottom-color:#4CAF50;background:rgba(76,175,80,0.12);color:#81C784;}
+.ch-blank.wrong-fill{border-bottom-color:#F44336;background:rgba(244,67,54,0.1);color:#EF9A9A;}
+.ch-hint-row{display:flex;align-items:center;gap:8px;margin-bottom:18px;}
+.ch-hint{font-size:11px;color:rgba(255,255,255,0.25);}
+.ch-tts-btn{background:none;border:none;font-size:16px;cursor:pointer;opacity:0.55;padding:0;}
+.ch-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.ch-opt{background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.1);border-radius:14px;padding:15px 8px;text-align:center;font-size:15px;font-weight:700;color:#fff;font-family:var(--font-body);cursor:pointer;transition:all 0.15s;user-select:none;display:flex;align-items:center;justify-content:center;gap:5px;width:100%;}
+.ch-opt:active{transform:scale(0.96);}
+.ch-opt.correct{background:rgba(76,175,80,0.2);border-color:#4CAF50;color:#81C784;}
+.ch-opt.wrong{background:rgba(244,67,54,0.12);border-color:#F44336;color:#EF9A9A;}
+.ch-opt.dim{opacity:0.3;pointer-events:none;}
+.ch-next-wrap{padding:14px 16px 24px;background:#1A1A3E;}
+.ch-next-btn{width:100%;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,#7C4DFF,#E040FB);color:#fff;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(124,77,255,0.35);display:none;font-family:var(--font-ui);transition:transform 0.12s,opacity 0.12s;}
+.ch-next-btn.show{display:block;}
+.ch-next-btn:active{transform:scale(0.97);opacity:0.9;}
+#ch-result-screen{background:#1A1A3E;overflow-y:auto;}
+.ch-result-hero{padding:28px 20px 16px;text-align:center;background:linear-gradient(180deg,rgba(124,77,255,0.15) 0%,transparent 100%);}
+.ch-result-emoji{font-size:52px;margin-bottom:8px;}
+.ch-result-title{font-size:22px;font-weight:800;color:#fff;margin-bottom:4px;}
+.ch-result-sub{font-size:12px;color:rgba(255,255,255,0.45);}
+.ch-result-stats{display:flex;gap:8px;padding:16px 16px 0;}
+.ch-rs{flex:1;background:rgba(255,255,255,0.06);border-radius:12px;padding:12px 8px;text-align:center;}
+.ch-rs-num{font-size:22px;font-weight:800;color:#fff;}
+.ch-rs-num.g{color:#66BB6A;}.ch-rs-num.o{color:#FF9800;}.ch-rs-num.r{color:#EF9A9A;}
+.ch-rs-label{font-size:9.5px;color:rgba(255,255,255,0.4);margin-top:3px;}
+.ch-mastery-banner{margin:14px 16px 0;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;}
+.ch-mb-icon{font-size:20px;flex-shrink:0;}
+.ch-mb-text{font-size:12px;color:#81C784;line-height:1.5;}
+.ch-mb-text strong{color:#A5D6A7;}
+.ch-wrong-section{padding:14px 16px 0;}
+.ch-ws-header{display:flex;align-items:center;gap:6px;margin-bottom:10px;}
+.ch-ws-title{font-size:11px;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:0.06em;text-transform:uppercase;}
+.ch-ws-count{background:rgba(244,67,54,0.15);border:1px solid rgba(244,67,54,0.3);border-radius:99px;padding:2px 8px;font-size:10px;font-weight:800;color:#EF9A9A;}
+.ch-wrong-cards{display:flex;flex-direction:column;gap:8px;}
+.ch-wc{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;}
+.ch-wc-left{flex:1;}
+.ch-wc-word{font-size:16px;font-weight:800;color:#fff;margin-bottom:3px;font-family:var(--font-body);}
+.ch-wc-def{font-size:11px;color:rgba(255,255,255,0.45);line-height:1.4;}
+.ch-wc-src{font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:99px;background:rgba(107,45,139,0.2);color:rgba(200,150,255,0.7);border:1px solid rgba(107,45,139,0.3);margin-top:5px;display:inline-block;}
+.ch-wc-badge{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:rgba(244,67,54,0.15);border:1px solid rgba(244,67,54,0.3);display:flex;align-items:center;justify-content:center;font-size:12px;}
+.ch-action-btns{padding:14px 16px 32px;display:flex;flex-direction:column;gap:10px;}
+.ch-ab{width:100%;padding:15px;border-radius:14px;border:none;font-size:15px;font-weight:800;cursor:pointer;font-family:var(--font-ui);transition:transform 0.12s,opacity 0.12s;}
+.ch-ab:active{transform:scale(0.97);opacity:0.9;}
+.ch-ab.primary{background:linear-gradient(135deg,#7C4DFF,#E040FB);color:#fff;box-shadow:0 4px 16px rgba(124,77,255,0.35);}
+.ch-ab.target{background:rgba(255,152,0,0.12);border:1.5px solid rgba(255,152,0,0.35);color:#FF9800;}
+.ch-ab.secondary{background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.55);}
+.unit-challenge-divider{display:flex;align-items:center;gap:8px;margin:14px 0 10px;}
+.unit-challenge-divider-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(124,77,255,0.3),transparent);}
+.unit-challenge-divider-label{font-size:10px;font-weight:700;color:#7C4DFF;letter-spacing:0.08em;text-transform:uppercase;}
+.unit-challenge-card{background:#1A1A3E;border-radius:var(--r-sm);padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden;transition:transform 0.12s;box-shadow:0 4px 16px rgba(124,77,255,0.2);margin-bottom:6px;}
+.unit-challenge-card:active{transform:scale(0.985);}
+.unit-challenge-card::before{content:'';position:absolute;top:-20px;right:-20px;width:90px;height:90px;background:radial-gradient(circle,rgba(224,64,251,0.15) 0%,transparent 70%);pointer-events:none;}
+.uc-icon{font-size:26px;flex-shrink:0;}
+.uc-info{flex:1;}
+.uc-title{font-size:15px;font-weight:800;color:#fff;margin-bottom:3px;}
+.uc-sub{font-size:11px;color:rgba(255,255,255,0.45);}
+.uc-pills{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap;}
+.uc-pill{font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.1);}
+.uc-pill.hi{background:rgba(124,77,255,0.25);color:rgba(255,255,255,0.8);border-color:rgba(124,77,255,0.4);}
+.uc-badge{flex-shrink:0;text-align:center;}
+.uc-badge-ring{width:42px;height:42px;border-radius:50%;border:2px solid rgba(124,77,255,0.4);background:rgba(124,77,255,0.12);display:flex;align-items:center;justify-content:center;}
+.uc-badge-pct{font-size:11px;font-weight:800;color:#fff;}
+.uc-badge-label{font-size:9px;color:rgba(255,255,255,0.35);margin-top:3px;}
   </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <!-- Firebase SDK -->
@@ -1898,7 +1988,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       <div class="stat-row">
         <div class="stat-item"><div class="stat-num n-total" id="stat-total">—</div><div class="stat-label">词语</div></div>
         <div class="stat-item"><div class="stat-num n-mastered" id="stat-mastered">0</div><div class="stat-label">已掌握</div></div>
-        <div class="stat-item"><div class="stat-num n-learning" id="stat-learning">0</div><div class="stat-label">学习中</div></div>
+        <div class="stat-item"><div class="stat-num n-consolidate" id="stat-learning">0</div><div class="stat-label">需巩固</div></div>
       </div>
       <div class="global-bar"><div class="global-bar-fill" id="global-bar-fill" style="width:0%"></div></div>
       <div class="global-bar-label" id="global-bar-label">0% 已掌握</div>
@@ -2028,7 +2118,6 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     </div>
     <div class="mode-tabs">
       <button class="mode-tab active" data-mode="flashcard" onclick="switchMode('flashcard')">词语闪卡</button>
-      <button class="mode-tab" data-mode="cloze" onclick="switchMode('cloze')">填空挑战<span class="mode-tab-sub">必修</span></button>
       <button class="mode-tab" data-mode="definition" onclick="switchMode('definition')">华文解释</button>
       <button class="mode-tab" data-mode="english" onclick="switchMode('english')">英文翻译</button>
     </div>
@@ -2306,8 +2395,8 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       <div style="font-size:.68rem;color:var(--ink-mute);font-family:var(--font-ui);margin-top:3px;">已掌握</div>
     </div>
     <div style="background:white;border-radius:8px;border:0.5px solid var(--paper-3);padding:10px 6px;text-align:center;">
-      <div id="ach-learning-n" style="font-size:1.4rem;font-weight:500;color:var(--amber);font-family:var(--font-ui);line-height:1.1;">0</div>
-      <div style="font-size:.68rem;color:var(--ink-mute);font-family:var(--font-ui);margin-top:3px;">学习中</div>
+      <div id="ach-learning-n" style="font-size:1.4rem;font-weight:500;color:#E65100;font-family:var(--font-ui);line-height:1.1;">0</div>
+      <div style="font-size:.68rem;color:var(--ink-mute);font-family:var(--font-ui);margin-top:3px;">需巩固</div>
     </div>
     <div style="background:white;border-radius:8px;border:0.5px solid var(--paper-3);padding:10px 6px;text-align:center;">
       <div id="ach-unstarted-n" style="font-size:1.4rem;font-weight:500;color:var(--ink-mute);font-family:var(--font-ui);line-height:1.1;">0</div>
@@ -6188,13 +6277,18 @@ function getWordBox(w) { return (progress[w] && progress[w].box) || 0; }
 // progress[w].clozeOk = true when answered correctly in 填空挑战
 // Getting cloze wrong resets clozeOk (demotes mastery)
 // progress[w].scoreLocked = true once mastery bonus awarded (permanent, survives progress reset)
-function isMastered(w)   {
-  return !!(progress[w] && progress[w].clozeOk);
+function isMastered(w) {
+  // 已掌握: clozeOk=true AND needsReview not set
+  return !!(progress[w] && progress[w].clozeOk && !progress[w].needsReview);
 }
-function isLearning(w)   {
-  if (isMastered(w)) return false;
-  return !!(progress[w] && (progress[w].clozeOk ||
-            progress[w].box > 0 || progress[w].wrongCount > 0));
+function isConsolidate(w) {
+  // 需巩固: was mastered (clozeOk=true) but slipped in review
+  return !!(progress[w] && progress[w].clozeOk && progress[w].needsReview);
+}
+function isLearning(w) {
+  // 未掌握: attempted but clozeOk never set (or clozeOk=false)
+  if (isMastered(w) || isConsolidate(w)) return false;
+  return !!(progress[w] && (progress[w].box > 0 || progress[w].wrongCount > 0));
 }
 
 function markWordCorrect(w) {
@@ -6203,6 +6297,7 @@ function markWordCorrect(w) {
   progress[w].lastSeen = Date.now();
   if (currentMode === 'cloze') {
     progress[w].clozeOk = true;
+    progress[w].needsReview = false;  // restore to 已掌握
   }
   saveProgress();
 }
@@ -6213,7 +6308,13 @@ function markWordWrong(w) {
   progress[w].wrongCount = (progress[w].wrongCount||0) + 1;
   progress[w].lastSeen = Date.now();
   if (currentMode === 'cloze') {
-    progress[w].clozeOk = false;
+    if (progress[w].clozeOk) {
+      // Was 已掌握 → demote to 需巩固 (keep clozeOk=true, set needsReview)
+      progress[w].needsReview = true;
+    } else {
+      // Was 未掌握 → stays 未掌握
+      progress[w].clozeOk = false;
+    }
   }
   saveProgress();
 }
@@ -6238,8 +6339,8 @@ function getAllWords() {
   return Object.values(VOCAB).flatMap(u => Object.values(u).flat());
 }
 function getWeakWords() {
-  // 未掌握：attempted but not yet mastered
-  return getAllWords().filter(w => isLearning(w) && !isMastered(w));
+  // 未掌握 + 需巩固：both need more practice
+  return getAllWords().filter(w => isLearning(w) || isConsolidate(w));
 }
 
 // ══ SCREEN NAV ═════════════════════════════════════════════
@@ -6273,13 +6374,14 @@ function showScreen(id) {
 
 function updateHomeStats() {
   const all = getAllWords();
-  const mastered = getMastered(all);
-  const learning = all.filter(w => isLearning(w)).length;
-  const weak     = getWeakWords();
+  const mastered     = getMastered(all);
+  const consolidate  = all.filter(w => isConsolidate(w)).length;
+  const learning     = all.filter(w => isLearning(w)).length;
+  const weak         = getWeakWords();
 
   document.getElementById('stat-total').textContent    = all.length;
   document.getElementById('stat-mastered').textContent = mastered;
-  document.getElementById('stat-learning').textContent = learning;
+  document.getElementById('stat-learning').textContent = consolidate;  // 需巩固 replaces 学习中
 
   // Dynamic per-level word counts (auto-calculated from VOCAB data)
   Object.keys(VOCAB).forEach(level => {
@@ -6361,9 +6463,12 @@ function renderUnitsList(level) {
     grp.innerHTML = `<div class="unit-group-label">${unitNum}${unitTitle ? `<span class="unit-group-title"> · ${unitTitle}</span>` : ''}</div>`;
 
     items.forEach(({ key, type, words }) => {
-      const mastered = getMastered(words);
-      const pct = Math.round(mastered / words.length * 100);
-      const dot  = pct===0?'dot-none':pct<50?'dot-some':pct<100?'dot-most':'dot-all';
+      const mastered     = getMastered(words);
+      const consolidateN = words.filter(w => isConsolidate(w)).length;
+      const pct          = Math.round((mastered + consolidateN) / words.length * 100);
+      const masteredPct  = Math.round(mastered / words.length * 100);
+      const consolidatePct = Math.round(consolidateN / words.length * 100);
+      const dot  = mastered===words.length?'dot-all':mastered>0||consolidateN>0?'dot-most':pct>0?'dot-some':'dot-none';
       const fill = pct===0?'fill-none':pct<50?'fill-some':pct<100?'fill-most':'fill-all';
 
       // Session best score for this unit
@@ -6396,11 +6501,11 @@ function renderUnitsList(level) {
         <div class="unit-btn-info">
           <div class="unit-btn-name">${compType || key}${compTitle ? `<span class="unit-comp-title">${compTitle}</span>` : ''}</div>
           <div style="display:flex;align-items:center;gap:.3rem;flex-wrap:wrap;margin-top:.15rem;">
-            <span class="unit-btn-sub" style="margin:0;">${words.length} 词语 · ${mastered} 已掌握${bestStr ? ' · ' + bestStr : ''}</span>
+            <span class="unit-btn-sub" style="margin:0;">${words.length} 词语 · <span style="color:var(--green);">${mastered}✓</span>${consolidateN>0 ? ` · <span style="color:#E65100;">${consolidateN}⚠</span>` : ''}${bestStr ? ' · ' + bestStr : ''}</span>
             ${unmasteredChip}${notStartedChip}
           </div>
         </div>
-        <div class="unit-mastery-bar"><div class="unit-mastery-fill ${fill}" style="width:${pct}%"></div></div>`;
+        <div class="unit-mastery-bar-dual"><div class="dual-seg-green" style="width:${masteredPct}%"></div><div class="dual-seg-orange" style="width:${consolidatePct}%"></div></div>`;
       btn.onclick = () => startStudy(level, key, words);
 
       // Targeted practice button — only show if there are unmastered words
@@ -6408,14 +6513,11 @@ function renderUnitsList(level) {
         const targetBtn = document.createElement('button');
         targetBtn.className = 'unit-target-btn';
         // Determine the right mode: skip to cloze if all flashcards done
-        const needCloze = unmastered.filter(w => !progress[w]?.clozeOk);
-        const smartMode = needCloze.length > 0 ? 'cloze' : 'flashcard';
         targetBtn.innerHTML = `🎯 练习 ${unmastered.length} 个未掌握词语`;
         targetBtn.onclick = (e) => {
           e.stopPropagation();
-          const wordsToStudy = smartMode === 'cloze' ? needCloze : unmastered;
-          currentMode = smartMode;
-          startStudy(level, key, wordsToStudy, true);
+          currentMode = 'flashcard';
+          startStudy(level, key, unmastered, true);
         };
         grp.appendChild(btn);
         grp.appendChild(targetBtn);
@@ -6423,6 +6525,41 @@ function renderUnitsList(level) {
         grp.appendChild(btn);
       }
     });
+    // ── Unit challenge card ──
+    var unitWordsAll = [];
+    items.forEach(function(item) { unitWordsAll = unitWordsAll.concat(item.words); });
+    var uMastered = getMastered(unitWordsAll);
+    var uPct = unitWordsAll.length ? Math.round(uMastered / unitWordsAll.length * 100) : 0;
+    var uHasEx = unitWordsAll.some(function(w) { return !!EXAMPLES[w]; });
+    if (uHasEx) {
+      var divEl = document.createElement('div');
+      divEl.className = 'unit-challenge-divider';
+      divEl.innerHTML = '<div class="unit-challenge-divider-line"></div>' +
+        '<div class="unit-challenge-divider-label">\u5355\u5143\u7efc\u5408\u5173\u5361</div>' +
+        '<div class="unit-challenge-divider-line"></div>';
+      grp.appendChild(divEl);
+      var uTitle = getUnitTitle(level, unitNum) || '';
+      var chCard = document.createElement('div');
+      chCard.className = 'unit-challenge-card';
+      chCard.innerHTML =
+        '<div class="uc-icon">\u2694\ufe0f</div>' +
+        '<div class="uc-info">' +
+          '<div class="uc-title">\u586b\u7a7a\u6311\u6218</div>' +
+          '<div class="uc-sub">' + unitNum + ' \u00b7 ' + unitWordsAll.length + ' \u8bcd\u8bed\u7efc\u5408\u6d4b\u8bd5</div>' +
+          '<div class="uc-pills">' +
+            '<div class="uc-pill hi">\u968f\u673a 20 \u9898</div>' +
+            '<div class="uc-pill">\u751f\u6d3b\u7a7a\u95f4 \u00b7 \u6838\u5fc3 \u00b7 \u5de9\u56fa \u00b7 \u6587\u5316\u7ad9</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="uc-badge">' +
+          '<div class="uc-badge-ring"><div class="uc-badge-pct">' + uPct + '%</div></div>' +
+          '<div class="uc-badge-label">\u5df2\u638c\u63e1</div>' +
+        '</div>';
+      (function(lvl, uNum, uTit) {
+        chCard.onclick = function() { openUnitChallenge(lvl, uNum, uTit); };
+      })(level, unitNum, uTitle);
+      grp.appendChild(chCard);
+    }
     container.appendChild(grp);
   });
 
@@ -6513,9 +6650,9 @@ function showWeakDashboard(weak) {
   };
   clBtn.onclick = () => {
     closeWeakDashboard();
-    const target = needCloze.length > 0 ? needCloze : weak.filter(w => !progress[w]?.clozeOk);
-    currentMode = 'cloze';
-    startStudy(null, '未掌握词语', target.length ? target : weak, true);
+    // 填空挑战 now lives at unit level — use flashcard for weak word review
+    currentMode = 'flashcard';
+    startStudy(null, '未掌握词语', needCloze.length > 0 ? needCloze : weak, true);
   };
 
   overlay.classList.add('show');
@@ -6547,6 +6684,7 @@ function exitStudy() {
 }
 
 function switchMode(mode, force=false) {
+  if (mode === 'cloze') mode = 'flashcard'; // 填空挑战 moved to unit-level challenge
   if (mode === currentMode && !force) return;
 
   // For English mode, filter to words that have English definitions
@@ -9294,12 +9432,12 @@ function renderGuide() {
       title: zh ? '每个词语的掌握状态' : 'Mastery states explained',
       html: (() => {
         const states = [
-          { cls:'gs-unstarted', label: zh?'未开始':'Not started',
-            desc: zh?'还没练习过这个词语。':'You have not practised this word yet.' },
-          { cls:'gs-learning',  label: zh?'学习中':'In progress',
-            desc: zh?'已开始，但还未同时完成闪卡＋填空。':'Started, but not yet completed both flashcard + fill-in.' },
+          { cls:'gs-unstarted', label: zh?'未掌握':'Not mastered',
+            desc: zh?'还没答对过填空挑战。':'Have not answered the fill-in correctly yet.' },
+          { cls:'gs-learning',  label: zh?'需巩固':'Needs review',
+            desc: zh?'曾经掌握，但在复习时答错了。再答对一次即可恢复。':'Was mastered, but answered wrong during review. Answer correctly once to restore.' },
           { cls:'gs-mastered',  label: zh?'已掌握':'Mastered',
-            desc: zh?'闪卡标记「认识了」✓  填空答对 ✓  如填空答错，退回「学习中」。':'Flashcard marked 认识了 ✓ AND fill-in correct ✓. Wrong fill-in → back to 学习中.' },
+            desc: zh?'填空挑战答对 ✓  如复习时答错，退回「需巩固」。':'Fill-in answered correctly ✓. Wrong answer during review → back to 需巩固.' },
         ];
         return '<div class="guide-state-visual">' +
           states.map(s =>
@@ -9309,27 +9447,26 @@ function renderGuide() {
     },
     {
       icon: '📝',
-      title: zh ? '四种练习模式' : 'Four practice modes',
+      title: zh ? '练习模式' : 'Practice modes',
       html: (() => {
         const modes = [
           { name: zh?'词语闪卡':'Flashcard',
-            desc: zh?'翻转卡片，自己判断是否认识。':'Flip the card, judge if you know it.',
-            tag: zh?'必修①':'Required ①', req: true },
-          { name: zh?'填空挑战':'Fill-in',
-            desc: zh?'在句子中选出正确词语——最难！完成后才算已掌握。':'Pick the right word to fill the blank — hardest mode. Required for mastery.',
-            tag: zh?'必修②':'Required ②', req: true },
+            desc: zh?'翻转卡片，认识词语与例句。':'Flip the card to learn words and example sentences.',
+            tag: zh?'板块内':'In component', req: true },
           { name: zh?'华文解释':'Definition',
             desc: zh?'选出正确的中文释义。':'Choose the correct Chinese definition.',
-            tag: zh?'选做':'Optional', req: false },
-          { name: zh?'英文翻译':'English',
+            tag: zh?'板块内':'In component', req: true },
+          { name: zh?'英文解释':'English',
             desc: zh?'选出正确的英文翻译。':'Choose the correct English translation.',
-            tag: zh?'选做':'Optional', req: false },
+            tag: zh?'板块内':'In component', req: false },
         ];
+        const clNote = zh
+          ? '<div style="margin-top:.8rem;padding:.6rem .8rem;background:var(--paper-2);border-radius:8px;border-left:3px solid var(--hero-green);font-size:.78rem;color:var(--ink-soft);"><strong>⚔️ 填空挑战</strong>：每个单元的文化站之后有独立的填空关卡，综合考查该单元所有板块的词语，随机20题。答对即算已掌握。</div>'
+          : '<div style="margin-top:.8rem;padding:.6rem .8rem;background:var(--paper-2);border-radius:8px;border-left:3px solid var(--hero-green);font-size:.78rem;color:var(--ink-soft);"><strong>⚔️ Fill-in Challenge</strong>: After the Cultural Corner of each unit, a standalone challenge consolidates all components — 20 random questions. Answer correctly to mark as mastered.</div>';
         return '<div class="guide-mode-grid">' +
           modes.map(m =>
             `<div class="guide-mode-card"><div class="guide-mode-name">${m.name}</div><div class="guide-mode-desc">${m.desc}</div><span class="guide-mode-tag ${m.req?'req':'opt'}">${m.tag}</span></div>`
-          ).join('') + '</div>' +
-          `<p style="margin-top:.6rem;font-size:.78rem;color:var(--ink-mute);">${zh?'注意：华文解释和英文翻译不影响掌握状态。':'Definition and English modes do not affect mastery status.'}</p>`;
+          ).join('') + '</div>' + clNote;
       })()
     },
     {
@@ -9867,18 +10004,18 @@ function renderFirstGuide() {
   const sections = [
     {
       icon: '🎯',
-      title: zh ? '掌握一个词语，需要两步' : 'Two steps to master a word',
+      title: zh ? '如何掌握一个词语？' : 'How to master a word?',
       body: zh
-        ? `① 词语闪卡：翻转卡片，点「认识了」\n② 填空挑战：在句子中选出正确词语\n\n两步都完成 → 状态变为「已掌握」✅\n华文解释和英文翻译是选修，不影响掌握状态。`
-        : `① Flashcard: flip the card and tap 认识了\n② Fill-in: choose the correct word in a sentence\n\nBoth done → status becomes 已掌握 ✅\nDefinition and English are optional and do not affect mastery.`
+        ? `板块内：词语闪卡、华文解释、英文解释（认识词语）\n单元末：⚔️ 填空挑战 — 综合考查全单元词语，随机20题\n\n填空挑战答对 → 状态变为「已掌握」✅\n复习时答错 → 退回「需巩固」，再答对即恢复。`
+        : `In each component: Flashcard, Chinese definition, English translation\nEnd of unit: ⚔️ Fill-in Challenge — 20 random questions across all components\n\nFill-in correct → status becomes 已掌握 ✅\nWrong in review → 需巩固; answer correctly once to restore.`
     },
     {
       icon: '📊',
       title: zh ? '三种学习状态' : 'Three learning states',
       states: [
-        { cls: 'gs-unstarted', label: zh?'未开始':'Not started', desc: zh?'还没有练习过。':'Not practised yet.' },
-        { cls: 'gs-learning',  label: zh?'学习中':'In progress',  desc: zh?'已开始，但未同时完成闪卡＋填空。':'Started but not completed both flashcard + fill-in.' },
-        { cls: 'gs-mastered',  label: zh?'已掌握':'Mastered',     desc: zh?'闪卡「认识了」✓ 且填空答对 ✓':'Flashcard known ✓ and Fill-in correct ✓' },
+        { cls: 'gs-unstarted', label: zh?'未掌握':'Not mastered', desc: zh?'还没答对过填空挑战。':'Have not answered the fill-in correctly yet.' },
+        { cls: 'gs-learning',  label: zh?'需巩固':'Needs review', desc: zh?'曾掌握但复习时答错——再答对即恢复。':'Was mastered but slipped in review — answer correctly to restore.' },
+        { cls: 'gs-mastered',  label: zh?'已掌握':'Mastered',     desc: zh?'填空挑战答对 ✓  复习答错 → 需巩固':'Fill-in correct ✓. Wrong in review → 需巩固' },
       ]
     },
     {
@@ -10013,8 +10150,8 @@ function _renderDashCards() {
   var query = (document.getElementById('dash-search-input') ? document.getElementById('dash-search-input').value : '').toLowerCase().trim();
 
   var users = _dashAllUsers.filter(function(u) {
-    if (_dashFilter === 'student') return u.userType === '百德中学学生';
-    if (_dashFilter === 'teacher') return u.userType === '华文教师' || u.userType === '其他科目教师';
+    if (_dashFilter === 'student') return STUDENT_TYPES.indexOf(u.userType) >= 0;
+    if (_dashFilter === 'teacher') return TEACHER_TYPES.indexOf(u.userType) >= 0;
     if (_dashFilter === 'pending') return u.nicknamePending && u.nicknamePending.trim();
     if (_dashFilter === 'disabled') return u.status === 'disabled';
     return true;
@@ -10771,6 +10908,281 @@ function toggleSfx() {
   if (btn) btn.textContent = SFX.isOn() ? '🔊' : '🔇';
 })();
 
+// ══ CHALLENGE ENGINE ════════════════════════════════════════
+var _chLevel      = null;
+var _chUnitNum    = null;
+var _chUnitTitle  = '';
+var _chPool       = [];
+var _chQueue      = [];
+var _chIdx        = 0;
+var _chCorrect    = 0;
+var _chWrong      = 0;
+var _chWrongWords = [];
+var _chWord       = null;
+var _chRound      = 1;
+var _chTargetMode = false;
+var _chAutoAdv    = null;
+
+var _CH_COMP_LABELS = {
+  '\u751f\u6d3b\u7a7a\u95f4': '\ud83d\udcd8 \u751f\u6d3b\u7a7a\u95f4',
+  '\u6838\u5fc3':     '\ud83d\udcd7 \u6838\u5fc3',
+  '\u5de9\u56fa':     '\ud83d\udcd2 \u5de9\u56fa',
+  '\u6587\u5316\u7ad9':   '\ud83c\udfdb\ufe0f \u6587\u5316\u7ad9'
+};
+
+function getCompLabel(word, level) {
+  var lvl = level || _chLevel;
+  if (!lvl || !VOCAB[lvl]) return '';
+  var entries = Object.entries(VOCAB[lvl]);
+  for (var i = 0; i < entries.length; i++) {
+    var key = entries[i][0]; var words = entries[i][1];
+    if (words.indexOf(word) >= 0) {
+      var m = key.match(/\u5355\u5143\S+\s+(.+)$/);
+      var comp = m ? m[1] : key;
+      return _CH_COMP_LABELS[comp] || comp;
+    }
+  }
+  return '';
+}
+
+function _buildUnitPool(level, unitNum) {
+  var pool = [];
+  var units = VOCAB[level] || {};
+  var entries = Object.entries(units);
+  for (var i = 0; i < entries.length; i++) {
+    var key = entries[i][0]; var words = entries[i][1];
+    if (key.indexOf(unitNum + ' ') === 0 || key.indexOf(unitNum + '\u3000') === 0) {
+      for (var j = 0; j < words.length; j++) {
+        if (EXAMPLES[words[j]]) pool.push(words[j]);
+      }
+    }
+  }
+  return pool;
+}
+
+function _buildLevelPool(level) {
+  var pool = [];
+  var vals = Object.values(VOCAB[level] || {});
+  for (var i = 0; i < vals.length; i++) {
+    for (var j = 0; j < vals[i].length; j++) {
+      if (EXAMPLES[vals[i][j]]) pool.push(vals[i][j]);
+    }
+  }
+  return pool;
+}
+
+function _buildRoundQueue(pool, targetWords) {
+  var src = (targetWords && targetWords.length)
+    ? targetWords.filter(function(w) { return EXAMPLES[w]; })
+    : pool;
+  if (!src.length) src = pool;
+  var unmastered  = src.filter(function(w) { return !isMastered(w) && !isConsolidate(w); });
+  var consolidate = src.filter(function(w) { return isConsolidate(w); });
+  var mastered    = src.filter(function(w) { return isMastered(w); });
+  shuffleArray(unmastered); shuffleArray(consolidate); shuffleArray(mastered);
+  return unmastered.concat(consolidate).concat(mastered).slice(0, 20);
+}
+
+function _chBuildOptions(word, pool) {
+  var wLen = word.length;
+  function samePOS(w) { return isSamePOS(word, w) && !isSynonymDistractor(word, w) && w !== word; }
+  var byLen   = pool.filter(function(w) { return Math.abs(w.length - wLen) <= 1 && samePOS(w); });
+  var others  = pool.filter(function(w) { return byLen.indexOf(w) < 0 && samePOS(w); });
+  var allW    = getAllWords().filter(function(w) { return w !== word && EXAMPLES[w] && !isSynonymDistractor(word, w); });
+  var relaxed = allW.filter(function(w) { return byLen.indexOf(w) < 0 && others.indexOf(w) < 0; });
+  shuffleArray(byLen); shuffleArray(others); shuffleArray(relaxed);
+  var seen = {}; seen[word] = true;
+  var distractors = [];
+  var combined = byLen.concat(others).concat(relaxed);
+  for (var i = 0; i < combined.length && distractors.length < 3; i++) {
+    if (!seen[combined[i]]) { seen[combined[i]] = true; distractors.push(combined[i]); }
+  }
+  var opts = [word].concat(distractors);
+  shuffleArray(opts);
+  return opts;
+}
+
+function openUnitChallenge(level, unitNum, unitTitle) {
+  _chLevel = level; _chUnitNum = unitNum;
+  _chUnitTitle = unitTitle || unitNum;
+  _chTargetMode = false;
+  _chPool  = _buildUnitPool(level, unitNum);
+  _chRound = 1;
+  startChallenge();
+}
+
+function openLevelChallenge(level) {
+  _chLevel = level; _chUnitNum = null;
+  _chUnitTitle = level + ' \u5e74\u7ea7\u590d\u4e60';
+  _chTargetMode = false;
+  _chPool  = _buildLevelPool(level);
+  _chRound = 1;
+  startChallenge();
+}
+
+function startChallenge() {
+  _chQueue = _buildRoundQueue(_chPool, null);
+  _chIdx = 0; _chCorrect = 0; _chWrong = 0; _chWrongWords = [];
+  document.getElementById('ch-title').textContent = '\u2694\ufe0f \u586b\u7a7a\u6311\u6218';
+  document.getElementById('ch-sub').textContent   = _chUnitTitle || (_chLevel || '');
+  showScreen('challenge-screen');
+  _chRenderQuestion();
+}
+
+function startChallengeTargeted() {
+  if (!_chWrongWords.length) return;
+  _chQueue = _buildRoundQueue(_chPool, _chWrongWords);
+  _chIdx = 0; _chCorrect = 0; _chWrong = 0; _chWrongWords = [];
+  _chTargetMode = true;
+  showScreen('challenge-screen');
+  _chRenderQuestion();
+}
+
+function _chRenderQuestion() {
+  if (_chAutoAdv) { clearTimeout(_chAutoAdv); _chAutoAdv = null; }
+  if (_chIdx >= _chQueue.length) { _chShowResult(); return; }
+
+  _chWord = _chQueue[_chIdx];
+  var total = _chQueue.length;
+  document.getElementById('ch-q-pill').textContent     = (_chIdx + 1) + ' / ' + total;
+  document.getElementById('ch-prog-fill').style.width  = Math.round(_chIdx / total * 100) + '%';
+  document.getElementById('ch-prog-left').textContent  = '\u7b54\u5bf9 ' + _chCorrect;
+  document.getElementById('ch-prog-right').textContent = '\u5171 ' + total + ' \u9898';
+  document.getElementById('ch-correct-n').textContent  = _chCorrect;
+  document.getElementById('ch-wrong-n').textContent    = _chWrong;
+  document.getElementById('ch-remain-n').textContent   = total - _chIdx;
+
+  var srcTag = document.getElementById('ch-src-tag');
+  srcTag.className = 'ch-src-tag'; srcTag.textContent = '';
+
+  var sentence = EXAMPLES[_chWord] || '';
+  var parts    = sentence.split('__');
+  document.getElementById('ch-sentence').innerHTML =
+    parts[0] + '<span class="ch-blank" id="ch-blank"></span>' + (parts[1] || '');
+
+  var nxtBtn = document.getElementById('ch-next-btn');
+  nxtBtn.className = 'ch-next-btn';
+  nxtBtn.textContent = (_chIdx < total - 1) ? '\u4e0b\u4e00\u9898 \u2192' : '\u67e5\u770b\u7ed3\u679c \u2192';
+
+  var opts = _chBuildOptions(_chWord, _chPool);
+  var optsEl = document.getElementById('ch-options');
+  optsEl.innerHTML = '';
+  opts.forEach(function(opt) {
+    var btn = document.createElement('button');
+    btn.className = 'ch-opt';
+    var safeOpt = opt.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    btn.innerHTML = '<span>' + opt + '</span>' +
+      '<button onclick="event.stopPropagation();speak(\'' + safeOpt + '\',this)" ' +
+      'style="background:none;border:none;cursor:pointer;font-size:.8rem;padding:0;flex-shrink:0;opacity:0.5;">\ud83d\udd0a</button>';
+    (function(o, b) {
+      b.onclick = function() { _chPick(b, o, o === _chWord); };
+    })(opt, btn);
+    optsEl.appendChild(btn);
+  });
+}
+
+function _chPick(btn, opt, isRight) {
+  if (document.querySelector('.ch-opt.correct, .ch-opt.wrong')) return;
+  var blank  = document.getElementById('ch-blank');
+  var srcTag = document.getElementById('ch-src-tag');
+  var comp   = getCompLabel(_chWord, _chLevel);
+  if (comp) { srcTag.textContent = comp; srcTag.classList.add('show'); }
+  document.querySelectorAll('.ch-opt').forEach(function(b) { b.onclick = null; });
+
+  if (isRight) {
+    btn.classList.add('correct');
+    blank.textContent = _chWord; blank.classList.add('filled');
+    document.querySelectorAll('.ch-opt').forEach(function(b) { if (b !== btn) b.classList.add('dim'); });
+    _chCorrect++;
+    var wasMastered = isMastered(_chWord);
+    markWordCorrect(_chWord);
+    if (!wasMastered && isMastered(_chWord)) _awardMasteryBonus(_chWord);
+    _awardClozePoints(_chWord, true);
+    _chAutoAdv = setTimeout(chNextQuestion, 900);
+  } else {
+    btn.classList.add('wrong');
+    blank.classList.add('wrong-fill');
+    document.querySelectorAll('.ch-opt').forEach(function(b) {
+      var span = b.querySelector('span');
+      if (span && span.textContent === _chWord) b.classList.add('correct');
+      else if (b !== btn) b.classList.add('dim');
+    });
+    _chWrong++; _chWrongWords.push(_chWord);
+    markWordWrong(_chWord); _trackWordError(_chWord);
+    _chAutoAdv = setTimeout(chNextQuestion, 1400);
+  }
+
+  document.getElementById('ch-next-btn').classList.add('show');
+  document.getElementById('ch-correct-n').textContent = _chCorrect;
+  document.getElementById('ch-wrong-n').textContent   = _chWrong;
+  document.getElementById('ch-remain-n').textContent  = _chQueue.length - _chIdx - 1;
+}
+
+function chNextQuestion() {
+  if (_chAutoAdv) { clearTimeout(_chAutoAdv); _chAutoAdv = null; }
+  _chIdx++;
+  _chRenderQuestion();
+}
+
+function chSpeakWord() { if (_chWord) speak(_chWord); }
+
+function _chShowResult() {
+  var total        = _chQueue.length;
+  var consolidateN = _chWrongWords.filter(function(w) { return isConsolidate(w); }).length;
+  var poolMastered = _chPool.filter(function(w) { return isMastered(w); }).length;
+
+  document.getElementById('ch-res-emoji').textContent      = _chCorrect >= total * 0.8 ? '\ud83c\udf89' : _chCorrect >= total * 0.5 ? '\ud83d\udcaa' : '\ud83d\udcd6';
+  document.getElementById('ch-res-title').textContent      = '\u7b2c' + _chRound + '\u8f6e\u5b8c\u6210\uff01';
+  document.getElementById('ch-res-sub').textContent        = (_chUnitTitle || '') + ' \u00b7 ' + total + '\u9898';
+  document.getElementById('ch-res-correct').textContent    = _chCorrect;
+  document.getElementById('ch-res-consolidate').textContent = consolidateN;
+  document.getElementById('ch-res-wrong').textContent      = _chWrong;
+
+  document.getElementById('ch-mb-text').innerHTML =
+    '\u672c\u8f6e\u65b0\u638c\u63e1 <strong>' + _chCorrect + '</strong> \u4e2a\u8bcd\u8bed\u3000' +
+    '\u7d2f\u8ba1 <strong>' + poolMastered + ' / ' + _chPool.length + '</strong> \u5df2\u638c\u63e1';
+
+  var wrongSection = document.getElementById('ch-wrong-section');
+  var wrongCards   = document.getElementById('ch-wrong-cards');
+  if (_chWrongWords.length > 0) {
+    wrongSection.style.display = '';
+    document.getElementById('ch-ws-count').textContent = _chWrongWords.length + ' \u4e2a';
+    wrongCards.innerHTML = '';
+    _chWrongWords.forEach(function(w) {
+      var def  = DEFS[w] || '';
+      var comp = getCompLabel(w, _chLevel) || '';
+      var card = document.createElement('div');
+      card.className = 'ch-wc';
+      card.innerHTML =
+        '<div class="ch-wc-left">' +
+          '<div class="ch-wc-word">' + w + '</div>' +
+          (def  ? '<div class="ch-wc-def">' + def + '</div>' : '') +
+          (comp ? '<div class="ch-wc-src">' + comp + '</div>' : '') +
+        '</div><div class="ch-wc-badge">\u274c</div>';
+      wrongCards.appendChild(card);
+    });
+    var tBtn = document.getElementById('ch-btn-target');
+    tBtn.style.display = '';
+    tBtn.textContent = '\ud83c\udfaf \u4e13\u653b\u9519\u9898\uff08' + _chWrongWords.length + ' \u8bcd\uff09';
+  } else {
+    wrongSection.style.display = 'none';
+    document.getElementById('ch-btn-target').style.display = 'none';
+  }
+
+  _chRound++;
+  showScreen('ch-result-screen');
+  updateHomeStats();
+  saveProgress();
+}
+
+function exitChallenge() {
+  if (_chAutoAdv) { clearTimeout(_chAutoAdv); _chAutoAdv = null; }
+  var lvl = _chLevel || currentLevel;
+  showScreen('level-screen');
+  if (lvl) renderUnitsList(lvl);
+}
+// ══ END CHALLENGE ENGINE ════════════════════════════════════
+
 </script>
 
 <!-- FIRST LOGIN GUIDE MODAL -->
@@ -10863,7 +11275,6 @@ function toggleSfx() {
       <div style="text-align:center;padding:2rem;color:var(--ink-mute);font-family:var(--font-ui);font-size:.85rem;">加载中…</div>
     </div>
     <div style="border-top:1.5px solid var(--paper-3);padding:.65rem 1.1rem;display:flex;align-items:center;justify-content:space-between;background:white;flex-shrink:0;">
-      <span style="font-size:.6rem;color:var(--ink-mute);font-family:var(--font-ui);max-width:200px;line-height:1.4;">学号·班级·昵称·掌握词数·进度%·闪卡次·填空次·总次数·最近活跃·状态</span>
       <button onclick="_doExportSnapshot()" style="padding:.38rem .85rem;border-radius:16px;border:1.5px solid var(--navy);background:white;color:var(--navy);font-size:.7rem;font-family:var(--font-ui);font-weight:700;cursor:pointer;white-space:nowrap;">📥 导出 CSV</button>
     </div>
   </div>
@@ -10946,6 +11357,69 @@ function toggleSfx() {
       style="display:none;width:100%;padding:.85rem;background:var(--hero-green);color:white;
       border:none;border-radius:var(--r-sm);font-size:1rem;font-family:var(--font-body);
       font-weight:700;cursor:pointer;">开始学习 →</button>
+  </div>
+</div>
+
+<!-- CHALLENGE SCREEN -->
+<div id="challenge-screen" class="screen">
+  <div class="ch-topbar">
+    <button class="ch-back" onclick="exitChallenge()">&#8249;</button>
+    <div class="ch-title-block">
+      <div class="ch-title" id="ch-title">&#9876;&#65039; 填空挑战</div>
+      <div class="ch-sub" id="ch-sub"></div>
+    </div>
+    <div class="ch-q-pill" id="ch-q-pill">1 / 20</div>
+  </div>
+  <div class="ch-prog-wrap">
+    <div class="ch-prog-track"><div class="ch-prog-fill" id="ch-prog-fill" style="width:0%"></div></div>
+    <div class="ch-prog-labels"><span id="ch-prog-left">答对 0</span><span id="ch-prog-right">共 20 题</span></div>
+  </div>
+  <div class="ch-score-strip">
+    <div class="ch-ss-item"><div class="ch-ss-num g" id="ch-correct-n">0</div><div class="ch-ss-label">答对</div></div>
+    <div class="ch-ss-item"><div class="ch-ss-num r" id="ch-wrong-n">0</div><div class="ch-ss-label">答错</div></div>
+    <div class="ch-ss-item"><div class="ch-ss-num" id="ch-remain-n">20</div><div class="ch-ss-label">剩余</div></div>
+  </div>
+  <div class="ch-body">
+    <div class="ch-src-tag" id="ch-src-tag"></div>
+    <div class="ch-sentence" id="ch-sentence"></div>
+    <div class="ch-hint-row">
+      <div class="ch-hint">选出最合适的词语填入空白处</div>
+      <button class="ch-tts-btn" onclick="chSpeakWord()">&#128266;</button>
+    </div>
+    <div class="ch-options" id="ch-options"></div>
+  </div>
+  <div class="ch-next-wrap">
+    <button class="ch-next-btn" id="ch-next-btn" onclick="chNextQuestion()">下一题 &#8594;</button>
+  </div>
+</div>
+
+<!-- CHALLENGE RESULT SCREEN -->
+<div id="ch-result-screen" class="screen">
+  <div class="ch-result-hero">
+    <div class="ch-result-emoji" id="ch-res-emoji">&#127881;</div>
+    <div class="ch-result-title" id="ch-res-title">第一轮完成！</div>
+    <div class="ch-result-sub" id="ch-res-sub"></div>
+  </div>
+  <div class="ch-result-stats">
+    <div class="ch-rs"><div class="ch-rs-num g" id="ch-res-correct">0</div><div class="ch-rs-label">答对</div></div>
+    <div class="ch-rs"><div class="ch-rs-num o" id="ch-res-consolidate">0</div><div class="ch-rs-label">需巩固</div></div>
+    <div class="ch-rs"><div class="ch-rs-num r" id="ch-res-wrong">0</div><div class="ch-rs-label">答错</div></div>
+  </div>
+  <div class="ch-mastery-banner">
+    <div class="ch-mb-icon">&#9989;</div>
+    <div class="ch-mb-text" id="ch-mb-text"></div>
+  </div>
+  <div class="ch-wrong-section" id="ch-wrong-section" style="display:none;">
+    <div class="ch-ws-header">
+      <div class="ch-ws-title">答错的词语</div>
+      <div class="ch-ws-count" id="ch-ws-count">0 个</div>
+    </div>
+    <div class="ch-wrong-cards" id="ch-wrong-cards"></div>
+  </div>
+  <div class="ch-action-btns">
+    <button class="ch-ab primary" onclick="startChallenge()">&#9876;&#65039; 继续挑战 20 题</button>
+    <button class="ch-ab target" id="ch-btn-target" onclick="startChallengeTargeted()" style="display:none;">&#127919; 专攻错题</button>
+    <button class="ch-ab secondary" onclick="exitChallenge()">&#8617; 返回单元</button>
   </div>
 </div>
 
