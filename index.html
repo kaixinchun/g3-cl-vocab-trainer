@@ -203,7 +203,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 }
 .mode-tab.active{font-weight:600;}
 .mode-tab[data-mode="flashcard"].active{color:#1a5276;border-bottom-color:#2878C8;background:rgba(40,120,200,.06);}
-.mode-tab[data-mode="cloze"].active{color:#7B4400;border-bottom-color:#C47C00;background:rgba(196,124,0,.06);}
+.mode-tab[data-mode="cloze"].active{color:white;border-bottom-color:var(--hero-green);background:var(--hero-green);}
 .mode-tab[data-mode="definition"].active{color:#1a5c35;border-bottom-color:#3A8A1A;background:rgba(58,138,26,.06);}
 .mode-tab[data-mode="english"].active{color:#3d0066;border-bottom-color:#6b35a8;background:rgba(107,53,168,.06);}
 .mode-tab-sub{display:block;font-size:.6rem;font-family:var(--font-ui);opacity:.6;margin-top:.1rem;}
@@ -1934,7 +1934,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       <span class="user-type-badge" id="user-type-badge"></span>
       <button class="sfx-btn" id="sfx-toggle-btn" onclick="toggleSfx()" title="声音开关">🔊</button>
       <!-- Desktop: full text labels; Mobile: icon only — controlled by CSS -->
-      <button class="profile-btn" onclick="showProfileModal()"><span class="btn-icon">✏️</span><span class="btn-label-desktop"> 修改身份</span></button>
+      <button class="profile-btn" onclick="showProfileModal()"><span class="btn-icon">✏️</span><span class="btn-label-desktop"> 修改昵称</span></button>
       <button class="profile-btn guide-pill-btn" onclick="showScreen('guide-screen');renderGuide()"><span class="btn-icon">🧭</span><span class="btn-label-desktop"> 使用指南</span></button>
       <button class="user-signout" onclick="signOut()">退出</button>
     </div>
@@ -2085,10 +2085,10 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       <div class="study-title" id="study-title"></div>
     </div>
     <div class="mode-tabs">
-      <button class="mode-tab active" data-mode="flashcard" onclick="switchMode('flashcard')">词语闪卡<span class="mode-tab-sub">必修 ①</span></button>
-      <button class="mode-tab" data-mode="cloze" onclick="switchMode('cloze')">填空挑战<span class="mode-tab-sub">必修 ②</span></button>
-      <button class="mode-tab" data-mode="definition" onclick="switchMode('definition')">华文解释<span class="mode-tab-sub">选修 巩固</span></button>
-      <button class="mode-tab" data-mode="english" onclick="switchMode('english')">英文翻译<span class="mode-tab-sub">选修 巩固</span></button>
+      <button class="mode-tab active" data-mode="flashcard" onclick="switchMode('flashcard')">词语闪卡</button>
+      <button class="mode-tab" data-mode="cloze" onclick="switchMode('cloze')">填空挑战<span class="mode-tab-sub">必修</span></button>
+      <button class="mode-tab" data-mode="definition" onclick="switchMode('definition')">华文解释</button>
+      <button class="mode-tab" data-mode="english" onclick="switchMode('english')">英文翻译</button>
     </div>
     <div class="study-progress-bar"><div class="study-progress-fill" id="study-progress-fill" style="width:0%"></div></div>
   </div>
@@ -2149,13 +2149,13 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       <div class="def-meaning" id="fc-meaning"></div>
       <div class="def-english" id="fc-english"></div>
       <div class="def-example" id="fc-example"></div>
-      <div id="self-mark-btns" class="self-mark-btns" style="width:100%;border-top:1px solid var(--paper-3);margin-top:.9rem;padding-top:.8rem;display:flex;gap:.6rem;">
-        <button class="mark-btn mark-unknown" onclick="markWord(false)">✗ 还不认识</button>
-        <button class="mark-btn mark-known" onclick="markWord(true)">✓ 认识了</button>
-      </div>
+
     </div>
 
     <div class="flip-hint" id="fc-hint">先想想这个词的意思，再翻开查看</div>
+    <div id="fc-next-wrap" style="display:none;width:100%;max-width:380px;margin-top:.6rem;">
+      <button onclick="fcNextCard()" style="width:100%;padding:.75rem;border:none;border-radius:var(--r-sm);background:var(--navy);color:white;font-size:.9rem;font-family:var(--font-body);font-weight:600;cursor:pointer;">下一张 →</button>
+    </div>
   </div>
 
   <!-- MCQ: Chinese meaning -->
@@ -6242,16 +6242,16 @@ function saveProgress() {
 
 function getWordBox(w) { return (progress[w] && progress[w].box) || 0; }
 
-// ── MASTERY: requires BOTH flashcard 认识了 AND cloze correct ─
-// progress[w].fcKnown  = true when marked 认识了 on flashcard
+// ── MASTERY: cloze correct = mastered (flashcard is browse-only) ─
 // progress[w].clozeOk = true when answered correctly in 填空挑战
 // Getting cloze wrong resets clozeOk (demotes mastery)
+// progress[w].scoreLocked = true once mastery bonus awarded (permanent, survives progress reset)
 function isMastered(w)   {
-  return !!(progress[w] && progress[w].fcKnown && progress[w].clozeOk);
+  return !!(progress[w] && progress[w].clozeOk);
 }
 function isLearning(w)   {
   if (isMastered(w)) return false;
-  return !!(progress[w] && (progress[w].fcKnown || progress[w].clozeOk ||
+  return !!(progress[w] && (progress[w].clozeOk ||
             progress[w].box > 0 || progress[w].wrongCount > 0));
 }
 
@@ -6259,10 +6259,7 @@ function markWordCorrect(w) {
   if (!progress[w]) progress[w] = { box:0, wrongCount:0 };
   progress[w].box = Math.min(2, (progress[w].box||0) + 1);
   progress[w].lastSeen = Date.now();
-  // Mark mode-specific condition
-  if (currentMode === 'flashcard') {
-    progress[w].fcKnown = true;
-  } else if (currentMode === 'cloze') {
+  if (currentMode === 'cloze') {
     progress[w].clozeOk = true;
   }
   saveProgress();
@@ -6273,29 +6270,13 @@ function markWordWrong(w) {
   progress[w].box = 0;
   progress[w].wrongCount = (progress[w].wrongCount||0) + 1;
   progress[w].lastSeen = Date.now();
-  // Cloze wrong demotes mastery
   if (currentMode === 'cloze') {
     progress[w].clozeOk = false;
   }
   saveProgress();
 }
 
-// markWord for flashcard self-mark
-function markWordKnownFlashcard(w) {
-  if (!progress[w]) progress[w] = { box:0, wrongCount:0 };
-  progress[w].box = Math.min(2, (progress[w].box||0) + 1);
-  progress[w].fcKnown = true;
-  progress[w].lastSeen = Date.now();
-  saveProgress();
-}
-function markWordUnknownFlashcard(w) {
-  if (!progress[w]) progress[w] = { box:0, wrongCount:0 };
-  progress[w].box = 0;
-  progress[w].wrongCount = (progress[w].wrongCount||0) + 1;
-  progress[w].fcKnown = false;
-  progress[w].lastSeen = Date.now();
-  saveProgress();
-}
+// flashcard self-mark removed — flashcard is now browse-only
 
 function saveSessionResult(unitKey, score, mode) {
   if (!sessionHistory[unitKey]) sessionHistory[unitKey] = [];
@@ -6454,7 +6435,7 @@ function renderUnitsList(level) {
 
       // Count unmastered (attempted but not yet mastered)
       const unmastered = words.filter(w => isLearning(w) && !isMastered(w));
-      const notStarted = words.filter(w => !progress[w] || (progress[w].box === 0 && !progress[w].wrongCount && !progress[w].fcKnown));
+      const notStarted = words.filter(w => !progress[w] || (progress[w].box === 0 && !progress[w].wrongCount && !progress[w].clozeOk));
       const unmasteredChip = unmastered.length > 0
         ? `<span style="font-size:.62rem;background:var(--red-soft);color:var(--red);border-radius:8px;padding:.1rem .45rem;font-family:sans-serif;font-weight:600;flex-shrink:0;">${unmastered.length} 未掌握</span>`
         : '';
@@ -6485,9 +6466,8 @@ function renderUnitsList(level) {
         const targetBtn = document.createElement('button');
         targetBtn.className = 'unit-target-btn';
         // Determine the right mode: skip to cloze if all flashcards done
-        const needFC    = unmastered.filter(w => !progress[w]?.fcKnown);
-        const needCloze = unmastered.filter(w => progress[w]?.fcKnown && !progress[w]?.clozeOk);
-        const smartMode = needFC.length === 0 && needCloze.length > 0 ? 'cloze' : 'flashcard';
+        const needCloze = unmastered.filter(w => !progress[w]?.clozeOk);
+        const smartMode = needCloze.length > 0 ? 'cloze' : 'flashcard';
         targetBtn.innerHTML = `🎯 练习 ${unmastered.length} 个未掌握词语`;
         targetBtn.onclick = (e) => {
           e.stopPropagation();
@@ -6545,8 +6525,7 @@ function startWeakWords() {
 }
 
 function showWeakDashboard(weak) {
-  const needFC   = weak.filter(w => !progress[w]?.fcKnown);
-  const needCloze = weak.filter(w => progress[w]?.fcKnown && !progress[w]?.clozeOk);
+  const needCloze = weak.filter(w => !progress[w]?.clozeOk);
   const overlay  = document.getElementById('weak-dashboard-overlay');
   const wordList = document.getElementById('weak-dash-words');
   const fcBtn    = document.getElementById('weak-dash-fc-btn');
@@ -6558,7 +6537,7 @@ function showWeakDashboard(weak) {
   wordList.innerHTML = '';
   weak.forEach(w => {
     const chip = document.createElement('span');
-    const fc = progress[w]?.fcKnown;
+    const fc = true; // flashcard always counts as done — browse only
     const cl = progress[w]?.clozeOk;
     chip.style.cssText = `display:inline-block;font-size:.82rem;font-family:var(--font-body);
       padding:.15rem .55rem;border-radius:12px;margin:.15rem;border:1px solid;
@@ -6570,8 +6549,8 @@ function showWeakDashboard(weak) {
   });
 
   // Flashcard status
-  const fcDone = needFC.length === 0;
-  fcStatus.textContent = fcDone ? '✅ 已完成' : `🔴 ${needFC.length} 词未完成`;
+  const fcDone = true;
+  fcStatus.textContent = '✅ 已完成';
   fcStatus.style.color = fcDone ? 'var(--green)' : 'var(--red)';
   fcBtn.disabled = fcDone;
   fcBtn.style.opacity = fcDone ? '.45' : '1';
@@ -6586,7 +6565,7 @@ function showWeakDashboard(weak) {
   // Wire up buttons
   fcBtn.onclick = () => {
     closeWeakDashboard();
-    const target = needFC.length > 0 ? needFC : weak;
+    const target = weak;
     currentMode = 'flashcard';
     startStudy(null, '未掌握词语', target, true);
   };
@@ -6772,7 +6751,8 @@ function renderFlashcard(word) {
   // Show example with word filled in
   const ex = EXAMPLES[word] ? EXAMPLES[word].replace('__', '【'+word+'】') : '';
   document.getElementById('fc-example').textContent   = ex;
-  document.getElementById('self-mark-btns').style.display = 'none';
+  const fcNextWrap = document.getElementById('fc-next-wrap');
+  if (fcNextWrap) fcNextWrap.style.display = 'none';
   document.getElementById('fc-hint').style.display = 'block';
 }
 
@@ -6781,35 +6761,17 @@ function flipCard() {
     document.getElementById('fc-front').style.display = 'none';
     document.getElementById('fc-back').style.display = 'flex';
     document.getElementById('fc-hint').style.display = 'none';
-    document.getElementById('self-mark-btns').style.display = 'flex';
+    document.getElementById('fc-next-wrap').style.display = 'block';
     isFlipped = true;
   }
 }
 
-function markWord(known) {
-  const word = currentWords[currentIdx];
-  // Record answer for back-navigation
-  sessionAnswers[currentIdx] = { correct: known, answer: word };
-  if (known) {
-    markWordKnownFlashcard(word);
-    sessionCorrect++;
-    SFX.correct();
-    _sfxStreak = (_sfxStreak || 0) + 1;
-    if (_sfxStreak === 3) SFX.streak();
-    const alreadyMastered = isMastered(word);
-    showToast(alreadyMastered ? '👑 已掌握！' : '✓ 继续完成填空挑战可达到已掌握！');
-  } else {
-    markWordUnknownFlashcard(word);
-    sessionWrong++;
-    sessionWrongWords.push(word);
-    _trackWordError(word);
-    SFX.wrong();
-    _sfxStreak = 0;
-    showToast('继续练习，你会掌握的！');
-  }
+function fcNextCard() {
   currentIdx++;
-  setTimeout(renderQuestion, 320);
+  renderQuestion();
 }
+
+// markWord removed — flashcard is now browse-only
 
 // ── MCQ: Chinese meaning ──────────────────────────────────
 function renderDefinition(word, reviewAns) {
@@ -6827,7 +6789,7 @@ function renderDefinition(word, reviewAns) {
     fb.textContent = isRight ? '✓ 正确！' : `✗ 正确答案是：${correct}`;
     fb.className = 'mcq-feedback show ' + (isRight ? 'correct' : 'wrong');
     document.getElementById('def-next').className = 'next-btn show';
-    if (isRight) { markWordCorrect(word); sessionCorrect++; }
+    if (isRight) { markWordCorrect(word); sessionCorrect++; _awardDefPoints(); }
     else         { markWordWrong(word);   sessionWrong++;   sessionWrongWords.push(word); _trackWordError(word); }
     _autoAdvTimer = setTimeout(nextQuestion, isRight ? 900 : 1400);
   }, reviewAns);
@@ -6921,7 +6883,7 @@ function renderEnglish(word, reviewAns) {
     fb.textContent = isRight ? '✓ Correct!' : `✗ Answer: ${correct}`;
     fb.className = 'mcq-feedback show ' + (isRight ? 'correct' : 'wrong');
     document.getElementById('eng-next').className = 'next-btn show';
-    if (isRight) { markWordCorrect(word); sessionCorrect++; }
+    if (isRight) { markWordCorrect(word); sessionCorrect++; _awardEngPoints(); }
     else         { markWordWrong(word);   sessionWrong++;   sessionWrongWords.push(word); _trackWordError(word); }
     _autoAdvTimer = setTimeout(nextQuestion, isRight ? 900 : 1400);
   }, reviewAns);
@@ -7393,10 +7355,10 @@ function openWordIndex() {
     chip.dataset.word = word;
     chip.dataset.idx = idx;
 
-    const fc = progress[word]?.fcKnown;
+    const fc = true;
     const cl = progress[word]?.clozeOk;
     const mastered = isMastered(word);
-    const seen = progress[word] && (progress[word].box > 0 || progress[word].wrongCount || progress[word].fcKnown);
+    const seen = progress[word] && (progress[word].box > 0 || progress[word].wrongCount || true);
 
     let statusClass, dotClass;
     if (mastered || fc) {
@@ -7446,9 +7408,9 @@ function filterWordIndex(type, doToggle) {
       return;
     }
     const word = chip.dataset.word;
-    const fc = progress[word]?.fcKnown;
+    const fc = true;
     const mastered = isMastered(word);
-    const seen = progress[word] && (progress[word].box > 0 || progress[word].wrongCount || progress[word].fcKnown);
+    const seen = progress[word] && (progress[word].box > 0 || progress[word].wrongCount || true);
 
     let chipType;
     if (mastered || fc) chipType = 'good';
@@ -7566,9 +7528,9 @@ function renderSearchResults(query) {
     item.className = 'sr-item' + (word === _searchExpanded ? ' expanded' : '');
     item.dataset.word = word;
 
-    const fc = progress[word]?.fcKnown;
+    const fc = true;
     const mastered = isMastered(word);
-    const seen = progress[word] && (progress[word].box > 0 || progress[word].wrongCount || progress[word].fcKnown);
+    const seen = progress[word] && (progress[word].box > 0 || progress[word].wrongCount || true);
     const dotColor = (mastered || fc) ? 'var(--green)' : seen ? 'var(--red)' : 'var(--paper-3)';
     const dotBorder = (!seen && !fc) ? 'border:1px solid var(--ink-mute);' : '';
 
@@ -8033,9 +7995,7 @@ async function submitRegister(panel) {
       progress:   {}
     });
 
-    const { sendEmailVerification } = window._fbFns;
-    await sendEmailVerification(cred.user);
-    _showVerifyEmailWall(email);
+    await _onFirebaseLogin(cred.user, { nickname, userType });
   } catch(e) {
     const msg = _fbErrorMsg(e.code);
     showWelcomeError(msg, errId);
@@ -8054,13 +8014,6 @@ async function _onFirebaseLogin(user, fallback) {
     launchApp(GUEST_EMAIL, '访客', '', false);
     return;
   }
-  // ── EMAIL VERIFICATION GATE ───────────────────────────────
-  try { await user.reload(); } catch(_) {}
-  if (!user.emailVerified) {
-    _showVerifyEmailWall(user.email, user);
-    return;
-  }
-
   const { doc, getDoc, updateDoc, serverTimestamp } = window._fbFns;
   const uid = user.uid;
   let   userDoc = null;
@@ -8143,51 +8096,6 @@ async function _onFirebaseLogin(user, fallback) {
     setTimeout(() => {
       showToast('⚠️ 昵称「' + nickname + '」已被拒绝：' + rejReason + '。请联系老师。');
     }, 1500);
-  }
-}
-
-// ── EMAIL VERIFICATION WALL ───────────────────────────────────
-function _showVerifyEmailWall(email, userObj) {
-  const modal = document.getElementById('email-verif-wall');
-  if (!modal) return;
-  const emailEl = document.getElementById('evw-email');
-  if (emailEl) emailEl.textContent = email;
-  modal.style.display = 'flex';
-  modal._firebaseUser = userObj || null;
-}
-
-async function _resendVerificationEmail() {
-  const modal = document.getElementById('email-verif-wall');
-  const btn   = document.getElementById('evw-resend-btn');
-  const msg   = document.getElementById('evw-msg');
-  let fbUser = modal?._firebaseUser || window._fbAuth?.currentUser;
-  if (!fbUser) { if (msg) msg.textContent = '⚠️ Please log in again to resend.'; return; }
-  try {
-    if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
-    await window._fbFns.sendEmailVerification(fbUser);
-    if (msg) { msg.textContent = '✅ Verification email resent! Check inbox and spam folder.'; msg.style.color = 'var(--green)'; }
-  } catch(e) {
-    if (msg) { msg.textContent = '⚠️ ' + (e.code === 'auth/too-many-requests' ? 'Too many requests. Wait a few minutes.' : 'Failed to resend. Try again later.'); msg.style.color = 'var(--red)'; }
-  } finally {
-    if (btn) { btn.disabled = false; btn.textContent = '重发验证邮件 Resend'; }
-  }
-}
-
-async function _checkVerifiedAndLogin() {
-  const modal = document.getElementById('email-verif-wall');
-  const msg   = document.getElementById('evw-msg');
-  const fbUser = modal?._firebaseUser || window._fbAuth?.currentUser;
-  if (!fbUser) { if (msg) { msg.textContent = 'Please log in again.'; msg.style.color = 'var(--red)'; } return; }
-  try {
-    await fbUser.reload();
-    if (fbUser.emailVerified) {
-      modal.style.display = 'none';
-      await _onFirebaseLogin(fbUser);
-    } else {
-      if (msg) { msg.textContent = '❌ Not verified yet. Click the link in your email first.'; msg.style.color = 'var(--red)'; }
-    }
-  } catch(e) {
-    if (msg) { msg.textContent = 'Error checking status. Please try logging in again.'; msg.style.color = 'var(--red)'; }
   }
 }
 
@@ -10240,8 +10148,8 @@ function renderStudentProgress(users, container) {
   const students = users
     .filter(u => NON_TEACHER.includes(u.userType) || !TEACHER_TYPES.includes(u.userType))
     .sort((a, b) => {
-      const aM = Object.values(a.progress || {}).filter(p => p.fcKnown && p.clozeOk).length;
-      const bM = Object.values(b.progress || {}).filter(p => p.fcKnown && p.clozeOk).length;
+      const aM = Object.values(a.progress || {}).filter(p => p.clozeOk).length;
+      const bM = Object.values(b.progress || {}).filter(p => p.clozeOk).length;
       return bM - aM;
     });
 
@@ -10253,7 +10161,7 @@ function renderStudentProgress(users, container) {
   const totalWords = Object.values(VOCAB).flatMap(u => Object.values(u).flat()).length;
 
   // Summary stats
-  const totalMastered = students.reduce((s, u) => s + Object.values(u.progress || {}).filter(p => p.fcKnown && p.clozeOk).length, 0);
+  const totalMastered = students.reduce((s, u) => s + Object.values(u.progress || {}).filter(p => p.clozeOk).length, 0);
   const avgMastered = students.length ? Math.round(totalMastered / students.length) : 0;
   const totalMins = students.reduce((s, u) => s + Math.round((u.totalSessionSeconds || 0) / 60), 0);
   const avgMins = students.length ? Math.round(totalMins / students.length) : 0;
@@ -10296,7 +10204,7 @@ function renderStudentProgress(users, container) {
     <tbody>`;
 
   students.forEach((u, i) => {
-    const mastered = Object.values(u.progress || {}).filter(p => p.fcKnown && p.clozeOk).length;
+    const mastered = Object.values(u.progress || {}).filter(p => p.clozeOk).length;
     const pct = Math.round(mastered / totalWords * 100);
     const lastSeenDate = u.lastSeen?.toDate ? u.lastSeen.toDate() : null;
     const lastSeen = lastSeenDate ? lastSeenDate.toLocaleDateString('zh-SG') : '—';
@@ -10535,7 +10443,7 @@ async function _doExportSnapshot() {
     userSnap.forEach(d => {
       const u = d.data();
       if (!NON_TEACHER.includes(u.userType) && TEACHER_TYPES.includes(u.userType)) return;
-      const mastered = Object.values(u.progress || {}).filter(p => p.fcKnown && p.clozeOk).length;
+      const mastered = Object.values(u.progress || {}).filter(p => p.clozeOk).length;
       const mins = Math.round((u.totalSessionSeconds || 0) / 60);
       const sc = scoreMap[d.id] || {};
       const lastSeen = u.lastSeen?.toDate ? u.lastSeen.toDate().toLocaleDateString('zh-SG') : '—';
@@ -10587,10 +10495,12 @@ document.addEventListener('DOMContentLoaded', () => {
 // ══════════════════════════════════════════════════════════════
 
 // ── Scoring constants ─────────────────────────────────────────
-const SCORE_CORRECT_1ST  = 10;  // correct on first attempt
-const SCORE_CORRECT_2ND  = 5;   // correct on second attempt
-const SCORE_CORRECT_3RD  = 2;   // correct on 3rd+ attempt
-const SCORE_MASTERY_BONUS = 20; // one-time bonus when word fully mastered
+const SCORE_CORRECT_1ST  = 10;  // cloze correct on first attempt
+const SCORE_CORRECT_2ND  = 5;   // cloze correct on second attempt
+const SCORE_CORRECT_3RD  = 2;   // cloze correct on 3rd+ attempt
+const SCORE_MASTERY_BONUS = 20; // one-time bonus when word mastered via cloze
+const SCORE_DEF_CORRECT   = 1;  // 华文解释 correct (+1, no speed bonus)
+const SCORE_ENG_CORRECT   = 1;  // 英文翻译 correct (+1, no speed bonus)
 const SPEED_THRESHOLDS = [[10000,5],[20000,3],[30000,1]]; // [ms, pts]
 
 // Per-session attempt tracker (resets each study session)
@@ -10644,6 +10554,22 @@ function _awardMasteryBonus(word) {
 }
 var _masteryBonusAwarded = {}; // populated on login from Firestore
 
+// ── Award +1 for 华文解释 correct ─────────────────────────
+function _awardDefPoints() {
+  const user = window._fbAuth?.currentUser;
+  if (!user) return;
+  _showScoreToast('+' + SCORE_DEF_CORRECT + ' 📖');
+  _addToUserScore(SCORE_DEF_CORRECT, 0);
+}
+
+// ── Award +1 for 英文翻译 correct ─────────────────────────
+function _awardEngPoints() {
+  const user = window._fbAuth?.currentUser;
+  if (!user) return;
+  _showScoreToast('+' + SCORE_ENG_CORRECT + ' 🔤');
+  _addToUserScore(SCORE_ENG_CORRECT, 0);
+}
+
 // ── Reconcile score on login ──────────────────────────────────
 // Computes what masteryScore SHOULD be from ground-truth progress,
 // and corrects the scores doc if it is missing or understated.
@@ -10658,7 +10584,7 @@ async function _reconcileScore(uid, email, userType, nickname, nicknameApproved)
 
   const { doc, getDoc, setDoc, serverTimestamp } = window._fbFns;
 
-  // Ground-truth: all words where fcKnown && clozeOk in merged progress
+  // Ground-truth: all words where clozeOk in merged progress
   const masteredWords = Object.entries(progress)
     .filter(([, p]) => p.fcKnown && p.clozeOk)
     .map(([w]) => w);
@@ -11202,51 +11128,6 @@ function toggleSfx() {
   </div>
 </div>
 
-
-<!-- ── EMAIL VERIFICATION WALL (blocks unverified users) ─── -->
-<div id="email-verif-wall" style="display:none;position:fixed;inset:0;z-index:9998;
-  background:rgba(0,0,0,.65);backdrop-filter:blur(5px);
-  align-items:center;justify-content:center;">
-  <div style="background:white;border-radius:18px;padding:2rem 1.6rem;
-    max-width:380px;width:92%;box-shadow:0 8px 40px rgba(0,0,0,.35);text-align:center;
-    font-family:var(--font-ui);">
-    <div style="font-size:2.8rem;margin-bottom:.5rem;">📧</div>
-    <div style="font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:.4rem;
-      font-family:var(--font-body);">请先验证电邮</div>
-    <div style="font-size:.8rem;color:var(--ink-mute);line-height:1.6;margin-bottom:.3rem;">
-      A verification email has been sent to:
-    </div>
-    <div id="evw-email" style="font-size:.85rem;font-weight:700;color:var(--hero-blue);
-      margin-bottom:1rem;word-break:break-all;"></div>
-    <div style="font-size:.78rem;color:var(--ink-mute);line-height:1.7;margin-bottom:1rem;">
-      Please click the link in the email to verify your account.<br>
-      Check your <strong>inbox and spam/junk folder</strong>.
-    </div>
-    <div id="evw-msg" style="font-size:.75rem;min-height:1.2em;margin-bottom:.8rem;
-      color:var(--ink-mute);"></div>
-    <button id="evw-check-btn" onclick="_checkVerifiedAndLogin()"
-      style="width:100%;padding:.8rem;background:var(--hero-green);color:white;
-      border:none;border-radius:var(--r-sm);font-size:.95rem;font-family:var(--font-body);
-      font-weight:700;cursor:pointer;margin-bottom:.6rem;">
-      ✅ I've verified — Enter App
-    </button>
-    <button id="evw-resend-btn" onclick="_resendVerificationEmail()"
-      style="width:100%;padding:.7rem;background:transparent;color:var(--hero-blue);
-      border:1.5px solid var(--hero-blue);border-radius:var(--r-sm);font-size:.85rem;
-      font-family:var(--font-ui);cursor:pointer;">
-      重发验证邮件 Resend Email
-    </button>
-    <div style="margin-top:1rem;font-size:.72rem;color:var(--ink-mute);">
-      Wrong email?
-      <button onclick="document.getElementById('email-verif-wall').style.display='none';
-        window._fbFns?.fbSignOut(window._fbAuth);"
-        style="background:none;border:none;color:var(--hero-blue);cursor:pointer;
-        font-size:.72rem;text-decoration:underline;padding:0;">
-        Back to login
-      </button>
-    </div>
-  </div>
-</div>
 
 <!-- ── EMAIL VERIFICATION MODAL (handles Firebase email link) ─── -->
 <div id="email-verify-modal" style="display:none;position:fixed;inset:0;z-index:9999;
