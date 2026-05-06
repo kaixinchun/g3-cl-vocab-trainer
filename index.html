@@ -8375,16 +8375,19 @@ function showProfileModal() {
   const nickname = getUserNickname();
   const approved = isNicknameApproved();
   if (info) {
+    // Show userId (strip @bvss.vk domain) instead of internal email
+    const displayId = email ? email.replace('@bvss.vk', '') : '—';
     info.innerHTML =
-      '电邮：' + email + '<br>' +
+      '账号：' + displayId + '<br>' +
       '身份：' + (userType || '—');
   }
-  // Populate nickname label in edit section
+  // Populate nickname label — show approved nick + pending indicator if any
   const nickLabel = document.getElementById('profile-nick-label');
   if (nickLabel) {
-    if (nickname) {
-      const status = approved ? ' ✅' : ' ⏳待审核';
-      nickLabel.innerHTML = '昵称：<strong style="color:var(--ink);">' + nickname + '</strong>' + status;
+    if (nickname && approved) {
+      nickLabel.innerHTML = '昵称：<strong style="color:var(--ink);">' + nickname + '</strong> ✅';
+    } else if (nickname && !approved) {
+      nickLabel.innerHTML = '昵称：<strong style="color:var(--ink);">' + nickname + '</strong> ⏳待审核';
     } else {
       nickLabel.textContent = '昵称：未设置';
     }
@@ -8424,27 +8427,33 @@ async function submitNicknameChange() {
   if (btn) { btn.disabled = true; btn.textContent = '提交中…'; }
 
   try {
-    const { doc, updateDoc } = window._fbFns;
+    const { doc, updateDoc, getDoc } = window._fbFns;
+    // Read current approved nickname to preserve it on leaderboard while pending
+    const snap = await getDoc(doc(window._fbDb, 'users', user.uid));
+    const currentApproved = snap.exists() ? (snap.data().nickname || '') : '';
+    const isApproved = snap.exists() ? !!snap.data().nicknameApproved : false;
+
+    // Write to nicknamePending — NOT nickname directly
+    // nickname stays as current approved value until teacher approves
     await updateDoc(doc(window._fbDb, 'users', user.uid), {
-      nickname: nn,
-      nicknameApproved: false,
+      nicknamePending: nn,
       nicknameRejected: false,
       nicknameRejectionReason: ''
     });
-    // Update localStorage so home pill reflects new pending nickname
-    localStorage.setItem('cl_vocab_user_nickname', nn);
-    localStorage.setItem('cl_vocab_nickname_approved', '0');
-    sessionStorage.setItem('cl_vocab_user_nickname', nn);
-    // Refresh home pill
+    // localStorage: keep current approved nick for display; show pending indicator
+    const displayNick = isApproved && currentApproved ? currentApproved : nn;
+    localStorage.setItem('cl_vocab_user_nickname', displayNick);
+    localStorage.setItem('cl_vocab_nickname_approved', isApproved ? '1' : '0');
+    sessionStorage.setItem('cl_vocab_user_nickname', displayNick);
+    // Refresh home pill to show pending state
     const nickEl = document.getElementById('user-nickname-display');
     if (nickEl) {
       nickEl.style.display = 'inline';
-      nickEl.textContent = '👤 ' + nn + '（待审核）';
+      nickEl.textContent = '👤 ' + (isApproved && currentApproved ? currentApproved : nn) + '（待审核）';
       nickEl.style.color = 'var(--amber)';
     }
-    showToast('✅ 新昵称已提交，等待老师审核');
+    showToast('✅ 新昵称「' + nn + '」已提交，等待老师审核');
     closeProfileModal();
-    // Nudge badge update
     _updatePendingNickBadge();
   } catch(e) {
     errEl.textContent = '提交失败：' + e.message;
