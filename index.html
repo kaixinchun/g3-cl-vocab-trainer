@@ -1754,17 +1754,12 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       </div>
     </div>
     <div class="ws-right">
-      <!-- Tab toggle: Login / Register -->
-      <div style="display:flex;gap:.4rem;margin-bottom:1rem;">
-        <button id="tab-login-desktop" class="auth-tab auth-tab-active" onclick="switchAuthTab('login','desktop')">登录</button>
-        <button id="tab-register-desktop" class="auth-tab" onclick="switchAuthTab('register','desktop')">注册新账号</button>
-      </div>
       <div id="ws-login-desktop">
         <div class="ws-heading" style="margin-bottom:.3rem;">欢迎回来</div>
-        <div class="ws-sub2">输入电邮和密码登录。</div>
-        <label class="welcome-label">电邮地址</label>
-        <input class="welcome-input" id="welcome-email-desktop" type="email" placeholder="e.g. name@students.edu.sg"
-          autocomplete="email" autocapitalize="none" onkeydown="if(event.key==='Enter') submitLogin('desktop')">
+        <div class="ws-sub2">输入学号和密码登录。</div>
+        <label class="welcome-label">学号</label>
+        <input class="welcome-input" id="welcome-email-desktop" type="text" placeholder="例：2027G3CL001"
+          autocomplete="username" autocapitalize="none" onkeydown="if(event.key==='Enter') submitLogin('desktop')">
         <label class="welcome-label" style="margin-top:.2rem">密码</label>
         <div class="pw-wrap">
           <input class="welcome-input" id="welcome-pw-desktop" type="password" placeholder="输入密码"
@@ -1773,58 +1768,9 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
         </div>
         <div class="welcome-error" id="welcome-error-desktop"></div>
         <button class="welcome-btn" onclick="submitLogin('desktop')">登录 →</button>
-        <div style="text-align:right;margin-top:-.5rem;margin-bottom:.5rem;">
-          <button type="button" onclick="submitForgotPassword('desktop')" style="background:none;border:none;color:var(--hero-blue);font-size:.75rem;font-family:var(--font-ui);cursor:pointer;text-decoration:underline;padding:0;">忘记密码？</button>
-        </div>
-        <div class="welcome-note" style="margin-top:.3rem">没有账号？点击上方「注册新账号」。</div>
-
+        <div class="welcome-note" style="margin-top:.3rem">账号由老师统一创建。如忘记密码，请联系老师重置。</div>
       </div>
-      <div id="ws-register-desktop" style="display:none;">
-        <div class="ws-heading" style="margin-bottom:.3rem;">注册新账号</div>
-        <div class="ws-sub2">请使用MOE iCON电邮地址注册。</div>
-        <label class="welcome-label">MOE iCON 电邮地址</label>
-        <input class="welcome-input" id="reg-email-desktop" type="email"
-          placeholder="@students.edu.sg 或 @moe.edu.sg"
-          autocomplete="email" autocapitalize="none"
-          oninput="onRegEmailInput('desktop')">
-        <div id="reg-domain-hint-desktop" style="font-size:.72rem;font-family:var(--font-ui);color:var(--ink-mute);margin:.15rem 0 .3rem;min-height:1.1em;"></div>
-        <label class="welcome-label">密码（至少6位）</label>
-        <div class="pw-wrap">
-          <input class="welcome-input" id="reg-pw-desktop" type="password" placeholder="设置密码（至少6位）"
-            autocomplete="new-password">
-          <button type="button" class="pw-eye-btn" onmousedown="_pwReveal('reg-pw-desktop')" onmouseup="_pwHide('reg-pw-desktop')" onmouseleave="_pwHide('reg-pw-desktop')" ontouchstart="event.preventDefault();_pwReveal('reg-pw-desktop')" ontouchend="_pwHide('reg-pw-desktop')">👁</button>
-        </div>
-        <label class="welcome-label" style="margin-top:.2rem">昵称 <span style="font-size:.7rem;color:var(--ink-mute);">（2–8个汉字，可加数字，待老师审核）</span></label>
-        <input class="welcome-input" id="reg-nickname-desktop" type="text" placeholder="例：词星88" maxlength="8"
-          oninput="onNicknameInput(this)" onkeydown="if(event.key==='Enter') submitRegister('desktop')">
-        <!-- Student fields (shown for @students.edu.sg) -->
-        <div id="reg-student-fields-desktop" style="display:none;">
-          <label class="welcome-label" style="margin-top:.2rem">你的学校</label>
-          <select class="welcome-select" id="reg-school-desktop">
-            <option value="百德中学">百德中学 Bukit View Secondary School</option>
-            <option value="其他学校">其他学校 Other Schools</option>
-          </select>
-        </div>
-        <!-- Teacher fields (shown for @moe.edu.sg) -->
-        <div id="reg-teacher-fields-desktop" style="display:none;">
-          <label class="welcome-label" style="margin-top:.2rem">你的学校</label>
-          <select class="welcome-select" id="reg-tschool-desktop">
-            <option value="">── 请选择 ──</option>
-            <option value="百德中学">百德中学 Bukit View Secondary School</option>
-            <option value="其他学校">其他学校 Other Schools</option>
-          </select>
-          <label class="welcome-label" style="margin-top:.2rem">科目</label>
-          <select class="welcome-select" id="reg-tsubject-desktop">
-            <option value="">── 请选择 ──</option>
-            <option value="华文教师">华文教师 (Chinese Language Teacher)</option>
-            <option value="其他科目教师">其他科目教师 (Other Subject Teacher)</option>
-          </select>
-        </div>
 
-        <div class="welcome-error" id="welcome-reg-error-desktop"></div>
-        <button class="welcome-btn" onclick="submitRegister('desktop')">注册并开始学习 →</button>
-        <div class="welcome-note" style="margin-top:.5rem">昵称须经老师审核后才会正式显示。仅限MOE iCON电邮注册。</div>
-      </div>
     </div>
   </div>
 
@@ -1835,16 +1781,11 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       新加坡中学G3华文<br>
       中一至中四课文词语总复习
     </div>
-    <!-- Tab toggle -->
-    <div style="display:flex;gap:.4rem;margin-bottom:.8rem;">
-      <button id="tab-login-mobile" class="auth-tab auth-tab-active" onclick="switchAuthTab('login','mobile')">登录</button>
-      <button id="tab-register-mobile" class="auth-tab" onclick="switchAuthTab('register','mobile')">注册新账号</button>
-    </div>
     <!-- LOGIN panel -->
     <div id="ws-login-mobile">
-      <label class="welcome-label">电邮地址</label>
-      <input class="welcome-input" id="welcome-email" type="email" placeholder="e.g. name@students.edu.sg"
-        autocomplete="email" autocapitalize="none" onkeydown="if(event.key==='Enter') submitLogin('mobile')">
+      <label class="welcome-label">学号</label>
+      <input class="welcome-input" id="welcome-email" type="text" placeholder="例：2027G3CL001"
+        autocomplete="username" autocapitalize="none" onkeydown="if(event.key==='Enter') submitLogin('mobile')">
       <label class="welcome-label" style="margin-top:.2rem">密码</label>
       <div class="pw-wrap">
         <input class="welcome-input" id="welcome-pw" type="password" placeholder="输入密码"
@@ -1853,57 +1794,9 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       </div>
       <div class="welcome-error" id="welcome-error"></div>
       <button class="welcome-btn" onclick="submitLogin('mobile')">登录 →</button>
-      <div style="text-align:right;margin-top:-.5rem;margin-bottom:.5rem;">
-        <button type="button" onclick="submitForgotPassword('mobile')" style="background:none;border:none;color:var(--hero-blue);font-size:.75rem;font-family:var(--font-ui);cursor:pointer;text-decoration:underline;padding:0;">忘记密码？</button>
-      </div>
-      <div class="welcome-note">没有账号？点击上方「注册新账号」。</div>
-
+      <div class="welcome-note">账号由老师统一创建。如忘记密码，请联系老师重置。</div>
     </div>
-    <!-- REGISTER panel -->
-    <div id="ws-register-mobile" style="display:none;">
-      <label class="welcome-label">MOE iCON 电邮地址</label>
-      <input class="welcome-input" id="reg-email" type="email"
-        placeholder="@students.edu.sg 或 @moe.edu.sg"
-        autocomplete="email" autocapitalize="none"
-        oninput="onRegEmailInput('mobile')">
-      <div id="reg-domain-hint-mobile" style="font-size:.72rem;font-family:var(--font-ui);color:var(--ink-mute);margin:.15rem 0 .3rem;min-height:1.1em;"></div>
-      <label class="welcome-label">密码（至少6位）</label>
-      <div class="pw-wrap">
-        <input class="welcome-input" id="reg-pw" type="password" placeholder="设置密码（至少6位）"
-          autocomplete="new-password">
-        <button type="button" class="pw-eye-btn" onmousedown="_pwReveal('reg-pw')" onmouseup="_pwHide('reg-pw')" onmouseleave="_pwHide('reg-pw')" ontouchstart="event.preventDefault();_pwReveal('reg-pw')" ontouchend="_pwHide('reg-pw')">👁</button>
-      </div>
-      <label class="welcome-label" style="margin-top:.2rem">昵称 <span style="font-size:.7rem;color:var(--ink-mute);">（2–8个汉字，可加数字）</span></label>
-      <input class="welcome-input" id="reg-nickname" type="text" placeholder="例：词星88" maxlength="8"
-        oninput="onNicknameInput(this)" onkeydown="if(event.key==='Enter') submitRegister('mobile')">
-      <!-- Student fields -->
-      <div id="reg-student-fields-mobile" style="display:none;">
-        <label class="welcome-label" style="margin-top:.2rem">你的学校</label>
-        <select class="welcome-select" id="reg-school-mobile">
-          <option value="百德中学">百德中学 Bukit View Secondary School</option>
-          <option value="其他学校">其他学校 Other Schools</option>
-        </select>
-      </div>
-      <!-- Teacher fields -->
-      <div id="reg-teacher-fields-mobile" style="display:none;">
-        <label class="welcome-label" style="margin-top:.2rem">你的学校</label>
-        <select class="welcome-select" id="reg-tschool-mobile">
-          <option value="">── 请选择 ──</option>
-          <option value="百德中学">百德中学 Bukit View Secondary School</option>
-          <option value="其他学校">其他学校 Other Schools</option>
-        </select>
-        <label class="welcome-label" style="margin-top:.2rem">科目</label>
-        <select class="welcome-select" id="reg-tsubject-mobile">
-          <option value="">── 请选择 ──</option>
-          <option value="华文教师">华文教师 (Chinese Language Teacher)</option>
-          <option value="其他科目教师">其他科目教师 (Other Subject Teacher)</option>
-        </select>
-      </div>
 
-      <div class="welcome-error" id="welcome-reg-error"></div>
-      <button class="welcome-btn" onclick="submitRegister('mobile')">注册并开始学习 →</button>
-      <div class="welcome-note">昵称须经老师审核后才会正式显示。仅限MOE iCON电邮注册。</div>
-    </div>
     <div class="app-credit">
       百德中学母语部 · 词王淬炼坊 © 2026
     </div>
@@ -7606,38 +7499,24 @@ function jumpToWordFlashcard(word) {
   if (wordIdx >= 0) { currentIdx = wordIdx; renderQuestion(); }
 }
 
-// ── FORGOT PASSWORD ──────────────────────────────────────────
-async function submitForgotPassword(panel) {
-  const suffix = panel === 'desktop' ? '-desktop' : '';
-  const email = (document.getElementById('welcome-email' + suffix)?.value || '').trim().toLowerCase();
-  const errId = 'welcome-error' + suffix;
-  if (!email || !email.includes('@')) {
-    showWelcomeError('请先输入你的电邮地址，再点击「忘记密码」。', errId);
-    return;
-  }
-  try {
-    await window._fbFns.sendPasswordResetEmail(window._fbAuth, email);
-    showWelcomeError('✅ 重置密码邮件已发送，请查收收件箱（包括垃圾邮件）。', errId);
-    document.getElementById('welcome-error' + suffix).style.color = 'var(--green)';
-  } catch(e) {
-    const msgs = {
-      'auth/user-not-found': '找不到此电邮账号，请先注册。',
-      'auth/invalid-email':  '电邮地址格式不正确。',
-      'auth/too-many-requests': '请求过多，请稍后再试。',
-    };
-    showWelcomeError(msgs[e.code] || '发送失败，请稍后再试。', errId);
-  }
+// ── FORGOT PASSWORD — teacher-mediated reset ─────────────────
+function submitForgotPassword(panel) {
+  // No self-service reset — teacher resets password via dashboard
+  // Function kept as stub to avoid any remaining onclick references
 }
 
 // ── FIREBASE LOGIN ────────────────────────────────────────────
 async function submitLogin(panel) {
   const suffix = panel === 'desktop' ? '-desktop' : '';
-  const email = (document.getElementById('welcome-email' + suffix)?.value || '').trim().toLowerCase();
-  const pw    = (document.getElementById('welcome-pw' + suffix)?.value || '').trim();
-  const errId = 'welcome-error' + suffix;
+  const userId = (document.getElementById('welcome-email' + suffix)?.value || '').trim();
+  const pw     = (document.getElementById('welcome-pw' + suffix)?.value || '').trim();
+  const errId  = 'welcome-error' + suffix;
 
-  if (!email) { showWelcomeError('请输入电邮地址', errId); return; }
-  if (!pw)    { showWelcomeError('请输入密码', errId); return; }
+  if (!userId) { showWelcomeError('请输入学号', errId); return; }
+  if (!pw)     { showWelcomeError('请输入密码', errId); return; }
+
+  // Build internal Firebase email from userId
+  const email = userId.toLowerCase() + '@bvss.vk';
 
   const btn = document.querySelector(`#ws-login-${panel} .welcome-btn`);
   if (btn) { btn.disabled = true; btn.textContent = '登录中…'; }
@@ -7647,16 +7526,23 @@ async function submitLogin(panel) {
     const cred = await signInWithEmailAndPassword(window._fbAuth, email, pw);
     await _onFirebaseLogin(cred.user);
   } catch(e) {
-    const msg = _fbErrorMsg(e.code);
-    showWelcomeError(msg, errId);
+    const msgs = {
+      'auth/user-not-found':     '找不到此学号，请检查输入。',
+      'auth/wrong-password':     '密码错误，请重试。',
+      'auth/invalid-credential': '学号或密码错误，请重试。',
+      'auth/too-many-requests':  '尝试次数过多，请稍后再试。',
+      'auth/network-request-failed': '网络错误，请检查连接后重试。',
+    };
+    showWelcomeError(msgs[e.code] || '登录失败，请重试。', errId);
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = '登录 →'; }
   }
 }
 
-// ── TEACHER WHITELIST ─────────────────────────────────────────
-const DASHBOARD_WHITELIST = ['kai_xin_chun@moe.edu.sg'];
-function isDashboardUser() { return DASHBOARD_WHITELIST.includes(getUserEmail()); }
+// ── DASHBOARD ACCESS: role-based from Firestore ──────────────
+// _userRole is set on login from Firestore users doc
+var _userRole = '';
+function isDashboardUser() { return _userRole === 'admin' || _userRole === 'teacher'; }
 
 // ── SCHOOL LIST ───────────────────────────────────────────────
 const SCHOOL_LIST = [
@@ -8028,13 +7914,15 @@ async function _onFirebaseLogin(user, fallback) {
   } catch(e) { console.warn('Firestore read failed, using local data', e); }
 
   const email    = user.email;
-  const userType = userDoc?.userType || fallback?.userType || '公众人士';
+  const userType = userDoc?.userType || fallback?.userType || '百德中学学生';
   const nickname = userDoc?.nickname || fallback?.nickname || '';
   const nicknameApproved = userDoc?.nicknameApproved || false;
   const nicknameRejected = userDoc?.nicknameRejected || false;
   const rejReason = userDoc?.nicknameRejectionReason || '';
-  const accountApproved = userDoc?.accountApproved !== false; // default true for legacy accounts
-  const accountBanned   = userDoc?.banned === true;
+  const accountApproved = userDoc?.status !== 'disabled'; // disabled = 已离校
+  const accountBanned   = userDoc?.status === 'disabled';
+  // Set role for dashboard access
+  _userRole = userDoc?.role || '';
 
   // Banned account: block immediately
   if (accountBanned) {
@@ -8079,9 +7967,30 @@ async function _onFirebaseLogin(user, fallback) {
       saveProgress();
     } catch(e) {}
   } else {
-    // No Firestore progress for this user — start fresh (don't inherit local from another user)
+    // No Firestore doc — first login. Create doc with new schema.
     progress = {};
     saveProgress();
+    try {
+      const { doc, setDoc, serverTimestamp } = window._fbFns;
+      // Extract userId from email (strip @bvss.vk)
+      const derivedUserId = user.email.replace('@bvss.vk', '');
+      await setDoc(doc(window._fbDb, 'users', user.uid), {
+        userId: derivedUserId,
+        userType: userType,
+        role: _userRole || '',
+        nickname: '',
+        nicknameApproved: false,
+        nicknamePending: '',
+        status: 'active',
+        defaultPasswordChanged: false,
+        flashcardSessions: 0,
+        clozeSessions: 0,
+        classHistory: {},
+        createdAt: serverTimestamp(),
+        lastSeen: serverTimestamp(),
+        progress: {}
+      }, { merge: true });
+    } catch(e) { console.warn('Could not create user doc on first login', e); }
   }
 
   saveUserIdentity(email, userType, nickname, nicknameApproved);
