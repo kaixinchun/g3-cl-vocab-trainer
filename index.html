@@ -826,66 +826,40 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   }
 
   /* ── STUDY BOTTOM NAV PILLS ─────────────────────────────── */
-  .study-nav-pill {
+  /* ── Study nav pill bar — emoji-only, left-aligned row ── */
+  #study-nav-bar {
     position: fixed;
-    bottom: 1.1rem;
-    background: rgba(30,40,60,.78);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    color: rgba(255,255,255,.9);
-    border: 1px solid rgba(255,255,255,.18);
-    border-radius: 20px;
-    padding: .45rem .9rem;
-    font-size: .72rem;
-    font-family: var(--font-ui);
+    bottom: 1rem;
+    left: .85rem;
+    display: none;
+    flex-direction: row;
+    gap: .5rem;
+    z-index: 50;
+  }
+  #study-nav-bar.show { display: flex; }
+  .study-nav-pill {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.22);
     cursor: pointer;
     box-shadow: var(--shadow-md);
-    z-index: 50;
-    display: none;
+    display: flex;
     align-items: center;
-    gap: .3rem;
-    transition: background var(--t);
-    white-space: nowrap;
-    min-width: 5.2rem;
     justify-content: center;
-    text-align: center;
+    font-size: 1rem;
+    transition: transform .15s, opacity .15s;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }
-  .study-nav-pill:hover { background: rgba(30,40,60,.95); }
-  /* left: 返回主页 — school navy */
-  .study-nav-pill-left   {
-    left: .9rem;
-    background: rgba(26,42,94,.82);
-    border-color: rgba(255,255,255,.22);
-  }
-  .study-nav-pill-left:hover { background: rgba(26,42,94,1); }
-  /* center: 返回单元 — school forest green */
-  .study-nav-pill-center {
-    left: 50%; transform: translateX(-50%);
-    background: rgba(45,106,79,.82);
-    border-color: rgba(255,255,255,.22);
-  }
-  .study-nav-pill-center:hover { background: rgba(45,106,79,1); }
-  /* right: 提供反馈 — school gold/amber */
-  .study-nav-pill-right {
-    right: .9rem;
-    background: rgba(184,140,0,.88);
-    border-color: rgba(255,255,255,.22);
-    color: #fff;
-  }
-  .study-nav-pill-right:hover { background: rgba(184,140,0,1); }
-  .study-nav-pill.show   { display: flex; }
-  /* Desktop: stack pills vertically on left side, away from content */
+  .study-nav-pill:hover { transform: scale(1.1); opacity: .9; }
+  .study-nav-pill-left   { background: rgba(26,42,94,.88); }
+  .study-nav-pill-center { background: rgba(45,106,79,.88); }
+  .study-nav-pill-right  { background: rgba(184,140,0,.92); }
+  /* Desktop: keep same position, just slightly larger */
   @media(min-width:700px) {
-    .study-nav-pill {
-      bottom: auto;
-      left: .8rem !important;
-      transform: none !important;
-      right: auto !important;
-      min-width: 6rem;
-    }
-    .study-nav-pill-left   { top: calc(50% - 4.5rem); }
-    .study-nav-pill-center { top: 50%; }
-    .study-nav-pill-right  { top: calc(50% + 4.5rem); }
+    #study-nav-bar { bottom: 1.2rem; left: 1rem; }
+    .study-nav-pill { width: 2.6rem; height: 2.6rem; font-size: 1.05rem; }
   }
 
   /* ── FEEDBACK BUTTON (floating) ─────────────────────────── */
@@ -2162,9 +2136,11 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   </div>
 
   <!-- Fixed bottom navigation pills -->
-  <button id="study-home-btn" onclick="if(confirm('返回主页？当前练习进度不会丢失。'))showScreen('home-screen')" class="study-nav-pill study-nav-pill-left">🏠 返回主页</button>
-  <button id="study-chapter-btn" onclick="exitStudy()" class="study-nav-pill study-nav-pill-center">↩ 返回单元</button>
-  <button id="study-feedback-btn" onclick="showFeedbackModal()" class="study-nav-pill study-nav-pill-right">💬 提供反馈</button>
+  <div id="study-nav-bar">
+    <button id="study-home-btn" onclick="if(confirm('返回主页？当前练习进度不会丢失。'))showScreen('home-screen')" class="study-nav-pill study-nav-pill-left" title="返回主页">🏠</button>
+    <button id="study-chapter-btn" onclick="exitStudy()" class="study-nav-pill study-nav-pill-center" title="返回单元">↩</button>
+    <button id="study-feedback-btn" onclick="showFeedbackModal()" class="study-nav-pill study-nav-pill-right" title="提供反馈">💬</button>
+  </div>
 
   <!-- WORD INDEX DRAWER OVERLAY -->
   <div id="word-index-overlay" onclick="closeWordIndexIfOutside(event)">
@@ -2274,13 +2250,11 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
         <div style="font-size:.65rem;font-family:sans-serif;color:var(--red);font-weight:600;margin-bottom:.45rem;">需要再练习的词语</div>
         <div id="passage-wrong-chips" style="display:flex;flex-wrap:wrap;gap:.4rem;"></div>
       </div>
-      <div style="display:flex;gap:.6rem;justify-content:space-between;align-items:center;">
-        <div class="passage-pager" id="passage-pager"></div>
-        <div style="display:flex;gap:.5rem;">
-          <button id="passage-retry-btn" style="display:none;font-size:.82rem;" onclick="retryPassage()">再试一次</button>
-          <button id="passage-submit-btn" onclick="submitPassage()" style="font-size:.82rem;background:var(--hero-green);color:white;border-color:var(--hero-green);" disabled>提交</button>
-          <button id="passage-next-btn" style="display:none;font-size:.82rem;background:#2878C8;color:white;border-color:#2878C8;" onclick="nextPassage()">下一篇 →</button>
-        </div>
+      <div class="passage-pager" id="passage-pager" style="justify-content:center;"></div>
+      <button id="passage-submit-btn" onclick="submitPassage()" style="width:100%;padding:.62rem;border-radius:999px;font-size:.9rem;font-weight:600;background:var(--hero-green);color:white;border:1.5px solid var(--hero-green);" disabled>提交答案</button>
+      <div id="passage-after-btns" style="display:none;gap:.5rem;">
+        <button id="passage-retry-btn" onclick="retryPassage()" style="flex:1;padding:.6rem;border-radius:999px;font-size:.85rem;background:white;color:var(--hero-green);border:1.5px solid var(--hero-green);">再试一次</button>
+        <button id="passage-next-btn" onclick="nextPassage()" style="flex:1;padding:.6rem;border-radius:999px;font-size:.85rem;font-weight:600;background:var(--hero-green);color:white;border:1.5px solid var(--hero-green);">下一篇 →</button>
       </div>
     </div>
   </div>
@@ -6487,13 +6461,9 @@ function showScreen(id) {
     // Only show on results-screen; study-screen uses the pill button instead
     fab.classList.toggle('show', id === 'results-screen');
   }
-  // Show study bottom pills only on study screen
-  const homeBtn     = document.getElementById('study-home-btn');
-  const chapterBtn  = document.getElementById('study-chapter-btn');
-  const feedbackBtn = document.getElementById('study-feedback-btn');
-  if (homeBtn)     homeBtn.classList.toggle('show', id === 'study-screen');
-  if (chapterBtn)  chapterBtn.classList.toggle('show', id === 'study-screen');
-  if (feedbackBtn) feedbackBtn.classList.toggle('show', id === 'study-screen');
+  // Show study bottom nav bar only on study screen
+  const navBar = document.getElementById('study-nav-bar');
+  if (navBar) navBar.classList.toggle('show', id === 'study-screen');
   // Refresh achievements if navigating there
   if (id === 'achievements-screen') {
     try { updateAchievementsScreen(); } catch(e) {}
@@ -11485,6 +11455,7 @@ function _tapBlank(blankIdx) {
       if (oldChipIdx >= 0) chips[oldChipIdx].classList.remove('used');
     }
   }
+  _renderPassageChips(passage);
   _renderPassageText(passage);
   _updatePassageButtons();
 }
@@ -11542,9 +11513,10 @@ function submitPassage() {
   }
 
   document.getElementById('passage-submit-btn').style.display = 'none';
-  document.getElementById('passage-retry-btn').style.display  = '';
   const isLast = _passageCurrentIdx >= passage.total_passages - 1;
-  if (!isLast) document.getElementById('passage-next-btn').style.display = '';
+  const afterBtns = document.getElementById('passage-after-btns');
+  afterBtns.style.display = 'flex';
+  document.getElementById('passage-next-btn').style.display = isLast ? 'none' : 'flex';
 
   // Update mastery + write Firestore
   passage.answers.forEach(function(word, i) {
@@ -11556,8 +11528,7 @@ function submitPassage() {
 function retryPassage() {
   document.getElementById('passage-result-banner').style.display = 'none';
   document.getElementById('passage-wrong-list').style.display    = 'none';
-  document.getElementById('passage-retry-btn').style.display     = 'none';
-  document.getElementById('passage-next-btn').style.display      = 'none';
+  document.getElementById('passage-after-btns').style.display    = 'none';
   document.getElementById('passage-submit-btn').style.display    = '';
   renderPassage();
 }
@@ -11566,8 +11537,7 @@ function nextPassage() {
   _passageCurrentIdx++;
   document.getElementById('passage-result-banner').style.display = 'none';
   document.getElementById('passage-wrong-list').style.display    = 'none';
-  document.getElementById('passage-retry-btn').style.display     = 'none';
-  document.getElementById('passage-next-btn').style.display      = 'none';
+  document.getElementById('passage-after-btns').style.display    = 'none';
   document.getElementById('passage-submit-btn').style.display    = '';
   renderPassage();
 }
