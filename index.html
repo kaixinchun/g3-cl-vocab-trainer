@@ -6812,6 +6812,7 @@ function _renderQuestionReview() {
   document.getElementById('study-progress-fill').style.width = pct + '%';
   _updateNavBars();
   _updatePrevBtn();
+  if (currentMode === 'flashcard') {
     renderFlashcard(word);
     // Auto-flip to show the answer, with result colour hint
     setTimeout(() => {
