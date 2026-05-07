@@ -219,8 +219,8 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 .passage-chip-bank-label{font-size:.62rem;font-family:sans-serif;color:var(--ink-mute);letter-spacing:.08em;margin-bottom:.55rem;}
 .passage-chips{display:flex;flex-wrap:wrap;gap:.45rem;}
 .p-chip{display:inline-block;padding:.28rem .75rem;background:white;border:1px solid var(--paper-3);border-radius:999px;font-size:.88rem;font-family:var(--font-body);color:var(--ink);cursor:pointer;transition:background .15s,color .15s,opacity .15s;user-select:none;}
-.p-chip:hover{background:#EAF4FF;border-color:#2878C8;color:#1a5276;}
-.p-chip.selected{background:#EAF4FF;border:1.5px solid #2878C8;color:#1a5276;font-weight:600;}
+.p-chip:hover{background:#F0F7FF;border-color:#90BDE8;}
+.p-chip.selected{background:#D6EAFF;border:2px solid #2878C8;color:#1a5276;font-weight:600;box-shadow:0 0 0 2px rgba(40,120,200,.15);}
 .p-chip.used{background:var(--paper-2);color:var(--ink-mute);text-decoration:line-through;cursor:default;opacity:.55;}
 .passage-text-box{background:white;border:1px solid var(--paper-3);border-radius:var(--r);padding:1.1rem 1.2rem;}
 .passage-text-hint{font-size:.65rem;font-family:sans-serif;color:var(--ink-mute);margin-bottom:.7rem;}
@@ -11362,6 +11362,8 @@ function renderPassage() {
   _passageAnswers   = new Array(passage.answers.length).fill(null);
   _passageSelected  = null;
   _passageSubmitted = false;
+  // Clear any stale selected state from DOM
+  document.querySelectorAll('#passage-chips .p-chip').forEach(function(c){ c.classList.remove('selected'); });
   // Shuffle chip display order (stored separately so answer indices stay stable)
   _passageChipOrder = passage.answers.map(function(_, i){ return i; });
   shuffleArray(_passageChipOrder);
@@ -11415,46 +11417,43 @@ function _renderPassageText(passage) {
   document.getElementById('passage-fill-count').textContent = filled + ' / ' + passage.answers.length + ' 已填';
 }
 
+// Helper: find chip DOM element by answer index (data-idx), not DOM position
+function _getChipEl(ansIdx) {
+  return document.querySelector('.p-chip[data-idx="' + ansIdx + '"]');
+}
+
 function _selectChip(chipIdx) {
   if (_passageSubmitted) return;
-  const chips = document.querySelectorAll('.p-chip');
-  if (chips[chipIdx].classList.contains('used')) return;
+  const el = _getChipEl(chipIdx);
+  if (!el || el.classList.contains('used')) return;
+  // Toggle off if already selected
   if (_passageSelected === chipIdx) {
     _passageSelected = null;
-    chips.forEach(function(c) { c.classList.remove('selected'); });
+    document.querySelectorAll('#passage-chips .p-chip').forEach(function(c) { c.classList.remove('selected'); });
     return;
   }
   _passageSelected = chipIdx;
-  chips.forEach(function(c) { c.classList.remove('selected'); });
-  chips[chipIdx].classList.add('selected');
+  document.querySelectorAll('#passage-chips .p-chip').forEach(function(c) { c.classList.remove('selected'); });
+  el.classList.add('selected');
 }
 
 function _tapBlank(blankIdx) {
   if (_passageSubmitted) return;
   const cfg = getClozeConfig(currentLevel, currentUnit);
   const passage = cfg.passages[_passageCurrentIdx];
-  const chips = document.querySelectorAll('.p-chip');
 
   if (_passageSelected !== null) {
-    // Return old occupant chip if blank already filled
+    // If blank already has a word, return its chip first
     if (_passageAnswers[blankIdx] !== null) {
-      const oldWord = _passageAnswers[blankIdx];
-      const oldChipIdx = passage.answers.indexOf(oldWord);
-      if (oldChipIdx >= 0) chips[oldChipIdx].classList.remove('used');
+      _passageAnswers[blankIdx] = null;
     }
     _passageAnswers[blankIdx] = passage.answers[_passageSelected];
-    chips[_passageSelected].classList.remove('selected');
-    chips[_passageSelected].classList.add('used');
     _passageSelected = null;
   } else {
     // Tap filled blank to un-fill
-    if (_passageAnswers[blankIdx] !== null) {
-      const oldWord = _passageAnswers[blankIdx];
-      const oldChipIdx = passage.answers.indexOf(oldWord);
-      _passageAnswers[blankIdx] = null;
-      if (oldChipIdx >= 0) chips[oldChipIdx].classList.remove('used');
-    }
+    _passageAnswers[blankIdx] = null;
   }
+  // Always re-render chips + text from _passageAnswers (source of truth)
   _renderPassageChips(passage);
   _renderPassageText(passage);
   _updatePassageButtons();
