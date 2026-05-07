@@ -288,6 +288,10 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 .next-btn{padding:.78rem;background:var(--ink);color:white;border:none;border-radius:var(--r-sm);font-size:.88rem;cursor:pointer;font-family:inherit;transition:all var(--t);display:none;width:100%;font-weight:600;}
 .next-btn.show{display:block;}
 .next-btn:hover{background:var(--ink-soft);transform:translateY(-1px);}
+.nav-btn-row{display:flex;gap:.6rem;width:100%;}
+.nav-btn-row .prev-btn{flex:0 0 auto;padding:.78rem 1rem;background:transparent;color:var(--ink-mute);border:1.5px solid var(--paper-3);border-radius:var(--r-sm);font-size:.88rem;cursor:pointer;font-family:inherit;transition:all var(--t);font-weight:600;white-space:nowrap;}
+.nav-btn-row .prev-btn:hover{background:var(--paper-2);color:var(--ink);}
+.nav-btn-row .next-btn{flex:1;width:auto;}
 
 /* CLOZE (MCQ-style) */
 .cloze-wrap{flex:1;display:flex;flex-direction:column;padding:.9rem;gap:.7rem;max-width:480px;margin:0 auto;width:100%;overflow-y:auto;padding-bottom:6rem;}
@@ -2202,7 +2206,10 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     </div>
     <div class="mcq-options" id="def-options"></div>
     <div class="mcq-feedback" id="def-feedback"></div>
-    <button class="next-btn" id="def-next" onclick="nextQuestion()">下一题 →</button>
+    <div class="nav-btn-row">
+      <button class="prev-btn" id="def-prev" onclick="goPrevQuestion()" style="display:none">← 上一题</button>
+      <button class="next-btn" id="def-next" onclick="goNextQuestion()" style="display:none">下一题 →</button>
+    </div>
   </div>
 
   <!-- Cloze: sentence + MCQ options -->
@@ -2217,7 +2224,10 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     </div>
     <div class="mcq-options" id="cloze-options"></div>
     <div class="cloze-feedback" id="cloze-feedback"></div>
-    <button class="next-btn" id="cloze-next" onclick="nextQuestion()">下一题 →</button>
+    <div class="nav-btn-row">
+      <button class="prev-btn" id="cloze-prev" onclick="goPrevQuestion()" style="display:none">← 上一题</button>
+      <button class="next-btn" id="cloze-next" onclick="goNextQuestion()" style="display:none">下一题 →</button>
+    </div>
   </div>
 
   <!-- English translation MCQ -->
@@ -2231,7 +2241,10 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     </div>
     <div class="mcq-options" id="eng-options"></div>
     <div class="mcq-feedback" id="eng-feedback"></div>
-    <button class="next-btn" id="eng-next" onclick="nextQuestion()">Next →</button>
+    <div class="nav-btn-row">
+      <button class="prev-btn" id="eng-prev" onclick="goPrevQuestion()" style="display:none">← Prev</button>
+      <button class="next-btn" id="eng-next" onclick="goNextQuestion()" style="display:none">Next →</button>
+    </div>
   </div>
 </div>
 
@@ -6742,6 +6755,7 @@ function renderQuestion() {
   document.getElementById('study-progress-fill').style.width = pct + '%';
 
   _updateNavBars();
+  _updatePrevBtn();
 
   const word = currentWords[currentIdx];
   if      (currentMode === 'flashcard') renderFlashcard(word);
@@ -6764,7 +6778,16 @@ function _updateNavBars() {
   if (fcCtr) fcCtr.textContent = label;
 }
 
-function prevQuestion() {
+function _updatePrevBtn() {
+  // Show prev button only if there's a previous answered question
+  const hasPrev = currentIdx > 0;
+  ['def-prev','cloze-prev','eng-prev'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = hasPrev ? '' : 'none';
+  });
+}
+
+function goPrevQuestion() {
   if (currentIdx <= 0) return;
   currentIdx--;
   _renderQuestionReview();
@@ -6788,8 +6811,7 @@ function _renderQuestionReview() {
   const pct = Math.round(currentIdx / currentWords.length * 100);
   document.getElementById('study-progress-fill').style.width = pct + '%';
   _updateNavBars();
-
-  if (currentMode === 'flashcard') {
+  _updatePrevBtn();
     renderFlashcard(word);
     // Auto-flip to show the answer, with result colour hint
     setTimeout(() => {
@@ -6871,12 +6893,11 @@ function renderDefinition(word, reviewAns) {
     document.getElementById('def-next').className = 'next-btn show';
     if (isRight) { markWordCorrect(word); sessionCorrect++; _awardDefPoints(); }
     else         { markWordWrong(word);   sessionWrong++;   sessionWrongWords.push(word); _trackWordError(word); }
-    _autoAdvTimer = setTimeout(nextQuestion, isRight ? 900 : 1400);
   }, reviewAns);
 }
 
 // ── CLOZE: sentence + MCQ options ────────────────────────
-function renderCloze(word) {
+function renderCloze(word, reviewAns) {
   const sentence = EXAMPLES[word];
   if (!sentence) { currentIdx++; renderQuestion(); return; }
 
@@ -6917,7 +6938,7 @@ function renderCloze(word) {
   if (!_clozeAttempts[word]) _clozeAttempts[word] = 0;
   renderOptions('cloze-options', opts, word, (isRight) => {
     const blank = document.getElementById('cloze-blank');
-    blank.textContent = isRight ? word : word;
+    blank.textContent = word;
     blank.className   = 'cloze-blank ' + (isRight ? 'correct' : 'wrong');
 
     const fb = document.getElementById('cloze-feedback');
@@ -6937,8 +6958,16 @@ function renderCloze(word) {
       sessionWrongWords.push(word);
       _trackWordError(word);
     }
-    _autoAdvTimer = setTimeout(nextQuestion, isRight ? 900 : 1400);
-  });
+  }, reviewAns);
+
+  // In review mode, also restore blank display
+  if (reviewAns) {
+    const blank = document.getElementById('cloze-blank');
+    if (blank) {
+      blank.textContent = word;
+      blank.className = 'cloze-blank ' + (reviewAns.correct ? 'correct' : 'wrong');
+    }
+  }
 }
 
 // ── ENGLISH translation MCQ ───────────────────────────────
@@ -6965,7 +6994,6 @@ function renderEnglish(word, reviewAns) {
     document.getElementById('eng-next').className = 'next-btn show';
     if (isRight) { markWordCorrect(word); sessionCorrect++; _awardEngPoints(); }
     else         { markWordWrong(word);   sessionWrong++;   sessionWrongWords.push(word); _trackWordError(word); }
-    _autoAdvTimer = setTimeout(nextQuestion, isRight ? 900 : 1400);
   }, reviewAns);
 }
 
@@ -7030,6 +7058,9 @@ function isSamePOS(word, candidate) {
   const posA = POS_TAGS[word]      || '';
   const posB = POS_TAGS[candidate] || '';
   if (!posA || !posB) return true; // unknown - allow
+  // Group idiom-like categories together so they distract each other
+  const idiomGroup = new Set(['成语','谚语','俗语','固定短语']);
+  if (idiomGroup.has(posA) && idiomGroup.has(posB)) return true;
   return posA === posB;
 }
 
