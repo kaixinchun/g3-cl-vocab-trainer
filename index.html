@@ -210,8 +210,10 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 .mode-tab[data-mode="cloze"].active{color:white;border-bottom-color:var(--hero-green);background:var(--hero-green);}
 .mode-tab[data-mode="definition"].active{color:#1a5c35;border-bottom-color:#3A8A1A;background:rgba(58,138,26,.06);}
 .mode-tab[data-mode="english"].active{color:#3d0066;border-bottom-color:#6b35a8;background:rgba(107,53,168,.06);}
-.mode-tab[data-mode="passage"].active{color:#7B4A00;border-bottom-color:#C47F17;background:rgba(196,127,23,.08);}
-.mode-tab[data-mode="passage"].pending{color:var(--ink-mute);background:var(--paper-2);cursor:not-allowed;opacity:.55;}
+.mode-tab[data-mode="passage"],.passage-tab-default{background:#FDF3E0;color:#7B4A00;border-bottom:2px solid transparent;}
+.mode-tab[data-mode="passage"]:hover{background:#FAE9C8;}
+.mode-tab[data-mode="passage"].active{color:#7B4A00;border-bottom-color:#C47F17;background:#FAE9C8;font-weight:700;}
+.mode-tab[data-mode="passage"].pending{color:#A07840;background:#FDF3E0;border-bottom-color:#D4A84B;opacity:.75;cursor:pointer;}
 .passage-wrap{flex:1;display:flex;flex-direction:column;padding:.9rem;gap:.8rem;max-width:560px;margin:0 auto;width:100%;overflow-y:auto;padding-bottom:6rem;}
 .passage-chip-bank{background:white;border:1px solid var(--paper-3);border-radius:var(--r);padding:.9rem 1rem;}
 .passage-chip-bank-label{font-size:.62rem;font-family:sans-serif;color:var(--ink-mute);letter-spacing:.08em;margin-bottom:.55rem;}
@@ -239,7 +241,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 .passage-result-banner{text-align:center;padding:.6rem 1rem;border-radius:var(--r);font-family:sans-serif;font-size:.85rem;}
 .passage-result-banner.good{background:var(--green-soft);color:var(--green);}
 .passage-result-banner.retry{background:var(--red-soft);color:var(--red);}
-.passage-pending-box{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2.5rem 1.5rem;text-align:center;gap:.8rem;}
+.passage-pending-box{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:3.5rem;padding-left:1.5rem;padding-right:1.5rem;text-align:center;gap:.8rem;}
 .mode-tab-sub{display:block;font-size:.6rem;font-family:var(--font-ui);opacity:.6;margin-top:.1rem;}
 .study-progress-bar{height:3px;background:var(--paper-2);border-radius:2px;overflow:hidden;margin-top:.4rem;}
 .study-progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:2px;transition:width .3s ease;}
@@ -2151,10 +2153,10 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       <div class="study-title" id="study-title"></div>
     </div>
     <div class="mode-tabs" id="mode-tabs-bar" style="grid-template-columns:repeat(4,1fr)">
-      <button class="mode-tab active" data-mode="flashcard" onclick="switchMode('flashcard')">词语闪卡<span class="mode-tab-sub">必修 ①</span></button>
-      <button class="mode-tab" data-mode="passage" id="passage-tab" onclick="switchMode('passage')">综合填空<span class="mode-tab-sub" id="passage-tab-sub">必修 ②</span></button>
-      <button class="mode-tab" data-mode="definition" onclick="switchMode('definition')">华文解释<span class="mode-tab-sub">选修 巩固</span></button>
-      <button class="mode-tab" data-mode="english" onclick="switchMode('english')">英文翻译<span class="mode-tab-sub">选修 巩固</span></button>
+      <button class="mode-tab active" data-mode="flashcard" onclick="switchMode('flashcard')">词语闪卡</button>
+      <button class="mode-tab passage-tab-default" data-mode="passage" id="passage-tab" onclick="switchMode('passage')">综合填空</button>
+      <button class="mode-tab" data-mode="definition" onclick="switchMode('definition')">华文解释</button>
+      <button class="mode-tab" data-mode="english" onclick="switchMode('english')">英文翻译</button>
     </div>
     <div class="study-progress-bar"><div class="study-progress-fill" id="study-progress-fill" style="width:0%"></div></div>
   </div>
@@ -2251,7 +2253,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       <div style="font-size:2rem;">🔧</div>
       <div style="font-size:1rem;font-weight:600;font-family:var(--font-body);">综合填空 · 建设中</div>
       <div style="font-size:.82rem;color:var(--ink-soft);line-height:1.7;max-width:280px;">本板块的语段由华文科教师亲自撰写并审阅，正在精心打磨中，敬请期待。</div>
-      <div style="font-size:.72rem;color:var(--ink-mute);">在此之前，请先完成词语闪卡、华文解释与英文解释。</div>
+      <div style="font-size:.72rem;color:var(--ink-mute);line-height:1.7;">你可以先练习左边的<b>词语闪卡</b>、<b>华文解释</b>或<b>英文翻译</b>，<br/>或前往单元末的<b>填空挑战</b>进行综合练习。</div>
     </div>
     <!-- Live passage view -->
     <div id="passage-live" class="passage-wrap" style="display:none;">
@@ -8442,7 +8444,7 @@ function launchApp(email, userType, nickname, nicknameApproved) {
     setTimeout(() => showToast('⏳ 你的账号正在审核中，可正常练习，排行榜功能暂不开放。'), 1200);
   }
   const emailDisplay = document.getElementById('user-email-display');
-  if (emailDisplay) emailDisplay.textContent = email;
+  if (emailDisplay) emailDisplay.textContent = (email || '').replace(/@bvss\.vk$/i, '');
 
   // Show nickname in home pill
   const nickEl = document.getElementById('user-nickname-display');
@@ -9686,8 +9688,8 @@ function renderGuide() {
       icon: '💾',
       title: zh ? '进度自动备份' : 'Progress auto-saved',
       html: zh
-        ? `<p>登录后，进度自动同步到云端。换设备时，用同一电邮和密码登录即可恢复——无需手动保存。</p>`
-        : `<p>Progress syncs to the cloud automatically. Log in with the same email and password on any device to restore it — no manual saving needed.</p>`
+        ? `<p>登录后，进度自动同步到云端。换设备时，用同一学号和密码登录即可恢复——无需手动保存。</p>`
+        : `<p>Progress syncs to the cloud automatically. Log in with the same student ID and password on any device to restore it — no manual saving needed.</p>`
     },
     {
       icon: '📱',
@@ -10214,8 +10216,8 @@ function renderFirstGuide() {
       icon: '💾',
       title: zh ? '进度自动备份到云端' : 'Progress backed up to cloud',
       body: zh
-        ? `登录后，你的进度会自动同步到云端。换设备时，用同一电邮和密码登录即可恢复。无需手动保存进度码。`
-        : `Your progress is automatically synced to the cloud. Switch devices by logging in with the same email and password.`
+        ? `登录后，你的进度会自动同步到云端。换设备时，用同一学号和密码登录即可恢复。无需手动保存进度码。`
+        : `Your progress is automatically synced to the cloud. Switch devices by logging in with the same student ID and password.`
     },
 
   ];
@@ -11379,6 +11381,7 @@ function exitChallenge() {
 
 var _passageCurrentIdx = 0;
 var _passageAnswers    = [];
+var _passageChipOrder  = [];
 var _passageSelected   = null;
 var _passageSubmitted  = false;
 
@@ -11389,6 +11392,9 @@ function renderPassage() {
   _passageAnswers   = new Array(passage.answers.length).fill(null);
   _passageSelected  = null;
   _passageSubmitted = false;
+  // Shuffle chip display order (stored separately so answer indices stay stable)
+  _passageChipOrder = passage.answers.map(function(_, i){ return i; });
+  shuffleArray(_passageChipOrder);
 
   const nums = ['一','二','三','四','五'];
   document.getElementById('passage-label').textContent =
@@ -11411,12 +11417,16 @@ function renderPassage() {
 function _renderPassageChips(passage) {
   const bank = document.getElementById('passage-chips');
   bank.innerHTML = '';
-  passage.answers.forEach(function(word, i) {
+  _passageChipOrder.forEach(function(ansIdx) {
     const span = document.createElement('span');
     span.className = 'p-chip';
-    span.textContent = word;
-    span.dataset.idx = i;
-    span.onclick = function() { _selectChip(i); };
+    span.textContent = passage.answers[ansIdx];
+    span.dataset.idx = ansIdx;
+    // Mark chip used if its answer has been placed in a blank
+    if (_passageAnswers[ansIdx] !== null) {
+      span.classList.add('used');
+    }
+    span.onclick = function() { _selectChip(ansIdx); };
     bank.appendChild(span);
   });
 }
