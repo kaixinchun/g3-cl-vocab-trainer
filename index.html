@@ -210,6 +210,36 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 .mode-tab[data-mode="cloze"].active{color:white;border-bottom-color:var(--hero-green);background:var(--hero-green);}
 .mode-tab[data-mode="definition"].active{color:#1a5c35;border-bottom-color:#3A8A1A;background:rgba(58,138,26,.06);}
 .mode-tab[data-mode="english"].active{color:#3d0066;border-bottom-color:#6b35a8;background:rgba(107,53,168,.06);}
+.mode-tab[data-mode="passage"].active{color:#7B4A00;border-bottom-color:#C47F17;background:rgba(196,127,23,.08);}
+.mode-tab[data-mode="passage"].pending{color:var(--ink-mute);background:var(--paper-2);cursor:not-allowed;opacity:.55;}
+.passage-wrap{flex:1;display:flex;flex-direction:column;padding:.9rem;gap:.8rem;max-width:560px;margin:0 auto;width:100%;overflow-y:auto;padding-bottom:6rem;}
+.passage-chip-bank{background:white;border:1px solid var(--paper-3);border-radius:var(--r);padding:.9rem 1rem;}
+.passage-chip-bank-label{font-size:.62rem;font-family:sans-serif;color:var(--ink-mute);letter-spacing:.08em;margin-bottom:.55rem;}
+.passage-chips{display:flex;flex-wrap:wrap;gap:.45rem;}
+.p-chip{display:inline-block;padding:.28rem .75rem;background:white;border:1px solid var(--paper-3);border-radius:999px;font-size:.88rem;font-family:var(--font-body);color:var(--ink);cursor:pointer;transition:background .15s,color .15s,opacity .15s;user-select:none;}
+.p-chip:hover{background:#EAF4FF;border-color:#2878C8;color:#1a5276;}
+.p-chip.selected{background:#EAF4FF;border:1.5px solid #2878C8;color:#1a5276;font-weight:600;}
+.p-chip.used{background:var(--paper-2);color:var(--ink-mute);text-decoration:line-through;cursor:default;opacity:.55;}
+.passage-text-box{background:white;border:1px solid var(--paper-3);border-radius:var(--r);padding:1.1rem 1.2rem;}
+.passage-text-hint{font-size:.65rem;font-family:sans-serif;color:var(--ink-mute);margin-bottom:.7rem;}
+.passage-text{font-size:1rem;font-family:var(--font-body);line-height:2.1;color:var(--ink);}
+.p-blank{display:inline-flex;align-items:center;justify-content:center;min-width:4rem;padding:.05rem .5rem;margin:0 .1rem;border-bottom:1.5px solid var(--ink-mute);color:var(--ink-mute);font-size:.78rem;vertical-align:baseline;cursor:pointer;border-radius:3px 3px 0 0;transition:background .15s,border-color .15s;}
+.p-blank:hover{background:#EAF4FF;border-color:#2878C8;}
+.p-blank.active-blank{background:#EAF4FF;border-color:#2878C8;border-bottom-width:2px;color:#1a5276;}
+.p-blank.filled{background:#E8F5FD;border-color:#2878C8;color:#1a5276;font-size:.92rem;font-weight:600;}
+.p-blank.correct{background:var(--green-soft);border-color:var(--green);color:var(--green);font-size:.92rem;font-weight:600;}
+.p-blank.wrong{background:var(--red-soft);border-color:var(--red);color:var(--red);font-size:.92rem;font-weight:600;text-decoration:line-through;}
+.p-blank.wrong-ans{display:none;}
+.p-correction{font-size:.78rem;color:var(--green);font-weight:500;margin-left:.2rem;}
+.passage-progress-row{display:flex;justify-content:space-between;align-items:center;font-size:.72rem;font-family:sans-serif;color:var(--ink-mute);}
+.passage-pager{display:flex;gap:.5rem;justify-content:center;}
+.passage-pager-dot{width:8px;height:8px;border-radius:50%;background:var(--paper-3);transition:background .2s;}
+.passage-pager-dot.done{background:var(--green);}
+.passage-pager-dot.current{background:#2878C8;}
+.passage-result-banner{text-align:center;padding:.6rem 1rem;border-radius:var(--r);font-family:sans-serif;font-size:.85rem;}
+.passage-result-banner.good{background:var(--green-soft);color:var(--green);}
+.passage-result-banner.retry{background:var(--red-soft);color:var(--red);}
+.passage-pending-box{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2.5rem 1.5rem;text-align:center;gap:.8rem;}
 .mode-tab-sub{display:block;font-size:.6rem;font-family:var(--font-ui);opacity:.6;margin-top:.1rem;}
 .study-progress-bar{height:3px;background:var(--paper-2);border-radius:2px;overflow:hidden;margin-top:.4rem;}
 .study-progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:2px;transition:width .3s ease;}
@@ -2120,10 +2150,11 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       <button class="back-btn" onclick="exitStudy()">‹</button>
       <div class="study-title" id="study-title"></div>
     </div>
-    <div class="mode-tabs">
-      <button class="mode-tab active" data-mode="flashcard" onclick="switchMode('flashcard')">词语闪卡</button>
-      <button class="mode-tab" data-mode="definition" onclick="switchMode('definition')">华文解释</button>
-      <button class="mode-tab" data-mode="english" onclick="switchMode('english')">英文翻译</button>
+    <div class="mode-tabs" id="mode-tabs-bar" style="grid-template-columns:repeat(4,1fr)">
+      <button class="mode-tab active" data-mode="flashcard" onclick="switchMode('flashcard')">词语闪卡<span class="mode-tab-sub">必修 ①</span></button>
+      <button class="mode-tab" data-mode="passage" id="passage-tab" onclick="switchMode('passage')">综合填空<span class="mode-tab-sub" id="passage-tab-sub">必修 ②</span></button>
+      <button class="mode-tab" data-mode="definition" onclick="switchMode('definition')">华文解释<span class="mode-tab-sub">选修 巩固</span></button>
+      <button class="mode-tab" data-mode="english" onclick="switchMode('english')">英文翻译<span class="mode-tab-sub">选修 巩固</span></button>
     </div>
     <div class="study-progress-bar"><div class="study-progress-fill" id="study-progress-fill" style="width:0%"></div></div>
   </div>
@@ -2213,6 +2244,45 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   </div>
 
   <!-- Cloze: sentence + MCQ options -->
+  <!-- ── PASSAGE MODE (综合填空) ─────────────────────────────── -->
+  <div id="passage-mode" style="display:none;flex:1;flex-direction:column;overflow:hidden;">
+    <!-- Pending / 建设中 view -->
+    <div id="passage-pending" class="passage-pending-box" style="display:none;">
+      <div style="font-size:2rem;">🔧</div>
+      <div style="font-size:1rem;font-weight:600;font-family:var(--font-body);">综合填空 · 建设中</div>
+      <div style="font-size:.82rem;color:var(--ink-soft);line-height:1.7;max-width:280px;">本板块的语段由华文科教师亲自撰写并审阅，正在精心打磨中，敬请期待。</div>
+      <div style="font-size:.72rem;color:var(--ink-mute);">在此之前，请先完成词语闪卡、华文解释与英文解释。</div>
+    </div>
+    <!-- Live passage view -->
+    <div id="passage-live" class="passage-wrap" style="display:none;">
+      <div class="passage-progress-row">
+        <span id="passage-label">第一篇 · 新同学</span>
+        <span id="passage-fill-count">0 / 8 已填</span>
+      </div>
+      <div class="passage-chip-bank">
+        <div class="passage-chip-bank-label">词语选项（每个词只能用一次）</div>
+        <div class="passage-chips" id="passage-chips"></div>
+      </div>
+      <div class="passage-text-box">
+        <div class="passage-text-hint">点选词语，再点空格填入；点已填空格可取消</div>
+        <div class="passage-text" id="passage-text"></div>
+      </div>
+      <div id="passage-result-banner" class="passage-result-banner" style="display:none;"></div>
+      <div id="passage-wrong-list" style="display:none;background:var(--red-soft);border-radius:var(--r);padding:.7rem 1rem;">
+        <div style="font-size:.65rem;font-family:sans-serif;color:var(--red);font-weight:600;margin-bottom:.45rem;">需要再练习的词语</div>
+        <div id="passage-wrong-chips" style="display:flex;flex-wrap:wrap;gap:.4rem;"></div>
+      </div>
+      <div style="display:flex;gap:.6rem;justify-content:space-between;align-items:center;">
+        <div class="passage-pager" id="passage-pager"></div>
+        <div style="display:flex;gap:.5rem;">
+          <button id="passage-retry-btn" style="display:none;font-size:.82rem;" onclick="retryPassage()">再试一次</button>
+          <button id="passage-submit-btn" onclick="submitPassage()" style="font-size:.82rem;background:var(--hero-green);color:white;border-color:var(--hero-green);" disabled>提交</button>
+          <button id="passage-next-btn" style="display:none;font-size:.82rem;background:#2878C8;color:white;border-color:#2878C8;" onclick="nextPassage()">下一篇 →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="cloze-wrap" id="cloze-mode" style="display:none">
     <div class="q-nav-counter" id="cloze-m-counter-label" style="text-align:center;font-size:.78rem;font-family:sans-serif;color:var(--ink-mute);padding:.2rem 0;">1 / 20</div>
     <div class="cloze-card">
@@ -2736,6 +2806,49 @@ function getComponentTitle(level, unitNum, componentType) {
   if (idx < 0) return '';
   if (componentType === '文化站') return '文化站';
   return UNIT_TITLES[level]?.[unitNum]?.components[idx] || '';
+}
+
+// ── CLOZE PASSAGES ──────────────────────────────────────────────────────────
+// status:"live" = active tab; status:"pending" = greyed-out 建设中 tab
+// Blank markers: [1]..[n] map to answers array (0-indexed: answers[0] = blank [1])
+// Rule: one blank per sentence, no answer word appears in surrounding text.
+const CLOZE_PASSAGES = {
+  "中一": {
+    "单元一 生活空间": {
+      status: "live",
+      passages: [
+        {
+          id: "s1u1_shkj_p1",
+          passage_index: 1,
+          total_passages: 3,
+          title: "新同学",
+          text: "我们班上星期来了一位新同学。他姓[1]，来自一所邻里小学。第一次自我介绍时，他笑着对大家说：「我小时候很[2]！」他还告诉大家，自己常常[3]妈妈生气，不过上了中学后下定决心要变成熟。全班一听都笑了，气氛立刻轻松起来。不管谁找他帮忙，他都[4]。他还经常说：「[5]！」这句[6]几乎天天挂在嘴边，大家听久了也跟着说。朋友都说他很讲义气，能为大家[7]。他的志愿是当工程师，研究最先进的[8]。",
+          answers: ["赵","淘气","惹","来者不拒","小事一桩","口头禅","两肋插刀","科技"]
+        },
+        {
+          id: "s1u1_shkj_p2",
+          passage_index: 2,
+          total_passages: 3,
+          title: "性格与摩擦",
+          text: "班上的小敏是出了名的开心果。她的[1]很好，几乎每个同学都喜欢和她相处。她的[2]开朗活泼。她说话也很[3]，从不拐弯抹角。可是，正因为她太坦白，有时候会无意中[4]别人。上星期的小组讨论，她和小华为了报告的内容[5]了起来。小敏认为小华抄袭了网上的资料，可是小华其实是自己一字一句写的，他觉得自己被[6]了，心里很难受。两人之后见面都觉得很[7]，连话也不太想说。她后来想，好朋友之间[8]意见不合，也是难免的，关键是看怎么解开心结。",
+          answers: ["人缘","性格","直率","得罪","争辩","冤枉","别扭","即使"]
+        },
+        {
+          id: "s1u1_shkj_p3",
+          passage_index: 3,
+          total_passages: 3,
+          title: "交友之道",
+          text: "学校图书馆这学期来了一批好书。老师特别[1]了几本关于友情的故事，每一本都很有启发。这一[2]图书让我大开眼界。其中一本提到，平日里多帮助身边的人，自己也会感到充实快乐——这就是所谓的[4]。另一本则讲到，真正的好朋友不只在你顺利时陪伴你，更要在你遇到困难时挺身而出；好事一起分享，难处一起承担，这便是[3]的真正含义。这让我想起了班上的两个好朋友。小杰是篮球队的[5]，平日活泼好动。而小文则不一样，他性格[6]，话不多，喜欢一个人静静看书。表面上两人天差地别，但他们却成了最要好的朋友，因为他们都懂得在彼此最需要的时候出现，分享喜悦、分担烦恼。",
+          answers: ["推荐","系列","有福同享，有难同当","助人为快乐之本","健将","内向"]
+        }
+      ]
+    }
+  }
+};
+// All other level/unit/component combos default to pending — looked up by getClozeConfig()
+function getClozeConfig(level, unitKey) {
+  // unitKey e.g. "单元一 生活空间"
+  return CLOZE_PASSAGES[level]?.[unitKey] || { status: "pending", passages: [] };
 }
 
 const VOCAB = {
@@ -6698,6 +6811,43 @@ function exitStudy() {
 
 function switchMode(mode, force=false) {
   if (mode === 'cloze') mode = 'flashcard'; // 填空挑战 moved to unit-level challenge
+  if (mode === 'passage') {
+    const cfg = getClozeConfig(currentLevel, currentUnit);
+    const tab = document.getElementById('passage-tab');
+    if (cfg.status === 'pending') {
+      // Still switch to show the pending screen, but mark tab as pending style
+      document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+      if (tab) { tab.classList.add('active'); tab.classList.add('pending'); }
+      document.getElementById('flashcard-mode').style.display = 'none';
+      document.getElementById('definition-mode').style.display = 'none';
+      document.getElementById('cloze-mode').style.display = 'none';
+      document.getElementById('english-mode').style.display = 'none';
+      const pm = document.getElementById('passage-mode');
+      pm.style.display = 'flex';
+      document.getElementById('passage-pending').style.display = 'flex';
+      document.getElementById('passage-live').style.display = 'none';
+      currentMode = 'passage';
+      return;
+    }
+    // Live passages
+    document.querySelectorAll('.mode-tab').forEach(t => { t.classList.remove('active'); t.classList.remove('pending'); });
+    if (tab) tab.classList.add('active');
+    document.getElementById('flashcard-mode').style.display = 'none';
+    document.getElementById('definition-mode').style.display = 'none';
+    document.getElementById('cloze-mode').style.display = 'none';
+    document.getElementById('english-mode').style.display = 'none';
+    document.getElementById('passage-mode').style.display = 'flex';
+    document.getElementById('passage-pending').style.display = 'none';
+    document.getElementById('passage-live').style.display = 'flex';
+    currentMode = 'passage';
+    _passageCurrentIdx = 0;
+    renderPassage();
+    return;
+  }
+  // Remove pending class if switching away from passage
+  const pt = document.getElementById('passage-tab');
+  if (pt) pt.classList.remove('pending');
+  document.getElementById('passage-mode').style.display = 'none';
   if (mode === currentMode && !force) return;
 
   // For English mode, filter to words that have English definitions
@@ -6741,9 +6891,10 @@ function switchMode(mode, force=false) {
 
   // Show/hide mode panels
   document.getElementById('flashcard-mode').style.display = mode==='flashcard' ? 'flex' : 'none';
-  document.getElementById('definition-mode').style.display       = mode==='definition'       ? 'flex' : 'none';
+  document.getElementById('definition-mode').style.display = mode==='definition' ? 'flex' : 'none';
   document.getElementById('cloze-mode').style.display     = mode==='cloze'     ? 'flex' : 'none';
   document.getElementById('english-mode').style.display   = mode==='english'   ? 'flex' : 'none';
+  if (document.getElementById('passage-mode')) document.getElementById('passage-mode').style.display = 'none';
 
   renderQuestion();
 }
@@ -11223,6 +11374,253 @@ function exitChallenge() {
   if (lvl) renderUnitsList(lvl);
 }
 // ══ END CHALLENGE ENGINE ════════════════════════════════════
+
+// ══ PASSAGE MODE (综合填空) ════════════════════════════════════════════════
+
+var _passageCurrentIdx = 0;
+var _passageAnswers    = [];
+var _passageSelected   = null;
+var _passageSubmitted  = false;
+
+function renderPassage() {
+  const cfg = getClozeConfig(currentLevel, currentUnit);
+  if (!cfg || !cfg.passages.length) return;
+  const passage = cfg.passages[_passageCurrentIdx];
+  _passageAnswers   = new Array(passage.answers.length).fill(null);
+  _passageSelected  = null;
+  _passageSubmitted = false;
+
+  const nums = ['一','二','三','四','五'];
+  document.getElementById('passage-label').textContent =
+    '第' + (nums[passage.passage_index - 1] || passage.passage_index) + '篇 · ' + passage.title;
+
+  // Pager dots
+  const pager = document.getElementById('passage-pager');
+  pager.innerHTML = '';
+  for (let i = 0; i < passage.total_passages; i++) {
+    const d = document.createElement('div');
+    d.className = 'passage-pager-dot' + (i < _passageCurrentIdx ? ' done' : i === _passageCurrentIdx ? ' current' : '');
+    pager.appendChild(d);
+  }
+
+  _renderPassageChips(passage);
+  _renderPassageText(passage);
+  _updatePassageButtons();
+}
+
+function _renderPassageChips(passage) {
+  const bank = document.getElementById('passage-chips');
+  bank.innerHTML = '';
+  passage.answers.forEach(function(word, i) {
+    const span = document.createElement('span');
+    span.className = 'p-chip';
+    span.textContent = word;
+    span.dataset.idx = i;
+    span.onclick = function() { _selectChip(i); };
+    bank.appendChild(span);
+  });
+}
+
+function _renderPassageText(passage) {
+  const box = document.getElementById('passage-text');
+  let html = passage.text.replace(/\[(\d+)\]/g, function(_, n) {
+    const idx = parseInt(n, 10) - 1;
+    const filled = _passageAnswers[idx];
+    const cls = filled ? 'p-blank filled' : 'p-blank';
+    const label = filled ? filled : n;
+    return '<span class="' + cls + '" data-blank="' + idx + '" onclick="_tapBlank(' + idx + ')">' + label + '</span>';
+  });
+  box.innerHTML = html;
+  const filled = _passageAnswers.filter(function(a) { return a !== null; }).length;
+  document.getElementById('passage-fill-count').textContent = filled + ' / ' + passage.answers.length + ' 已填';
+}
+
+function _selectChip(chipIdx) {
+  if (_passageSubmitted) return;
+  const chips = document.querySelectorAll('.p-chip');
+  if (chips[chipIdx].classList.contains('used')) return;
+  if (_passageSelected === chipIdx) {
+    _passageSelected = null;
+    chips.forEach(function(c) { c.classList.remove('selected'); });
+    return;
+  }
+  _passageSelected = chipIdx;
+  chips.forEach(function(c) { c.classList.remove('selected'); });
+  chips[chipIdx].classList.add('selected');
+}
+
+function _tapBlank(blankIdx) {
+  if (_passageSubmitted) return;
+  const cfg = getClozeConfig(currentLevel, currentUnit);
+  const passage = cfg.passages[_passageCurrentIdx];
+  const chips = document.querySelectorAll('.p-chip');
+
+  if (_passageSelected !== null) {
+    // Return old occupant chip if blank already filled
+    if (_passageAnswers[blankIdx] !== null) {
+      const oldWord = _passageAnswers[blankIdx];
+      const oldChipIdx = passage.answers.indexOf(oldWord);
+      if (oldChipIdx >= 0) chips[oldChipIdx].classList.remove('used');
+    }
+    _passageAnswers[blankIdx] = passage.answers[_passageSelected];
+    chips[_passageSelected].classList.remove('selected');
+    chips[_passageSelected].classList.add('used');
+    _passageSelected = null;
+  } else {
+    // Tap filled blank to un-fill
+    if (_passageAnswers[blankIdx] !== null) {
+      const oldWord = _passageAnswers[blankIdx];
+      const oldChipIdx = passage.answers.indexOf(oldWord);
+      _passageAnswers[blankIdx] = null;
+      if (oldChipIdx >= 0) chips[oldChipIdx].classList.remove('used');
+    }
+  }
+  _renderPassageText(passage);
+  _updatePassageButtons();
+}
+
+function _updatePassageButtons() {
+  const cfg = getClozeConfig(currentLevel, currentUnit);
+  const passage = cfg.passages[_passageCurrentIdx];
+  const allFilled = _passageAnswers.every(function(a) { return a !== null; });
+  const submitBtn = document.getElementById('passage-submit-btn');
+  if (!_passageSubmitted) submitBtn.disabled = !allFilled;
+}
+
+function submitPassage() {
+  const cfg = getClozeConfig(currentLevel, currentUnit);
+  const passage = cfg.passages[_passageCurrentIdx];
+  _passageSubmitted = true;
+
+  let correct = 0;
+  const wrongWords = [];
+  passage.answers.forEach(function(ans, i) {
+    if (_passageAnswers[i] === ans) correct++;
+    else wrongWords.push(ans);
+  });
+
+  // Render blanks with result colours
+  const box = document.getElementById('passage-text');
+  box.innerHTML = passage.text.replace(/\[(\d+)\]/g, function(_, n) {
+    const idx = parseInt(n, 10) - 1;
+    const studentAns = _passageAnswers[idx];
+    const correctAns = passage.answers[idx];
+    if (studentAns === correctAns) {
+      return '<span class="p-blank correct">' + correctAns + '</span>';
+    }
+    return '<span class="p-blank wrong">' + (studentAns || '？') + '</span>'
+         + '<span class="p-correction">→ ' + correctAns + '</span>';
+  });
+
+  const total   = passage.answers.length;
+  const banner  = document.getElementById('passage-result-banner');
+  banner.style.display = '';
+  if (correct === total) {
+    banner.className = 'passage-result-banner good';
+    banner.textContent = '全对！' + correct + ' / ' + total + ' ✓';
+  } else {
+    banner.className = 'passage-result-banner retry';
+    banner.textContent = correct + ' / ' + total + ' 正确';
+  }
+
+  if (wrongWords.length > 0) {
+    const wl = document.getElementById('passage-wrong-list');
+    wl.style.display = '';
+    document.getElementById('passage-wrong-chips').innerHTML = wrongWords.map(function(w) {
+      return '<span style="background:white;border:1px solid var(--red);padding:.2rem .6rem;border-radius:999px;font-size:.82rem;">' + w + '</span>';
+    }).join('');
+  }
+
+  document.getElementById('passage-submit-btn').style.display = 'none';
+  document.getElementById('passage-retry-btn').style.display  = '';
+  const isLast = _passageCurrentIdx >= passage.total_passages - 1;
+  if (!isLast) document.getElementById('passage-next-btn').style.display = '';
+
+  // Update mastery + write Firestore
+  passage.answers.forEach(function(word, i) {
+    _updateWordMasteryFromPassage(word, _passageAnswers[i] === word, passage.id);
+  });
+  _savePassageAttempt(passage, correct, wrongWords);
+}
+
+function retryPassage() {
+  document.getElementById('passage-result-banner').style.display = 'none';
+  document.getElementById('passage-wrong-list').style.display    = 'none';
+  document.getElementById('passage-retry-btn').style.display     = 'none';
+  document.getElementById('passage-next-btn').style.display      = 'none';
+  document.getElementById('passage-submit-btn').style.display    = '';
+  renderPassage();
+}
+
+function nextPassage() {
+  _passageCurrentIdx++;
+  document.getElementById('passage-result-banner').style.display = 'none';
+  document.getElementById('passage-wrong-list').style.display    = 'none';
+  document.getElementById('passage-retry-btn').style.display     = 'none';
+  document.getElementById('passage-next-btn').style.display      = 'none';
+  document.getElementById('passage-submit-btn').style.display    = '';
+  renderPassage();
+}
+
+function getWordState(word) {
+  if (!progress[word]) return '未掌握';
+  if (progress[word].clozeOk) return '已掌握';
+  if (progress[word].box > 0 || progress[word].wrongCount > 0) return '学习中';
+  return '未掌握';
+}
+
+function _updateWordMasteryFromPassage(word, isCorrect, passageId) {
+  const before = getWordState(word);
+  var after = before;
+  if (isCorrect) {
+    after = '已掌握';
+    if (!progress[word]) progress[word] = {};
+    progress[word].clozeOk = true;
+    progress[word].box = Math.max(progress[word].box || 0, 2);
+  } else {
+    if (before === '已掌握') after = '学习中';
+  }
+  _writeWordState(word, after);
+  _writeWordEvent(word, isCorrect ? 'correct' : 'wrong', 'cloze_passage', passageId, before, after);
+}
+
+function _writeWordState(word, state) {
+  if (typeof db === 'undefined' || !db || !currentUser) return;
+  const ref = doc(db, 'users', currentUser.uid, 'words', word);
+  setDoc(ref, { state: state, lastUpdated: serverTimestamp() }, { merge: true }).catch(function(){});
+}
+
+function _writeWordEvent(word, result, source, passageId, stateBefore, stateAfter) {
+  if (typeof db === 'undefined' || !db || !currentUser) return;
+  const col = collection(db, 'users', currentUser.uid, 'word_events');
+  addDoc(col, {
+    word: word,
+    result: result,
+    source: source,
+    passage_id: passageId || null,
+    state_before: stateBefore,
+    state_after: stateAfter,
+    timestamp: serverTimestamp()
+  }).catch(function(){});
+}
+
+function _savePassageAttempt(passage, correctCount, wrongWords) {
+  if (typeof db === 'undefined' || !db || !currentUser) return;
+  const ref = doc(db, 'users', currentUser.uid, 'cloze_attempts', passage.id);
+  getDoc(ref).then(function(snap) {
+    const prev = snap.exists() ? snap.data() : { attempts: 0, best_score: 0 };
+    return setDoc(ref, {
+      passage_id: passage.id,
+      attempts: (prev.attempts || 0) + 1,
+      last_score: correctCount,
+      best_score: Math.max(prev.best_score || 0, correctCount),
+      last_wrong: wrongWords,
+      completed: correctCount === passage.answers.length,
+      last_attempt: serverTimestamp()
+    });
+  }).catch(function(){});
+}
+// ══ END PASSAGE MODE ════════════════════════════════════════════════════════
 
 </script>
 
