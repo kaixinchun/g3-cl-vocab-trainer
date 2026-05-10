@@ -2,7 +2,7 @@
 <html lang="zh-Hans">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>词王淬炼坊 · 百德中学</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11362,8 +11362,6 @@ function renderPassage() {
   _passageAnswers   = new Array(passage.answers.length).fill(null);
   _passageSelected  = null;
   _passageSubmitted = false;
-  // Clear any stale selected state from DOM
-  document.querySelectorAll('#passage-chips .p-chip').forEach(function(c){ c.classList.remove('selected'); });
   // Shuffle chip display order (stored separately so answer indices stay stable)
   _passageChipOrder = passage.answers.map(function(_, i){ return i; });
   shuffleArray(_passageChipOrder);
@@ -11389,15 +11387,17 @@ function renderPassage() {
 function _renderPassageChips(passage) {
   const bank = document.getElementById('passage-chips');
   bank.innerHTML = '';
+  // Build a set of words currently placed in blanks (source of truth = blank values)
+  const usedWords = {};
+  _passageAnswers.forEach(function(w) { if (w) usedWords[w] = true; });
   _passageChipOrder.forEach(function(ansIdx) {
+    const word = passage.answers[ansIdx];
     const span = document.createElement('span');
     span.className = 'p-chip';
-    span.textContent = passage.answers[ansIdx];
+    span.textContent = word;
     span.dataset.idx = ansIdx;
-    // Mark chip used if its answer has been placed in a blank
-    if (_passageAnswers[ansIdx] !== null) {
-      span.classList.add('used');
-    }
+    if (usedWords[word]) span.classList.add('used');
+    if (_passageSelected === ansIdx) span.classList.add('selected');
     span.onclick = function() { _selectChip(ansIdx); };
     bank.appendChild(span);
   });
@@ -11443,17 +11443,14 @@ function _tapBlank(blankIdx) {
   const passage = cfg.passages[_passageCurrentIdx];
 
   if (_passageSelected !== null) {
-    // If blank already has a word, return its chip first
-    if (_passageAnswers[blankIdx] !== null) {
-      _passageAnswers[blankIdx] = null;
-    }
+    // Place selected chip word into this blank (keyed by blankIdx)
     _passageAnswers[blankIdx] = passage.answers[_passageSelected];
     _passageSelected = null;
   } else {
-    // Tap filled blank to un-fill
+    // Tap a filled blank to clear it
     _passageAnswers[blankIdx] = null;
   }
-  // Always re-render chips + text from _passageAnswers (source of truth)
+  // Re-render from source of truth (_passageAnswers indexed by blank position)
   _renderPassageChips(passage);
   _renderPassageText(passage);
   _updatePassageButtons();
