@@ -11547,6 +11547,8 @@ function submitPassage() {
   passage.answers.forEach(function(word, i) {
     _updateWordMasteryFromPassage(word, _passageAnswers[i] === word, passage.id);
   });
+  saveProgress();       // persist clozeOk changes to localStorage/IndexedDB
+  updateHomeStats();    // refresh dashboard 已掌握 counter immediately
   _savePassageAttempt(passage, correct, wrongWords);
 }
 
