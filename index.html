@@ -11214,6 +11214,7 @@ function openLevelChallenge(level) {
 }
 
 function startChallenge() {
+  currentMode = 'cloze';  // ensures markWordCorrect sets clozeOk → 已掌握
   _chQueue = _buildRoundQueue(_chPool, null);
   _chIdx = 0; _chCorrect = 0; _chWrong = 0; _chWrongWords = [];
   document.getElementById('ch-title').textContent = '\u2694\ufe0f \u586b\u7a7a\u6311\u6218';
@@ -11224,6 +11225,7 @@ function startChallenge() {
 
 function startChallengeTargeted() {
   if (!_chWrongWords.length) return;
+  currentMode = 'cloze';  // same fix for targeted retry
   _chQueue = _buildRoundQueue(_chPool, _chWrongWords);
   _chIdx = 0; _chCorrect = 0; _chWrong = 0; _chWrongWords = [];
   _chTargetMode = true;
