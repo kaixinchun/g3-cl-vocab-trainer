@@ -233,6 +233,16 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 .p-blank.wrong{background:var(--red-soft);border-color:var(--red);color:var(--red);font-size:.92rem;font-weight:600;text-decoration:line-through;}
 .p-blank.wrong-ans{display:none;}
 .p-correction{font-size:.78rem;color:var(--green);font-weight:500;margin-left:.2rem;}
+/* ── 综合填空 sentence-level audio ── */
+.p-sentence-row{display:flex;align-items:flex-start;gap:.35rem;margin-bottom:.25rem;}
+.p-sentence-speak{flex-shrink:0;width:1.55rem;height:1.55rem;border-radius:50%;border:1px solid var(--paper-3);background:white;color:var(--ink-mute);font-size:.65rem;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:.18rem;transition:background .15s,color .15s,border-color .15s;padding:0;}
+.p-sentence-speak:hover{background:var(--blue-soft);color:var(--blue);border-color:var(--blue);}
+.p-sentence-speak.speaking{background:var(--blue-soft);color:var(--blue);border-color:var(--blue);}
+.p-sentence-row.reading .p-sentence-text{background:#EEF6FF;border-radius:4px;padding:0 .2rem;}
+.p-sentence-text{flex:1;line-height:2.1;}
+/* ── Chip audio icon ── */
+.p-chip-speak{font-size:.6rem;opacity:.45;margin-left:.22rem;vertical-align:middle;cursor:pointer;transition:opacity .15s;line-height:1;}
+.p-chip-speak:hover{opacity:1;}
 .passage-progress-row{display:flex;justify-content:space-between;align-items:center;font-size:.72rem;font-family:sans-serif;color:var(--ink-mute);}
 .passage-pager{display:flex;gap:.5rem;justify-content:center;}
 .passage-pager-dot{width:8px;height:8px;border-radius:50%;background:var(--paper-3);transition:background .2s;}
@@ -9954,7 +9964,7 @@ function speak(text, btn) {
   // Toggle off if already speaking
   if (_currentUtterance && btn) {
     window.speechSynthesis.cancel();
-    document.querySelectorAll('.speaker-btn,.option-speak-btn').forEach(b => b.classList.remove('speaking'));
+    document.querySelectorAll('.speaker-btn,.option-speak-btn,.p-chip-speak,.p-sentence-speak').forEach(b => b.classList.remove('speaking'));
     _currentUtterance = null;
     return;
   }
@@ -11428,30 +11438,99 @@ function _renderPassageChips(passage) {
     const word = passage.answers[ansIdx];
     const span = document.createElement('span');
     span.className = 'p-chip';
-    span.textContent = word;
     span.dataset.idx = ansIdx;
     if (usedWords[word]) span.classList.add('used');
     if (_passageSelected === ansIdx) span.classList.add('selected');
     span.onclick = function() { _selectChip(ansIdx); };
+    // Word text node
+    span.appendChild(document.createTextNode(word));
+    // 🔊 icon — plays word on click, does not trigger chip selection
+    const speakIcon = document.createElement('span');
+    speakIcon.className = 'p-chip-speak';
+    speakIcon.textContent = '🔊';
+    speakIcon.onclick = function(e) {
+      e.stopPropagation();
+      speak(word, speakIcon);
+    };
+    span.appendChild(speakIcon);
     bank.appendChild(span);
   });
 }
 
 function _renderPassageText(passage) {
   const box = document.getElementById('passage-text');
-  let html = passage.text.replace(/\[(\d+)\]/g, function(_, n) {
-    const idx = parseInt(n, 10) - 1;
-    const filled = _passageAnswers[idx];
-    const cls = filled ? 'p-blank filled' : 'p-blank';
-    const label = filled ? filled : n;
-    return '<span class="' + cls + '" data-blank="' + idx + '" onclick="_tapBlank(' + idx + ')">' + label + '</span>';
+  box.innerHTML = '';
+  const sentences = _splitPassageToSentences(passage.text);
+  sentences.forEach(function(sentText, sIdx) {
+    const row = document.createElement('div');
+    row.className = 'p-sentence-row';
+    row.dataset.sidx = sIdx;
+
+    const speakBtn = document.createElement('button');
+    speakBtn.className = 'p-sentence-speak';
+    speakBtn.textContent = '🔊';
+    speakBtn.setAttribute('aria-label', '朗读此句');
+    (function(s, b, i) {
+      b.onclick = function() { _speakPassageSentence(s, b, i, false); };
+    })(sentText, speakBtn, sIdx);
+
+    const sentSpan = document.createElement('span');
+    sentSpan.className = 'p-sentence-text';
+    sentSpan.innerHTML = sentText.replace(/\[(\d+)\]/g, function(_, n) {
+      const idx = parseInt(n, 10) - 1;
+      const filled = _passageAnswers[idx];
+      const cls = filled ? 'p-blank filled' : 'p-blank';
+      const label = filled ? filled : n;
+      return '<span class="' + cls + '" data-blank="' + idx + '" onclick="_tapBlank(' + idx + ')">' + label + '</span>';
+    });
+
+    row.appendChild(speakBtn);
+    row.appendChild(sentSpan);
+    box.appendChild(row);
   });
-  box.innerHTML = html;
+
   const filled = _passageAnswers.filter(function(a) { return a !== null; }).length;
   document.getElementById('passage-fill-count').textContent = filled + ' / ' + passage.answers.length + ' 已填';
 }
 
-// Helper: find chip DOM element by answer index (data-idx), not DOM position
+// Helper: split passage text into sentences on 。 boundaries
+function _splitPassageToSentences(text) {
+  const parts = [];
+  let current = '';
+  for (let i = 0; i < text.length; i++) {
+    current += text[i];
+    if (text[i] === '。') {
+      parts.push(current);
+      current = '';
+    }
+  }
+  if (current.trim()) parts.push(current);
+  return parts.length ? parts : [text];
+}
+
+// Helper: speak one sentence, substituting blanks with filled/correct answers
+// useCorrect=true → always read correct answer (post-submit); false → read student's filled word or pause
+function _speakPassageSentence(sentText, btn, sIdx, useCorrect) {
+  const ttsText = sentText.replace(/\[(\d+)\]/g, function(_, n) {
+    const idx = parseInt(n, 10) - 1;
+    if (useCorrect) {
+      const cfg = getClozeConfig(currentLevel, currentUnit);
+      const passage = cfg.passages[_passageCurrentIdx];
+      return passage.answers[idx] || '，';
+    }
+    return _passageAnswers[idx] || '，';
+  });
+  // Highlight this row while reading
+  document.querySelectorAll('.p-sentence-row').forEach(function(r) { r.classList.remove('reading'); });
+  const row = document.querySelector('.p-sentence-row[data-sidx="' + sIdx + '"]');
+  if (row) row.classList.add('reading');
+  // Remove highlight after estimated duration (~220ms/char + buffer)
+  var estimatedMs = ttsText.length * 220 + 700;
+  setTimeout(function() { if (row) row.classList.remove('reading'); }, estimatedMs);
+  speak(ttsText, btn);
+}
+
+
 function _getChipEl(ansIdx) {
   return document.querySelector('.p-chip[data-idx="' + ansIdx + '"]');
 }
@@ -11510,17 +11589,39 @@ function submitPassage() {
     else wrongWords.push(ans);
   });
 
-  // Render blanks with result colours
+  // Render blanks with result colours, sentence by sentence
   const box = document.getElementById('passage-text');
-  box.innerHTML = passage.text.replace(/\[(\d+)\]/g, function(_, n) {
-    const idx = parseInt(n, 10) - 1;
-    const studentAns = _passageAnswers[idx];
-    const correctAns = passage.answers[idx];
-    if (studentAns === correctAns) {
-      return '<span class="p-blank correct">' + correctAns + '</span>';
-    }
-    return '<span class="p-blank wrong">' + (studentAns || '？') + '</span>'
-         + '<span class="p-correction">→ ' + correctAns + '</span>';
+  box.innerHTML = '';
+  const sentences = _splitPassageToSentences(passage.text);
+  sentences.forEach(function(sentText, sIdx) {
+    const row = document.createElement('div');
+    row.className = 'p-sentence-row';
+    row.dataset.sidx = sIdx;
+
+    const speakBtn = document.createElement('button');
+    speakBtn.className = 'p-sentence-speak';
+    speakBtn.textContent = '🔊';
+    speakBtn.setAttribute('aria-label', '朗读此句');
+    (function(s, b, i) {
+      b.onclick = function() { _speakPassageSentence(s, b, i, true); };
+    })(sentText, speakBtn, sIdx);
+
+    const sentSpan = document.createElement('span');
+    sentSpan.className = 'p-sentence-text';
+    sentSpan.innerHTML = sentText.replace(/\[(\d+)\]/g, function(_, n) {
+      const idx = parseInt(n, 10) - 1;
+      const studentAns = _passageAnswers[idx];
+      const correctAns = passage.answers[idx];
+      if (studentAns === correctAns) {
+        return '<span class="p-blank correct">' + correctAns + '</span>';
+      }
+      return '<span class="p-blank wrong">' + (studentAns || '？') + '</span>'
+           + '<span class="p-correction">→ ' + correctAns + '</span>';
+    });
+
+    row.appendChild(speakBtn);
+    row.appendChild(sentSpan);
+    box.appendChild(row);
   });
 
   const total   = passage.answers.length;
