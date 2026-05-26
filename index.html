@@ -431,6 +431,74 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   .counter-num { font-size: 2rem !important; }
   .counter-label { font-size: .85rem !important; }
 }
+
+/* ── DESKTOP NO-SCROLL LAYOUT (≥900px) ─────────────────────────── */
+@media(min-width:900px){
+  /* Compress header */
+  .home-header { padding: .55rem 1.2rem .4rem; }
+  .home-title  { font-size: clamp(2.4rem,5vw,3rem); }
+  .home-subtitle { margin-top: .1rem; font-size: .78rem; }
+
+  /* Overview card tighter */
+  .overview-card { padding: .65rem 1rem; }
+  .stat-num { font-size: 1.5rem; }
+
+  /* Rank pill smaller */
+  #home-rank-pill { font-size: .78rem; padding: 3px 12px; }
+
+  /* Compress action buttons */
+  .home-action-row button { padding: .55rem !important; font-size: .84rem !important; }
+
+  /* Compress dashboard btn row */
+  .save-restore-row { padding: 0 1.2rem .3rem; }
+  .save-btn { padding: .48rem .85rem; font-size: .78rem; }
+
+  /* Compress weak btn */
+  .weak-btn { padding: .55rem 1rem; margin-bottom: .45rem; }
+  .weak-btn-title { font-size: .82rem; }
+  .weak-btn-sub   { font-size: .62rem; }
+  .weak-btn-icon  { font-size: 1.1rem; }
+
+  /* Compress levels grid */
+  .levels-grid { gap: .5rem; padding: 0 1.2rem .5rem; }
+  .level-card  { padding: .75rem .85rem; }
+  .level-name  { font-size: 1rem; }
+  .level-count, .level-chapter-count, .level-mastery-pct { font-size: .62rem; }
+  .level-mini-bar { margin-top: .4rem; }
+
+  /* Compress counter section */
+  #stats-counter-card { padding: .5rem 1rem !important; }
+  .counter-num   { font-size: 1.5rem !important; }
+  .counter-label { font-size: .72rem !important; }
+  .stats-counter-card { padding: .5rem 1rem; }
+  /* Wrap counter + footer in same row */
+  #home-desktop-bottom {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.2rem .3rem; max-width: 960px; margin: 0 auto; width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Footer compact */
+  .home-footer-credit { padding: .25rem 1.2rem .3rem; font-size: .62rem; }
+
+  /* Counter + footer as a flex row */
+  #home-desktop-bottom {
+    display: flex;
+    align-items: center;
+    max-width: 960px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 0 .2rem;
+  }
+  #home-desktop-bottom > div:first-child { padding: .25rem 1.2rem .25rem; margin: 0; }
+  #home-desktop-bottom .home-footer-credit {
+    white-space: nowrap;
+    padding: .25rem 1.2rem;
+    border-left: 1px solid rgba(26,42,94,.15);
+  }
+  /* Remove standalone footer from flow (it's inside the row now) */
+  #home-desktop-bottom { margin-bottom: .2rem; }
+}
   .save-btn,.restore-btn{flex:1;padding:.65rem;border:1px solid rgba(255,255,255,.6);border-radius:var(--r-sm);background:rgba(255,255,255,.45);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:var(--ink-soft);font-size:.78rem;cursor:pointer;font-family:inherit;transition:all var(--t);display:flex;align-items:center;justify-content:center;gap:.35rem;}
   .save-btn:hover,.restore-btn:hover{background:rgba(255,255,255,.65);}
   /* ── SYNC INDICATOR ──────────────────────────────── */
@@ -2092,8 +2160,9 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     <button class="level-card" id="lc-中三" onclick="showLevel('中三')"><div class="level-card-accent acc-3"></div><div class="level-badge-corner" id="badge-中三" style="opacity:.3">🏅</div><div class="level-name">中三</div><div class="level-count" id="count-中三">— 词语</div><div class="level-chapter-count" id="chap-中三">0/0 章</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中三" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中三">0% 掌握</div></button>
     <button class="level-card" id="lc-中四" onclick="showLevel('中四')"><div class="level-card-accent acc-4"></div><div class="level-badge-corner" id="badge-中四" style="opacity:.3">🏆</div><div class="level-name">中四</div><div class="level-count" id="count-中四">— 词语</div><div class="level-chapter-count" id="chap-中四">0/0 章</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中四" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中四">0% 掌握</div></button>
   </div>
-  <!-- Usage counter — bottom of home screen -->
-  <div style="padding:.5rem 1.2rem 1.5rem;max-width:960px;margin:0 auto;width:100%;">
+  <!-- Usage counter + footer — bottom of home screen -->
+  <div id="home-desktop-bottom">
+  <div style="padding:.5rem 1.2rem 1rem;max-width:960px;margin:0 auto;width:100%;flex:1;">
     <div class="stats-counter-card" id="stats-counter-card">
       <div style="font-size:.72rem;color:#1a2a5e;font-family:var(--font-ui);font-weight:600;text-align:center;margin-bottom:.6rem;letter-spacing:.03em;">🤝 词王淬炼坊学习伙伴</div>
       <div style="display:flex;justify-content:space-around;align-items:center;">
@@ -2103,21 +2172,16 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
         </div>
         <div class="counter-divider"></div>
         <div class="counter-item">
-          <div class="counter-num" id="counter-total">—</div>
-          <div class="counter-label">外校学生</div>
-        </div>
-        <div class="counter-divider"></div>
-        <div class="counter-item">
           <div class="counter-num" id="counter-teachers">—</div>
           <div class="counter-label">教师</div>
         </div>
-
       </div>
     </div>
   </div>
-  <div class="home-footer-credit">
+  <div class="home-footer-credit" style="flex-shrink:0;">
     百德中学母语部 · 词王淬炼坊 © 2026
   </div>
+  </div><!-- /#home-desktop-bottom -->
 </div>
 
 <!-- LEVEL -->
@@ -6787,9 +6851,13 @@ function showWeakDashboard(weak) {
   };
   clBtn.onclick = () => {
     closeWeakDashboard();
-    // 填空挑战 now lives at unit level — use flashcard for weak word review
-    currentMode = 'flashcard';
-    startStudy(null, '未掌握词语', needCloze.length > 0 ? needCloze : weak, true);
+    const target = needCloze.length > 0 ? needCloze : weak;
+    _chLevel     = null;
+    _chUnitNum   = null;
+    _chUnitTitle = '未掌握词语复习';
+    _chPool      = target;
+    _chRound     = 1;
+    startChallenge();
   };
 
   overlay.classList.add('show');
@@ -8936,6 +9004,12 @@ async function _syncProgressToFirestore() {
 // ── OVERRIDE loadProgress to check IndexedDB first ────────────
 const _origLoad = loadProgress;
 loadProgress = async function() {
+  // If Firestore already populated progress (auth merge), skip storage read
+  // to prevent stale IDB data from overwriting the freshly-merged progress.
+  if (Object.keys(progress).length > 0) {
+    updateHomeStats();
+    return;
+  }
   // Try IndexedDB first (most reliable when installed as PWA)
   try {
     const p = await idbGet('progress');
