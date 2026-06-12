@@ -7550,7 +7550,7 @@ updateHomeStats();
 const USER_KEY      = 'cl_vocab_user_email';
 const USER_TYPE_KEY = 'cl_vocab_user_type';
 
-const TEACHER_TYPES = ['华文教师', '其他科目教师', '其他机构'];
+const TEACHER_TYPES = ['华文教师', '其他科目教师', '其他机构', '教师'];
 const STUDENT_TYPES = ['百德中学学生', '其他学校学生'];
 
 function getUserType() {
@@ -11460,8 +11460,8 @@ function _chShowResult() {
 function exitChallenge() {
   if (_chAutoAdv) { clearTimeout(_chAutoAdv); _chAutoAdv = null; }
   var lvl = _chLevel || currentLevel;
-  showScreen('level-screen');
-  if (lvl) renderUnitsList(lvl);
+  if (lvl) showLevel(lvl);
+  else showScreen('home-screen');
 }
 // ══ END CHALLENGE ENGINE ════════════════════════════════════
 
