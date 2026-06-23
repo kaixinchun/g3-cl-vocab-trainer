@@ -8557,12 +8557,13 @@ function launchApp(email, userType, nickname, nicknameApproved) {
 
 // ── SIGN OUT ─────────────────────────────────────────────────
 // ── GUEST MODE ───────────────────────────────────────────────
-const GUEST_EMAIL    = 'guest@vocabking.edu.sg';
-const GUEST_PASSWORD = 'V0cabK!ng';
+const GUEST_EMAIL    = 'guestbvss@bvss.vk';
+const GUEST_PASSWORD = 'VocabGuest1';
 const GUEST_UID_KEY  = 'cl_vocab_guest_mode';
 
 function isGuestAccount(emailOrUid) {
-  return (emailOrUid || '').toLowerCase() === GUEST_EMAIL;
+  return (emailOrUid || '').toLowerCase() === GUEST_EMAIL ||
+         (emailOrUid || '').toLowerCase() === 'guest@vocabking.edu.sg';
 }
 
 // Wipe all local progress stores — used for guest mode
@@ -8594,7 +8595,7 @@ async function loginAsGuest() {
     sessionStorage.setItem(GUEST_UID_KEY, '1');
     saveUserIdentity(GUEST_EMAIL, '访客', '', false);
     launchApp(GUEST_EMAIL, '访客', '', false);
-    showToast('🎪 访客模式 — 练习进度仅限本次使用');
+    showToast('🎪 访客模式 — 练习进度会保存，但不计入排行榜');
   } catch(e) {
     console.warn('Guest login failed:', e);
     showToast('访客登录失败，请联系老师。');
@@ -8992,7 +8993,7 @@ async function _syncProgressToFirestore() {
   try {
     const user = window._fbUser;
     if (!user) return;
-    if (isGuestAccount(user.email)) return; // guest: no Firestore sync
+    // guest progress is intentionally saved to Firestore for demo purposes
     const { doc, updateDoc, serverTimestamp } = window._fbFns;
     await updateDoc(doc(window._fbDb, 'users', user.uid), {
       progress: progress,
@@ -10946,6 +10947,8 @@ async function loadLeaderboard(tab) {
     // Filter for leaderboard display
     entries = entries.filter(e => {
       if (!e.email) return false;
+      if (isGuestAccount(e.email)) return false; // guest never appears on leaderboard
+      if (e.userType === '访客') return false;
       if (tab === 'school') return e.userType === '百德中学学生';
       // Global tab: include everyone (students, teachers, public)
       return true;
