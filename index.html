@@ -210,7 +210,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 .mode-tab[data-mode="cloze"].active{color:white;border-bottom-color:var(--hero-green);background:var(--hero-green);}
 .mode-tab[data-mode="definition"].active{color:#1a5c35;border-bottom-color:#3A8A1A;background:rgba(58,138,26,.06);}
 .mode-tab[data-mode="english"].active{color:#3d0066;border-bottom-color:#6b35a8;background:rgba(107,53,168,.06);}
-.mode-tab[data-mode="passage"],.passage-tab-default{background:#FDF3E0;color:#7B4A00;border-bottom:2px solid transparent;}
+.mode-tab[data-mode="passage"],.passage-tab-default{display:none;}
 .mode-tab[data-mode="passage"]:hover{background:#FAE9C8;}
 .mode-tab[data-mode="passage"].active{color:#7B4A00;border-bottom-color:#C47F17;background:#FAE9C8;font-weight:700;}
 .mode-tab[data-mode="passage"].pending{color:#A07840;background:#FDF3E0;border-bottom-color:#D4A84B;opacity:.75;cursor:pointer;}
@@ -427,9 +427,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 @media(min-width:700px){
   .save-restore-row{max-width:960px;}
   .weak-btn{max-width:calc(960px - 2.4rem);}
-  .stats-counter-card { padding: 1rem 1.5rem; }
-  .counter-num { font-size: 2rem !important; }
-  .counter-label { font-size: .85rem !important; }
+
 }
 
 /* ── DESKTOP NO-SCROLL LAYOUT (≥900px) ─────────────────────────── */
@@ -467,10 +465,6 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   .level-mini-bar { margin-top: .4rem; }
 
   /* Compress counter section */
-  #stats-counter-card { padding: .5rem 1rem !important; }
-  .counter-num   { font-size: 1.5rem !important; }
-  .counter-label { font-size: .72rem !important; }
-  .stats-counter-card { padding: .5rem 1rem; }
   /* Wrap counter + footer in same row */
   #home-desktop-bottom {
     display: flex; align-items: center; justify-content: space-between;
@@ -873,30 +867,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
   }
 
   /* ── STUDENT COUNTER ────────────────────────────────────── */
-  .stats-counter-card {
-    background: rgba(255,255,255,.45);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,.6);
-    border-radius: var(--r);
-    padding: .8rem 1rem;
-    box-shadow: 0 2px 12px rgba(0,0,0,.06);
-  }
   .counter-item { text-align: center; }
-  .counter-num {
-    font-size: 1.3rem;
-    font-weight: bold;
-    color: #1a2a5e;
-    line-height: 1;
-    font-family: var(--font-ui);
-  }
-  .counter-label {
-    font-size: .62rem;
-    color: var(--ink-mute);
-    font-family: sans-serif;
-    margin-top: .2rem;
-    line-height: 1.3;
-  }
   .counter-divider {
     width: 1px;
     height: 28px;
@@ -1803,90 +1774,90 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
 
 
 /* ── CHALLENGE SCREEN ─────────────────────────────────── */
-#challenge-screen{background:#1A1A3E;overflow-y:auto;}
-.ch-topbar{background:#1A1A3E;padding:14px 16px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,0.06);position:sticky;top:0;z-index:10;}
-.ch-back{font-size:22px;color:rgba(255,255,255,0.6);cursor:pointer;background:none;border:none;line-height:1;}
+#challenge-screen{background:var(--paper);overflow-y:auto;}
+.ch-topbar{background:white;padding:14px 16px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--paper-3);position:sticky;top:0;z-index:10;box-shadow:var(--shadow-sm);}
+.ch-back{font-size:22px;color:var(--ink-mute);cursor:pointer;background:none;border:none;line-height:1;}
 .ch-title-block{flex:1;}
-.ch-title{font-size:15px;font-weight:800;color:#fff;}
-.ch-sub{font-size:10.5px;color:rgba(255,255,255,0.45);margin-top:1px;}
-.ch-q-pill{background:rgba(124,77,255,0.25);border:1px solid rgba(124,77,255,0.5);border-radius:99px;padding:4px 11px;font-size:12px;font-weight:800;color:#fff;}
-.ch-prog-wrap{background:#1A1A3E;padding:10px 16px 12px;}
-.ch-prog-track{height:5px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden;}
-.ch-prog-fill{height:100%;border-radius:99px;transition:width 0.4s ease;background:linear-gradient(90deg,#7C4DFF,#E040FB);}
-.ch-prog-labels{display:flex;justify-content:space-between;margin-top:4px;font-size:9.5px;color:rgba(255,255,255,0.25);}
-.ch-score-strip{background:#22234A;display:flex;justify-content:space-around;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08);}
+.ch-title{font-size:15px;font-weight:800;color:var(--ink);}
+.ch-sub{font-size:10.5px;color:var(--ink-mute);margin-top:1px;}
+.ch-q-pill{background:var(--green-soft);border:1px solid var(--green-mid);border-radius:99px;padding:4px 11px;font-size:12px;font-weight:800;color:var(--green);}
+.ch-prog-wrap{background:var(--paper);padding:10px 16px 12px;}
+.ch-prog-track{height:5px;background:var(--paper-3);border-radius:99px;overflow:hidden;}
+.ch-prog-fill{height:100%;border-radius:99px;transition:width 0.4s ease;background:linear-gradient(90deg,var(--green),var(--green-mid));}
+.ch-prog-labels{display:flex;justify-content:space-between;margin-top:4px;font-size:9.5px;color:var(--ink-mute);}
+.ch-score-strip{background:var(--paper-2);display:flex;justify-content:space-around;padding:8px 0;border-bottom:1px solid var(--paper-3);}
 .ch-ss-item{text-align:center;}
-.ch-ss-num{font-size:15px;font-weight:800;color:#fff;}
+.ch-ss-num{font-size:15px;font-weight:800;color:var(--ink);}
 .ch-ss-num.g{color:#66BB6A;}.ch-ss-num.r{color:#EF9A9A;}
-.ch-ss-label{font-size:9px;color:rgba(255,255,255,0.45);margin-top:1px;}
-.ch-body{background:#1A1A3E;padding:18px 16px 0;min-height:360px;}
-.ch-src-tag{display:none;align-items:center;gap:5px;background:rgba(107,45,139,0.25);border:1px solid rgba(107,45,139,0.4);border-radius:99px;padding:3px 10px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.6);margin-bottom:10px;}
+.ch-ss-label{font-size:9px;color:var(--ink-mute);margin-top:1px;}
+.ch-body{background:var(--paper);padding:18px 16px 0;min-height:360px;}
+.ch-src-tag{display:none;align-items:center;gap:5px;background:var(--amber-soft);border:1px solid var(--amber);border-radius:99px;padding:3px 10px;font-size:10px;font-weight:700;color:var(--amber);margin-bottom:10px;}
 .ch-src-tag.show{display:inline-flex;}
-.ch-sentence{font-size:18px;line-height:2;color:#fff;margin-bottom:4px;font-family:var(--font-body);}
-.ch-blank{display:inline-block;min-width:70px;height:29px;border-bottom:2.5px solid #E040FB;background:rgba(224,64,251,0.1);border-radius:4px 4px 0 0;vertical-align:middle;margin:0 4px;transition:all 0.2s;text-align:center;line-height:29px;font-weight:700;}
+.ch-sentence{font-size:18px;line-height:2;color:var(--ink);margin-bottom:4px;font-family:var(--font-body);}
+.ch-blank{display:inline-block;min-width:70px;height:29px;border-bottom:2.5px solid var(--green-mid);background:var(--green-soft);border-radius:4px 4px 0 0;vertical-align:middle;margin:0 4px;transition:all 0.2s;text-align:center;line-height:29px;font-weight:700;}
 .ch-blank.filled{border-bottom-color:#4CAF50;background:rgba(76,175,80,0.12);color:#81C784;}
 .ch-blank.wrong-fill{border-bottom-color:#F44336;background:rgba(244,67,54,0.1);color:#EF9A9A;}
 .ch-hint-row{display:flex;align-items:center;gap:8px;margin-bottom:18px;}
-.ch-hint{font-size:11px;color:rgba(255,255,255,0.25);}
+.ch-hint{font-size:11px;color:var(--ink-mute);}
 .ch-tts-btn{background:none;border:none;font-size:16px;cursor:pointer;opacity:0.55;padding:0;}
 .ch-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.ch-opt{background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.1);border-radius:14px;padding:15px 8px;text-align:center;font-size:15px;font-weight:700;color:#fff;font-family:var(--font-body);cursor:pointer;transition:all 0.15s;user-select:none;display:flex;align-items:center;justify-content:center;gap:5px;width:100%;}
+.ch-opt{background:white;border:1.5px solid var(--paper-3);border-radius:14px;padding:15px 8px;text-align:center;font-size:15px;font-weight:700;color:var(--ink);font-family:var(--font-body);cursor:pointer;transition:all 0.15s;user-select:none;display:flex;align-items:center;justify-content:center;gap:5px;width:100%;box-shadow:var(--shadow-sm);}
 .ch-opt:active{transform:scale(0.96);}
 .ch-opt.correct{background:rgba(76,175,80,0.2);border-color:#4CAF50;color:#81C784;}
 .ch-opt.wrong{background:rgba(244,67,54,0.12);border-color:#F44336;color:#EF9A9A;}
 .ch-opt.dim{opacity:0.3;pointer-events:none;}
-.ch-next-wrap{padding:14px 16px 24px;background:#1A1A3E;}
-.ch-next-btn{width:100%;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,#7C4DFF,#E040FB);color:#fff;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(124,77,255,0.35);display:none;font-family:var(--font-ui);transition:transform 0.12s,opacity 0.12s;}
+.ch-next-wrap{padding:14px 16px 24px;background:var(--paper);border-top:1px solid var(--paper-3);}
+.ch-next-btn{width:100%;padding:14px;border-radius:14px;border:none;background:var(--hero-green);color:#fff;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 12px rgba(74,154,32,0.3);display:none;font-family:var(--font-ui);transition:transform 0.12s,opacity 0.12s;}
 .ch-next-btn.show{display:block;}
 .ch-next-btn:active{transform:scale(0.97);opacity:0.9;}
-#ch-result-screen{background:#1A1A3E;overflow-y:auto;}
-.ch-result-hero{padding:28px 20px 16px;text-align:center;background:linear-gradient(180deg,rgba(124,77,255,0.15) 0%,transparent 100%);}
+#ch-result-screen{background:var(--paper);overflow-y:auto;}
+.ch-result-hero{padding:28px 20px 16px;text-align:center;background:var(--paper);}
 .ch-result-emoji{font-size:52px;margin-bottom:8px;}
 .ch-result-title{font-size:22px;font-weight:800;color:#fff;margin-bottom:4px;}
-.ch-result-sub{font-size:12px;color:rgba(255,255,255,0.45);}
+.ch-result-sub{font-size:12px;color:var(--ink-mute);}
 .ch-result-stats{display:flex;gap:8px;padding:16px 16px 0;}
-.ch-rs{flex:1;background:rgba(255,255,255,0.06);border-radius:12px;padding:12px 8px;text-align:center;}
-.ch-rs-num{font-size:22px;font-weight:800;color:#fff;}
-.ch-rs-num.g{color:#66BB6A;}.ch-rs-num.o{color:#FF9800;}.ch-rs-num.r{color:#EF9A9A;}
-.ch-rs-label{font-size:9.5px;color:rgba(255,255,255,0.4);margin-top:3px;}
-.ch-mastery-banner{margin:14px 16px 0;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;}
+.ch-rs{flex:1;background:var(--paper-2);border-radius:12px;padding:12px 8px;text-align:center;border:1px solid var(--paper-3);}
+.ch-rs-num{font-size:22px;font-weight:800;color:var(--ink);}
+.ch-rs-num.g{color:var(--green);}.ch-rs-num.o{color:var(--amber);}.ch-rs-num.r{color:var(--red);}
+.ch-rs-label{font-size:9.5px;color:var(--ink-mute);margin-top:3px;}
+.ch-mastery-banner{margin:14px 16px 0;background:var(--green-soft);border:1px solid var(--green-mid);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;}
 .ch-mb-icon{font-size:20px;flex-shrink:0;}
-.ch-mb-text{font-size:12px;color:#81C784;line-height:1.5;}
-.ch-mb-text strong{color:#A5D6A7;}
+.ch-mb-text{font-size:12px;color:var(--green);line-height:1.5;}
+.ch-mb-text strong{color:var(--ink-soft);}
 .ch-wrong-section{padding:14px 16px 0;}
 .ch-ws-header{display:flex;align-items:center;gap:6px;margin-bottom:10px;}
-.ch-ws-title{font-size:11px;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:0.06em;text-transform:uppercase;}
+.ch-ws-title{font-size:11px;font-weight:700;color:var(--red);letter-spacing:0.06em;text-transform:uppercase;}
 .ch-ws-count{background:rgba(244,67,54,0.15);border:1px solid rgba(244,67,54,0.3);border-radius:99px;padding:2px 8px;font-size:10px;font-weight:800;color:#EF9A9A;}
 .ch-wrong-cards{display:flex;flex-direction:column;gap:8px;}
 .ch-wc{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;}
 .ch-wc-left{flex:1;}
 .ch-wc-word{font-size:16px;font-weight:800;color:#fff;margin-bottom:3px;font-family:var(--font-body);}
-.ch-wc-def{font-size:11px;color:rgba(255,255,255,0.45);line-height:1.4;}
+.ch-wc-def{font-size:11px;color:var(--ink-soft);line-height:1.4;}
 .ch-wc-src{font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:99px;background:rgba(107,45,139,0.2);color:rgba(200,150,255,0.7);border:1px solid rgba(107,45,139,0.3);margin-top:5px;display:inline-block;}
 .ch-wc-badge{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:rgba(244,67,54,0.15);border:1px solid rgba(244,67,54,0.3);display:flex;align-items:center;justify-content:center;font-size:12px;}
-.ch-action-btns{padding:14px 16px 32px;display:flex;flex-direction:column;gap:10px;}
+.ch-action-btns{padding:14px 16px 32px;display:flex;flex-direction:column;gap:10px;background:var(--paper);}
 .ch-ab{width:100%;padding:15px;border-radius:14px;border:none;font-size:15px;font-weight:800;cursor:pointer;font-family:var(--font-ui);transition:transform 0.12s,opacity 0.12s;}
 .ch-ab:active{transform:scale(0.97);opacity:0.9;}
-.ch-ab.primary{background:linear-gradient(135deg,#7C4DFF,#E040FB);color:#fff;box-shadow:0 4px 16px rgba(124,77,255,0.35);}
+.ch-ab.primary{background:var(--hero-green);color:#fff;box-shadow:0 4px 12px rgba(74,154,32,0.3);}
 .ch-ab.target{background:rgba(255,152,0,0.12);border:1.5px solid rgba(255,152,0,0.35);color:#FF9800;}
-.ch-ab.secondary{background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.55);}
+.ch-ab.secondary{background:white;border:1.5px solid var(--paper-3);color:var(--ink-soft);}
 .unit-challenge-divider{display:flex;align-items:center;gap:8px;margin:14px 0 10px;}
-.unit-challenge-divider-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(124,77,255,0.3),transparent);}
+.unit-challenge-divider-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--green-mid),transparent);}
 .unit-challenge-divider-label{font-size:10px;font-weight:700;color:#7C4DFF;letter-spacing:0.08em;text-transform:uppercase;}
-.unit-challenge-card{background:#1A1A3E;border-radius:var(--r-sm);padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden;transition:transform 0.12s;box-shadow:0 4px 16px rgba(124,77,255,0.2);margin-bottom:6px;}
+.unit-challenge-card{background:white;border:1px solid var(--paper-3);border-radius:var(--r-sm);padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden;transition:transform 0.12s;box-shadow:0 4px 12px rgba(74,154,32,0.1);margin-bottom:6px;}
 .unit-challenge-card:active{transform:scale(0.985);}
-.unit-challenge-card::before{content:'';position:absolute;top:-20px;right:-20px;width:90px;height:90px;background:radial-gradient(circle,rgba(224,64,251,0.15) 0%,transparent 70%);pointer-events:none;}
+.unit-challenge-card::before{content:'';position:absolute;top:-20px;right:-20px;width:90px;height:90px;background:radial-gradient(circle,rgba(74,154,32,0.1) 0%,transparent 70%);pointer-events:none;}
 .uc-icon{font-size:26px;flex-shrink:0;}
 .uc-info{flex:1;}
 .uc-title{font-size:15px;font-weight:800;color:#fff;margin-bottom:3px;}
-.uc-sub{font-size:11px;color:rgba(255,255,255,0.45);}
+.uc-sub{font-size:11px;color:var(--ink-mute);}
 .uc-pills{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap;}
-.uc-pill{font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.1);}
-.uc-pill.hi{background:rgba(124,77,255,0.25);color:rgba(255,255,255,0.8);border-color:rgba(124,77,255,0.4);}
+.uc-pill{font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--paper-2);color:var(--ink-mute);border:1px solid var(--paper-3);}
+.uc-pill.hi{background:var(--green-soft);color:var(--green);border-color:var(--green-mid);}
 .uc-badge{flex-shrink:0;text-align:center;}
 .uc-badge-ring{width:42px;height:42px;border-radius:50%;border:2px solid rgba(124,77,255,0.4);background:rgba(124,77,255,0.12);display:flex;align-items:center;justify-content:center;}
 .uc-badge-pct{font-size:11px;font-weight:800;color:#fff;}
-.uc-badge-label{font-size:9px;color:rgba(255,255,255,0.35);margin-top:3px;}
+.uc-badge-label{font-size:9px;color:var(--ink-mute);margin-top:3px;}
   </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <!-- Firebase SDK -->
@@ -2160,24 +2131,8 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
     <button class="level-card" id="lc-中三" onclick="showLevel('中三')"><div class="level-card-accent acc-3"></div><div class="level-badge-corner" id="badge-中三" style="opacity:.3">🏅</div><div class="level-name">中三</div><div class="level-count" id="count-中三">— 词语</div><div class="level-chapter-count" id="chap-中三">0/0 章</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中三" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中三">0% 掌握</div></button>
     <button class="level-card" id="lc-中四" onclick="showLevel('中四')"><div class="level-card-accent acc-4"></div><div class="level-badge-corner" id="badge-中四" style="opacity:.3">🏆</div><div class="level-name">中四</div><div class="level-count" id="count-中四">— 词语</div><div class="level-chapter-count" id="chap-中四">0/0 章</div><div class="level-mini-bar"><div class="level-mini-fill" id="bar-中四" style="width:0%"></div></div><div class="level-mastery-pct" id="pct-中四">0% 掌握</div></button>
   </div>
-  <!-- Usage counter + footer — bottom of home screen -->
+  <!-- footer -->
   <div id="home-desktop-bottom">
-  <div style="padding:.5rem 1.2rem 1rem;max-width:960px;margin:0 auto;width:100%;flex:1;">
-    <div class="stats-counter-card" id="stats-counter-card">
-      <div style="font-size:.72rem;color:#1a2a5e;font-family:var(--font-ui);font-weight:600;text-align:center;margin-bottom:.6rem;letter-spacing:.03em;">🤝 词王淬炼坊学习伙伴</div>
-      <div style="display:flex;justify-content:space-around;align-items:center;">
-        <div class="counter-item">
-          <div class="counter-num" id="counter-bukit">—</div>
-          <div class="counter-label">百德中学学生</div>
-        </div>
-        <div class="counter-divider"></div>
-        <div class="counter-item">
-          <div class="counter-num" id="counter-teachers">—</div>
-          <div class="counter-label">教师</div>
-        </div>
-      </div>
-    </div>
-  </div>
   <div class="home-footer-credit" style="flex-shrink:0;">
     百德中学母语部 · 词王淬炼坊 © 2026
   </div>
@@ -2200,7 +2155,7 @@ body{font-family:var(--font-body);background:var(--paper);color:var(--ink);font-
       <button class="back-btn" onclick="exitStudy()">‹</button>
       <div class="study-title" id="study-title"></div>
     </div>
-    <div class="mode-tabs" id="mode-tabs-bar" style="grid-template-columns:repeat(4,1fr)">
+    <div class="mode-tabs" id="mode-tabs-bar" style="grid-template-columns:repeat(3,1fr)">
       <button class="mode-tab active" data-mode="flashcard" onclick="switchMode('flashcard')">词语闪卡</button>
       <button class="mode-tab passage-tab-default" data-mode="passage" id="passage-tab" onclick="switchMode('passage')">综合填空</button>
       <button class="mode-tab" data-mode="definition" onclick="switchMode('definition')">华文解释</button>
@@ -2725,87 +2680,6 @@ const POS_TAGS = {"淘气": "形容词", "惹": "动词", "两肋插刀": "成�
   "立言": "动词",
   "著书立说": "成语"
 };
-
-const PINYIN_DATA = {"淘气": "táo qì", "惹": "rě", "两肋插刀": "liǎng lèi chā dāo", "赵": "zhào", "科技": "kē jì", "来者不拒": "lái zhě bù jù", "口头禅": "kǒu tóu chán", "小事一桩": "xiǎo shì yī zhuāng", "人缘": "rén yuán", "性格": "xìng gé", "直率": "zhí shuài", "得罪": "dé zuì", "别扭": "biè niǔ", "争辩": "zhēng biàn", "即使": "jí shǐ", "冤枉": "yuān wǎng", "推荐": "tuī jiàn", "有福同享，有难同当": "yǒu fú tóng xiǎng, yǒu nán tóng dāng", "助人为快乐之本": "zhù rén wéi kuài lè zhī běn", "健将": "jiàn jiàng", "内向": "nèi xiàng", "系列": "xì liè", "捣乱": "dǎo luàn", "瞬间": "shùn jiān", "兴致勃勃": "xìng zhì bó bó", "粘": "zhān", "蛋液": "dàn yè", "狼狈": "láng bèi", "讥讽": "jī fěng", "赌气": "dǔ qì", "嚷": "rǎng", "小心翼翼": "xiǎo xīn yì yì", "荧光笔": "yíng guāng bǐ", "抵挡": "dǐ dǎng", "拉扯": "lā chě", "手足无措": "shǒu zú wú cuò", "布置": "bù zhì", "体会": "tǐ huì", "服气": "fú qì", "证明": "zhèng míng", "居然": "jū rán", "恨不得": "hèn bù dé", "审案": "shěn àn", "律师": "lǜ shī", "振振有词": "zhèn zhèn yǒu cí", "心虚": "xīn xū", "哑口无言": "yǎ kǒu wú yán", "判决": "pàn jué", "泄": "xiè", "既然": "jì rán", "辩护": "biàn hù", "报复": "bào fù", "错误": "cuò wù", "葡萄": "pú táo", "象征": "xiàng zhēng", "风俗": "fēng sú", "辞旧迎新": "cí jiù yíng xīn", "燃放": "rán fàng", "瓶瓶罐罐": "píng píng guàn guàn", "厄运": "è yùn", "前夕": "qián xī", "碗碟": "wǎn dié", "预示": "yù shì", "兆头": "zhào tou", "忙碌": "máng lù", "遥远": "yáo yuǎn", "恭敬": "gōng jìng", "万事大吉": "wàn shì dà jí", "元旦": "yuán dàn", "除夕": "chú xī", "贼": "zéi", "鱼尾纹": "yú wěi wén", "装饰": "zhuāng shì", "圣诞": "shèng dàn", "格格不入": "gé gé bù rù", "结婚": "jié hūn", "嫁": "jià", "视讯": "shì xùn", "沉默寡言": "chén mò guǎ yán", "副": "fù", "酷": "kù", "承诺": "chéng nuò", "歉意": "qiàn yì", "围炉": "wéi lú", "蒸腾": "zhēng téng", "叽叽喳喳": "jī jī zhā zhā", "缺席": "quē xí", "悦耳": "yuè ěr", "闹别扭": "nào biè niǔ", "吞吞吐吐": "tūn tūn tǔ tǔ", "红枣": "hóng zǎo", "儿媳妇": "ér xí fù", "莫名其妙": "mò míng qí miào", "疑惑": "yí huò", "大吉大利": "dà jí dà lì", "魅力": "mèi lì", "博物馆": "bó wù guǎn", "悠久": "yōu jiǔ", "遗产": "yí chǎn", "巴刹": "bā shā", "同胞": "tóng bāo", "融合": "róng hé", "皇宫": "huáng gōng", "城堡": "chéng bǎo", "时尚": "shí shàng", "彩绘": "cǎi huì", "流连忘返": "liú lián wàng fǎn", "娱乐": "yú lè", "探索": "tàn suǒ", "娘惹": "niáng rě", "拍摄": "pāi shè", "平均": "píng jūn", "繁忙": "fán máng", "闪耀": "shǎn yào", "文明": "wén míng", "品尝": "pǐn cháng", "安详": "ān xiáng", "休闲": "xiū xián", "横梁": "héng liáng", "覆盖": "fù gài", "玻璃": "bō lí", "瀑布": "pù bù", "循环": "xún huán", "谷": "gǔ", "株": "zhū", "设施": "shè shī", "蹦跳": "bèng tiào", "甚至": "shèn zhì", "主题": "zhǔ tí", "别具一格": "bié jù yī gé", "投降": "tóu xiáng", "自治": "zì zhì", "栏": "lán", "棕色": "zōng sè", "氧化": "yǎng huà", "陌生": "mò shēng", "宁静": "níng jìng", "属于": "shǔ yú", "面积": "miàn jī", "天花板": "tiān huā bǎn", "坚持不懈": "jiān chí bù xiè", "开卷有益": "kāi juàn yǒu yì", "以礼待人": "yǐ lǐ dài rén", "新颖": "xīn yǐng", "戏剧": "xì jù", "工作坊": "gōng zuō fang", "尴尬": "gān gà", "维护": "wéi hù", "友谊": "yǒu yì", "一帆风顺": "yī fān fēng shùn", "有效": "yǒu xiào", "策略": "cè lüè", "嘉宾": "jiā bīn", "辅导员": "fǔ dǎo yuán", "一诺千金": "yí nuò qiān jīn", "言出必行": "yán chū bì xíng", "起码": "qǐ mǎ", "赖床": "lài chuáng", "滋味": "zī wèi", "催促": "cuī cù", "哀求": "āi qiú", "硬着头皮": "yìng zhe tóu pí", "藤鞭": "téng biān", "抡": "lūn", "挨打": "ái dǎ", "女佣": "nǚ yōng", "雨蓬": "yǔ péng", "泪痕": "lèi hén", "猛": "měng", "嗓子眼": "sǎng zi yǎn", "允许": "yǔn xǔ", "早晨": "zǎo chén", "毛病": "máo bìng", "不得了": "bù dé le", "情愿": "qíng yuàn", "缘故": "yuán gù", "相貌": "xiàng mào", "讲究": "jiǎng jiū", "何必": "hé bì", "记账": "jì zhàng", "亏": "kuī", "撇": "piē", "慢条斯理": "màn tiáo sī lǐ", "起航": "qǐ háng", "焦急": "jiāo jí", "记性": "jì xìng", "精明": "jīng míng", "剩": "shèng", "牙膏": "yá gāo", "橡皮擦": "xiàng pí cā", "薯条": "shǔ tiáo", "番茄酱": "fān qié jiàng", "偶尔": "ǒu ěr", "评委": "píng wěi", "晋级": "jìn jí", "奖励": "jiǎng lì", "获得": "huò dé", "企业": "qǐ yè", "创新": "chuàng xīn", "牧场": "mù chǎng", "潜水": "qián shuǐ", "艘": "sōu", "屁股": "pì gǔ", "翘": "qiào", "潜水艇": "qián shuǐ tǐng", "仿佛": "fǎng fú", "确切": "què qiè", "浑身": "hún shēn", "基因": "jī yīn", "一哄而散": "yī hòng ér sàn", "手势": "shǒu shì", "颁布": "bān bù", "泛": "fàn", "泡沫": "pào mò", "腾空而起": "téng kōng ér qǐ", "降落": "jiàng luò", "打量": "dǎ liàng", "伤脑筋": "shāng nǎo jīn", "拜访": "bài fǎng", "中央": "zhōng yāng", "漫步": "màn bù", "绞尽脑汁": "jiǎo jìn nǎo zhī", "华侨": "huá qiáo", "银行": "yín háng", "由衷": "yóu zhōng", "摩天大楼": "mó tiān dà lóu", "薄薄的": "báo báo de", "抨击": "pēng jī", "挫折": "cuò zhé", "打交道": "dǎ jiāo dào", "而已": "ér yǐ", "油漆": "yóu qī", "栏杆": "lán gān", "宿舍": "sù shè", "凭": "píng", "欣慰": "xīn wèi", "订购": "dìng gòu", "塔台": "tǎ tái", "范围": "fàn wéi", "特殊": "tè shū", "警惕": "jǐng tì", "失误": "shī wù", "不堪设想": "bù kān shè xiǎng", "脂肪": "zhī fáng", "及时": "jí shí", "一旦": "yí dàn", "心满意足": "xīn mǎn yì zú", "截至": "jié zhì", "行驶": "xíng shǐ", "延误": "yán wù", "稳定": "wěn dìng", "幕后": "mù hòu", "贡献": "gòng xiàn", "明知山有虎，偏向虎山行": "míng zhī shān yǒu hǔ, piān xiàng hǔ shān xíng", "漏夜": "lòu yè", "轨道": "guǐ dào", "凌晨": "líng chén", "就绪": "jiù xù", "隧道": "suì dào", "扫描": "sǎo miáo", "裂痕": "liè hén", "顺畅": "shùn chàng", "全力以赴": "quán lì yǐ fù", "职业": "zhí yè", "故障": "gù zhàng", "岗位": "gǎng wèi", "维修": "wéi xiū", "确保": "què bǎo", "投入": "tóu rù", "默默无闻": "mò mò wú wén", "新谣": "xīn yáo", "芝麻": "zhī má", "朗朗上口": "lǎng lǎng shàng kǒu", "奉献": "fèng xiàn", "繁荣": "fán róng", "平凡": "píng fán", "光芒": "guāng máng", "微不足道": "wēi bù zú dào", "敬业乐业": "jìng yè lè yè", "犹豫": "yóu yù", "不分青红皂白": "bù fēn qīng hóng zào bái", "教训": "jiào xùn", "叛逆": "pàn nì", "委屈": "wěi qū", "内疚": "nèi jiù", "不妨": "bù fáng", "匿名": "nì míng", "监督": "jiān dū", "代沟": "dài gōu", "上瘾": "shàng yǐn", "疏远": "shū yuǎn", "迎刃而解": "yíng rèn ér jiě", "体谅": "tǐ liàng", "无可厚非": "wú kě hòu fēi", "称赞": "chēng zàn", "崇拜": "chóng bài", "爱不释手": "ài bù shì shǒu", "碰钉子": "pèng dīng zi", "泼冷水": "pō lěng shuǐ", "抽屉": "chōu tì", "精疲力竭": "jīng pí lì jié", "衰老": "shuāi lǎo", "抑郁": "yì yù", "寂寞": "jì mò", "启齿": "qǐ chǐ", "打退堂鼓": "dǎ tuì táng gǔ", "懊恼": "ào nǎo", "伺机": "sì jī", "心不在焉": "xīn bù zài yān", "破天荒": "pò tiān huāng", "仓促": "cāng cù", "打理": "dǎ lǐ", "家务": "jiā wù", "严肃": "yán sù", "安抚": "ān fǔ", "干脆": "gān cuì", "风筝": "fēng zhēng", "挣脱": "zhèng tuō", "惊讶": "jīng yà", "斑": "bān", "缠绕": "chán rào", "搂": "lǒu", "捐款": "juān kuǎn", "拯救": "zhěng jiù", "医疗": "yī liáo", "研究": "yán jiū", "优惠": "yōu huì", "券": "quàn", "四肢": "sì zhī", "敏捷": "mǐn jié", "穿梭": "chuān suō", "友善": "yǒu shàn", "辨识": "biàn shí", "害羞": "hài xiū", "馋": "chán", "调皮": "tiáo pí", "摔跤": "shuāi jiāo", "推出": "tuī chū", "亲切": "qīn qiè", "大摇大摆": "dà yáo dà bǎi", "独一无二": "dú yī wú èr", "凶猛": "xiōng měng", "尤其": "yóu qí", "愧疚": "kuì jiù", "光泽": "guāng zé", "懒懒地": "lǎn lǎn dì", "妻子": "qī zǐ", "啾啾": "jiū jiū", "仰": "yǎng", "凝望": "níng wàng", "鸟笼": "niǎo lóng", "隔": "gé", "愤怒": "fèn nù", "畏罪潜逃": "wèi zuì qián táo", "喵": "miāo", "衔": "xián", "搞": "gǎo", "失踪": "shī zōng", "估计": "gū jì", "活泼": "huó pō", "丰富": "fēng fù", "褐": "hè", "盘旋": "pán xuán", "丝毫": "sī háo", "面面相觑": "miàn miàn xiāng qù", "愣": "lèng", "傻": "shǎ", "急促": "jí cù", "因素": "yīn sù", "水喉": "shuǐ hóu", "资源": "zī yuán", "艰巨": "jiān jù", "昂贵": "áng guì", "消耗": "xiāo hào", "干旱": "gān hàn", "扩大": "kuò dà", "蓄水池": "xù shuǐ chí", "洗澡": "xǐ zǎo", "浴室": "yù shì", "趋势": "qū shì", "开源节流": "kāi yuán jié liú", "媒体": "méi tǐ", "塑料": "sù liào", "吨": "dūn", "廉价": "lián jià", "提供": "tí gōng", "铺": "pū", "污染": "wū rǎn", "焚烧": "fén shāo", "烟尘": "yān chén", "土壤": "tǔ rǎng", "遏制": "è zhì", "倡导": "chàng dǎo", "逐渐": "zhú jiàn", "威胁": "wēi xié", "煞费苦心": "shà fèi kǔ xīn", "统计": "tǒng jì", "选择": "xuǎn zé", "泛滥": "fàn làn", "寿命": "shòu mìng", "途径": "tú jìng", "缺乏": "quē fá", "亿": "yì", "遗憾": "yí hàn", "谨慎": "jǐn shèn", "妥善": "tuǒ shàn", "自卑": "zì bēi", "身材": "shēn cái", "羡慕": "xiàn mù", "抗拒": "kàng jù", "诱惑": "yòu huò", "毅力": "yì lì", "戒": "jiè", "茫然": "máng rán", "瞌睡": "kē shuì", "嫌": "xián", "逼": "bī", "烹饪": "pēng rèn", "符合": "fú hé", "选修": "xuǎn xiū", "憋": "biē", "委婉": "wěi wǎn", "彻底": "chè dǐ", "缝": "fèng", "掩": "yǎn", "恐惧": "kǒng jù", "走廊": "zǒu láng", "锁": "suǒ", "熄灯": "xī dēng", "颤抖": "chàn dǒu", "隐约": "yǐn yuē", "瑟瑟": "sè sè", "恐怖": "kǒng bù", "通宵": "tōng xiāo", "惊悚": "jīng sǒng", "和谐": "hé xié", "冤家": "yuān jiā", "误会": "wù huì", "脖子": "bó zi", "社交媒体": "shè jiāo méi tǐ", "缺陷": "quē xiàn", "姿势": "zī shì", "拘束": "jū shù", "嘈杂": "cáo zá", "沮丧": "jǔ sàng", "若有所思": "ruò yǒu suǒ sī", "模糊": "mó hu", "敏感": "mǐn gǎn", "掩饰": "yǎn shì", "摄影": "shè yǐng", "谷底": "gǔ dǐ", "简陋": "jiǎn lòu", "政府": "zhèng fǔ", "开辟": "kāi pì", "市镇": "shì zhèn", "宗教": "zōng jiào", "综合": "zōng hé", "诊疗所": "zhěn liáo suǒ", "经济": "jīng jì", "蓬勃": "péng bó", "富裕": "fù yù", "变迁": "biàn qiān", "障碍": "zhàng ài", "驰名": "chí míng", "屡次": "lǚ cì", "荣誉": "róng yù", "姿态": "zī tài", "接触": "jiē chù", "翠绿": "cuì lǜ", "心旷神怡": "xīn kuàng shén yí", "合拢": "hé lǒng", "林荫": "lín yīn", "樟宜": "zhāng yí", "耸立": "sǒng lì", "温馨": "wēn xīn", "欣赏": "xīn shǎng", "粗糙": "cū cāo", "婆娑": "pó suō", "撑": "chēng", "同甘共苦": "tóng gān gòng kǔ", "茁壮": "zhuó zhuàng", "移民": "yí mín", "接纳": "jiē nà", "无怨无悔": "wú yuàn wú huǐ", "千姿百态": "qiān zī bǎi tài", "空旷": "kōng kuàng", "患": "huàn", "失智症": "shī zhì zhèng", "寻找": "xún zhǎo", "流逝": "liú shì", "嬉戏": "xī xì", "咖喱卜": "gā lí bo", "俏皮": "qiào pí", "鲜艳": "xiān yàn", "承载": "chéng zài", "沉重": "chén zhòng", "贸易": "mào yì", "丝绸": "sī chóu", "陆地": "lù dì", "奢侈": "shē chǐ", "瓷器": "cí qì", "仪式": "yí shì", "秉持": "bǐng chí", "枢纽": "shū niǔ", "港口": "gǎng kǒu", "致力": "zhì lì", "勾勒": "gōu lè", "高瞻远瞩": "gāo zhān yuǎn zhǔ", "运输": "yùn shū", "传承": "chuán chéng", "可谓": "kě wèi", "岛屿": "dǎo yǔ", "海峡": "hǎi xiá", "历史": "lì shǐ", "挖掘": "wā jué", "区域": "qū yù", "汇集": "huì jí", "赋予": "fù yǔ", "海纳百川": "hǎi nà bǎi chuān", "椰浆饭": "yē jiāng fàn", "黄姜饭": "huáng jiāng fàn", "发芽": "fā yá", "兼容并蓄": "jiān róng bìng xù", "携手": "xié shǒu", "辉煌": "huī huáng", "得天独厚": "dé tiān dú hòu", "给予": "jǐ yǔ", "婉转": "wǎn zhuǎn", "瞩目": "zhǔ mù", "求同存异": "qiú tóng cún yì", "皇帝": "huáng dì", "典型": "diǎn xíng", "普及": "pǔ jí", "真伪": "zhēn wěi", "步伐": "bù fá", "询问": "xún wèn", "人云亦云": "rén yún yì yún", "免疫": "miǎn yì", "凝聚力": "níng jù lì", "辨别": "biàn bié", "良好": "liáng hǎo", "人际": "rén jì", "坦率": "tǎn shuài", "隐瞒": "yǐn mán", "粗鲁": "cū lǔ", "分歧": "fēn qí", "矛盾": "máo dùn", "磋商": "cuō shāng", "彼此": "bǐ cǐ", "融洽": "róng qià", "诀窍": "jué qiào", "聆听": "líng tīng", "死党": "sǐ dǎng", "强迫": "qiǎng pò", "橱窗": "chú chuāng", "狭窄": "xiá zhǎi", "铅笔盒": "qiān bǐ hé", "拧": "níng", "抿": "mǐn", "肺炎": "fèi yán", "纸屑": "zhǐ xiè", "肿瘤": "zhǒng liú", "癌症": "ái zhèng", "徒劳无功": "tú láo wú gōng", "擦拭": "cā shì", "某": "mǒu", "苍白": "cāng bái", "鼓掌": "gǔ zhǎng", "忠实": "zhōng shí", "异乎寻常": "yì hū xún cháng", "痊愈": "quán yù", "清晰": "qīng xī", "调剂": "tiáo jì", "目睹": "mù dǔ", "鄙夷": "bǐ yí", "流淌": "liú tǎng", "窗帘": "chuāng lián", "提心吊胆": "tí xīn diào dǎn", "封": "fēng", "古董": "gǔ dǒng", "衡量": "héng liáng", "纯洁": "chún jié", "歧途": "qí tú", "蔬菜": "shū cài", "麦片": "mài piàn", "蛋白质": "dàn bái zhì", "睡眠": "shuì mián", "体魄": "tǐ pò", "频率": "pín lǜ", "韵律": "yùn lǜ", "汲取": "jí qǔ", "敞开": "chǎng kāi", "心扉": "xīn fēi", "缔造": "dì zào", "聊天": "liáo tiān", "郊外": "jiāo wài", "淋漓": "lín lí", "手札": "shǒu zhá", "抒发": "shū fā", "休憩": "xiū qì", "均衡": "jūn héng", "享受": "xiǎng shòu", "饮茶": "yǐn chá", "唐": "táng", "磨": "mó", "葱": "cōng", "橘子": "jú zi", "宋": "sòng", "鼎盛": "dǐng shèng", "柴": "chái", "醋": "cù", "沸水": "fèi shuǐ", "调匀": "tiáo yún", "搅拌": "jiǎo bàn", "步骤": "bù zhòu", "鉴赏": "jiàn shǎng", "消暑": "xiāo shǔ", "菌": "jūn", "所谓": "suǒ wèi", "源远流长": "yuán yuǎn liú cháng", "异军突起": "yì jūn tū qǐ", "五花八门": "wǔ huā bā mén", "舞蹈": "wǔ dǎo", "节奏": "jié zòu", "霹雳舞": "pī lì wǔ", "肌肉": "jī ròu", "风靡": "fēng mǐ", "掀起": "xiān qǐ", "热潮": "rè cháo", "雨后春笋": "yǔ hòu chūn sǔn", "爆发力": "bào fā lì", "默契": "mò qì", "焕发": "huàn fā", "真挚": "zhēn zhì", "名额": "míng é", "链接": "liàn jiē", "师傅": "shī fù", "擅长": "shàn cháng", "裁缝": "cái féng", "编织": "biān zhī", "匠人": "jiàng rén", "烘焙": "hōng bèi", "讲述": "jiǎng shù", "黎明": "lí míng", "苏醒": "sū xǐng", "禽": "qín", "晚霞": "wǎn xiá", "添砖加瓦": "tiān zhuān jiā wǎ", "族裔": "zú yì", "鲜为人知": "xiǎn wéi rén zhī", "宵夜": "xiāo yè", "唇齿相依": "chún chǐ xiāng yī", "亲戚": "qīn qī", "援手": "yuán shǒu", "侥幸": "jiǎo xìng", "慷慨解囊": "kāng kǎi jiě náng", "渡": "dù", "篱笆": "lí bā", "心力交瘁": "xīn lì jiāo cuì", "雪中送炭": "xuě zhōng sòng tàn", "恰好": "qià hǎo", "弥补": "mí bǔ", "谚语": "yàn yǔ", "和睦": "hé mù", "冷漠": "lěng mò", "挑剔": "tiāo tī", "网络": "wǎng luò", "开销": "kāi xiāo", "锯子": "jù zi", "遛": "liú", "拴": "shuān", "渠道": "qú dào", "弊端": "bì duān", "划算": "huá suàn", "久而久之": "jiǔ ér jiǔ zhī", "培训": "péi xùn", "阐述": "chǎn shù", "铿锵": "kēng qiāng", "雅俗": "yǎ sú", "抑扬顿挫": "yì yáng dùn cuò", "僵硬": "jiāng yìng", "言简意赅": "yán jiǎn yì gāi", "啰唆": "luō suō", "遐想": "xiá xiǎng", "枯燥": "kū zào", "筛选": "shāi xuǎn", "欲": "yù", "浏览": "liú lǎn", "沟通": "gōu tōng", "举手投足": "jǔ shǒu tóu zú", "乏味": "fá wèi", "润滑剂": "rùn huá jì", "不胜枚举": "bù shèng méi jǔ", "扼腕": "è wàn", "体恤": "tǐ xù", "氛围": "fēn wéi", "谦虚": "qiān xū", "裨益": "bì yì", "严峻": "yán jùn", "流言蜚语": "liú yán fēi yǔ", "扰乱": "rǎo luàn", "甚嚣尘上": "shèn xiāo chén shàng", "基础": "jī chǔ", "涵盖": "hán gài", "畅所欲言": "chàng suǒ yù yán", "尊重": "zūn zhòng", "广泛": "guǎng fàn", "导致": "dǎo zhì", "崛起": "jué qǐ", "颠覆": "diān fù", "报刊": "bào kān", "书籍": "shū jí", "传播": "chuán bō", "拨": "bō", "限制": "xiàn zhì", "天涯": "tiān yá", "屏幕": "píng mù", "按钮": "àn niǔ", "疆界": "jiāng jiè", "庞大": "páng dà", "前所未有": "qián suǒ wèi yǒu", "创建": "chuàng jiàn", "阶段": "jiē duàn", "同侪": "tóng chái", "撰写": "zhuàn xiě", "筹备": "chóu bèi", "募捐": "mù juān", "实践": "shí jiàn", "震撼": "zhèn hàn", "循规蹈矩": "xún guī dǎo jǔ", "融会贯通": "róng huì guàn tōng", "腼腆": "miǎn tiǎn", "咨询": "zī xún", "数据": "shù jù", "分析": "fēn xī", "冰淇淋": "bīng qí lín", "充实": "chōng shí", "贯穿": "guàn chuān", "勇于": "yǒng yú", "雄鹰": "xióng yīng", "渺小": "miǎo xiǎo", "坐井观天": "zuò jǐng guān tiān", "自鸣得意": "zì míng dé yì", "孤陋寡闻": "gū lòu guǎ wén", "奥妙": "ào miào", "寓言": "yù yán", "桨": "jiǎng", "浅尝辄止": "qiǎn cháng zhé zhǐ", "哲学": "zhé xué", "比喻": "bǐ yù", "热忱": "rè chén", "持之以恒": "chí zhī yǐ héng", "清澈": "qīng chè", "干涸": "gān hé", "浇灌": "jiāo guàn", "九牛一毛": "jiǔ niú yì máo", "落伍": "luò wǔ", "楷模": "kǎi mó", "孜孜不倦": "zī zī bù juàn", "敷衍": "fū yǎn", "逆水行舟": "nì shuǐ xíng zhōu", "淘汰": "táo tài", "佐证": "zuǒ zhèng", "平庸": "píng yōng", "岂": "qǐ", "层出不穷": "céng chū bù qióng", "诠释": "quán shì", "抛锚": "pāo máo", "郁闷": "yù mèn", "叼": "diāo", "逗": "dòu", "挑战": "tiǎo zhàn", "绊": "bàn", "攀登": "pān dēng", "雀跃": "què yuè", "山脉": "shān mài", "宇宙": "yǔ zhòu", "体验": "tǐ yàn", "信任": "xìn rèn", "依赖": "yī lài", "跋涉": "bá shè", "牵挂": "qiān guà", "唤": "huàn", "喉咙": "hóu lóng", "绽放": "zhàn fàng", "绷": "bēng", "一般": "yì bān", "无奈": "wú nài", "寺庙": "sì miào", "幽静": "yōu jìng", "诧异": "chà yì", "贱": "jiàn", "哽咽": "gěng yè", "眼眶": "yǎn kuàng", "咀嚼": "jǔ jué", "搬迁": "bān qiān", "孝顺": "xiào shùn", "探望": "tàn wàng", "谅解": "liàng jiě", "隆重": "lóng zhòng", "诅咒": "zǔ zhòu", "洋溢": "yáng yì", "慈祥": "cí xiáng", "潭": "tán", "教授": "jiào shòu", "割舍": "gē shě", "神圣": "shén shèng", "介意": "jiè yì", "演奏": "yǎn zòu", "责无旁贷": "zé wú páng dài", "分忧": "fēn yōu", "残障": "cán zhàng", "聘请": "pìn qǐng", "同工同酬": "tóng gōng tóng chóu", "权利": "quán lì", "雇主": "gù zhǔ", "纠纷": "jiū fēn", "小贩": "xiǎo fàn", "摊位": "tān wèi", "呵护": "hē hù", "缓解": "huǎn jiě", "乞丐": "qǐ gài", "跪": "guì", "肮脏": "āng zāng", "贫穷": "pín qióng", "赤裸裸": "chì luǒ luǒ", "祈求": "qí qiú", "距离": "jù lí", "慈悲": "cí bēi", "阻挡": "zǔ dǎng", "肆无忌惮": "sì wú jì dàn", "褴褛": "lán lǚ", "革履": "gé lǚ", "侦探": "zhēn tàn", "仁慈": "rén cí", "叩头": "kòu tóu", "残疾": "cán jí", "质朴": "zhì piáo", "大概": "dà gài", "晓得": "xiǎo de", "蓦然": "mò rán", "推心置腹": "tuī xīn zhì fù", "否则": "fǒu zé", "感恩": "gǎn ēn", "匆匆": "cōng cōng", "婴儿": "yīng ér", "翅膀": "chì bǎng", "呈献": "chéng xiàn", "扣人心弦": "kòu rén xīn xián", "爱恋": "ài liàn", "唏嘘": "xī xū", "著名": "zhù míng", "兴旺": "xīng wàng", "负荷": "fù hè", "反映": "fǎn yìng", "岔路口": "chà lù kǒu", "惆怅": "chóu chàng", "紧凑": "jǐn còu", "小卒": "xiǎo zú", "兴衰": "xīng shuāi", "轿子": "jiào zi", "何况": "hé kuàng", "耻笑": "chǐ xiào", "搀扶": "chān fú", "罢了": "bà le", "姊妹": "zǐ mèi", "顽劣": "wán liè", "溺爱": "nì ài", "颈项": "jǐng xiàng", "鬓": "bìn", "桃": "táo", "瓣": "bàn", "重逢": "chóng féng", "稀罕": "xī hǎn", "拜见": "bài jiàn", "面善": "miàn shàn", "大吃一惊": "dà chī yī jīng", "三顾茅庐": "sān gù máo lú", "争霸": "zhēng bà", "足智多谋": "zú zhì duō móu", "起伏": "qǐ fú", "斥责": "chì zé", "严寒": "yán hán", "恳请": "kěn qǐng", "心直口快": "xīn zhí kǒu kuài", "酿": "niàng", "涌": "yǒng", "繁殖": "fán zhí", "饲料": "sì liào", "佳肴": "jiā yáo", "啃": "kěn", "入侵": "rù qīn", "盎然": "àng rán", "砍伐": "kǎn fá", "栖息": "qī xī", "牢记": "láo jì", "勿": "wù", "惩罚": "chéng fá", "平衡": "píng héng", "珍稀": "zhēn xī", "茂密": "mào mì", "恶劣": "è liè", "浸泡": "jìn pào", "牺牲": "xī shēng", "锐减": "ruì jiǎn", "保育": "bǎo yù", "储存": "chǔ cún", "身躯": "shēn qū", "侵蚀": "qīn shí", "空隙": "kòng xì", "堤": "dī", "貌不惊人": "mào bù jīng rén", "窥视": "kuī shì", "宣布": "xuān bù", "狩猎": "shòu liè", "饥饿": "jī è", "糟蹋": "zāo tà", "毁灭": "huǐ miè", "罪魁祸首": "zuì kuí huò shǒu", "竞争": "jìng zhēng", "袭击": "xí jī", "违背": "wéi bèi", "拼搏": "pīn bó", "面目全非": "miàn mù quán fēi", "举措": "jǔ cuò", "联盟": "lián méng", "迄今": "qì jīn", "蜿蜒": "wān yán", "辽阔": "liáo kuò", "诸多": "zhū duō", "古迹": "gǔ jì", "雕刻": "diāo kè", "啧啧称奇": "zé zé chēng qí", "赞叹": "zàn tàn", "底蕴": "dǐ yùn", "灿烂": "càn làn", "金碧辉煌": "jīn bì huī huáng", "绚丽": "xuàn lì", "高耸": "gāo sǒng", "颇": "pǒ", "独树一帜": "dú shù yī zhì", "赋税": "fù shuì", "揭竿而起": "jiē gān ér qǐ", "暴虐": "bào nüè", "葬送": "zàng sòng", "推卸": "tuī xiè", "停滞": "tíng zhì", "趾高气扬": "zhǐ gāo qì yáng", "谦逊": "qiān xùn", "梦寐以求": "mèng mèi yǐ qiú", "昌盛": "chāng shèng", "自知之明": "zì zhī zhī míng", "忍无可忍": "rěn wú kě rěn", "一无是处": "yī wú shì chù", "协作": "xié zuò", "论坛": "lùn tán", "毋庸讳言": "wú yōng huì yán", "棘手": "jí shǒu", "肆虐": "sì nüè", "谋求": "móu qiú", "里程碑": "lǐ chéng bēi", "开拓": "kāi tuò", "先驱": "xiān qū", "气馁": "qì něi", "出类拔萃": "chū lèi bá cuì", "韧性": "rèn xìng", "浩瀚": "hào hàn", "天方夜谭": "tiān fāng yè tán", "百折不挠": "bǎi zhé bù náo", "研发": "yán fā", "畅销": "chàng xiāo", "贬": "biǎn", "粮食": "liáng shí", "豁达": "huò dá", "满腔": "mǎn qiāng", "霜": "shuāng", "遣": "qiǎn", "挽": "wǎn", "豪迈": "háo mài", "慷慨激昂": "kāng kǎi jī áng", "勉励": "miǎn lì", "朝廷": "cháo tíng", "笔锋": "bǐ fēng", "扎": "zhā", "喧腾": "xuān téng", "感悟": "gǎn wù", "崭新": "zhǎn xīn", "迥然": "jiǒng rán", "奋斗": "fèn dòu", "崎岖": "qí qū", "抵达": "dǐ dá",
-  "姓氏": "xìng shì",
-  "单姓": "dān xìng",
-  "复姓": "fù xìng",
-  "情有独钟": "qíng yǒu dú zhōng",
-  "完美无缺": "wán měi wú quē",
-  "无处不在": "wú chù bù zài",
-  "花好月圆": "huā hǎo yuè yuán",
-  "民以食为天": "mín yǐ shí wéi tiān",
-  "吃一堑，长一智": "chī yī qiàn, zhǎng yī zhì",
-  "吃香": "chī xiāng",
-  "吃力": "chī lì",
-  "吃苦": "chī kǔ",
-  "吃亏": "chī kuī",
-  "金缕衣": "jīn lǚ yī",
-  "莫待": "mò dài",
-  "四大发明": "sì dà fā míng",
-  "造纸术": "zào zhǐ shù",
-  "活字印刷术": "huó zì yìn shuā shù",
-  "指南针": "zhǐ nán zhēn",
-  "国家兴亡，匹夫有责": "guó jiā xīng wáng, pǐ fū yǒu zé",
-  "位卑未敢忘忧国": "wèi bēi wèi gǎn wàng yōu guó",
-  "三百六十行，行行出状元": "sān bǎi liù shí háng, háng háng chū zhuàng yuán",
-  "干一行爱一行": "gàn yī háng, ài yī háng",
-  "论语": "Lún Yǔ",
-  "赡养": "shàn yǎng",
-  "孝道": "xiào dào",
-  "吉祥": "jí xiáng",
-  "寓意": "yù yì",
-  "望子成龙": "wàng zǐ chéng lóng",
-  "生龙活虎": "shēng lóng huó hǔ",
-  "画龙点睛": "huà lóng diǎn jīng",
-  "龙凤呈祥": "lóng fèng chéng xiáng",
-  "凤毛麟角": "fèng máo lín jiǎo",
-  "饮水思源": "yǐn shuǐ sī yuán",
-  "远水救不了近火": "yuǎn shuǐ jiù bù liǎo jìn huǒ",
-  "水能载舟，亦能覆舟": "shuǐ néng zài zhōu, yì néng fù zhōu",
-  "君子之交淡如水": "jūn zǐ jiāo dàn rú shuǐ",
-  "成年礼": "chéng nián lǐ",
-  "冠礼": "guàn lǐ",
-  "世界文化遗产": "shì jiè wén huà yí chǎn",
-  "培植": "péi zhí",
-  "谁知盘中餐，粒粒皆辛苦": "shéi zhī pán zhōng cān, lì lì jiē xīn kǔ",
-  "四大名著": "sì dà míng zhù",
-  "桃园三结义": "táo yuán sān jié yì",
-  "替天行道": "tì tiān xíng dào",
-  "降妖除魔": "jiáng yāo chú mó",
-  "琴棋书画": "qín qí shū huà",
-  "修身养性": "xiū shēn yǎng xìng",
-  "书法": "shū fǎ",
-  "千变万化": "qiān biàn wàn huà",
-  "义诊": "yì zhěn",
-  "望闻问切": "wàng wén wèn qiè",
-  "针灸": "zhēn jiǔ",
-  "良言一句三冬暖，恶语伤人六月寒": "liáng yán yī jù sān dōng nuǎn, è yǔ shāng rén liù yuè hán",
-  "良药苦口利于病，忠言逆耳利于行": "liáng yào kǔ kǒu lì yú bìng, zhōng yán nì ěr lì yú xíng",
-  "心诚色温，气和辞婉，必能动人": "xīn chéng sè wēn, qì hé cí wǎn, bì néng dòng rén",
-  "教育为立国之本，兴学乃国民天职": "jiào yù wéi lì guó zhī běn, xīng xué nǎi guó mín tiān zhí",
-  "留白": "liú bái",
-  "意在言外": "yì zài yán wài",
-  "含蓄": "hán xù",
-  "仁义礼智信": "rén yì lǐ zhì xìn",
-  "恻隐之心": "cè yǐn zhī xīn",
-  "推己及人": "tuī jǐ jí rén",
-  "己所不欲，勿施于人": "jǐ suǒ bù yù, wù shī yú rén",
-  "鞠躬尽瘁，死而后已": "jū gōng jìn cuì, sǐ ér hòu yǐ",
-  "老骥伏枥，志在千里": "lǎo jì fú lì, zhì zài qiān lǐ",
-  "用兵如神": "yòng bīng rú shén",
-  "二十四节气": "èr shí sì jié qì",
-  "一年之计在于春": "yī nián zhī jì zài yú chūn",
-  "冬至大过年": "dōng zhì dà guò nián",
-  "知己知彼，百战不殆": "zhī jǐ zhī bǐ, bǎi zhàn bù dài",
-  "知人者智，自知者明": "zhī rén zhě zhì, zì zhī zhě míng",
-  "三不朽": "sān bù xiǔ",
-  "立德": "lì dé",
-  "立功": "lì gōng",
-  "立言": "lì yán",
-  "著书立说": "zhù shū lì shuō"
-};
-
 // Near-synonym pairs that should never be used as distractors for each other
 const SYNONYM_EXCLUDE = {"残障": ["残疾"], "残疾": ["残障"], "忙碌": ["繁忙"], "繁忙": ["忙碌"], "陌生": ["生疏"], "宁静": ["安详"], "安详": ["宁静"], "融合": ["融洽"], "融洽": ["和睦", "融合"], "和睦": ["融洽"], "疑惑": ["迷惑"], "迷惑": ["疑惑"], "委屈": ["冤枉"], "冤枉": ["委屈"], "催促": ["敦促"], "敦促": ["催促"], "允许": ["准许"], "准许": ["允许"], "获得": ["取得"], "取得": ["获得"], "维护": ["保护"], "保护": ["维护"], "真挚": ["真诚"], "真诚": ["真挚"], "坦率": ["直率"], "直率": ["坦率"], "粗鲁": ["无礼"], "无礼": ["粗鲁"], "聆听": ["倾听"], "倾听": ["聆听"], "擅长": ["善于"], "善于": ["擅长"], "谦虚": ["谦逊"], "谦逊": ["谦虚"], "豪迈": ["豁达"], "豁达": ["豪迈"], "奋斗": ["拼搏"], "拼搏": ["奋斗"], "惩罚": ["处罚"], "处罚": ["惩罚"], "昌盛": ["繁荣"], "繁荣": ["昌盛"], "停滞": ["停止"], "停止": ["停滞"], "棘手": ["困难"], "困难": ["棘手"], "肆虐": ["横行"], "横行": ["肆虐"], "气馁": ["沮丧"], "沮丧": ["气馁"], "震撼": ["感动"], "感动": ["震撼"], "腼腆": ["害羞"], "害羞": ["腼腆"], "愤怒": ["愤慨"], "愤慨": ["愤怒"], "恐惧": ["恐怖", "惊悚"], "恐怖": ["恐惧"], "惊悚": ["恐惧"], "孤陋寡闻": ["坐井观天"], "坐井观天": ["孤陋寡闻"], "承诺": ["保证"], "保证": ["承诺"], "歉意": ["抱歉"], "抱歉": ["歉意"], "装饰": ["点缀"], "点缀": ["装饰"], "探索": ["探寻"], "探寻": ["探索"], "娱乐": ["休闲"], "休闲": ["娱乐"], "创新": ["革新"], "革新": ["创新"], "策略": ["方法"], "方法": ["策略"], "嘉宾": ["贵宾"], "贵宾": ["嘉宾"], "珍稀": ["稀有"], "稀有": ["珍稀"], "平衡": ["均衡"], "均衡": ["平衡"], "承载": ["承担"], "承担": ["承载"], "流逝": ["消逝"], "消逝": ["流逝"], "鲜艳": ["艳丽"], "艳丽": ["鲜艳"], "矛盾": ["冲突", "分歧"], "冲突": ["矛盾"], "分歧": ["矛盾"]};
 
@@ -2863,66 +2737,6 @@ function getComponentTitle(level, unitNum, componentType) {
 // Blank markers: [1]..[n] map to answers array (0-indexed: answers[0] = blank [1])
 // Rule: one blank per sentence, no answer word appears in surrounding text.
 const CLOZE_PASSAGES = {
-  "中一": {
-    "单元一 生活空间": {
-      status: "live",
-      passages: [
-        {
-          id: "s1u1_shkj_p1",
-          passage_index: 1,
-          total_passages: 3,
-          title: "新同学",
-          text: "我们班上星期来了一位新同学。他姓[1]，来自一所邻里小学。第一次自我介绍时，他笑着对大家说：「我小时候很[2]！」他还告诉大家，自己常常[3]妈妈生气，不过上了中学后下定决心要变成熟。全班一听都笑了，气氛立刻轻松起来。不管谁找他帮忙，他都[4]。他还经常说：「[5]！」这句[6]几乎天天挂在嘴边，大家听久了也跟着说。朋友都说他很讲义气，能为大家[7]。他的志愿是当工程师，研究最先进的[8]。",
-          answers: ["赵","淘气","惹","来者不拒","小事一桩","口头禅","两肋插刀","科技"]
-        },
-        {
-          id: "s1u1_shkj_p2",
-          passage_index: 2,
-          total_passages: 3,
-          title: "性格与摩擦",
-          text: "班上的小敏是出了名的开心果。她的[1]很好，几乎每个同学都喜欢和她相处。她的[2]开朗活泼。她说话也很[3]，从不拐弯抹角。可是，正因为她太坦白，有时候会无意中[4]别人。上星期的小组讨论，她和小华为了报告的内容[5]了起来。小敏认为小华抄袭了网上的资料，可是小华其实是自己一字一句写的，他觉得自己被[6]了，心里很难受。两人之后见面都觉得很[7]，连话也不太想说。她后来想，好朋友之间[8]意见不合，也是难免的，关键是看怎么解开心结。",
-          answers: ["人缘","性格","直率","得罪","争辩","冤枉","别扭","即使"]
-        },
-        {
-          id: "s1u1_shkj_p3",
-          passage_index: 3,
-          total_passages: 3,
-          title: "交友之道",
-          text: "学校图书馆这学期来了一批好书。老师特别[1]了几本关于友情的故事，每一本都很有启发。这一[2]图书让我大开眼界。其中一本提到，平日里多帮助身边的人，自己也会感到充实快乐——这就是所谓的[4]。另一本则讲到，真正的好朋友不只在你顺利时陪伴你，更要在你遇到困难时挺身而出；好事一起分享，难处一起承担，这便是[3]的真正含义。这让我想起了班上的两个好朋友。小杰是篮球队的[5]，平日活泼好动。而小文则不一样，他性格[6]，话不多，喜欢一个人静静看书。表面上两人天差地别，但他们却成了最要好的朋友，因为他们都懂得在彼此最需要的时候出现，分享喜悦、分担烦恼。",
-          answers: ["推荐","系列","有福同享，有难同当","助人为快乐之本","健将","内向"]
-        }
-      ]
-    },
-    "单元一 核心": {
-      status: "live",
-      passages: [
-        {
-          id: "s1u1_hx_p1",
-          passage_index: 1,
-          total_passages: 3,
-          title: "煎蛋风波",
-          text: "那天傍晚，妈妈忙着收拾客厅，要求我帮忙准备晚餐。我[1]地打开冰箱，决定自己煎蛋。我先把鸡蛋打成[2]，然后缓缓倒进锅里。没想到，煎蛋竟[3]在锅面，怎么铲都铲不起。厨房里还开始弥漫焦味。我顿时[4]，不知如何是好。妈妈闻到焦味，立刻[5]道：“怎么了？”我[6]极了，手忙脚乱地在锅边团团转。最后，妈妈出手帮忙，蛋铲起来了，味道[7]还挺不错的。",
-          answers: ["兴致勃勃","蛋液","粘","手足无措","嚷","狼狈","居然"]
-        },
-        {
-          id: "s1u1_hx_p2",
-          passage_index: 2,
-          total_passages: 3,
-          title: "不服输",
-          text: "体育课后，我和志远发生了一场争执。他当众[1]我，说我篮球打得一塌糊涂，完全不堪入眼。我[2]不住心里的愤怒，当场回击：“你以为你很厉害吗？”他听了，[3]地转过身，死不认错。他甚至[4]着我的衣袖，不让我离开。我甩开他，转身离开，心里很不[5]。从那天起，我每天苦练，[6]一夜之间就能超越他。我只想用成绩来[7]自己的实力。",
-          answers: ["讥讽","抵挡","赌气","拉扯","服气","恨不得","证明"]
-        },
-        {
-          id: "s1u1_hx_p3",
-          passage_index: 3,
-          total_passages: 3,
-          title: "温习夜",
-          text: "年终考试快到了，我把课本和笔记铺在桌上，准备好好复习。老师[1]的任务不少，我决定认真完成。我拿出[2]，把重点内容逐一划出。正当我专心看书，爱[3]的弟弟忽然跑进来，我的笔记[4]就被他弄得一团糟。我好不容易把他支开，[5]地重新整理好笔记，再次埋头苦读。就这样，我一直读到深夜，才慢慢[6]到，沉下心来用功，原来能获得极大的满足感。",
-          answers: ["布置","荧光笔","捣乱","瞬间","小心翼翼","体会"]
-        }
-      ]
-    }
-  }
 };
 // All other level/unit/component combos default to pending — looked up by getClozeConfig()
 function getClozeConfig(level, unitKey) {
@@ -8881,12 +8695,7 @@ async function fetchUsageStats() {
       else if (u.userType === '其他学校学生') otherSchoolStudents++;
       else if (TEACHER_TYPES.includes(u.userType)) teachers++;
     });
-    const bv  = document.getElementById('counter-bukit');
-    const tot = document.getElementById('counter-total');
-    const tch = document.getElementById('counter-teachers');
-    if (bv)  bv.textContent  = bukitViewStudents;
-    if (tot) tot.textContent = otherSchoolStudents;
-    if (tch) tch.textContent = teachers;
+
   } catch(e) { console.warn('fetchUsageStats failed:', e); }
   // For dashboard users: check pending nickname count
   if (isDashboardUser()) _updatePendingNickBadge();
@@ -12049,6 +11858,24 @@ function _savePassageAttempt(passage, correctCount, wrongWords) {
   <div class="ch-mastery-banner">
     <div class="ch-mb-icon">&#9989;</div>
     <div class="ch-mb-text" id="ch-mb-text"></div>
+  </div>
+  <div class="ch-wrong-section" id="ch-wrong-section" style="display:none;">
+    <div class="ch-ws-header">
+      <div class="ch-ws-title">答错的词语</div>
+      <div class="ch-ws-count" id="ch-ws-count">0 个</div>
+    </div>
+    <div class="ch-wrong-cards" id="ch-wrong-cards"></div>
+  </div>
+  <div class="ch-action-btns">
+    <button class="ch-ab primary" onclick="startChallenge()">&#9876;&#65039; 继续挑战 20 题</button>
+    <button class="ch-ab target" id="ch-btn-target" onclick="startChallengeTargeted()" style="display:none;">&#127919; 专攻错题</button>
+    <button class="ch-ab secondary" onclick="exitChallenge()">&#8617; 返回单元</button>
+  </div>
+</div>
+
+</body>
+</html>
+mb-text" id="ch-mb-text"></div>
   </div>
   <div class="ch-wrong-section" id="ch-wrong-section" style="display:none;">
     <div class="ch-ws-header">
